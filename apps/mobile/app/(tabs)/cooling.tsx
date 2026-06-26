@@ -1,0 +1,40 @@
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+
+const categories = ['Cafés', 'Restaurantes', 'Bibliotecas', 'Shoppings', 'Museus', 'Coworking'];
+
+export default function CoolingScreen() {
+  return (
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      testID="cooling-screen"
+    >
+      <Text style={styles.title}>Categorias</Text>
+      <Text style={styles.subtitle}>Encontre o refúgio perfeito contra o calor.</Text>
+      <View style={styles.grid}>
+        {categories.map((cat) => (
+          <View key={cat} style={styles.card}>
+            <Text style={styles.cardTitle}>{cat}</Text>
+          </View>
+        ))}
+      </View>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#f7f9fb' },
+  content: { paddingTop: 60, paddingHorizontal: 20, paddingBottom: 40 },
+  title: { fontSize: 24, fontWeight: '600', color: '#191c1e' },
+  subtitle: { color: '#3f484c', marginTop: 8, marginBottom: 24 },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
+  card: {
+    width: '47%',
+    backgroundColor: 'rgba(255,255,255,0.8)',
+    borderRadius: 12,
+    padding: 16,
+    minHeight: 100,
+    justifyContent: 'center',
+  },
+  cardTitle: { fontWeight: '600', textAlign: 'center' },
+});

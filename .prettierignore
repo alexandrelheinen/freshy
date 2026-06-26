@@ -1,0 +1,5 @@
+pnpm-lock.yaml
+docs/stitch/**/*.html
+**/dist/
+**/.next/
+**/.turbo/

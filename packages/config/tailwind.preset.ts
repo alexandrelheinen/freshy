@@ -1,0 +1,73 @@
+/** Design tokens from docs/stitch/freshy/DESIGN.md */
+export const freshyColors = {
+  surface: '#f7f9fb',
+  'surface-dim': '#d8dadc',
+  'surface-bright': '#f7f9fb',
+  'surface-container-lowest': '#ffffff',
+  'surface-container-low': '#f2f4f6',
+  'surface-container': '#eceef0',
+  'surface-container-high': '#e6e8ea',
+  'surface-container-highest': '#e0e3e5',
+  'on-surface': '#191c1e',
+  'on-surface-variant': '#3f484c',
+  'inverse-surface': '#2d3133',
+  'inverse-on-surface': '#eff1f3',
+  outline: '#6f787d',
+  'outline-variant': '#bfc8cd',
+  'surface-tint': '#0c6780',
+  primary: '#0c6780',
+  'on-primary': '#ffffff',
+  'primary-container': '#87ceeb',
+  'on-primary-container': '#005870',
+  'inverse-primary': '#89d0ed',
+  secondary: '#4f616a',
+  'on-secondary': '#ffffff',
+  'secondary-container': '#cfe3ee',
+  'on-secondary-container': '#53656f',
+  tertiary: '#446464',
+  'on-tertiary': '#ffffff',
+  'tertiary-container': '#a9cbcb',
+  'on-tertiary-container': '#375757',
+  error: '#ba1a1a',
+  'on-error': '#ffffff',
+  'error-container': '#ffdad6',
+  'on-error-container': '#93000a',
+  'primary-fixed': '#baeaff',
+  'primary-fixed-dim': '#89d0ed',
+  'on-primary-fixed': '#001f29',
+  'on-primary-fixed-variant': '#004d62',
+  'secondary-fixed': '#d2e6f0',
+  'secondary-fixed-dim': '#b6c9d4',
+  'on-secondary-fixed': '#0b1e26',
+  'on-secondary-fixed-variant': '#374952',
+  'tertiary-fixed': '#c6e9e9',
+  'tertiary-fixed-dim': '#abcdcd',
+  'on-tertiary-fixed': '#002020',
+  'on-tertiary-fixed-variant': '#2c4c4c',
+  background: '#f7f9fb',
+  'on-background': '#191c1e',
+  'surface-variant': '#e0e3e5',
+} as const;
+
+const preset = {
+  theme: {
+    extend: {
+      colors: freshyColors,
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      borderRadius: {
+        DEFAULT: '0.5rem',
+        lg: '0.75rem',
+        xl: '1rem',
+        '2xl': '1.5rem',
+      },
+      spacing: {
+        'margin-mobile': '20px',
+        'gutter-mobile': '12px',
+      },
+    },
+  },
+};
+
+export default preset;

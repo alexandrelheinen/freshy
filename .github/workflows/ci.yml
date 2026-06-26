@@ -1,0 +1,142 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Code quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Format check
+        run: pnpm format:check
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Generate Prisma client
+        run: pnpm db:generate
+
+      - name: Build
+        run: pnpm build
+
+  screenshots:
+    name: Page screenshots
+    runs-on: ubuntu-latest
+    needs: quality
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Generate Prisma client
+        run: pnpm db:generate
+
+      - name: Build web app
+        run: pnpm --filter @freshy/web build
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @freshy/web exec playwright install chromium --with-deps
+
+      - name: Capture 4 page screenshots
+        run: |
+          mkdir -p screenshots
+          pnpm --filter @freshy/web screenshots
+
+      - name: Upload screenshots artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: page-screenshots
+          path: screenshots/
+          retention-days: 14
+
+      - name: Authenticate to Google Cloud
+        if: ${{ secrets.GCP_SA_KEY != '' }}
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        if: ${{ secrets.GCP_SA_KEY != '' }}
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Generate PR comment markdown
+        env:
+          GCS_BUCKET_NAME: ${{ secrets.GCS_BUCKET_NAME }}
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+        run: |
+          bash scripts/post-pr-screenshots.sh screenshots ${{ github.event.pull_request.number }}
+
+      - name: Comment PR with page previews
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: screenshots/pr-comment.md
+          comment-tag: page-screenshots
+
+  quality-summary:
+    name: PR quality summary
+    runs-on: ubuntu-latest
+    needs: [quality, screenshots]
+    if: always() && github.event_name == 'pull_request'
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Post quality status comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## CI — Code quality
+            | Check | Status |
+            |-------|--------|
+            | Format | ${{ needs.quality.result == 'success' && '✅' || '❌' }} |
+            | Lint | ${{ needs.quality.result == 'success' && '✅' || '❌' }} |
+            | Typecheck | ${{ needs.quality.result == 'success' && '✅' || '❌' }} |
+            | Tests | ${{ needs.quality.result == 'success' && '✅' || '❌' }} |
+            | Build | ${{ needs.quality.result == 'success' && '✅' || '❌' }} |
+            | Screenshots | ${{ needs.screenshots.result == 'success' && '✅' || needs.screenshots.result == 'skipped' && '⏭️' || '❌' }} |
+
+            **Languages:** TypeScript (web, api, mobile, db, ui)
+          comment-tag: quality-summary

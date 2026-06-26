@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PlaceCategory {
+  CAFE
+  RESTAURANT
+  LIBRARY
+  MALL
+  MUSEUM
+  COWORKING
+  PUBLIC_SPACE
+}
+
+enum AcStrength {
+  LIGHTLY_COOLED
+  COMFORTABLE
+  FRIGID
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  displayName  String
+  username     String   @unique
+  avatarUrl    String?
+  reliefPoints Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  reviews      Review[]
+  savedPlaces  SavedPlace[]
+}
+
+model Place {
+  id                      String        @id @default(cuid())
+  slug                    String        @unique
+  name                    String
+  description             String?
+  category                PlaceCategory
+  latitude                Float
+  longitude               Float
+  address                 String?
+  photoUrl                String?
+  aggregatedTemperatureC  Float?
+  aggregatedAcStrength    AcStrength?
+  isOpen                  Boolean       @default(true)
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
+
+  reviews      Review[]
+  savedPlaces  SavedPlace[]
+
+  @@index([category])
+  @@index([latitude, longitude])
+}
+
+model Review {
+  id           String     @id @default(cuid())
+  userId       String
+  placeId      String
+  acStrength   Int
+  temperatureC Float?
+  comment      String?
+  createdAt    DateTime   @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  place Place @relation(fields: [placeId], references: [id], onDelete: Cascade)
+
+  @@index([placeId])
+  @@index([userId])
+}
+
+model SavedPlace {
+  id        String   @id @default(cuid())
+  userId    String
+  placeId   String
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  place Place @relation(fields: [placeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, placeId])
+}
