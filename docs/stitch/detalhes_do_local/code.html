@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .snowflake-active {
+            font-variation-settings: 'FILL' 1;
+            color: #0c6780;
+        }
+        .snowflake-inactive {
+            color: #bfc8cd;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#0c6780",
+                    "outline-variant": "#bfc8cd",
+                    "primary-container": "#87ceeb",
+                    "inverse-surface": "#2d3133",
+                    "tertiary-fixed-dim": "#abcdcd",
+                    "secondary": "#4f616a",
+                    "on-surface": "#191c1e",
+                    "on-primary": "#ffffff",
+                    "primary": "#0c6780",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed": "#baeaff",
+                    "on-primary-fixed": "#001f29",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-secondary-fixed-variant": "#374952",
+                    "on-background": "#191c1e",
+                    "on-tertiary-fixed": "#002020",
+                    "tertiary-fixed": "#c6e9e9",
+                    "outline": "#6f787d",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#f7f9fb",
+                    "on-tertiary-fixed-variant": "#2c4c4c",
+                    "error-container": "#ffdad6",
+                    "on-secondary-container": "#53656f",
+                    "on-surface-variant": "#3f484c",
+                    "on-error": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-container": "#375757",
+                    "secondary-fixed": "#d2e6f0",
+                    "background": "#f7f9fb",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-container": "#eceef0",
+                    "tertiary": "#446464",
+                    "surface-container-high": "#e6e8ea",
+                    "secondary-container": "#cfe3ee",
+                    "on-primary-container": "#005870",
+                    "on-primary-fixed-variant": "#004d62",
+                    "on-secondary-fixed": "#0b1e26",
+                    "inverse-primary": "#89d0ed",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#f2f4f6",
+                    "surface-variant": "#e0e3e5",
+                    "surface": "#f7f9fb",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed-dim": "#b6c9d4",
+                    "surface-dim": "#d8dadc",
+                    "tertiary-container": "#a9cbcb",
+                    "primary-fixed-dim": "#89d0ed"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "12px",
+                    "gutter-mobile": "12px",
+                    "base": "4px",
+                    "xl": "32px",
+                    "margin-mobile": "20px",
+                    "md": "16px",
+                    "xs": "8px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-caps": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "30px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- Top Navigation Shell (Filtered: Back action present, hide global BottomNavBar) -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-margin-mobile h-16 bg-surface/80 backdrop-blur-md shadow-sm">
+<div class="flex items-center gap-4">
+<button aria-label="Voltar" class="p-2 hover:bg-primary/10 rounded-full transition-colors active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight">Detalhes do Local</h1>
+</div>
+<button class="p-2 hover:bg-primary/10 rounded-full transition-colors active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary">share</span>
+</button>
+</header>
+<main class="pt-16">
+<!-- Hero Header Image Section -->
+<section class="relative h-72 w-full overflow-hidden">
+<div class="w-full h-full bg-cover bg-center" data-alt="A professional, high-end photograph of Ice Coffee Central's interior. The space is a masterclass in modern minimalism with cool sky blue accents, frosted glass dividers, and sleek white furniture. Large floor-to-ceiling windows allow soft, diffuse light to flood the airy space, while subtle blue neon lines run along the ceiling. The atmosphere is crisp, clean, and immediately refreshing, evoking a sense of thermal relief and premium comfort." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDK8IZLxB1cQl_uYY5Oa2zP_LZl7FxbIKR1a1Xl71IgJN2TJ_kHRosVfSZJQf0t8GE7cz6DrvvSoSGyCl0H_pnWnsqKbopUUYedMYSCLvIXVY5M9pNmFHuDCXE_Ji2QQNvEXBJ2VE5BDn0ypx1WPD2FmthljX19yVA-QjaMytahxpjRJ8lwjmjr9eT2J6XX6dq2xPQlCtaEpfF23HV6UC0qrPajroguUNuCt2qBVneRcC45SWqtxhj_HOJkiogdGXLyXwMsfxskYFOa')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+<div class="absolute bottom-6 left-margin-mobile right-margin-mobile">
+<span class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-label-caps text-label-caps mb-2 inline-block">ABERTO AGORA</span>
+<h2 class="text-white font-display-lg text-display-lg drop-shadow-md">Ice Coffee Central</h2>
+</div>
+</section>
+<!-- Metrics Bento Grid -->
+<section class="px-margin-mobile -mt-8 relative z-10 grid grid-cols-2 gap-4">
+<!-- Temperature Card -->
+<div class="glass-card p-4 rounded-xl shadow-[0_20px_20px_rgba(12,103,128,0.04)] flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary text-4xl mb-2">thermostat</span>
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest">INTERIOR</span>
+<div class="flex items-baseline mt-1">
+<span class="font-display-lg text-display-lg text-primary">19</span>
+<span class="font-title-md text-title-md text-primary ml-1">°C</span>
+</div>
+</div>
+<!-- AC Strength Card -->
+<div class="glass-card p-4 rounded-xl shadow-[0_20px_20px_rgba(12,103,128,0.04)] flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary text-4xl mb-2">ac_unit</span>
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest">AC STRENGTH</span>
+<div class="flex gap-1 mt-2">
+<span class="material-symbols-outlined snowflake-active" style="font-variation-settings: 'FILL' 1;">ac_unit</span>
+<span class="material-symbols-outlined snowflake-active" style="font-variation-settings: 'FILL' 1;">ac_unit</span>
+<span class="material-symbols-outlined snowflake-active" style="font-variation-settings: 'FILL' 1;">ac_unit</span>
+<span class="material-symbols-outlined snowflake-inactive">ac_unit</span>
+<span class="material-symbols-outlined snowflake-inactive">ac_unit</span>
+</div>
+<span class="font-body-sm text-body-sm text-primary mt-1 font-semibold">Frigid</span>
+</div>
+</section>
+<!-- Location Info & Actions -->
+<section class="mt-lg px-margin-mobile">
+<div class="flex flex-wrap gap-2 mb-6">
+<div class="flex items-center gap-1 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps">
+<span class="material-symbols-outlined text-sm">wifi</span> FREE WI-FI
+                </div>
+<div class="flex items-center gap-1 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps">
+<span class="material-symbols-outlined text-sm">volume_off</span> QUIET ZONE
+                </div>
+<div class="flex items-center gap-1 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-caps text-label-caps">
+<span class="material-symbols-outlined text-sm">event_seat</span> COMFY SEATING
+                </div>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed mb-6">
+                O refúgio perfeito para escapar do calor urbano. O Ice Coffee Central combina uma atmosfera glacial com grãos de café de origem única, garantindo que você se sinta revigorado por dentro e por fora.
+            </p>
+<button class="w-full bg-primary text-on-primary h-14 rounded-xl font-title-md text-title-md flex items-center justify-center gap-2 shadow-lg hover:bg-primary/90 transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined">directions</span>
+                Como Chegar
+            </button>
+</section>
+<!-- Reviews Section -->
+<section class="mt-xl px-margin-mobile">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Avaliações Climáticas</h3>
+<span class="text-primary font-title-md text-title-md flex items-center gap-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+                    4.9
+                </span>
+</div>
+<div class="space-y-4">
+<!-- Review 1 -->
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-bold">
+                            MA
+                        </div>
+<div>
+<h4 class="font-title-md text-title-md text-on-surface leading-none">Marcos André</h4>
+<span class="font-body-sm text-body-sm text-outline">há 2 dias</span>
+</div>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant italic">
+                        "O melhor lugar para trabalhar durante a onda de calor. O AC é potente e constante. Recomendo o cold brew clássico!"
+                    </p>
+</div>
+<!-- Review 2 -->
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed font-bold">
+                            LL
+                        </div>
+<div>
+<h4 class="font-title-md text-title-md text-on-surface leading-none">Luísa Lima</h4>
+<span class="font-body-sm text-body-sm text-outline">há 1 semana</span>
+</div>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant italic">
+                        "Entrar aqui é como um mergulho gelado. A temperatura estava em 19 graus cravados. Perfeito."
+                    </p>
+</div>
+</div>
+<button class="w-full mt-6 py-3 border-2 border-primary-container text-primary font-title-md text-title-md rounded-xl hover:bg-primary/5 transition-colors">
+                Ver Todas as 142 Avaliações
+            </button>
+</section>
+<!-- Small Map Preview -->
+<section class="mt-xl px-margin-mobile mb-10">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-4">Localização</h3>
+<div class="h-48 w-full rounded-2xl overflow-hidden shadow-md relative">
+<img class="w-full h-full object-cover" data-alt="A minimalist and clean digital map interface showing a specific location marker in a modern city grid. The map uses a cool color palette with shades of slate blue, light grey, and primary blue highlights for streets. A vibrant blue marker with a snowflake icon indicates 'Ice Coffee Central', surrounded by soft ambient glow to make it stand out from the surface." data-location="Porto, Portugal" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDy1cMyIMqpt30SHsEVyZWabNXRug8PDEQKJ9pj31vmueZA1y8nB3P11FtVGyZZ7XNwB38DjTk1-zfRzh6XJfje6keMuQm08vvjVKlEeBMXQ4Cs2uljRsAn1ugzPRtfw-wFfImrGjGPwKwvZLcYHqSVoUashNXL8AaOqTSBDW2EHhB0DAmriEbV5y13gopjpY6uQR5KhgqEZQIlWYlkh7aU2by_HcQ2XRpisBFFS3Xcvf6opcsWa1i0pNEbn9fNGV2z-yEFgq3lkSLI"/>
+<div class="absolute bottom-3 left-3 glass-card px-3 py-1.5 rounded-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">near_me</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">800m de distância</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Atmosphere Script -->
+<script>
+        // Simple micro-interaction for the snowflakes
+        const snowflakes = document.querySelectorAll('.material-symbols-outlined');
+        snowflakes.forEach(icon => {
+            if(icon.innerText === 'ac_unit') {
+                icon.addEventListener('mouseover', () => {
+                    icon.style.transform = 'rotate(180deg) scale(1.2)';
+                    icon.style.transition = 'transform 0.5s ease';
+                });
+                icon.addEventListener('mouseout', () => {
+                    icon.style.transform = 'rotate(0deg) scale(1)';
+                });
+            }
+        });
+
+        // Sticky Header effect on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('shadow-md');
+                header.classList.remove('shadow-sm');
+            } else {
+                header.classList.remove('shadow-md');
+                header.classList.add('shadow-sm');
+            }
+        });
+    </script>
+</body></html>
