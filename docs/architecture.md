@@ -26,6 +26,8 @@ freshy/
 │   ├── stitch/              # Stitch design export (reference)
 │   ├── roadmap.md           # Product & phase plan
 │   ├── architecture.md      # This file
+│   ├── development-cycle.md # TDD workflow (mandatory)
+│   ├── quality-standards.md # Per-language quality rules
 │   └── git-rules.md         # Branching & PR rules
 └── screenshots/             # CI-generated page previews (gitignored)
 ```

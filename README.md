@@ -13,7 +13,7 @@
 | `packages/ui`     | `@freshy/ui`     | Shared React components         |
 | `packages/config` | `@freshy/config` | ESLint + Tailwind tokens        |
 
-See [docs/architecture.md](docs/architecture.md) and [docs/roadmap.md](docs/roadmap.md).
+See [docs/architecture.md](docs/architecture.md), [docs/roadmap.md](docs/roadmap.md), and [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Quick start
 
@@ -48,6 +48,10 @@ See [infrastructure/gcp/README.md](infrastructure/gcp/README.md).
 
 Stitch export: [docs/stitch/](docs/stitch/)
 
-## Git rules
+## Contributing
 
-[docs/git-rules.md](docs/git-rules.md)
+[CONTRIBUTING.md](CONTRIBUTING.md) — development cycle, TDD workflow, and quality standards.
+
+- [docs/development-cycle.md](docs/development-cycle.md) — step-by-step cycle (mandatory)
+- [docs/quality-standards.md](docs/quality-standards.md) — rules and references per language
+- [docs/git-rules.md](docs/git-rules.md) — branching and PR checklist

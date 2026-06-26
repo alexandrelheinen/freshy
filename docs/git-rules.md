@@ -1,11 +1,15 @@
 # Git & Repository Rules — Freshy
 
+> Full contributor guide: [CONTRIBUTING.md](../CONTRIBUTING.md)  
+> Development cycle (TDD): [development-cycle.md](development-cycle.md)  
+> Quality standards: [quality-standards.md](quality-standards.md)
+
 ## Branching
 
 | Branch                  | Purpose                                                     |
 | ----------------------- | ----------------------------------------------------------- |
 | `main`                  | Production-ready code; protected                            |
-| `cursor/<feature>-301d` | Agent / feature branches (required prefix for cloud agents) |
+| `cursor/<feature>-e20f` | Agent / feature branches (required prefix for cloud agents) |
 | `feat/<name>`           | Human feature branches                                      |
 | `fix/<name>`            | Bug fixes                                                   |
 
