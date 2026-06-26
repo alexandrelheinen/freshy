@@ -1,9 +1,9 @@
 # Infrastructure
 
-| Path | Description |
-|------|-------------|
-| `docker/` | Local PostgreSQL + PostGIS (`docker-compose.yml`) |
-| `gcp/` | Google Cloud Storage setup for assets & CI screenshots |
+| Path      | Description                                            |
+| --------- | ------------------------------------------------------ |
+| `docker/` | Local PostgreSQL + PostGIS (`docker-compose.yml`)      |
+| `gcp/`    | Google Cloud Storage setup for assets & CI screenshots |
 
 ```bash
 bash scripts/setup-local-db.sh

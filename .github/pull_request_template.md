@@ -12,4 +12,4 @@
 - [ ] No secrets committed
 - [ ] Docs updated if needed
 
-See [docs/git-rules.md](../docs/git-rules.md).
+See [CONTRIBUTING.md](../CONTRIBUTING.md) and [docs/development-cycle.md](../docs/development-cycle.md).
