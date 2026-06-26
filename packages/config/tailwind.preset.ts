@@ -49,6 +49,58 @@ export const freshyColors = {
   'surface-variant': '#e0e3e5',
 } as const;
 
+export const freshySpacing = {
+  base: '4px',
+  xs: '8px',
+  sm: '12px',
+  md: '16px',
+  lg: '24px',
+  xl: '32px',
+  'margin-mobile': '20px',
+  'gutter-mobile': '12px',
+} as const;
+
+export const freshyTypography = {
+  'display-lg': {
+    fontSize: '36px',
+    lineHeight: '44px',
+    fontWeight: '700',
+    letterSpacing: '-0.02em',
+  },
+  'headline-lg': {
+    fontSize: '28px',
+    lineHeight: '34px',
+    fontWeight: '600',
+    letterSpacing: '-0.01em',
+  },
+  'headline-lg-mobile': {
+    fontSize: '24px',
+    lineHeight: '30px',
+    fontWeight: '600',
+  },
+  'title-md': {
+    fontSize: '18px',
+    lineHeight: '24px',
+    fontWeight: '600',
+  },
+  'body-lg': {
+    fontSize: '16px',
+    lineHeight: '24px',
+    fontWeight: '400',
+  },
+  'body-sm': {
+    fontSize: '14px',
+    lineHeight: '20px',
+    fontWeight: '400',
+  },
+  'label-caps': {
+    fontSize: '12px',
+    lineHeight: '16px',
+    fontWeight: '700',
+    letterSpacing: '0.05em',
+  },
+} as const;
+
 const preset = {
   theme: {
     extend: {
@@ -56,16 +108,69 @@ const preset = {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
+      fontSize: {
+        'display-lg': [
+          freshyTypography['display-lg'].fontSize,
+          {
+            lineHeight: freshyTypography['display-lg'].lineHeight,
+            fontWeight: freshyTypography['display-lg'].fontWeight,
+            letterSpacing: freshyTypography['display-lg'].letterSpacing,
+          },
+        ],
+        'headline-lg': [
+          freshyTypography['headline-lg'].fontSize,
+          {
+            lineHeight: freshyTypography['headline-lg'].lineHeight,
+            fontWeight: freshyTypography['headline-lg'].fontWeight,
+            letterSpacing: freshyTypography['headline-lg'].letterSpacing,
+          },
+        ],
+        'headline-lg-mobile': [
+          freshyTypography['headline-lg-mobile'].fontSize,
+          {
+            lineHeight: freshyTypography['headline-lg-mobile'].lineHeight,
+            fontWeight: freshyTypography['headline-lg-mobile'].fontWeight,
+          },
+        ],
+        'title-md': [
+          freshyTypography['title-md'].fontSize,
+          {
+            lineHeight: freshyTypography['title-md'].lineHeight,
+            fontWeight: freshyTypography['title-md'].fontWeight,
+          },
+        ],
+        'body-lg': [
+          freshyTypography['body-lg'].fontSize,
+          {
+            lineHeight: freshyTypography['body-lg'].lineHeight,
+            fontWeight: freshyTypography['body-lg'].fontWeight,
+          },
+        ],
+        'body-sm': [
+          freshyTypography['body-sm'].fontSize,
+          {
+            lineHeight: freshyTypography['body-sm'].lineHeight,
+            fontWeight: freshyTypography['body-sm'].fontWeight,
+          },
+        ],
+        'label-caps': [
+          freshyTypography['label-caps'].fontSize,
+          {
+            lineHeight: freshyTypography['label-caps'].lineHeight,
+            fontWeight: freshyTypography['label-caps'].fontWeight,
+            letterSpacing: freshyTypography['label-caps'].letterSpacing,
+          },
+        ],
+      },
       borderRadius: {
+        sm: '0.25rem',
         DEFAULT: '0.5rem',
-        lg: '0.75rem',
-        xl: '1rem',
-        '2xl': '1.5rem',
+        md: '0.75rem',
+        lg: '1rem',
+        xl: '1.5rem',
+        full: '9999px',
       },
-      spacing: {
-        'margin-mobile': '20px',
-        'gutter-mobile': '12px',
-      },
+      spacing: freshySpacing,
     },
   },
 };
