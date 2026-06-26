@@ -163,12 +163,12 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 
 **Goal:** Runnable project skeleton aligned with the design system.
 
-- [ ] Initialize monorepo (pnpm workspaces + Turborepo)
-- [ ] Scaffold Next.js app with TypeScript, Tailwind, ESLint, Prettier
-- [ ] Port design tokens from `docs/stitch/freshy/DESIGN.md` into `tailwind.config.ts`
-- [ ] Add shared UI shell: `TopAppBar`, `BottomNavBar`, glass card primitives
-- [ ] Set up Prisma + PostgreSQL (local Docker Compose with PostGIS image)
-- [ ] Configure GitHub Actions: install, lint, typecheck
+- [x] Initialize monorepo (pnpm workspaces + Turborepo)
+- [x] Scaffold Next.js app with TypeScript, Tailwind, ESLint, Prettier
+- [x] Port design tokens from `docs/stitch/freshy/DESIGN.md` into `tailwind.config.ts`
+- [x] Add shared UI shell: `TopAppBar`, `BottomNavBar`, glass card primitives
+- [x] Set up Prisma + PostgreSQL (local Docker Compose with PostGIS image)
+- [x] Configure GitHub Actions: install, lint, typecheck
 - [ ] Deploy empty shell to Vercel (preview + production)
 
 **Exit criteria:** App loads with correct branding, typography, and bottom navigation — no real data yet.
