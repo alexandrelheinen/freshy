@@ -6,6 +6,9 @@
     "./eslint": "./eslint.config.mjs",
     "./tailwind": "./tailwind.preset.ts"
   },
+  "scripts": {
+    "test": "tsx --test tailwind.preset.test.ts"
+  },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "eslint": "^9.17.0",
