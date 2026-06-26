@@ -173,6 +173,8 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 
 **Exit criteria:** App loads with correct branding, typography, and bottom navigation — no real data yet.
 
+**Before Phase 1:** complete the manual checklist in [todo_0.md](todo_0.md) (Vercel deploy, pilot city, Mapbox, remote DB).
+
 ---
 
 ### Phase 1 — Places & Map (read-only MVP)
