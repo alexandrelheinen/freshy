@@ -15,12 +15,12 @@
 
 ### Screens in scope (from Stitch)
 
-| Screen | Role |
-|--------|------|
-| **Mapa Freshy** (`mapa_freshy`) | Home / Explore — interactive map, search, category chips, nearby place preview card |
+| Screen                                              | Role                                                                                        |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| **Mapa Freshy** (`mapa_freshy`)                     | Home / Explore — interactive map, search, category chips, nearby place preview card         |
 | **Categorias de Lugares** (`categorias_de_lugares`) | Cooling tab — browse by category (cafés, restaurants, libraries, malls, museums, coworking) |
-| **Detalhes do Local** (`detalhes_do_local`) | Place detail — temperature, AC strength, amenities, directions, climate reviews |
-| **Meu Perfil** (`meu_perfil`) | Profile — saved places, user reviews, gamification (“Pontos de Alívio”) |
+| **Detalhes do Local** (`detalhes_do_local`)         | Place detail — temperature, AC strength, amenities, directions, climate reviews             |
+| **Meu Perfil** (`meu_perfil`)                       | Profile — saved places, user reviews, gamification (“Pontos de Alívio”)                     |
 
 ### Key product concepts
 
@@ -47,59 +47,59 @@ UI language in the designs is **Brazilian Portuguese**; architecture should supp
 
 ### Languages
 
-| Layer | Choice | Why |
-|-------|--------|-----|
-| **Frontend** | TypeScript | Type safety, shared types with API |
-| **Backend** | TypeScript | Same language across the monorepo |
-| **Database** | SQL (PostgreSQL) | Relational data + PostGIS for geo |
-| **Infra config** | YAML (GitHub Actions), HCL optional (Terraform later) | Standard CI/CD |
+| Layer            | Choice                                                | Why                                |
+| ---------------- | ----------------------------------------------------- | ---------------------------------- |
+| **Frontend**     | TypeScript                                            | Type safety, shared types with API |
+| **Backend**      | TypeScript                                            | Same language across the monorepo  |
+| **Database**     | SQL (PostgreSQL)                                      | Relational data + PostGIS for geo  |
+| **Infra config** | YAML (GitHub Actions), HCL optional (Terraform later) | Standard CI/CD                     |
 
 ### Application layer
 
-| Concern | Technology | Notes |
-|---------|------------|-------|
-| **Framework** | [Next.js 15](https://nextjs.org/) (App Router) | SSR/SSG for SEO, API routes, PWA support |
-| **UI** | React 19 + Tailwind CSS 4 | Direct port from Stitch HTML; tokens from `DESIGN.md` |
-| **Component primitives** | Radix UI or shadcn/ui | Accessible dialogs, sheets, tabs |
-| **Maps** | [Mapbox GL JS](https://www.mapbox.com/) | Custom cool-toned map style; strong marker clustering |
-| **State / data fetching** | TanStack Query + Zustand | Server state + light client state (map filters) |
-| **Forms & validation** | React Hook Form + Zod | Review submission, profile edits |
-| **i18n** | next-intl | pt-BR default, en later |
+| Concern                   | Technology                                     | Notes                                                 |
+| ------------------------- | ---------------------------------------------- | ----------------------------------------------------- |
+| **Framework**             | [Next.js 15](https://nextjs.org/) (App Router) | SSR/SSG for SEO, API routes, PWA support              |
+| **UI**                    | React 19 + Tailwind CSS 4                      | Direct port from Stitch HTML; tokens from `DESIGN.md` |
+| **Component primitives**  | Radix UI or shadcn/ui                          | Accessible dialogs, sheets, tabs                      |
+| **Maps**                  | [Mapbox GL JS](https://www.mapbox.com/)        | Custom cool-toned map style; strong marker clustering |
+| **State / data fetching** | TanStack Query + Zustand                       | Server state + light client state (map filters)       |
+| **Forms & validation**    | React Hook Form + Zod                          | Review submission, profile edits                      |
+| **i18n**                  | next-intl                                      | pt-BR default, en later                               |
 
 **Alternative considered:** Expo/React Native for a store app — defer until post-MVP; PWA covers mobile web first.
 
 ### Backend & data
 
-| Concern | Technology | Notes |
-|---------|------------|-------|
-| **API** | Next.js Route Handlers + tRPC or REST | Start colocated; extract to standalone service if needed |
-| **ORM** | Prisma | Migrations, type-safe queries |
-| **Database** | PostgreSQL 16 + **PostGIS** | `ST_DWithin`, spatial indexes for “near me” |
-| **Auth** | [Clerk](https://clerk.com/) or [Supabase Auth](https://supabase.com/auth) | Social login (Google), JWT sessions |
-| **File storage** | Cloudflare R2 or Supabase Storage | Place photos, avatars |
-| **Search** | PostgreSQL full-text + PostGIS filters | Upgrade to Meilisearch if search latency matters |
-| **Background jobs** | Inngest or BullMQ + Redis | Score aggregation, image processing, notifications |
+| Concern             | Technology                                                                | Notes                                                    |
+| ------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------- |
+| **API**             | Next.js Route Handlers + tRPC or REST                                     | Start colocated; extract to standalone service if needed |
+| **ORM**             | Prisma                                                                    | Migrations, type-safe queries                            |
+| **Database**        | PostgreSQL 16 + **PostGIS**                                               | `ST_DWithin`, spatial indexes for “near me”              |
+| **Auth**            | [Clerk](https://clerk.com/) or [Supabase Auth](https://supabase.com/auth) | Social login (Google), JWT sessions                      |
+| **File storage**    | Cloudflare R2 or Supabase Storage                                         | Place photos, avatars                                    |
+| **Search**          | PostgreSQL full-text + PostGIS filters                                    | Upgrade to Meilisearch if search latency matters         |
+| **Background jobs** | Inngest or BullMQ + Redis                                                 | Score aggregation, image processing, notifications       |
 
 ### External services
 
-| Service | Purpose |
-|---------|---------|
-| **Mapbox** (or Google Maps Platform) | Base map tiles, geocoding, turn-by-turn deep links |
-| **OpenWeather / Tomorrow.io** (optional) | Outdoor heat context (“heat wave alert”) |
-| **Resend / SendGrid** | Transactional email (welcome, review reminders) |
-| **Sentry** | Error monitoring |
-| **PostHog** or Plausible | Product analytics (privacy-friendly) |
+| Service                                  | Purpose                                            |
+| ---------------------------------------- | -------------------------------------------------- |
+| **Mapbox** (or Google Maps Platform)     | Base map tiles, geocoding, turn-by-turn deep links |
+| **OpenWeather / Tomorrow.io** (optional) | Outdoor heat context (“heat wave alert”)           |
+| **Resend / SendGrid**                    | Transactional email (welcome, review reminders)    |
+| **Sentry**                               | Error monitoring                                   |
+| **PostHog** or Plausible                 | Product analytics (privacy-friendly)               |
 
 ### DevOps & infrastructure
 
-| Concern | Technology |
-|---------|------------|
-| **Hosting (app)** | Vercel |
-| **Hosting (DB)** | Neon or Supabase (managed Postgres + PostGIS) |
-| **CDN / edge** | Vercel Edge / Cloudflare |
-| **CI/CD** | GitHub Actions — lint, typecheck, test, preview deploy |
-| **Secrets** | Vercel env vars + GitHub encrypted secrets |
-| **IaC (later)** | Terraform or Pulumi when multi-env complexity grows |
+| Concern           | Technology                                             |
+| ----------------- | ------------------------------------------------------ |
+| **Hosting (app)** | Vercel                                                 |
+| **Hosting (DB)**  | Neon or Supabase (managed Postgres + PostGIS)          |
+| **CDN / edge**    | Vercel Edge / Cloudflare                               |
+| **CI/CD**         | GitHub Actions — lint, typecheck, test, preview deploy |
+| **Secrets**       | Vercel env vars + GitHub encrypted secrets             |
+| **IaC (later)**   | Terraform or Pulumi when multi-env complexity grows    |
 
 ### Monorepo layout (proposed)
 
@@ -284,14 +284,14 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 
 Not required for first launch; plan when core loop is validated.
 
-| Item | Notes |
-|------|-------|
-| Native apps (Expo) | If PWA retention is insufficient |
-| Real-time AC status | Venue partners update “AC on/off” live |
-| Heat map overlay | Outdoor temperature layers on map |
-| Multi-city expansion | City selector, localized seed data |
-| Meilisearch | If PostgreSQL search becomes slow |
-| Venue partner portal | Businesses claim and verify their listing |
+| Item                   | Notes                                                   |
+| ---------------------- | ------------------------------------------------------- |
+| Native apps (Expo)     | If PWA retention is insufficient                        |
+| Real-time AC status    | Venue partners update “AC on/off” live                  |
+| Heat map overlay       | Outdoor temperature layers on map                       |
+| Multi-city expansion   | City selector, localized seed data                      |
+| Meilisearch            | If PostgreSQL search becomes slow                       |
+| Venue partner portal   | Businesses claim and verify their listing               |
 | Standalone API service | Extract from Next.js if mobile apps need shared backend |
 
 ---
@@ -337,24 +337,24 @@ flowchart TB
 
 ## 6. Non-Functional Requirements
 
-| Area | Target |
-|------|--------|
-| **Performance** | LCP < 2.5s on 4G; map markers for 500 places without jank (clustering) |
-| **Availability** | 99.5% uptime (Vercel + managed Postgres) |
-| **Security** | HTTPS only, OWASP top 10, auth on all write endpoints, input validation via Zod |
-| **Privacy** | Location used only with consent; no selling of location data (LGPD) |
-| **Accessibility** | WCAG 2.1 AA on core flows (map is hardest — provide list fallback) |
+| Area              | Target                                                                          |
+| ----------------- | ------------------------------------------------------------------------------- |
+| **Performance**   | LCP < 2.5s on 4G; map markers for 500 places without jank (clustering)          |
+| **Availability**  | 99.5% uptime (Vercel + managed Postgres)                                        |
+| **Security**      | HTTPS only, OWASP top 10, auth on all write endpoints, input validation via Zod |
+| **Privacy**       | Location used only with consent; no selling of location data (LGPD)             |
+| **Accessibility** | WCAG 2.1 AA on core flows (map is hardest — provide list fallback)              |
 
 ---
 
 ## 7. Team & Skills Needed
 
-| Role | Focus |
-|------|-------|
-| **Full-stack engineer** | Next.js, Prisma, PostGIS, API design |
-| **Frontend engineer** | Tailwind, Mapbox, mobile PWA polish |
-| **Designer (part-time)** | Stitch → component parity, edge states, empty states |
-| **Product / ops (part-time)** | Seed data, moderation, pilot city partnerships |
+| Role                          | Focus                                                |
+| ----------------------------- | ---------------------------------------------------- |
+| **Full-stack engineer**       | Next.js, Prisma, PostGIS, API design                 |
+| **Frontend engineer**         | Tailwind, Mapbox, mobile PWA polish                  |
+| **Designer (part-time)**      | Stitch → component parity, edge states, empty states |
+| **Product / ops (part-time)** | Seed data, moderation, pilot city partnerships       |
 
 A single strong full-stack developer can execute Phases 0–5; Phase 7 benefits from a second pair of hands.
 
@@ -362,12 +362,12 @@ A single strong full-stack developer can execute Phases 0–5; Phase 7 benefits 
 
 ## 8. Immediate Next Steps
 
-1. **Phase 0 kickoff** — scaffold monorepo and port design tokens  
-2. **Pick pilot city** — determines seed data and map center  
-3. **Choose auth provider** — Clerk (fastest) vs Supabase (DB bundled)  
-4. **Mapbox account** — custom style matching Freshy cool palette  
-5. **Convert Stitch screens** — use `docs/stitch/*/code.html` as layout reference while building React components  
+1. **Phase 0 kickoff** — scaffold monorepo and port design tokens
+2. **Pick pilot city** — determines seed data and map center
+3. **Choose auth provider** — Clerk (fastest) vs Supabase (DB bundled)
+4. **Mapbox account** — custom style matching Freshy cool palette
+5. **Convert Stitch screens** — use `docs/stitch/*/code.html` as layout reference while building React components
 
 ---
 
-*Last updated: June 2026*
+_Last updated: June 2026_

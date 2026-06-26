@@ -106,11 +106,13 @@ spacing:
 ---
 
 ## Brand & Style
+
 The brand personality is refreshing, vital, and cooling—acting as a digital "breath of fresh air" for users escaping urban heat. The target audience includes commuters, tourists, and remote workers seeking thermal comfort.
 
 The design style is **Modern Minimalism with Glassmorphic accents**. It prioritizes vast whitespace to evoke a sense of "airiness" and uses translucent, frosted layers to mimic the appearance of chilled glass or ice. The emotional response should be one of immediate relief and clarity.
 
 ## Colors
+
 The palette is anchored by **Sky Blue (#87CEEB)**, used for primary actions and active states to represent cooling and open skies. **Crisp White (#FFFFFF)** serves as the primary surface color to maintain a sterile, clean environment.
 
 - **Secondary Blue (#E0F4FF):** A pale ice-blue used for subtle backgrounds and light "cooling" accents.
@@ -118,6 +120,7 @@ The palette is anchored by **Sky Blue (#87CEEB)**, used for primary actions and 
 - **Functional Colors:** Success (Green-Blue) for high AC availability and Warning (Amber) for low capacity/broken AC.
 
 ## Typography
+
 **Inter** is utilized for its exceptional legibility and neutral, modern tone. The typographic scale emphasizes hierarchy through weight rather than dramatic size shifts, keeping the interface feeling grounded and professional.
 
 - **Headlines:** Use Semi-Bold weight with slight negative letter-spacing to create a "contained" and clean look.
@@ -125,6 +128,7 @@ The palette is anchored by **Sky Blue (#87CEEB)**, used for primary actions and 
 - **Labels:** Uppercase bold labels are used for categories (e.g., "COFFEE SHOP", "LIBRARY") to provide quick scanning.
 
 ## Layout & Spacing
+
 This design system uses a **Fluid Grid** with a 4px baseline rhythm. For mobile, a 4-column layout is standard, while tablet shifts to an 8-column layout.
 
 - **Margins:** 20px side margins provide enough "breathing room" to prevent the UI from feeling cramped.
@@ -132,7 +136,8 @@ This design system uses a **Fluid Grid** with a 4px baseline rhythm. For mobile,
 - **Safe Areas:** Interactive map elements must respect a 16px bottom-safe-area margin to ensure they don't clash with OS-level gestures.
 
 ## Elevation & Depth
-Depth is conveyed through **Soft Ambient Shadows** and **Backdrop Blurs (Glassmorphism)**. 
+
+Depth is conveyed through **Soft Ambient Shadows** and **Backdrop Blurs (Glassmorphism)**.
 
 - **Surface 0 (Background):** Crisp White or Neutral Slate-50.
 - **Surface 1 (Cards):** White with a very soft, diffused shadow (Blur: 20px, Opacity: 4%, Color: Primary Blue tinted).
@@ -140,19 +145,21 @@ Depth is conveyed through **Soft Ambient Shadows** and **Backdrop Blurs (Glassmo
 - **Markers:** High-elevation shadows (Opacity: 12%) are used for map markers to make them appear "lifted" above the map plane.
 
 ## Shapes
-The shape language is consistently **Rounded (Level 2)**. 
+
+The shape language is consistently **Rounded (Level 2)**.
 
 - **Standard Elements:** Buttons and input fields use a 0.5rem (8px) radius.
 - **Cards & Sheets:** Large containers like location cards or bottom sheets use a 1.5rem (24px) radius on top corners to evoke a friendly, approachable feel.
 - **Indicators:** Map markers and status chips use pill-shapes (full rounding) to differentiate them from structural layout elements.
 
 ## Components
+
 - **Buttons:** Primary buttons are Sky Blue with white text. Use a subtle inner-glow (white, 10% opacity) on the top edge to give a "cool" tactile feel.
 - **Map Markers:** Circular markers with a "snowflake" or "fan" icon. The color intensity of the marker indicates the AC strength (vibrant blue = icy, pale blue = mild).
-- **AC Status Indicators:** A horizontal bar with three segments. 
-    - 3 segments = "Frigid"
-    - 2 segments = "Comfortable"
-    - 1 segment = "Lightly Cooled"
+- **AC Status Indicators:** A horizontal bar with three segments.
+  - 3 segments = "Frigid"
+  - 2 segments = "Comfortable"
+  - 1 segment = "Lightly Cooled"
 - **Input Fields:** Soft grey borders (1px) that transition to Sky Blue on focus. Use "Glassmorphic" backgrounds for search bars overlaid on maps.
 - **Chips:** Small, rounded-pill tags for amenities like "Free Wi-Fi" or "Quiet Zone," using the Secondary Blue background.
 - **Location Cards:** Featuring a large image, a prominent "Degrees Celsius" indicator, and a "Coolness Score" badge.

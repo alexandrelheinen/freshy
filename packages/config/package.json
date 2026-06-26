@@ -1,0 +1,17 @@
+{
+  "name": "@freshy/config",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    "./eslint": "./eslint.config.mjs",
+    "./tailwind": "./tailwind.preset.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "eslint": "^9.17.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^15.14.0",
+    "typescript-eslint": "^8.18.1"
+  }
+}
