@@ -1,7 +1,6 @@
 import { z } from 'zod';
-import type { Place, Prisma } from '@prisma/client';
-import { PlaceCategory, type PrismaClient } from '@freshy/db';
-import { PILOT_CITY, filterPlacesByRadius } from '@freshy/db';
+import type { Place, Prisma } from '@freshy/db';
+import { PlaceCategory, type PrismaClient, PILOT_CITY, filterPlacesByRadius } from '@freshy/db';
 
 export const placesQuerySchema = z.object({
   lat: z.coerce.number().min(-90).max(90).optional(),
