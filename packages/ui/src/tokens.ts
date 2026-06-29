@@ -1,4 +1,6 @@
 /** Re-export design token names for consumers that cannot import Tailwind preset directly. */
+export { PILOT_CITY } from '@freshy/config/pilot-city';
+
 export const BRAND_NAME = 'Freshy';
 
 export const TYPOGRAPHY_SCALE = [
