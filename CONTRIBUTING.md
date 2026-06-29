@@ -25,6 +25,7 @@ Thank you for contributing to **Freshy**, the mobile-first cooling map. This doc
 4. **Match existing conventions.** Read surrounding code before editing; reuse packages and patterns already in the monorepo.
 5. **English everywhere in the repo.** All documentation and source code must be in English. See [Language](#language) below.
 6. **No em dashes in names or titles.** Use pipes, hyphens, or commas instead. See [Naming](#naming) below.
+7. **A task is done only when its PR is mergeable.** Green CI is not enough. The branch must rebase cleanly onto `main` with no conflicts before the work is considered complete.
 
 ## Language
 
@@ -133,6 +134,9 @@ Environment flags for `validation.sh`:
 - [ ] `.env.example` updated if new environment variables are introduced
 - [ ] Prisma migrations included if the schema changed
 - [ ] Docs updated when workflow or architecture changes
+- [ ] **PR is mergeable into `main`** (no conflicts; rebases cleanly if required)
+
+**Definition of done:** A branch or agent task is **not complete** until the pull request shows as mergeable on GitHub (or the maintainer confirms a clean rebase onto current `main`). Resolve conflicts with `git fetch origin && git rebase origin/main`, fix files, run validation, then `git push --force-with-lease`.
 
 Use the [pull request template](.github/pull_request_template.md). CI posts a quality summary and page screenshots for UI changes.
 

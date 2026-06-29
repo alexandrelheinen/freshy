@@ -11,5 +11,6 @@
 - [ ] `bash scripts/validation.sh` passes locally
 - [ ] No secrets committed
 - [ ] Docs updated if needed
+- [ ] PR rebased onto latest `main` and is mergeable (no conflicts)
 
 See [CONTRIBUTING.md](../CONTRIBUTING.md) and [docs/development-cycle.md](../docs/development-cycle.md).

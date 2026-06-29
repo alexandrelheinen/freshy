@@ -18,8 +18,9 @@
 1. **Never force-push to `main`.**
 2. All changes to `main` go through a **pull request**.
 3. PRs must pass CI (lint, typecheck, tests, build, page screenshots).
-4. Keep commits focused — one logical change per commit.
-5. Write commit messages in English, imperative mood (`Add`, `Fix`, `Update`).
+4. PRs must be **mergeable** into `main` (no conflicts; rebase cleanly when required).
+5. Keep commits focused — one logical change per commit.
+6. Write commit messages in English, imperative mood (`Add`, `Fix`, `Update`).
 
 ## What not to commit
 
@@ -51,6 +52,9 @@ docs/              → roadmap, architecture, stitch designs
 - [ ] Screenshots appear in PR comment (CI)
 - [ ] Database migrations included if schema changed
 - [ ] `.env.example` updated if new env vars added
+- [ ] **PR is mergeable into `main`** (rebase onto latest `main` if needed)
+
+**Done means mergeable:** Do not treat a task as finished until GitHub reports the PR as mergeable, or you have rebased onto current `main` and pushed without conflicts.
 
 ## Releases
 
