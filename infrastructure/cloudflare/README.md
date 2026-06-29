@@ -126,10 +126,10 @@ After configuring, open a test PR — the bot should post screenshots hosted on 
 | ------- | ----- |
 | **Framework preset** | Next.js |
 | **Build command** | `cd ../.. && pnpm install && pnpm --filter @freshy/web build` |
-| **Build output directory** | `apps/web/.next` (or per OpenNext adapter docs) |
+| **Build output directory** | `out` (static export — do **not** use `.next`; it includes webpack cache files over Cloudflare’s 25 MiB limit) |
 | **Node.js version** | 20 |
 
-For full Next.js 15 SSR on Pages, use the [OpenNext Cloudflare adapter](https://opennext.js.org/cloudflare) when moving beyond static shell deploy.
+For full Next.js 15 SSR on Pages, use the [OpenNext Cloudflare adapter](https://opennext.js.org/cloudflare) when moving beyond static shell deploy. Until then, set **Build output directory** to `out` (not `.next`).
 
 ### Environment variables (Pages)
 

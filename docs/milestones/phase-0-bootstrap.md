@@ -333,7 +333,7 @@ DATABASE_URL="your_supabase_url" pnpm db:migrate
 | **Production branch** | `main`                                                                                     |
 | **Framework preset**  | Next.js                                                                                    |
 | **Build command**     | `cd ../.. && pnpm install && pnpm --filter @freshy/web build`                              |
-| **Build output**      | `apps/web/.next` (adjust per [OpenNext Cloudflare](https://opennext.js.org/cloudflare) for full SSR) |
+| **Build output**      | `out` (static export; do not deploy `.next` — webpack cache exceeds Cloudflare’s 25 MiB file limit) |
 | **Root directory**    | `apps/web`                                                                                 |
 
 If monorepo build fails, try empty **Root directory** and:

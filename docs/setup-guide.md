@@ -219,7 +219,7 @@ On **Set up builds and deployments**:
 | Framework preset | Next.js |
 | Root directory | `apps/web` |
 | Build command | `cd ../.. && pnpm install && pnpm --filter @freshy/web build` |
-| Build output directory | `.next` |
+| Build output directory | `out` |
 
 Click **Environment variables (advanced)** before first deploy:
 
