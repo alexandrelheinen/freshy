@@ -12,7 +12,6 @@
     "screenshots": "playwright test"
   },
   "dependencies": {
-    "@freshy/db": "workspace:*",
     "@freshy/ui": "workspace:*",
     "next": "^15.1.2",
     "react": "^19.0.0",

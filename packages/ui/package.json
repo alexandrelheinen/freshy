@@ -8,6 +8,10 @@
     ".": {
       "types": "./src/index.tsx",
       "default": "./src/index.tsx"
+    },
+    "./tokens": {
+      "types": "./src/tokens.ts",
+      "default": "./src/tokens.ts"
     }
   },
   "scripts": {
@@ -19,8 +23,10 @@
   "peerDependencies": {
     "react": ">=18.0.0"
   },
+  "dependencies": {
+    "@freshy/config": "workspace:*"
+  },
   "devDependencies": {
-    "@freshy/config": "workspace:*",
     "@types/react": "^19.0.2",
     "eslint": "^9.17.0",
     "react": "^19.0.0",

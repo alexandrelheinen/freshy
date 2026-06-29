@@ -7,12 +7,12 @@ import {
   AcStrengthBar,
   AC_STRENGTH_LABELS,
   GlassCard,
+  PILOT_CITY,
   PLACE_CATEGORY_LABELS,
   ROUTES,
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
 import { acStrengthLevel, formatDistance } from '../lib/api';
-import { PILOT_CITY } from '@freshy/db/geo';
 import { AppBottomNav } from './AppBottomNav';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';

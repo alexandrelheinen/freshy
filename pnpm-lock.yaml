@@ -73,9 +73,6 @@ importers:
 
   apps/web:
     dependencies:
-      '@freshy/db':
-        specifier: workspace:*
-        version: link:../../packages/db
       '@freshy/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -195,13 +192,13 @@ importers:
 
   packages/db:
     dependencies:
+      '@freshy/config':
+        specifier: workspace:*
+        version: link:../config
       '@prisma/client':
         specifier: ^6.1.0
         version: 6.19.3(prisma@6.19.3(typescript@5.9.3))(typescript@5.9.3)
     devDependencies:
-      '@freshy/config':
-        specifier: workspace:*
-        version: link:../config
       '@types/node':
         specifier: ^22.10.2
         version: 22.20.0
@@ -219,10 +216,11 @@ importers:
         version: 5.9.3
 
   packages/ui:
-    devDependencies:
+    dependencies:
       '@freshy/config':
         specifier: workspace:*
         version: link:../config
+    devDependencies:
       '@types/react':
         specifier: ~19.0.2
         version: 19.0.14

@@ -4,16 +4,6 @@
   "private": true,
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./geo": {
-      "types": "./dist/geo.d.ts",
-      "default": "./dist/geo.js"
-    }
-  },
   "scripts": {
     "build": "tsc",
     "lint": "eslint src --config ../../eslint.config.mjs --max-warnings 0",
@@ -26,6 +16,7 @@
     "studio": "prisma studio"
   },
   "dependencies": {
+    "@freshy/config": "workspace:*",
     "@prisma/client": "^6.1.0"
   },
   "devDependencies": {
