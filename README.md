@@ -13,7 +13,7 @@
 | `packages/ui`     | `@freshy/ui`     | Shared React components              |
 | `packages/config` | `@freshy/config` | ESLint + Tailwind tokens             |
 
-See [docs/setup-guide.md](docs/setup-guide.md) for click-by-click platform setup, [docs/architecture.md](docs/architecture.md), [docs/infrastructure.md](docs/infrastructure.md), [docs/roadmap.md](docs/roadmap.md), [docs/milestones/](docs/milestones/), and [CONTRIBUTING.md](CONTRIBUTING.md).
+See [docs/setup-guide.md](docs/setup-guide.md) for click-by-click platform setup, [docs/database.md](docs/database.md) for schema and DB commands, [docs/deploy-api.md](docs/deploy-api.md) to connect the live site to Neon, [docs/architecture.md](docs/architecture.md), [docs/infrastructure.md](docs/infrastructure.md), [docs/roadmap.md](docs/roadmap.md), [docs/milestones/](docs/milestones/), and [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Quick start
 
