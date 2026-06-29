@@ -19,7 +19,7 @@ PUBLIC_URL="${R2_PUBLIC_URL:-}"
 MARKDOWN_FILE="${SCREENSHOTS_DIR}/pr-comment.md"
 : > "${MARKDOWN_FILE}"
 
-echo "## Freshy — Page previews" >> "${MARKDOWN_FILE}"
+echo "## Freshy | Page previews" >> "${MARKDOWN_FILE}"
 echo "" >> "${MARKDOWN_FILE}"
 echo "| Screen | Preview |" >> "${MARKDOWN_FILE}"
 echo "|--------|---------|" >> "${MARKDOWN_FILE}"

@@ -1,4 +1,4 @@
-name: Release — Mobile builds
+name: Release | Mobile builds
 
 on:
   release:

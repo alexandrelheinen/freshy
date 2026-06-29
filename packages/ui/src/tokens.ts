@@ -2,6 +2,7 @@
 export { PILOT_CITY } from '@freshy/config/pilot-city';
 
 export const BRAND_NAME = 'Freshy';
+export const BRAND_TITLE = 'Freshy | Cooling Map';
 
 export const TYPOGRAPHY_SCALE = [
   'display-lg',
