@@ -1,0 +1,18 @@
+# Render Blueprint — Freshy API
+# Import: Render Dashboard → New → Blueprint → connect repo → select this file
+# Docs: https://docs/deploy-api.md (in repo: docs/deploy-api.md)
+
+services:
+  - type: web
+    name: freshy-api
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: corepack enable && pnpm install && pnpm db:generate && pnpm --filter @freshy/api build
+    startCommand: pnpm --filter @freshy/api start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: '20'
+      - key: DATABASE_URL
+        sync: false

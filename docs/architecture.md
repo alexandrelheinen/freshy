@@ -26,6 +26,8 @@ freshy/
 │   └── post-pr-screenshots.sh
 ├── docs/
 │   ├── stitch/              # Stitch design export (reference)
+│   ├── database.md          # Schema, seed, migrations, env vars
+│   ├── deploy-api.md        # Connect Pages → API → Neon (production)
 │   ├── infrastructure.md    # Cloudflare vs external providers
 │   ├── roadmap.md           # Product & phase plan
 │   ├── architecture.md      # This file
