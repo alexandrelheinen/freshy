@@ -1,29 +1,29 @@
 # Milestones — Freshy
 
-Checklists operacionais ligadas às [fases do roadmap](../roadmap.md). Cada milestone é um **gate**: marque todos os itens antes de começar a codar a fase seguinte.
+Operational checklists tied to [roadmap phases](../roadmap.md). Each milestone is a **gate**: complete every item before coding the next phase.
 
-## Milestone vs roadmap — o que é o quê?
+## Milestone vs roadmap
 
-| Documento | Papel | Pergunta que responde |
-| --------- | ----- | --------------------- |
-| **[roadmap.md](../roadmap.md)** | Backlog de produto e engenharia | _O que_ construir, em que ordem? |
-| **milestones/** (esta pasta) | Preparação operacional por fase | _O que configurar_ (contas, deploy, decisões) antes de codar? |
-| **[development-cycle.md](../development-cycle.md)** | Fluxo de código (TDD) | _Como_ implementar cada item do roadmap? |
+| Document | Role | Answers |
+| -------- | ---- | ------- |
+| **[roadmap.md](../roadmap.md)** | Product and engineering backlog | _What_ to build, in what order? |
+| **milestones/** (this folder) | Operational prep per phase | _What to configure_ (accounts, deploy, decisions) before coding? |
+| **[development-cycle.md](../development-cycle.md)** | Code workflow (TDD) | _How_ to implement each roadmap item? |
 
-O conteúdo que estava em `todo_0.md` é **uma milestone só** — a bootstrap da Fase 0. Não são várias milestones num arquivo: é o checklist completo para sair da Fase 0 e entrar na Fase 1 (mapa com dados reais).
+Former `todo_0.md` content is **one milestone** — Phase 0 bootstrap. It is not multiple milestones in one file: the full checklist to exit Phase 0 and start Phase 1 (map with real data).
 
-## Milestones ativas
+## Active milestones
 
-| Milestone | Documento | Fase do roadmap | Conteúdo |
-| --------- | --------- | --------------- | -------- |
-| **0 — Bootstrap** | [phase-0-bootstrap.md](phase-0-bootstrap.md) | Fase 0 — Foundation | Ambiente local, cidade piloto, Mapbox, Postgres remoto, Cloudflare Pages, R2/CI, decisões de produto, QA visual |
-| **1 — Mapa** | _(futuro)_ | Fase 1 — Places & Map | Será criado se a fase exigir setup manual além do código |
-| **2+** | _(futuro)_ | Fases 2–7 | Um doc por fase, só quando houver passos operacionais |
+| Milestone | Document | Roadmap phase | Scope |
+| --------- | -------- | ------------- | ----- |
+| **0 — Bootstrap** | [phase-0-bootstrap.md](phase-0-bootstrap.md) | Phase 0 — Foundation | Local env, pilot city, Mapbox, remote Postgres, Cloudflare Pages, R2/CI, product decisions, visual QA |
+| **1 — Map** | _(future)_ | Phase 1 — Places & Map | Created if the phase needs manual setup beyond code |
+| **2+** | _(future)_ | Phases 2–7 | One doc per phase when operational steps exist |
 
-## Critério de saída da Milestone 0
+## Milestone 0 exit criteria
 
-App aberto na internet com visual Freshy (cores, fonte, menu inferior) — ainda **sem** mapa real nem API de lugares. Depois disso, siga a [Fase 1 no roadmap](../roadmap.md#phase-1--places--map-read-only-mvp).
+App live on the internet with Freshy branding (colors, typography, bottom nav) — still **without** a real map or places API. Then continue to [Phase 1 in the roadmap](../roadmap.md#phase-1--places--map-read-only-mvp).
 
 ---
 
-_Última atualização: junho de 2026_
+_Last updated: June 2026_

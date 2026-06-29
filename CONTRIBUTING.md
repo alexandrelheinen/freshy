@@ -22,7 +22,24 @@ Thank you for contributing to **Freshy** — the mobile-first cooling map. This 
 2. **Follow the development cycle in order.** Skipping steps (e.g. opening a PR before `validation.sh` passes) is not allowed.
 3. **One logical change per commit.** Small, reviewable diffs aligned with a roadmap item or bug fix.
 4. **Match existing conventions.** Read surrounding code before editing; reuse packages and patterns already in the monorepo.
-5. **English for code and docs; Portuguese (pt-BR) for user-facing copy.**
+5. **English everywhere in the repo.** All documentation and source code must be in English — see [Language](#language) below.
+
+## Language
+
+**English only** for documentation and source code in this repository:
+
+| Area | Rule |
+| ---- | ---- |
+| `docs/`, README, milestones, architecture | English |
+| Code: identifiers, comments, logs, tests | English |
+| Commit messages and PR titles/descriptions | English |
+| Seed data, fixtures, placeholder UI strings in apps | English |
+
+Locale-specific copy (e.g. pt-BR for Brazilian users) belongs in **i18n message catalogs** when [next-intl](docs/roadmap.md) is adopted — not hardcoded in other languages in source files.
+
+**Exception:** Stitch exports under `docs/stitch/` are historical design references and may keep original mockup copy.
+
+Do not add Portuguese (or other non-English) text to docs or code unless it is inside an explicit i18n locale file.
 
 ## Languages in this project
 

@@ -10,29 +10,29 @@ export default function ProfilePage() {
       <main className="mt-20 px-margin-mobile">
         <section className="mb-8 flex flex-col items-center">
           <div className="mb-4 h-24 w-24 rounded-full bg-primary-container ring-4 ring-primary-container" />
-          <h2 className="text-2xl font-semibold">Meu Perfil</h2>
+          <h2 className="text-2xl font-semibold">My Profile</h2>
           <p className="text-on-surface-variant">@lucas_frescor</p>
           <div className="mt-4 flex items-center gap-2 rounded-full border border-primary/10 bg-primary-container/30 px-6 py-2">
-            <span className="font-bold text-primary">1.250</span>
-            <span className="text-sm font-bold uppercase">Pontos de Alívio</span>
+            <span className="font-bold text-primary">1,250</span>
+            <span className="text-sm font-bold uppercase">Relief Points</span>
           </div>
         </section>
 
         <div className="mb-8 grid grid-cols-2 gap-4">
           <GlassCard className="flex flex-col items-center p-4">
             <span className="text-3xl font-bold text-primary">24</span>
-            <span className="text-xs font-bold uppercase text-secondary">Avaliações</span>
+            <span className="text-xs font-bold uppercase text-secondary">Reviews</span>
           </GlassCard>
           <GlassCard className="flex flex-col items-center p-4">
             <span className="text-3xl font-bold text-primary">12</span>
-            <span className="text-xs font-bold uppercase text-secondary">Salvos</span>
+            <span className="text-xs font-bold uppercase text-secondary">Saved</span>
           </GlassCard>
         </div>
 
         <section>
-          <h3 className="mb-4 text-lg font-semibold">Lugares Salvos</h3>
+          <h3 className="mb-4 text-lg font-semibold">Saved Places</h3>
           <div className="flex gap-4 overflow-x-auto pb-2">
-            {['Biblioteca Central', 'Hub de Inovação'].map((name) => (
+            {['Central Library', 'Innovation Hub'].map((name) => (
               <GlassCard key={name} className="w-64 shrink-0 overflow-hidden">
                 <div className="h-32 bg-primary-container/30" />
                 <div className="p-4">

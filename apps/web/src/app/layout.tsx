@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
   title: 'Freshy — Cooling Map',
-  description: 'Encontre refúgios climatizados perto de você.',
+  description: 'Find air-conditioned refuges near you.',
 };
 
 export const viewport: Viewport = {
@@ -18,7 +18,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="en">
       <body className={`${inter.variable} font-sans bg-background text-on-background antialiased`}>
         {children}
       </body>

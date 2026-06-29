@@ -8,19 +8,19 @@ export default function ProfileScreen() {
       testID="profile-screen"
     >
       <View style={styles.avatar} />
-      <Text style={styles.title}>Meu Perfil</Text>
+      <Text style={styles.title}>My Profile</Text>
       <Text style={styles.username}>@lucas_frescor</Text>
       <View style={styles.badge}>
-        <Text style={styles.badgeText}>1.250 Pontos de Alívio</Text>
+        <Text style={styles.badgeText}>1,250 Relief Points</Text>
       </View>
       <View style={styles.statsRow}>
         <View style={styles.stat}>
           <Text style={styles.statValue}>24</Text>
-          <Text style={styles.statLabel}>AVALIAÇÕES</Text>
+          <Text style={styles.statLabel}>REVIEWS</Text>
         </View>
         <View style={styles.stat}>
           <Text style={styles.statValue}>12</Text>
-          <Text style={styles.statLabel}>SALVOS</Text>
+          <Text style={styles.statLabel}>SAVED</Text>
         </View>
       </View>
     </ScrollView>

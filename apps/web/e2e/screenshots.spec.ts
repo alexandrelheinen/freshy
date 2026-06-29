@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test';
 
 const pages = [
-  { name: 'explore', path: '/explore', label: 'Mapa Freshy (Explore)' },
-  { name: 'cooling', path: '/cooling', label: 'Categorias (Cooling)' },
-  { name: 'place-detail', path: '/places/ice-coffee-central', label: 'Detalhes do Local' },
-  { name: 'profile', path: '/profile', label: 'Meu Perfil' },
+  { name: 'explore', path: '/explore', label: 'Freshy Map (Explore)' },
+  { name: 'cooling', path: '/cooling', label: 'Categories (Cooling)' },
+  { name: 'place-detail', path: '/places/ice-coffee-central', label: 'Place Details' },
+  { name: 'profile', path: '/profile', label: 'My Profile' },
 ];
 
 test.describe('Freshy page screenshots', () => {

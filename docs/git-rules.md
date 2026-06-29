@@ -63,4 +63,4 @@ docs/              → roadmap, architecture, stitch designs
 - TypeScript strict mode
 - Prettier for formatting (`pnpm format`)
 - ESLint flat config from `@freshy/config`
-- Portuguese (pt-BR) for user-facing copy; English for code and docs
+- English for all documentation and source code; locale translations via i18n when adopted
