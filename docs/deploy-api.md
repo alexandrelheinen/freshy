@@ -74,7 +74,7 @@ corepack enable && pnpm install && pnpm build:api
 5. **Start Command** — copy **only** this line:
 
 ```
-pnpm --filter @freshy/api start
+node packages/api/dist/server.js
 ```
 
 Or click **Apply Blueprint** if you imported [`infrastructure/render/render.yaml`](../infrastructure/render/render.yaml).

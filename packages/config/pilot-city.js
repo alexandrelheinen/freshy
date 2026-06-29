@@ -5,4 +5,4 @@ export const PILOT_CITY = {
   latitude: 48.9042,
   longitude: 2.3064,
   defaultRadiusKm: 2,
-} as const;
+};
