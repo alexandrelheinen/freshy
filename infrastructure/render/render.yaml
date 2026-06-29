@@ -9,7 +9,7 @@ services:
     plan: free
     region: frankfurt
     buildCommand: corepack enable && pnpm install && pnpm build:api
-    startCommand: pnpm --filter @freshy/api start
+    startCommand: node packages/api/dist/server.js
     healthCheckPath: /health
     envVars:
       - key: NODE_VERSION

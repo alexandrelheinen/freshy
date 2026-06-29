@@ -10,7 +10,6 @@ import {
 } from './places';
 
 const prisma = new PrismaClient();
-const port = Number(process.env.PORT ?? process.env.API_PORT ?? 4000);
 
 export function createApp(): Express {
   const app = express();
@@ -78,9 +77,3 @@ export function createApp(): Express {
 }
 
 export const app = createApp();
-
-if (require.main === module) {
-  app.listen(port, () => {
-    console.log(`Freshy API listening on http://localhost:${port}`);
-  });
-}

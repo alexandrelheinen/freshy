@@ -4,7 +4,7 @@
   "private": true,
   "exports": {
     "./eslint": "./eslint.config.mjs",
-    "./pilot-city": "./pilot-city.ts",
+    "./pilot-city": "./pilot-city.js",
     "./tailwind": "./tailwind.preset.ts"
   },
   "scripts": {
