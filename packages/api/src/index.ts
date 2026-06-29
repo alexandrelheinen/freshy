@@ -1,7 +1,7 @@
 import express, { type Express } from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@freshy/db';
-import { isGcsConfigured } from './storage/gcs';
+import { isR2Configured } from './storage/r2';
 
 const app: Express = express();
 const prisma = new PrismaClient();
@@ -14,7 +14,7 @@ app.get('/health', (_req, res) => {
   res.json({
     status: 'ok',
     service: 'freshy-api',
-    gcs: isGcsConfigured() ? 'configured' : 'not-configured',
+    r2: isR2Configured() ? 'configured' : 'not-configured',
   });
 });
 

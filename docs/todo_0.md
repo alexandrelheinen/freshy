@@ -161,7 +161,7 @@ Raio: [X] km
 
 ## 3. Criar conta Mapbox e pegar o token
 
-O mapa da Fase 1 usa Mapbox. O token é **público** (vai no front-end), mas não commite no Git — use `.env` e painel da Vercel.
+O mapa da Fase 1 usa Mapbox. O token é **público** (vai no front-end), mas não commite no Git — use `.env` e variáveis do **Cloudflare Pages**.
 
 ### 3.1 Criar conta
 
@@ -179,7 +179,7 @@ O mapa da Fase 1 usa Mapbox. O token é **público** (vai no front-end), mas nã
 
 - [ ] Token copiado (começa com `pk.`)
 
-**Não compartilhe** esse token publicamente em redes sociais. Para o Freshy, uso em `.env` e Vercel é normal.
+**Não compartilhe** esse token publicamente em redes sociais. Para o Freshy, uso em `.env` e Cloudflare Pages é normal.
 
 ### 3.3 Colocar o token no projeto local
 
@@ -199,7 +199,7 @@ NEXT_PUBLIC_MAPBOX_TOKEN=pk.seu_token_aqui
 
 O shell atual ainda não mostra mapa Mapbox — isso é código da Fase 1. Por agora basta ter o token salvo.
 
-- [ ] Token guardado para usar na Vercel (passo 5)
+- [ ] Token guardado para usar no Cloudflare Pages (passo 5)
 
 ### 3.5 (Opcional) Estilo de mapa customizado
 
@@ -274,7 +274,7 @@ DATABASE_URL="postgresql://usuario:senha@ep-xxx.neon.tech/neondb?sslmode=require
 
 #### 4A.5 Guardar a URL
 
-Guarde a `DATABASE_URL` num gerenciador de senhas. Você vai colar na Vercel quando a API subir.
+Guarde a `DATABASE_URL` num gerenciador de senhas. Você vai colar no Cloudflare (Workers/Hyperdrive) quando a API subir.
 
 - [ ] URL salva em local seguro (1Password, Bitwarden, etc.)
 
@@ -314,108 +314,92 @@ DATABASE_URL="sua_url_supabase" pnpm db:migrate
 
 ---
 
-## 5. Deploy na Vercel (colocar o app na internet)
+## 5. Deploy no Cloudflare Pages (colocar o app na internet)
 
 ### 5.1 Criar conta e conectar o GitHub
 
-1. Acesse [vercel.com](https://vercel.com/)
-2. **Sign Up** → use **Continue with GitHub**
-3. Autorize a Vercel a ver seus repositórios
+1. Acesse [dash.cloudflare.com](https://dash.cloudflare.com/) e crie uma conta (se ainda não tiver)
+2. Vá em **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
+3. Autorize o Cloudflare a acessar o GitHub e selecione o repositório **`freshy`**
 
-- [ ] Conta Vercel criada e GitHub conectado
+- [ ] Conta Cloudflare criada e GitHub conectado
 
-### 5.2 Importar o repositório Freshy
+### 5.2 Configurar o projeto Pages
 
-1. No dashboard Vercel: **Add New…** → **Project**
-2. Na lista, ache **`freshy`** (ou `alexandrelheinen/freshy`)
-3. Clique **Import**
+Na tela de configuração do projeto:
 
-### 5.3 Configurar o monorepo (IMPORTANTE)
+| Campo                   | Valor                                                                                      |
+| ----------------------- | ------------------------------------------------------------------------------------------ |
+| **Project name**        | `freshy` (ou o nome que preferir)                                                          |
+| **Production branch**   | `main`                                                                                     |
+| **Framework preset**    | Next.js                                                                                    |
+| **Build command**       | `cd ../.. && pnpm install && pnpm --filter @freshy/web build`                              |
+| **Build output**        | `apps/web/.next` (ajuste conforme [OpenNext Cloudflare](https://opennext.js.org/cloudflare) se usar SSR completo) |
+| **Root directory**      | `apps/web`                                                                                 |
 
-Na tela **Configure Project**, ajuste:
+Se o build falhar por monorepo, tente **Root directory** vazio e build command na raiz:
 
-| Campo                | Valor                                                                     |
-| -------------------- | ------------------------------------------------------------------------- |
-| **Framework Preset** | Next.js (deve detectar sozinho)                                           |
-| **Root Directory**   | `apps/web` ← clique **Edit** e selecione esta pasta                       |
-| **Build Command**    | deixe o padrão ou `cd ../.. && pnpm build --filter=@freshy/web` se falhar |
-| **Install Command**  | `cd ../.. && pnpm install`                                                |
+```bash
+pnpm install && pnpm --filter @freshy/web build
+```
 
-Se a Vercel não achar o `pnpm`, em **Settings → General → Build & Development**:
+- [ ] Projeto Pages criado
+- [ ] Build settings configurados
 
-- **Install Command:** `pnpm install` (na raiz, com Root Directory vazio) **ou** use a config acima com Root `apps/web`
+### 5.3 Variáveis de ambiente (antes do primeiro deploy)
 
-**Configuração mais simples que costuma funcionar:**
+Em **Settings → Environment variables** do projeto Pages, adicione:
 
-1. **Root Directory:** deixe vazio (raiz do repo)
-2. **Framework:** Next.js
-3. Override **Root Directory** para build: em Project Settings → General, defina:
-   - Root Directory: `apps/web`
+| Nome                       | Valor                                                      | Ambientes              |
+| -------------------------- | ---------------------------------------------------------- | ---------------------- |
+| `NEXT_PUBLIC_API_URL`      | `http://localhost:4000` por agora (troca quando API subir) | Production, Preview    |
+| `NEXT_PUBLIC_MAPBOX_TOKEN` | seu `pk.xxx` do passo 3                                    | Production, Preview    |
 
-- [ ] Root Directory = `apps/web`
-- [ ] Framework = Next.js
+- [ ] `NEXT_PUBLIC_API_URL` configurada no Cloudflare Pages
+- [ ] `NEXT_PUBLIC_MAPBOX_TOKEN` configurada no Cloudflare Pages
 
-### 5.4 Variáveis de ambiente (antes do primeiro deploy)
+### 5.4 Fazer o deploy
 
-Ainda na tela de import (ou depois em **Settings → Environment Variables**), adicione:
-
-| Nome                       | Valor                                                      | Ambientes                        |
-| -------------------------- | ---------------------------------------------------------- | -------------------------------- |
-| `NEXT_PUBLIC_API_URL`      | `http://localhost:4000` por agora (troca quando API subir) | Production, Preview, Development |
-| `NEXT_PUBLIC_MAPBOX_TOKEN` | seu `pk.xxx` do passo 3                                    | Production, Preview, Development |
-
-Para cada variável:
-
-1. **Key** = nome da coluna
-2. **Value** = valor
-3. Marque **Production**, **Preview** e **Development**
-4. **Save**
-
-- [ ] `NEXT_PUBLIC_API_URL` configurada na Vercel
-- [ ] `NEXT_PUBLIC_MAPBOX_TOKEN` configurada na Vercel
-
-### 5.5 Fazer o deploy
-
-1. Clique **Deploy**
+1. Salve as configurações — o Cloudflare dispara o primeiro build automaticamente
 2. Aguarde 2–5 minutos
-3. Quando aparecer **Congratulations**, clique na URL (ex. `freshy-xxx.vercel.app`)
+3. Quando o build terminar, clique na URL (ex. `freshy.pages.dev`)
 
 - [ ] Primeiro deploy terminou com sucesso
 
 **Deu erro?**
 
-- `pnpm not found` → em Project Settings, ative **Node.js 20** e Install Command `npm i -g pnpm && pnpm install`
-- `Cannot find module @freshy/ui` → Root Directory errado; o monorepo precisa instalar da **raiz**. Tente Root Directory vazio + Build: `pnpm install && pnpm --filter @freshy/web build`
+- `pnpm not found` → em **Settings → Environment variables**, adicione `NODE_VERSION=20` e use build command com `npm i -g pnpm && ...`
+- `Cannot find module @freshy/ui` → confira que o install roda da **raiz** do monorepo
 - Build falhou → copie o log e abra uma issue; enquanto isso valide local com `pnpm build`
 
-### 5.6 Testar as 4 telas em produção
+### 5.5 Testar as 4 telas em produção
 
-Substitua `SEU-DOMINIO` pelo domínio que a Vercel deu:
+Substitua `SEU-DOMINIO` pelo domínio que o Cloudflare deu (ex. `freshy.pages.dev`):
 
-- [ ] `https://SEU-DOMINIO.vercel.app/explore` — abre OK
-- [ ] `https://SEU-DOMINIO.vercel.app/cooling` — abre OK
-- [ ] `https://SEU-DOMINIO.vercel.app/places/ice-coffee-central` — abre OK
-- [ ] `https://SEU-DOMINIO.vercel.app/profile` — abre OK
+- [ ] `https://SEU-DOMINIO/explore` — abre OK
+- [ ] `https://SEU-DOMINIO/cooling` — abre OK
+- [ ] `https://SEU-DOMINIO/places/ice-coffee-central` — abre OK
+- [ ] `https://SEU-DOMINIO/profile` — abre OK
 
-### 5.7 Testar no celular
+### 5.6 Testar no celular
 
 1. Abra a mesma URL `/explore` no Chrome/Safari do telefone
-2. Confira: fonte legível, cores azuis/ claras, menu fixo embaixo
+2. Confira: fonte legível, cores azuis/claras, menu fixo embaixo
 
 - [ ] App abre bem no celular
 
-### 5.8 Preview de Pull Request (automático)
+### 5.7 Preview de Pull Request (automático)
 
 1. Abra qualquer PR no GitHub
-2. A Vercel comenta com um link **Visit Preview**
+2. O Cloudflare Pages cria um **Preview deployment** (link no check do PR ou comentário do bot)
 3. Clique e confira se `/explore` abre
 
 - [ ] Preview de PR testado (pode ser em um PR existente)
 
-### 5.9 Anotar URLs
+### 5.8 Anotar URLs
 
 ```
-Produção: https://__________.vercel.app
+Produção: https://__________.pages.dev
 Preview:  (gerado automaticamente por PR)
 ```
 
@@ -423,29 +407,45 @@ Preview:  (gerado automaticamente por PR)
 
 ---
 
-## 6. (Recomendado) CI com screenshots no GitHub
+## 6. (Recomendado) CI com screenshots no GitHub + Cloudflare R2
 
 Sem isso o CI ainda passa (lint, test, build), mas o bot **não** posta imagens das páginas no PR.
 
-Guia completo: [infrastructure/gcp/README.md](../infrastructure/gcp/README.md)
+Guia completo: [infrastructure/cloudflare/README.md](../infrastructure/cloudflare/README.md)
 
 ### 6.1 Resumo rápido
 
-1. Criar projeto no [Google Cloud](https://console.cloud.google.com/)
-2. Criar bucket `freshy-assets` (região perto de você)
-3. Criar service account + baixar JSON da chave
+1. No [Cloudflare Dashboard](https://dash.cloudflare.com/) → **R2** → criar bucket `freshy-assets`
+2. Criar **R2 API token** (Object Read & Write)
+3. Habilitar acesso público no prefixo `ci/` (domínio customizado ou `*.r2.dev`)
 4. No GitHub: repositório → **Settings → Secrets and variables → Actions → New repository secret**
 
-| Secret            | O que colar                          |
-| ----------------- | ------------------------------------ |
-| `GCP_PROJECT_ID`  | ID do projeto GCP                    |
-| `GCS_BUCKET_NAME` | `freshy-assets`                      |
-| `GCP_SA_KEY`      | conteúdo **inteiro** do arquivo JSON |
+| Secret                 | O que colar                          |
+| ---------------------- | ------------------------------------ |
+| `R2_ACCOUNT_ID`        | ID da conta Cloudflare               |
+| `R2_ACCESS_KEY_ID`     | Access Key do token R2               |
+| `R2_SECRET_ACCESS_KEY` | Secret Key do token R2               |
+| `R2_BUCKET_NAME`       | `freshy-assets`                      |
+| `R2_PUBLIC_URL`        | URL pública base (sem barra no final)|
 
-- [ ] (Recomendado) Secrets GCP configurados no GitHub
+- [ ] (Recomendado) Secrets R2 configurados no GitHub
 - [ ] (Recomendado) PR de teste recebeu comentário com screenshots
 
-**Deu erro?** Se não quiser GCP agora, ignore — não bloqueia a Fase 1.
+**Deu erro?** Se não quiser R2 agora, ignore — não bloqueia a Fase 1. Screenshots ficam disponíveis como **Artifacts** no workflow.
+
+### 6.2 (Opcional) Configurar R2 localmente
+
+Para testar uploads de assets na API local:
+
+```env
+R2_ACCOUNT_ID=...
+R2_ACCESS_KEY_ID=...
+R2_SECRET_ACCESS_KEY=...
+R2_BUCKET_NAME=freshy-assets
+R2_PUBLIC_URL=https://assets.seu-dominio.com
+```
+
+- [ ] (Opcional) R2 configurado no `.env` local
 
 ---
 
@@ -490,14 +490,15 @@ Anote diferenças para corrigir na Fase 1 ou num PR de polish:
 
 ## 9. (Opcional) Domínio próprio
 
-Só se já tiver domínio (ex. `freshy.app`).
+Só se já tiver domínio (ex. `freshy.app`). Recomendamos registrar e gerenciar DNS no **Cloudflare**.
 
-1. Compre o domínio (Registro.br, Cloudflare, Namecheap…)
-2. Na Vercel: **Project → Settings → Domains → Add**
-3. Siga as instruções de DNS (geralmente registro `CNAME`)
-4. Aguarde propagação (5 min – 48 h)
+1. Adicione o domínio em **Cloudflare DNS** (ou transfira)
+2. Em **Workers & Pages** → projeto Freshy → **Custom domains** → **Set up a domain**
+3. Para assets R2: bucket → **Connect Domain** → ex. `assets.freshy.app`
+4. Aguarde propagação (geralmente minutos no Cloudflare)
 
-- [ ] (Opcional) Domínio configurado
+- [ ] (Opcional) Domínio configurado no Cloudflare Pages
+- [ ] (Opcional) Domínio R2 para assets públicos
 
 ---
 
@@ -509,9 +510,9 @@ Marque **todos** antes de pedir código da Fase 1:
 | --- | ---------------------------------------------------------------- | ---- |
 | 1   | `bash scripts/validation.sh` passou na sua máquina?              | [ ]  |
 | 2   | Cidade piloto + lat/lng + raio anotados?                         | [ ]  |
-| 3   | Token Mapbox no `.env` **e** na Vercel?                          | [ ]  |
+| 3   | Token Mapbox no `.env` **e** no Cloudflare Pages?                | [ ]  |
 | 4   | Banco remoto (Neon/Supabase) com PostGIS + `pnpm db:migrate` OK? | [ ]  |
-| 5   | App na Vercel abre as 4 telas no desktop **e** no celular?       | [ ]  |
+| 5   | App no Cloudflare Pages abre as 4 telas no desktop **e** no celular? | [ ]  |
 
 ### Se todos = sim
 
@@ -559,13 +560,14 @@ DATABASE_URL="postgresql://..." pnpm db:migrate
 
 ## Referências
 
-| Documento                                        | Para quê                 |
-| ------------------------------------------------ | ------------------------ |
-| [roadmap.md](roadmap.md)                         | O que é cada fase        |
-| [development-cycle.md](development-cycle.md)     | Como codar (TDD)         |
-| [CONTRIBUTING.md](../CONTRIBUTING.md)            | Regras de PR e qualidade |
-| [DESIGN.md](stitch/freshy/DESIGN.md)             | Cores e tipografia       |
-| [gcp/README.md](../infrastructure/gcp/README.md) | Screenshots no CI        |
+| Documento                                                    | Para quê                      |
+| ------------------------------------------------------------ | ----------------------------- |
+| [roadmap.md](roadmap.md)                                     | O que é cada fase             |
+| [development-cycle.md](development-cycle.md)                 | Como codar (TDD)              |
+| [infrastructure.md](infrastructure.md)                       | Cloudflare vs serviços externos |
+| [CONTRIBUTING.md](../CONTRIBUTING.md)                        | Regras de PR e qualidade      |
+| [DESIGN.md](stitch/freshy/DESIGN.md)                         | Cores e tipografia            |
+| [cloudflare/README.md](../infrastructure/cloudflare/README.md) | R2, Pages, CI screenshots     |
 
 ---
 

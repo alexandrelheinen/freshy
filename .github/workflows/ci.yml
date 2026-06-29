@@ -91,20 +91,17 @@ jobs:
           path: screenshots/
           retention-days: 14
 
-      - name: Authenticate to Google Cloud
-        if: ${{ secrets.GCP_SA_KEY != '' }}
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-
-      - name: Set up Cloud SDK
-        if: ${{ secrets.GCP_SA_KEY != '' }}
-        uses: google-github-actions/setup-gcloud@v2
+      - name: Install AWS CLI for R2 upload
+        if: ${{ secrets.R2_ACCESS_KEY_ID != '' }}
+        run: pip install awscli --quiet
 
       - name: Generate PR comment markdown
         env:
-          GCS_BUCKET_NAME: ${{ secrets.GCS_BUCKET_NAME }}
-          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+          R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
         run: |
           bash scripts/post-pr-screenshots.sh screenshots ${{ github.event.pull_request.number }}
 

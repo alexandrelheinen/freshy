@@ -1,0 +1,36 @@
+# Example Wrangler config for Freshy API (Workers) + R2 + Hyperdrive
+# Copy to wrangler.toml and fill in IDs. Do NOT commit secrets.
+
+name = "freshy-api"
+main = "../../packages/api/src/worker.ts" # future Workers entry point
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Hyperdrive — connection pool to Neon or Supabase (Postgres + PostGIS)
+# Create in dashboard: Workers → Hyperdrive → Create configuration
+[[hyperdrive]]
+binding = "HYPERDRIVE"
+id = "<hyperdrive-config-id>"
+
+# R2 bucket for place photos, avatars, etc.
+[[r2_buckets]]
+binding = "ASSETS"
+bucket_name = "freshy-assets"
+
+# Optional: KV for cached category counts
+# [[kv_namespaces]]
+# binding = "CACHE"
+# id = "<kv-namespace-id>"
+
+[vars]
+R2_PUBLIC_URL = "https://assets.freshy.app"
+
+# Secrets (set via `wrangler secret put`):
+# - DATABASE_URL (if not using Hyperdrive connection string in dashboard)
+# - R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY (only if Worker uploads outside R2 binding)
+
+[env.production]
+routes = [{ pattern = "api.freshy.app", custom_domain = true }]
+
+[env.preview]
+name = "freshy-api-preview"

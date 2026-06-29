@@ -35,11 +35,11 @@ See [`.gitignore`](../.gitignore) for the full list.
 ```
 apps/web/          → Next.js PWA (4 main screens)
 apps/mobile/       → Expo (Android + iOS)
-packages/api/      → REST API + GCS integration
+packages/api/      → REST API + R2 integration
 packages/db/       → Prisma schema & migrations
 packages/ui/       → Shared React components
 packages/config/   → ESLint, Tailwind tokens
-infrastructure/    → Docker, GCP docs
+infrastructure/    → Docker (local), Cloudflare docs
 scripts/           → build.sh, validation.sh
 docs/              → roadmap, architecture, stitch designs
 ```
