@@ -32,7 +32,9 @@ freshy/
 │   ├── development-cycle.md # TDD workflow (mandatory)
 │   ├── quality-standards.md # Per-language quality rules
 │   ├── git-rules.md         # Branching & PR rules
-│   └── todo_0.md            # Pre-Phase-1 checklist
+│   └── milestones/          # Operational checklists per roadmap phase
+│       ├── README.md        # Milestone index
+│       └── phase-0-bootstrap.md
 └── screenshots/             # CI-generated page previews (gitignored)
 ```
 
