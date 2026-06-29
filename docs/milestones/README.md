@@ -16,7 +16,8 @@ Former `todo_0.md` content is **one milestone** — Phase 0 bootstrap. It is not
 
 | Milestone | Document | Roadmap phase | Scope |
 | --------- | -------- | ------------- | ----- |
-| **0 — Bootstrap** | [phase-0-bootstrap.md](phase-0-bootstrap.md) | Phase 0 — Foundation | Local env, pilot city, Mapbox, remote Postgres, Cloudflare Pages, R2/CI, product decisions, visual QA |
+| **Setup (start here)** | [setup-guide.md](../setup-guide.md) | Before Phase 0/1 | Click-by-click on Mapbox, Neon, Cloudflare, R2, GitHub |
+| **0 — Bootstrap** | [phase-0-bootstrap.md](phase-0-bootstrap.md) | Phase 0 — Foundation | Checkbox gate: local validate, deploy, tokens |
 | **1 — Map** | _(future)_ | Phase 1 — Places & Map | Created if the phase needs manual setup beyond code |
 | **2+** | _(future)_ | Phases 2–7 | One doc per phase when operational steps exist |
 

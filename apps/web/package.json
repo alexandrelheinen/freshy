@@ -15,11 +15,14 @@
     "@freshy/ui": "workspace:*",
     "next": "^15.1.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "mapbox-gl": "^3.9.2",
+    "react-map-gl": "^7.1.8"
   },
   "devDependencies": {
     "@freshy/config": "workspace:*",
     "@playwright/test": "^1.49.1",
+    "@types/mapbox-gl": "^3.4.1",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",

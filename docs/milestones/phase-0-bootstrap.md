@@ -1,6 +1,6 @@
 # Milestone 0 — Bootstrap (before Phase 1)
 
-> **Type:** operational milestone · [Milestone index](README.md) · Roadmap phase: [0 — Foundation](../roadmap.md#phase-0--foundation)  
+> **Type:** operational milestone · [Setup guide (detailed)](../setup-guide.md) · [Milestone index](README.md) · Roadmap phase: [0 — Foundation](../roadmap.md#phase-0--foundation)  
 > **Audience:** You, before writing Phase 1 code.  
 > **Goal:** Accounts, deploy, and environment ready for a map with real data.  
 > **Time:** 2–4 hours the first time (accounts + deploy).  
