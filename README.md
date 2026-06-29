@@ -13,7 +13,7 @@
 | `packages/ui`     | `@freshy/ui`     | Shared React components              |
 | `packages/config` | `@freshy/config` | ESLint + Tailwind tokens             |
 
-See [docs/architecture.md](docs/architecture.md), [docs/infrastructure.md](docs/infrastructure.md), [docs/roadmap.md](docs/roadmap.md), and [CONTRIBUTING.md](CONTRIBUTING.md).
+See [docs/architecture.md](docs/architecture.md), [docs/infrastructure.md](docs/infrastructure.md), [docs/roadmap.md](docs/roadmap.md), [docs/milestones/](docs/milestones/), and [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Quick start
 
@@ -46,6 +46,46 @@ See [infrastructure/cloudflare/README.md](infrastructure/cloudflare/README.md).
 
 ## Infrastructure
 
+Cloudflare-first hosting with specialized providers where Cloudflare has no equivalent (PostGIS, maps, mobile stores).
+
+```mermaid
+flowchart TB
+    subgraph clients [Clients]
+        Web[Next.js PWA]
+        Mobile[Expo app]
+    end
+
+    subgraph cf [Cloudflare]
+        Pages[Pages — web]
+        Workers[Workers — API]
+        Hyperdrive[Hyperdrive]
+        R2[(R2)]
+        DNS[DNS]
+    end
+
+    subgraph external [External — required]
+        PG[(Neon / Supabase Postgres + PostGIS)]
+        Mapbox[Mapbox]
+        EAS[Expo EAS]
+        Auth[Clerk / Supabase Auth]
+    end
+
+    subgraph ci [GitHub Actions]
+        GHA[CI workflow]
+    end
+
+    Web --> Pages
+    Mobile --> Workers
+    Pages --> Workers
+    Workers --> Hyperdrive --> PG
+    Workers --> R2
+    Web --> Mapbox
+    Workers --> Auth
+    GHA --> R2
+    EAS -.-> Mobile
+    DNS --> Pages
+```
+
 | Provider | Services |
 | -------- | -------- |
 | **Cloudflare** | Pages (web), Workers (API), R2 (storage), Hyperdrive (DB pool), DNS, CDN |
@@ -66,4 +106,5 @@ Stitch export: [docs/stitch/](docs/stitch/)
 
 - [docs/development-cycle.md](docs/development-cycle.md) — step-by-step cycle (mandatory)
 - [docs/quality-standards.md](docs/quality-standards.md) — rules and references per language
+- [docs/milestones/](docs/milestones/) — operational checklists per roadmap phase (start with [Phase 0 bootstrap](docs/milestones/phase-0-bootstrap.md))
 - [docs/git-rules.md](docs/git-rules.md) — branching and PR checklist

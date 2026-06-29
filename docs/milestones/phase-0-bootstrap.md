@@ -1,5 +1,6 @@
-# Todo 0 — passo a passo (antes da Fase 1)
+# Milestone 0 — Bootstrap (antes da Fase 1)
 
+> **Tipo:** milestone operacional · [Índice de milestones](README.md) · Fase do roadmap: [0 — Foundation](../roadmap.md#phase-0--foundation)  
 > **Para quem?** Você, antes de escrever código da Fase 1.  
 > **Objetivo?** Deixar contas, deploy e ambiente prontos para o mapa com dados reais.  
 > **Quanto tempo?** 2–4 horas na primeira vez (contas + deploy).  
@@ -206,7 +207,7 @@ O shell atual ainda não mostra mapa Mapbox — isso é código da Fase 1. Por a
 Pode deixar para a Fase 1. Se quiser adiantar:
 
 1. [Mapbox Studio](https://studio.mapbox.com/) → **New style**
-2. Ajuste cores para tons frios (referência: [DESIGN.md](stitch/freshy/DESIGN.md))
+2. Ajuste cores para tons frios (referência: [DESIGN.md](../stitch/freshy/DESIGN.md))
 3. Anote o ID do estilo (`mapbox://styles/seu-usuario/xxxxx`)
 
 - [ ] (Opcional) Estilo customizado criado e ID anotado
@@ -411,7 +412,7 @@ Preview:  (gerado automaticamente por PR)
 
 Sem isso o CI ainda passa (lint, test, build), mas o bot **não** posta imagens das páginas no PR.
 
-Guia completo: [infrastructure/cloudflare/README.md](../infrastructure/cloudflare/README.md)
+Guia completo: [infrastructure/cloudflare/README.md](../../infrastructure/cloudflare/README.md)
 
 ### 6.1 Resumo rápido
 
@@ -470,10 +471,10 @@ Abra lado a lado: **app deployado** vs **imagem de referência**.
 
 | Tela no app                  | Referência Stitch                                                | OK? |
 | ---------------------------- | ---------------------------------------------------------------- | --- |
-| `/explore`                   | [mapa_freshy/screen.png](stitch/mapa_freshy/screen.png)          | [ ] |
-| `/cooling`                   | [categorias/screen.png](stitch/categorias_de_lugares/screen.png) | [ ] |
-| `/places/ice-coffee-central` | [detalhes/screen.png](stitch/detalhes_do_local/screen.png)       | [ ] |
-| `/profile`                   | [perfil/screen.png](stitch/meu_perfil/screen.png)                | [ ] |
+| `/explore`                   | [mapa_freshy/screen.png](../stitch/mapa_freshy/screen.png)          | [ ] |
+| `/cooling`                   | [categorias/screen.png](../stitch/categorias_de_lugares/screen.png) | [ ] |
+| `/places/ice-coffee-central` | [detalhes/screen.png](../stitch/detalhes_do_local/screen.png)       | [ ] |
+| `/profile`                   | [perfil/screen.png](../stitch/meu_perfil/screen.png)                | [ ] |
 
 Anote diferenças para corrigir na Fase 1 ou num PR de polish:
 
@@ -516,14 +517,14 @@ Marque **todos** antes de pedir código da Fase 1:
 
 ### Se todos = sim
 
-Pode iniciar a **Fase 1** seguindo [development-cycle.md](development-cycle.md):
+Pode iniciar a **Fase 1** seguindo [development-cycle.md](../development-cycle.md):
 
 1. Escrever teste que falha (ex.: seed com 50 lugares na cidade piloto)
 2. Implementar o mínimo para passar
 3. `bash scripts/validation.sh`
 4. Abrir PR
 
-Ordem sugerida no código ([roadmap.md](roadmap.md)):
+Ordem sugerida no código ([roadmap.md](../roadmap.md)):
 
 1. Seed ~50 lugares na cidade piloto
 2. Mapbox GL JS em `/explore`
@@ -562,12 +563,13 @@ DATABASE_URL="postgresql://..." pnpm db:migrate
 
 | Documento                                                    | Para quê                      |
 | ------------------------------------------------------------ | ----------------------------- |
-| [roadmap.md](roadmap.md)                                     | O que é cada fase             |
-| [development-cycle.md](development-cycle.md)                 | Como codar (TDD)              |
-| [infrastructure.md](infrastructure.md)                       | Cloudflare vs serviços externos |
-| [CONTRIBUTING.md](../CONTRIBUTING.md)                        | Regras de PR e qualidade      |
-| [DESIGN.md](stitch/freshy/DESIGN.md)                         | Cores e tipografia            |
-| [cloudflare/README.md](../infrastructure/cloudflare/README.md) | R2, Pages, CI screenshots     |
+| [milestones/README.md](README.md)                            | O que é uma milestone         |
+| [roadmap.md](../roadmap.md)                                  | O que é cada fase             |
+| [development-cycle.md](../development-cycle.md)              | Como codar (TDD)              |
+| [infrastructure.md](../infrastructure.md)                    | Cloudflare vs serviços externos |
+| [CONTRIBUTING.md](../../CONTRIBUTING.md)                     | Regras de PR e qualidade      |
+| [DESIGN.md](../stitch/freshy/DESIGN.md)                      | Cores e tipografia            |
+| [cloudflare/README.md](../../infrastructure/cloudflare/README.md) | R2, Pages, CI screenshots |
 
 ---
 

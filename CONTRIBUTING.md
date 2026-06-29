@@ -9,7 +9,8 @@ Thank you for contributing to **Freshy** — the mobile-first cooling map. This 
 | [docs/development-cycle.md](docs/development-cycle.md)       | **Mandatory** step-by-step workflow and test-driven development (TDD) |
 | [docs/quality-standards.md](docs/quality-standards.md)       | Quality rules and external references **per language**                |
 | [docs/roadmap.md](docs/roadmap.md)                           | Product phases — pick work from the current phase                     |
-| [docs/todo_0.md](docs/todo_0.md)                             | Manual checklist before Phase 1 (deploy, accounts, decisions)         |
+| [docs/milestones/](docs/milestones/)                         | Operational checklists per roadmap phase (gate before coding)         |
+| [docs/milestones/phase-0-bootstrap.md](docs/milestones/phase-0-bootstrap.md) | Milestone 0 — accounts, deploy, pilot city (before Phase 1)   |
 | [docs/architecture.md](docs/architecture.md)                 | Monorepo layout and data flow                                         |
 | [docs/infrastructure.md](docs/infrastructure.md)             | Cloudflare vs external providers (R2, Pages, Workers, Neon)           |
 | [docs/git-rules.md](docs/git-rules.md)                       | Branching, commits, PR checklist                                      |

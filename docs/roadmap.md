@@ -181,7 +181,7 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 
 **Exit criteria:** App loads with correct branding, typography, and bottom navigation — no real data yet.
 
-**Before Phase 1:** complete the manual checklist in [todo_0.md](todo_0.md) (Cloudflare Pages deploy, pilot city, Mapbox, remote DB).
+**Before Phase 1:** complete [Milestone 0 — Bootstrap](milestones/phase-0-bootstrap.md) (Cloudflare Pages deploy, pilot city, Mapbox, remote DB).
 
 ---
 
