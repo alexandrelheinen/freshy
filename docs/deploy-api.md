@@ -68,7 +68,7 @@ Render deploys from GitHub. Skip if the repo is already there.
 4. **Build Command** — copy **only** the line below (do not include the word “Command” or any table header):
 
 ```
-corepack enable && pnpm install && pnpm db:generate && pnpm --filter @freshy/api build
+corepack enable && pnpm install && pnpm build:api
 ```
 
 5. **Start Command** — copy **only** this line:

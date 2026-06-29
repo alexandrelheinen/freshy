@@ -8,7 +8,7 @@ services:
     runtime: node
     plan: free
     region: frankfurt
-    buildCommand: corepack enable && pnpm install && pnpm db:generate && pnpm --filter @freshy/api build
+    buildCommand: corepack enable && pnpm install && pnpm build:api
     startCommand: pnpm --filter @freshy/api start
     healthCheckPath: /health
     envVars:
