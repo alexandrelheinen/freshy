@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
+import { BRAND_TITLE } from '@freshy/ui';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
-  title: 'Freshy — Cooling Map',
+  title: BRAND_TITLE,
   description: 'Find air-conditioned refuges near you.',
 };
 

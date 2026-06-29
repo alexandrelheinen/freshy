@@ -2,7 +2,7 @@
   "name": "freshy",
   "version": "0.1.0",
   "private": true,
-  "description": "Freshy — cooling map for urban thermal comfort",
+  "description": "Freshy | cooling map for urban thermal comfort",
   "packageManager": "pnpm@9.15.0",
   "engines": {
     "node": ">=20.0.0",

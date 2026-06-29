@@ -1,6 +1,6 @@
 # Contributing to Freshy
 
-Thank you for contributing to **Freshy** — the mobile-first cooling map. This document is the single entry point for how we build, test, and ship code in this repository.
+Thank you for contributing to **Freshy**, the mobile-first cooling map. This document is the single entry point for how we build, test, and ship code in this repository.
 
 ## Before you start
 
@@ -8,10 +8,10 @@ Thank you for contributing to **Freshy** — the mobile-first cooling map. This 
 | ------------------------------------------------------------ | --------------------------------------------------------------------- |
 | [docs/development-cycle.md](docs/development-cycle.md)       | **Mandatory** step-by-step workflow and test-driven development (TDD) |
 | [docs/quality-standards.md](docs/quality-standards.md)       | Quality rules and external references **per language**                |
-| [docs/roadmap.md](docs/roadmap.md)                           | Product phases — pick work from the current phase                     |
-| [docs/setup-guide.md](docs/setup-guide.md)                   | **Start here** — platform setup for dummies (click-by-click)          |
+| [docs/roadmap.md](docs/roadmap.md)                           | Product phases: pick work from the current phase                      |
+| [docs/setup-guide.md](docs/setup-guide.md)                   | **Start here**: platform setup for dummies (click-by-click)           |
 | [docs/milestones/](docs/milestones/)                         | Operational checklists per roadmap phase                              |
-| [docs/milestones/phase-0-bootstrap.md](docs/milestones/phase-0-bootstrap.md) | Milestone 0 — accounts, deploy, pilot city (before Phase 1)   |
+| [docs/milestones/phase-0-bootstrap.md](docs/milestones/phase-0-bootstrap.md) | Milestone 0: accounts, deploy, pilot city (before Phase 1)    |
 | [docs/architecture.md](docs/architecture.md)                 | Monorepo layout and data flow                                         |
 | [docs/infrastructure.md](docs/infrastructure.md)             | Cloudflare vs external providers (R2, Pages, Workers, Neon)           |
 | [docs/git-rules.md](docs/git-rules.md)                       | Branching, commits, PR checklist                                      |
@@ -23,7 +23,8 @@ Thank you for contributing to **Freshy** — the mobile-first cooling map. This 
 2. **Follow the development cycle in order.** Skipping steps (e.g. opening a PR before `validation.sh` passes) is not allowed.
 3. **One logical change per commit.** Small, reviewable diffs aligned with a roadmap item or bug fix.
 4. **Match existing conventions.** Read surrounding code before editing; reuse packages and patterns already in the monorepo.
-5. **English everywhere in the repo.** All documentation and source code must be in English — see [Language](#language) below.
+5. **English everywhere in the repo.** All documentation and source code must be in English. See [Language](#language) below.
+6. **No em dashes in names or titles.** Use pipes, hyphens, or commas instead. See [Naming](#naming) below.
 
 ## Language
 
@@ -36,15 +37,31 @@ Thank you for contributing to **Freshy** — the mobile-first cooling map. This 
 | Commit messages and PR titles/descriptions | English |
 | Seed data, fixtures, placeholder UI strings in apps | English |
 
-Locale-specific copy (e.g. pt-BR for Brazilian users) belongs in **i18n message catalogs** when [next-intl](docs/roadmap.md) is adopted — not hardcoded in other languages in source files.
+Locale-specific copy (e.g. pt-BR for Brazilian users) belongs in **i18n message catalogs** when [next-intl](docs/roadmap.md) is adopted, not hardcoded in other languages in source files.
 
 **Exception:** Stitch exports under `docs/stitch/` are historical design references and may keep original mockup copy.
 
 Do not add Portuguese (or other non-English) text to docs or code unless it is inside an explicit i18n locale file.
 
+## Naming
+
+Do **not** use em dashes (`—`) in product names, titles, labels, or other naming strings. This includes page `<title>` metadata, app names, workflow names, PR comment headings, package descriptions, and shared brand constants.
+
+| Prefer | Avoid |
+| ------ | ----- |
+| `Freshy \| Cooling Map` | `Freshy — Cooling Map` |
+| `Release \| Mobile builds` | `Release — Mobile builds` |
+| `Freshy \| Page previews` | `Freshy — Page previews` |
+
+Use a **vertical pipe** (`|`) to separate title parts (brand | subtitle), a **hyphen** (`-`) for compound technical names, or a **comma** when joining short phrases in a description.
+
+Shared brand strings live in `packages/ui/src/tokens.ts` (`BRAND_NAME`, `BRAND_TITLE`). Import them instead of duplicating titles in apps.
+
+This rule targets **names and titles**, not every sentence in long-form docs. Body copy and section prose may use commas or hyphens as needed.
+
 ## Languages in this project
 
-Freshy is a **pnpm + Turborepo** monorepo. Every language has enforced quality rules — see [docs/quality-standards.md](docs/quality-standards.md) for the full reference list.
+Freshy is a **pnpm + Turborepo** monorepo. Every language has enforced quality rules. See [docs/quality-standards.md](docs/quality-standards.md) for the full reference list.
 
 | Language / format  | Where it lives                                 | Primary tooling                                   |
 | ------------------ | ---------------------------------------------- | ------------------------------------------------- |

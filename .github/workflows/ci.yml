@@ -125,7 +125,7 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ## CI — Code quality
+            ## CI | Code quality
             | Check | Status |
             |-------|--------|
             | Format | ${{ needs.quality.result == 'success' && '✅' || '❌' }} |

@@ -1,6 +1,6 @@
 # Freshy
 
-**Freshy** is a mobile-first cooling map — find air-conditioned refuges in hot cities.
+**Freshy** is a mobile-first cooling map: find air-conditioned refuges in hot cities.
 
 ## Repository structure
 
@@ -102,7 +102,7 @@ Stitch export: [docs/stitch/](docs/stitch/)
 
 ## Contributing
 
-[CONTRIBUTING.md](CONTRIBUTING.md) — development cycle, TDD workflow, and quality standards.
+[CONTRIBUTING.md](CONTRIBUTING.md): development cycle, TDD workflow, and quality standards.
 
 - [docs/development-cycle.md](docs/development-cycle.md) — step-by-step cycle (mandatory)
 - [docs/quality-standards.md](docs/quality-standards.md) — rules and references per language

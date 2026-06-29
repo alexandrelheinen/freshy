@@ -1,10 +1,11 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { BRAND_NAME, PILOT_CITY, ROUTES, TYPOGRAPHY_SCALE } from './tokens';
+import { BRAND_NAME, BRAND_TITLE, PILOT_CITY, ROUTES, TYPOGRAPHY_SCALE } from './tokens';
 
 describe('@freshy/ui tokens', () => {
   it('defines brand name', () => {
     assert.equal(BRAND_NAME, 'Freshy');
+    assert.equal(BRAND_TITLE, 'Freshy | Cooling Map');
     assert.equal(PILOT_CITY.name, 'Clichy');
     assert.equal(PILOT_CITY.postalCode, '92110');
   });
