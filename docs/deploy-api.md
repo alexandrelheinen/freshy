@@ -63,13 +63,23 @@ Render deploys from GitHub. Skip if the repo is already there.
 | **Branch** | `main` |
 | **Root Directory** | *(leave empty — repo root)* |
 | **Runtime** | **Node** |
-| **Build Command** | `corepack enable && pnpm install && pnpm db:generate && pnpm --filter @freshy/api build` |
-| **Start Command** | `pnpm --filter @freshy/api start` |
 | **Instance type** | Free |
+
+4. **Build Command** — copy **only** the line below (do not include the word “Command” or any table header):
+
+```
+corepack enable && pnpm install && pnpm db:generate && pnpm --filter @freshy/api build
+```
+
+5. **Start Command** — copy **only** this line:
+
+```
+pnpm --filter @freshy/api start
+```
 
 Or click **Apply Blueprint** if you imported [`infrastructure/render/render.yaml`](../infrastructure/render/render.yaml).
 
-### Step 4 — Add environment variables
+### Step 4 — Add environment variables (after fixing build/start commands)
 
 On the service → **Environment**:
 
