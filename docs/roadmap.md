@@ -32,7 +32,7 @@
 - **Saved places** — personal bookmarks
 - **Relief Points** — lightweight gamification for contributing reviews
 
-UI language in the designs is **Brazilian Portuguese**; architecture should support i18n from the start.
+UI copy in source is **English** until i18n lands; Stitch mockups may show other locales for design reference. Architecture supports **next-intl** for locale catalogs (e.g. pt-BR) from Phase 6 onward.
 
 ---
 
@@ -64,7 +64,7 @@ UI language in the designs is **Brazilian Portuguese**; architecture should supp
 | **Maps**                  | [Mapbox GL JS](https://www.mapbox.com/)        | Custom cool-toned map style; strong marker clustering |
 | **State / data fetching** | TanStack Query + Zustand                       | Server state + light client state (map filters)       |
 | **Forms & validation**    | React Hook Form + Zod                          | Review submission, profile edits                      |
-| **i18n**                  | next-intl                                      | pt-BR default, en later                               |
+| **i18n**                  | next-intl                                      | English in source; locale files (e.g. pt-BR) when needed |
 
 **Alternative considered:** Expo/React Native for a store app — defer until post-MVP; PWA covers mobile web first.
 

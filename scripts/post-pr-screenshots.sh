@@ -25,10 +25,10 @@ echo "| Screen | Preview |" >> "${MARKDOWN_FILE}"
 echo "|--------|---------|" >> "${MARKDOWN_FILE}"
 
 PAGES=(
-  "explore:Mapa Freshy (Explore)"
-  "cooling:Categorias (Cooling)"
-  "place-detail:Detalhes do Local"
-  "profile:Meu Perfil"
+  "explore:Freshy Map (Explore)"
+  "cooling:Categories (Cooling)"
+  "place-detail:Place Details"
+  "profile:My Profile"
 )
 
 r2_configured() {

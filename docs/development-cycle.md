@@ -2,7 +2,7 @@
 
 This document defines the **mandatory step-by-step development cycle** for Freshy. **Test-driven development (TDD)** is the primary method for implementing behavior — not an optional add-on.
 
-See [CONTRIBUTING.md](../CONTRIBUTING.md) for a quick summary and [quality-standards.md](quality-standards.md) for per-language rules.
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for a quick summary, [quality-standards.md](quality-standards.md) for per-language rules, and the [Language](../CONTRIBUTING.md#language) policy (English-only docs and code).
 
 ---
 

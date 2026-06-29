@@ -6,14 +6,14 @@ export default async function PlaceDetailPage({ params }: { params: Promise<{ sl
   return (
     <div className="min-h-screen pb-10" data-page="place-detail">
       <header className="fixed top-0 z-50 flex h-16 w-full items-center bg-surface/80 px-margin-mobile shadow-sm backdrop-blur-md">
-        <h1 className="text-xl font-semibold text-primary">Detalhes do Local</h1>
+        <h1 className="text-xl font-semibold text-primary">Place Details</h1>
       </header>
 
       <main className="pt-16">
         <section className="relative h-72 w-full overflow-hidden bg-gradient-to-br from-primary-container to-secondary-container">
           <div className="absolute bottom-6 left-margin-mobile">
             <span className="rounded-full bg-primary-container px-3 py-1 text-xs font-bold uppercase">
-              Aberto agora
+              Open now
             </span>
             <h2 className="mt-2 text-3xl font-bold text-white drop-shadow">Ice Coffee Central</h2>
             <p className="text-sm text-white/80">slug: {slug}</p>
@@ -48,24 +48,24 @@ export default async function PlaceDetailPage({ params }: { params: Promise<{ sl
             ))}
           </div>
           <p className="text-on-surface-variant">
-            O refúgio perfeito para escapar do calor urbano. Climatização constante e ambiente
-            silencioso para trabalhar ou relaxar.
+            The perfect refuge from urban heat. Constant air conditioning and a quiet environment
+            for work or relaxation.
           </p>
           <button
             type="button"
             className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-primary font-semibold text-on-primary shadow-lg"
           >
-            Como Chegar
+            Get Directions
           </button>
         </section>
 
         <section className="mt-8 px-margin-mobile">
-          <h3 className="mb-4 text-xl font-semibold">Avaliações Climáticas</h3>
+          <h3 className="mb-4 text-xl font-semibold">Climate Reviews</h3>
           <GlassCard className="p-4">
             <p className="italic text-on-surface-variant">
-              &quot;O melhor lugar para trabalhar durante a onda de calor.&quot;
+              &quot;The best place to work during the heat wave.&quot;
             </p>
-            <p className="mt-2 text-sm text-outline">— Marcos André, há 2 dias</p>
+            <p className="mt-2 text-sm text-outline">— Marco A., 2 days ago</p>
           </GlassCard>
         </section>
       </main>

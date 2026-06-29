@@ -20,7 +20,7 @@ export default function PlaceDetailScreen() {
           <Text style={styles.metricValue}>Frigid</Text>
         </View>
       </View>
-      <Text style={styles.description}>O refúgio perfeito para escapar do calor urbano.</Text>
+      <Text style={styles.description}>The perfect refuge from urban heat.</Text>
     </ScrollView>
   );
 }

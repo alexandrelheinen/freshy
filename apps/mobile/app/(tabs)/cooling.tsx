@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 
-const categories = ['Cafés', 'Restaurantes', 'Bibliotecas', 'Shoppings', 'Museus', 'Coworking'];
+const categories = ['Cafés', 'Restaurants', 'Libraries', 'Malls', 'Museums', 'Coworking'];
 
 export default function CoolingScreen() {
   return (
@@ -9,8 +9,8 @@ export default function CoolingScreen() {
       contentContainerStyle={styles.content}
       testID="cooling-screen"
     >
-      <Text style={styles.title}>Categorias</Text>
-      <Text style={styles.subtitle}>Encontre o refúgio perfeito contra o calor.</Text>
+      <Text style={styles.title}>Categories</Text>
+      <Text style={styles.subtitle}>Find the perfect refuge from the heat.</Text>
       <View style={styles.grid}>
         {categories.map((cat) => (
           <View key={cat} style={styles.card}>
