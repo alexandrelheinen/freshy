@@ -12,11 +12,12 @@
     "screenshots": "playwright test"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.61.3",
     "@freshy/ui": "workspace:*",
+    "mapbox-gl": "^3.9.2",
     "next": "^15.1.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "mapbox-gl": "^3.9.2",
     "react-map-gl": "^7.1.8"
   },
   "devDependencies": {

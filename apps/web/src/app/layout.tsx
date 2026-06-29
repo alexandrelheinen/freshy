@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { BRAND_TITLE } from '@freshy/ui';
+import { FreshyClerkProvider } from '../components/FreshyClerkProvider';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -21,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${inter.variable} font-sans bg-background text-on-background antialiased`}>
-        {children}
+        <FreshyClerkProvider>{children}</FreshyClerkProvider>
       </body>
     </html>
   );

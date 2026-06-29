@@ -89,6 +89,7 @@ App users. One demo user is seeded for development.
 | Column | Type | Notes |
 | ------ | ---- | ----- |
 | `id` | `TEXT` (cuid) | Primary key |
+| `clerkId` | `TEXT` | Unique; Clerk user id (null for seed-only users) |
 | `email` | `TEXT` | Unique |
 | `displayName` | `TEXT` | Shown in UI |
 | `username` | `TEXT` | Unique, e.g. `lucas_frescor` |

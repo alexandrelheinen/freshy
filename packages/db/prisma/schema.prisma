@@ -25,6 +25,7 @@ enum AcStrength {
 
 model User {
   id           String   @id @default(cuid())
+  clerkId      String?  @unique
   email        String   @unique
   displayName  String
   username     String   @unique

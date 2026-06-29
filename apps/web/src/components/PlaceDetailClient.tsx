@@ -1,5 +1,6 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import {
   AcStrengthBar,
@@ -9,6 +10,11 @@ import {
 } from '@freshy/ui';
 import { AppBottomNav } from './AppBottomNav';
 import { PlaceActions } from './PlaceActions';
+
+const SavePlaceButton = dynamic(
+  () => import('./SavePlaceButton').then((m) => ({ default: m.SavePlaceButton })),
+  { ssr: false },
+);
 import { acStrengthLevel, type PlaceDetailDto } from '../lib/api';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
@@ -101,6 +107,7 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
             longitude={place.longitude}
             slug={place.slug}
           />
+          <SavePlaceButton placeId={place.id} />
         </section>
 
         <section className="mt-8 px-margin-mobile">

@@ -1,6 +1,7 @@
 import express, { type Express } from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@freshy/db';
+import { isClerkConfigured } from './auth';
 import { isR2Configured } from './storage/r2';
 import {
   categoryCounts,
@@ -8,6 +9,7 @@ import {
   listPlaces,
   placesQuerySchema,
 } from './places';
+import { registerUserRoutes } from './user-routes';
 
 const prisma = new PrismaClient();
 
@@ -22,6 +24,7 @@ export function createApp(): Express {
       status: 'ok',
       service: 'freshy-api',
       r2: isR2Configured() ? 'configured' : 'not-configured',
+      auth: isClerkConfigured() ? 'configured' : 'not-configured',
     });
   });
 
@@ -72,6 +75,8 @@ export function createApp(): Express {
       res.status(503).json({ error: 'Database unavailable' });
     }
   });
+
+  registerUserRoutes(app, prisma);
 
   return app;
 }

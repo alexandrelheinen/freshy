@@ -214,6 +214,45 @@ In another terminal or browser:
 
 ---
 
+## Clerk auth (Full v0 — saved places & profile)
+
+1. [dashboard.clerk.com](https://dashboard.clerk.com) → **Create application** → name `freshy`
+2. **Configure** → **Email, Phone, Username** → enable **Google** (optional) + **Email**
+3. **API Keys** → copy **Publishable key** and **Secret key**
+
+### Cloudflare Pages (web)
+
+| Variable | Value |
+| -------- | ----- |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | `pk_test_...` or `pk_live_...` |
+
+Redeploy Pages after adding.
+
+### Render (API)
+
+| Variable | Value |
+| -------- | ----- |
+| `CLERK_SECRET_KEY` | `sk_test_...` or `sk_live_...` |
+| `CLERK_AUTHORIZED_PARTIES` | `https://freshy-25e.pages.dev,http://localhost:3000` |
+
+Redeploy API after adding.
+
+### Neon (one-time migration)
+
+After merging the Full v0 branch, apply the new migration:
+
+```bash
+DATABASE_URL="your-neon-uri" pnpm --filter @freshy/db migrate:deploy
+```
+
+### Verify auth
+
+1. `https://freshy-api.onrender.com/health` → `"auth":"configured"`
+2. Open `/profile` on the site → **Sign in**
+3. Save a place on `/places/ice-coffee-central` → appears on profile
+
+---
+
 ## Future — Cloudflare Workers + Hyperdrive
 
 Production target is API on **Cloudflare Workers** with **Hyperdrive** → Neon. That replaces Render when implemented. Until then, Render (or similar) is the supported path.
