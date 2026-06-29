@@ -1,8 +1,9 @@
-/** Default pilot city for seed data (São Paulo center). */
+/** Default pilot city for seed data (Clichy center, 92110). */
 export const PILOT_CITY = {
-  name: 'São Paulo',
-  latitude: -23.5505,
-  longitude: -46.6333,
+  name: 'Clichy',
+  postalCode: '92110',
+  latitude: 48.9042,
+  longitude: 2.3064,
   defaultRadiusKm: 2,
 } as const;
 

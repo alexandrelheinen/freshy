@@ -73,6 +73,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@freshy/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@freshy/ui':
         specifier: workspace:*
         version: link:../../packages/ui

@@ -12,10 +12,11 @@ import {
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
 import { acStrengthLevel, formatDistance } from '../lib/api';
+import { PILOT_CITY } from '@freshy/db/geo';
 import { AppBottomNav } from './AppBottomNav';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
-const DEFAULT_CENTER = { latitude: -23.5505, longitude: -46.6333 };
+const DEFAULT_CENTER = { latitude: PILOT_CITY.latitude, longitude: PILOT_CITY.longitude };
 
 const FILTER_CHIPS: Array<{ label: string; category?: string }> = [
   { label: 'All' },
@@ -39,7 +40,11 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string | undefined>();
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [viewState, setViewState] = useState({
+  const [viewState, setViewState] = useState<{
+    latitude: number;
+    longitude: number;
+    zoom: number;
+  }>({
     latitude: DEFAULT_CENTER.latitude,
     longitude: DEFAULT_CENTER.longitude,
     zoom: 13,
