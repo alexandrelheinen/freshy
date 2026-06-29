@@ -54,10 +54,11 @@ apps/mobile/ios/
 *.db
 *.sqlite
 
-# GCP credentials (never commit)
+# Cloudflare / R2 credentials (never commit)
 *-sa-key.json
 service-account*.json
 gcloud-key.json
+.wrangler/
 
 # Prisma
 packages/db/prisma/migrations/**/migration_lock.toml

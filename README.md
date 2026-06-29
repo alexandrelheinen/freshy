@@ -4,16 +4,16 @@
 
 ## Repository structure
 
-| Path              | Package          | Description                     |
-| ----------------- | ---------------- | ------------------------------- |
-| `apps/web`        | `@freshy/web`    | Next.js PWA — 4 main screens    |
-| `apps/mobile`     | `@freshy/mobile` | Expo — Android & iOS            |
-| `packages/api`    | `@freshy/api`    | REST API + Google Cloud Storage |
-| `packages/db`     | `@freshy/db`     | Prisma + PostgreSQL             |
-| `packages/ui`     | `@freshy/ui`     | Shared React components         |
-| `packages/config` | `@freshy/config` | ESLint + Tailwind tokens        |
+| Path              | Package          | Description                          |
+| ----------------- | ---------------- | ------------------------------------ |
+| `apps/web`        | `@freshy/web`    | Next.js PWA → **Cloudflare Pages**   |
+| `apps/mobile`     | `@freshy/mobile` | Expo — Android & iOS (EAS)           |
+| `packages/api`    | `@freshy/api`    | REST API + **Cloudflare R2**         |
+| `packages/db`     | `@freshy/db`     | Prisma + PostgreSQL (Neon/Supabase) |
+| `packages/ui`     | `@freshy/ui`     | Shared React components              |
+| `packages/config` | `@freshy/config` | ESLint + Tailwind tokens             |
 
-See [docs/architecture.md](docs/architecture.md), [docs/roadmap.md](docs/roadmap.md), and [CONTRIBUTING.md](CONTRIBUTING.md).
+See [docs/architecture.md](docs/architecture.md), [docs/infrastructure.md](docs/infrastructure.md), [docs/roadmap.md](docs/roadmap.md), and [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Quick start
 
@@ -38,11 +38,23 @@ pnpm dev                         # web :3000 + api :4000
 
 ## CI/CD
 
-- **Pull requests** — lint, typecheck, tests, build, and **4-page screenshot preview** posted as a PR comment
+- **Pull requests** — lint, typecheck, tests, build, and **4-page screenshot preview** posted as a PR comment (hosted on **R2** when configured)
 - **Releases** (`v*`) — Expo EAS builds for **Android** and **iOS**
 
-Configure GitHub secrets: `GCP_PROJECT_ID`, `GCS_BUCKET_NAME`, `GCP_SA_KEY`, `EXPO_TOKEN`.  
-See [infrastructure/gcp/README.md](infrastructure/gcp/README.md).
+Configure GitHub secrets: `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_PUBLIC_URL`, `EXPO_TOKEN`.  
+See [infrastructure/cloudflare/README.md](infrastructure/cloudflare/README.md).
+
+## Infrastructure
+
+| Provider | Services |
+| -------- | -------- |
+| **Cloudflare** | Pages (web), Workers (API), R2 (storage), Hyperdrive (DB pool), DNS, CDN |
+| **Neon / Supabase** | PostgreSQL 16 + PostGIS |
+| **Mapbox** | Map tiles & geocoding |
+| **Expo EAS** | Mobile builds |
+| **GitHub Actions** | CI pipeline |
+
+Full split: [docs/infrastructure.md](docs/infrastructure.md).
 
 ## Design reference
 

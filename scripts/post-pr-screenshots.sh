@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Upload PR screenshots to GCS and output markdown for PR comment.
+# Upload PR screenshots to Cloudflare R2 and output markdown for PR comment.
 set -euo pipefail
 
 SCREENSHOTS_DIR="${1:-screenshots}"
@@ -10,8 +10,11 @@ if [ ! -d "${SCREENSHOTS_DIR}" ]; then
   exit 0
 fi
 
-BUCKET="${GCS_BUCKET_NAME:-}"
-PROJECT="${GCP_PROJECT_ID:-}"
+ACCOUNT_ID="${R2_ACCOUNT_ID:-}"
+ACCESS_KEY="${R2_ACCESS_KEY_ID:-}"
+SECRET_KEY="${R2_SECRET_ACCESS_KEY:-}"
+BUCKET="${R2_BUCKET_NAME:-}"
+PUBLIC_URL="${R2_PUBLIC_URL:-}"
 
 MARKDOWN_FILE="${SCREENSHOTS_DIR}/pr-comment.md"
 : > "${MARKDOWN_FILE}"
@@ -28,21 +31,33 @@ PAGES=(
   "profile:Meu Perfil"
 )
 
-if [ -n "${BUCKET}" ] && [ -n "${PROJECT}" ] && [ -n "${PR_NUMBER}" ]; then
-  echo "Uploading screenshots to gs://${BUCKET}/ci/pr-${PR_NUMBER}/"
+r2_configured() {
+  [ -n "${ACCOUNT_ID}" ] && [ -n "${ACCESS_KEY}" ] && [ -n "${SECRET_KEY}" ] && [ -n "${BUCKET}" ] && [ -n "${PUBLIC_URL}" ] && [ -n "${PR_NUMBER}" ]
+}
+
+if r2_configured; then
+  ENDPOINT="https://${ACCOUNT_ID}.r2.cloudflarestorage.com"
+  export AWS_ACCESS_KEY_ID="${ACCESS_KEY}"
+  export AWS_SECRET_ACCESS_KEY="${SECRET_KEY}"
+  export AWS_DEFAULT_REGION="auto"
+
+  echo "Uploading screenshots to R2 bucket ${BUCKET}/ci/pr-${PR_NUMBER}/"
   for entry in "${PAGES[@]}"; do
     file="${entry%%:*}"
     label="${entry##*:}"
     src="${SCREENSHOTS_DIR}/${file}.png"
     if [ -f "${src}" ]; then
       dest="ci/pr-${PR_NUMBER}/${file}.png"
-      gcloud storage cp "${src}" "gs://${BUCKET}/${dest}" --quiet
-      url="https://storage.googleapis.com/${BUCKET}/${dest}"
+      aws s3 cp "${src}" "s3://${BUCKET}/${dest}" \
+        --endpoint-url "${ENDPOINT}" \
+        --content-type "image/png" \
+        --quiet
+      url="${PUBLIC_URL%/}/${dest}"
       echo "| ${label} | ![${label}](${url}) |" >> "${MARKDOWN_FILE}"
     fi
   done
 else
-  echo "> GCS not configured — download screenshots from the workflow **Artifacts** tab." >> "${MARKDOWN_FILE}"
+  echo "> R2 not configured — download screenshots from the workflow **Artifacts** tab." >> "${MARKDOWN_FILE}"
   echo "" >> "${MARKDOWN_FILE}"
   for entry in "${PAGES[@]}"; do
     file="${entry%%:*}"

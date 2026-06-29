@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "@freshy/db": "workspace:*",
-    "@google-cloud/storage": "^7.14.0",
+    "@aws-sdk/client-s3": "^3.726.1",
+    "@aws-sdk/s3-request-presigner": "^3.726.1",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "zod": "^3.24.1"

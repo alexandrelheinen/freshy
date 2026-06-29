@@ -4,19 +4,21 @@
 
 Freshy is a **pnpm monorepo** managed with **Turborepo**. Each sub-project lives in its own folder with independent `package.json`, scripts, and CI integration.
 
+**Hosting strategy:** Cloudflare-first (Pages, Workers, R2). PostgreSQL + PostGIS runs on Neon or Supabase; Mapbox and Expo EAS remain external.
+
 ```
 freshy/
 ├── apps/
-│   ├── web/                 # @freshy/web — Next.js PWA
-│   └── mobile/              # @freshy/mobile — Expo (Android/iOS)
+│   ├── web/                 # @freshy/web — Next.js PWA → Cloudflare Pages
+│   └── mobile/              # @freshy/mobile — Expo (Android/iOS) → EAS
 ├── packages/
-│   ├── api/                 # @freshy/api — Express REST + Google Cloud Storage
+│   ├── api/                 # @freshy/api — Express (local) + R2; Workers in prod
 │   ├── db/                  # @freshy/db — Prisma + PostgreSQL
 │   ├── ui/                  # @freshy/ui — Shared React components
 │   └── config/              # @freshy/config — ESLint + Tailwind preset
 ├── infrastructure/
 │   ├── docker/              # Local PostGIS via Docker Compose
-│   └── gcp/                 # Google Cloud Storage setup guide
+│   └── cloudflare/          # R2, Pages, Workers setup + wrangler template
 ├── scripts/
 │   ├── validation.sh        # Full local validation pipeline
 │   ├── build.sh             # Compile all packages
@@ -24,11 +26,13 @@ freshy/
 │   └── post-pr-screenshots.sh
 ├── docs/
 │   ├── stitch/              # Stitch design export (reference)
+│   ├── infrastructure.md    # Cloudflare vs external providers
 │   ├── roadmap.md           # Product & phase plan
 │   ├── architecture.md      # This file
 │   ├── development-cycle.md # TDD workflow (mandatory)
 │   ├── quality-standards.md # Per-language quality rules
-│   └── git-rules.md         # Branching & PR rules
+│   ├── git-rules.md         # Branching & PR rules
+│   └── todo_0.md            # Pre-Phase-1 checklist
 └── screenshots/             # CI-generated page previews (gitignored)
 ```
 
@@ -43,7 +47,7 @@ freshy/
 | 4 — Auth & profile | `apps/web` `/profile`, `packages/api`          | User accounts, saved places    |
 | 5 — Reviews        | `packages/db` `Review`, `packages/api`         | Climate reviews, points        |
 | 6 — PWA            | `apps/web`                                     | Service worker, install prompt |
-| 7 — Launch         | `infrastructure/gcp`, CI/CD                    | GCS assets, production deploy  |
+| 7 — Launch         | `infrastructure/cloudflare`, CI/CD             | R2 assets, production deploy   |
 | Mobile             | `apps/mobile`                                  | Android + iOS via Expo EAS     |
 
 ## Data flow
@@ -52,16 +56,16 @@ freshy/
 flowchart LR
     Web[apps/web] --> API[packages/api]
     Mobile[apps/mobile] --> API
-    API --> DB[(PostgreSQL)]
-    API --> GCS[(Google Cloud Storage)]
+    API --> DB[(PostgreSQL via Hyperdrive)]
+    API --> R2[(Cloudflare R2)]
     Web --> UI[packages/ui]
     Mobile --> UI
     DB --> Prisma[packages/db]
 ```
 
-## Storage (Google Cloud)
+## Storage (Cloudflare R2)
 
-All binary assets (place photos, avatars, CI screenshots) use **Google Cloud Storage**. See [`infrastructure/gcp/README.md`](../infrastructure/gcp/README.md).
+All binary assets (place photos, avatars, CI screenshots) use **Cloudflare R2**. See [`infrastructure/cloudflare/README.md`](../infrastructure/cloudflare/README.md) and [`docs/infrastructure.md`](infrastructure.md).
 
 ## Local development
 
@@ -85,11 +89,13 @@ pnpm dev
 | API      | http://localhost:4000 |
 | Postgres | localhost:5432        |
 
+R2 is optional locally — set `R2_*` env vars to test uploads.
+
 ## CI/CD
 
 | Workflow      | Trigger             | Actions                                                      |
 | ------------- | ------------------- | ------------------------------------------------------------ |
-| `ci.yml`      | Pull request        | Lint, typecheck, test, build, 4-page screenshots, PR comment |
+| `ci.yml`      | Pull request        | Lint, typecheck, test, build, 4-page screenshots → R2, PR comment |
 | `release.yml` | GitHub Release `v*` | EAS build Android + iOS                                      |
 
 ## Scripts reference

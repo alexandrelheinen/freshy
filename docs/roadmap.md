@@ -72,13 +72,13 @@ UI language in the designs is **Brazilian Portuguese**; architecture should supp
 
 | Concern             | Technology                                                                | Notes                                                    |
 | ------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------- |
-| **API**             | Next.js Route Handlers + tRPC or REST                                     | Start colocated; extract to standalone service if needed |
+| **API**             | Express (local dev) → **Cloudflare Workers** (production)                 | Start with Express; deploy to Workers + Hyperdrive       |
 | **ORM**             | Prisma                                                                    | Migrations, type-safe queries                            |
 | **Database**        | PostgreSQL 16 + **PostGIS**                                               | `ST_DWithin`, spatial indexes for “near me”              |
 | **Auth**            | [Clerk](https://clerk.com/) or [Supabase Auth](https://supabase.com/auth) | Social login (Google), JWT sessions                      |
-| **File storage**    | Cloudflare R2 or Supabase Storage                                         | Place photos, avatars                                    |
+| **File storage**    | **Cloudflare R2**                                                         | Place photos, avatars, CI screenshots                    |
 | **Search**          | PostgreSQL full-text + PostGIS filters                                    | Upgrade to Meilisearch if search latency matters         |
-| **Background jobs** | Inngest or BullMQ + Redis                                                 | Score aggregation, image processing, notifications       |
+| **Background jobs** | Cloudflare Queues or BullMQ + Redis                                       | Score aggregation, image processing, notifications       |
 
 ### External services
 
@@ -88,31 +88,39 @@ UI language in the designs is **Brazilian Portuguese**; architecture should supp
 | **OpenWeather / Tomorrow.io** (optional) | Outdoor heat context (“heat wave alert”)           |
 | **Resend / SendGrid**                    | Transactional email (welcome, review reminders)    |
 | **Sentry**                               | Error monitoring                                   |
-| **PostHog** or Plausible                 | Product analytics (privacy-friendly)               |
+| **PostHog** or **Cloudflare Web Analytics** | Product analytics (privacy-friendly)               |
 
 ### DevOps & infrastructure
 
 | Concern           | Technology                                             |
 | ----------------- | ------------------------------------------------------ |
-| **Hosting (app)** | Vercel                                                 |
+| **Hosting (web)** | **Cloudflare Pages** (OpenNext adapter for Next.js 15) |
+| **Hosting (API)** | **Cloudflare Workers** + Hyperdrive                    |
 | **Hosting (DB)**  | Neon or Supabase (managed Postgres + PostGIS)          |
-| **CDN / edge**    | Vercel Edge / Cloudflare                               |
-| **CI/CD**         | GitHub Actions — lint, typecheck, test, preview deploy |
-| **Secrets**       | Vercel env vars + GitHub encrypted secrets             |
-| **IaC (later)**   | Terraform or Pulumi when multi-env complexity grows    |
+| **Object storage**| **Cloudflare R2**                                      |
+| **CDN / edge**    | Cloudflare CDN (Pages + R2)                            |
+| **CI/CD**         | GitHub Actions — lint, typecheck, test, R2 screenshots |
+| **Secrets**       | Cloudflare dashboard + GitHub encrypted secrets        |
+| **IaC (later)**   | Wrangler + Terraform/Pulumi when multi-env grows       |
 
 ### Monorepo layout (proposed)
 
 ```
 freshy/
 ├── apps/
-│   └── web/                 # Next.js PWA
+│   ├── web/                 # Next.js PWA → Cloudflare Pages
+│   └── mobile/              # Expo → EAS
 ├── packages/
+│   ├── api/                 # Express (local) / Workers (prod) + R2
 │   ├── db/                  # Prisma schema + client
 │   ├── ui/                  # Shared components (design tokens)
 │   └── config/              # ESLint, TS, Tailwind presets
+├── infrastructure/
+│   ├── docker/              # Local PostGIS
+│   └── cloudflare/          # R2, Pages, Workers setup
 ├── docs/
 │   ├── stitch/              # Design reference (existing)
+│   ├── infrastructure.md    # Cloudflare vs external split
 │   └── roadmap.md           # This file
 └── .github/workflows/
 ```
@@ -169,11 +177,11 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 - [x] Add shared UI shell: `TopAppBar`, `BottomNavBar`, glass card primitives
 - [x] Set up Prisma + PostgreSQL (local Docker Compose with PostGIS image)
 - [x] Configure GitHub Actions: install, lint, typecheck
-- [ ] Deploy empty shell to Vercel (preview + production)
+- [ ] Deploy empty shell to Cloudflare Pages (preview + production)
 
 **Exit criteria:** App loads with correct branding, typography, and bottom navigation — no real data yet.
 
-**Before Phase 1:** complete the manual checklist in [todo_0.md](todo_0.md) (Vercel deploy, pilot city, Mapbox, remote DB).
+**Before Phase 1:** complete the manual checklist in [todo_0.md](todo_0.md) (Cloudflare Pages deploy, pilot city, Mapbox, remote DB).
 
 ---
 
@@ -272,8 +280,8 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 
 - [ ] Admin UI (protected): approve new places, edit categories, feature “Destaque”
 - [ ] Place submission flow (user suggests a new venue → moderation queue)
-- [ ] Image upload for places (R2/Supabase Storage + resize pipeline)
-- [ ] Sentry + PostHog wired in production
+- [ ] Image upload for places (R2 + Cloudflare Images resize pipeline)
+- [ ] Sentry + Cloudflare Web Analytics wired in production
 - [ ] Privacy policy, terms, LGPD-oriented consent for location data
 - [ ] Load test geo queries; add DB indexes (`GIST` on geography column)
 - [ ] Soft launch in one city; gather feedback
@@ -304,35 +312,35 @@ Not required for first launch; plan when core loop is validated.
 flowchart TB
     subgraph clients [Clients]
         PWA[Next.js PWA]
+        Mobile[Expo app]
     end
 
-    subgraph vercel [Vercel]
-        SSR[SSR / RSC]
-        API[Route Handlers / tRPC]
+    subgraph cf [Cloudflare]
+        Pages[Pages — web]
+        Workers[Workers — API]
+        Hyperdrive[Hyperdrive]
+        R2[(R2)]
     end
 
-    subgraph data [Data Layer]
-        PG[(PostgreSQL + PostGIS)]
-        R2[(Object Storage)]
-        Redis[(Redis - jobs)]
+    subgraph data [External Data]
+        PG[(Neon/Supabase Postgres + PostGIS)]
     end
 
     subgraph external [External Services]
         Mapbox[Mapbox Maps]
         Auth[Clerk / Supabase Auth]
         Sentry[Sentry]
-        Analytics[PostHog]
+        EAS[Expo EAS]
     end
 
-    PWA --> SSR
-    PWA --> API
-    API --> PG
-    API --> R2
-    API --> Redis
-    API --> Auth
+    PWA --> Pages
+    Mobile --> Workers
+    Pages --> Workers
+    Workers --> Hyperdrive --> PG
+    Workers --> R2
     PWA --> Mapbox
-    API --> Sentry
-    PWA --> Analytics
+    Workers --> Auth
+    EAS -.-> Mobile
 ```
 
 ---
@@ -342,7 +350,7 @@ flowchart TB
 | Area              | Target                                                                          |
 | ----------------- | ------------------------------------------------------------------------------- |
 | **Performance**   | LCP < 2.5s on 4G; map markers for 500 places without jank (clustering)          |
-| **Availability**  | 99.5% uptime (Vercel + managed Postgres)                                        |
+| **Availability**  | 99.5% uptime (Cloudflare Pages/Workers + managed Postgres)                      |
 | **Security**      | HTTPS only, OWASP top 10, auth on all write endpoints, input validation via Zod |
 | **Privacy**       | Location used only with consent; no selling of location data (LGPD)             |
 | **Accessibility** | WCAG 2.1 AA on core flows (map is hardest — provide list fallback)              |

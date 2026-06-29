@@ -11,6 +11,7 @@ Thank you for contributing to **Freshy** — the mobile-first cooling map. This 
 | [docs/roadmap.md](docs/roadmap.md)                           | Product phases — pick work from the current phase                     |
 | [docs/todo_0.md](docs/todo_0.md)                             | Manual checklist before Phase 1 (deploy, accounts, decisions)         |
 | [docs/architecture.md](docs/architecture.md)                 | Monorepo layout and data flow                                         |
+| [docs/infrastructure.md](docs/infrastructure.md)             | Cloudflare vs external providers (R2, Pages, Workers, Neon)           |
 | [docs/git-rules.md](docs/git-rules.md)                       | Branching, commits, PR checklist                                      |
 | [docs/stitch/freshy/DESIGN.md](docs/stitch/freshy/DESIGN.md) | Design tokens and UI reference                                        |
 
@@ -129,7 +130,7 @@ pnpm dev    # web :3000, api :4000
 | Web screens (PWA)        | `apps/web/src/app/`              |
 | Mobile screens           | `apps/mobile/app/`               |
 | Shared UI components     | `packages/ui/src/`               |
-| REST API / GCS           | `packages/api/src/`              |
+| REST API / R2            | `packages/api/src/`              |
 | Database schema          | `packages/db/prisma/`            |
 | ESLint / Tailwind tokens | `packages/config/`               |
 | CI / scripts             | `.github/workflows/`, `scripts/` |
