@@ -1,4 +1,5 @@
-import { BottomNavBar, GlassCard } from '@freshy/ui';
+import { GlassCard } from '@freshy/ui';
+import { AppBottomNav } from '../../components/AppBottomNav';
 
 export default function ProfilePage() {
   return (
@@ -45,7 +46,7 @@ export default function ProfilePage() {
         </section>
       </main>
 
-      <BottomNavBar active="profile" />
+      <AppBottomNav active="profile" />
     </div>
   );
 }

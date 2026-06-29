@@ -1,15 +1,14 @@
-import { BottomNavBar, GlassCard } from '@freshy/ui';
+import { GlassCard, PLACE_CATEGORY_LABELS, AC_STRENGTH_LABELS } from '@freshy/ui';
+import { AppBottomNav } from '../../components/AppBottomNav';
+import { fetchCategoryMeta } from '../../lib/api';
 
-const categories = [
-  { name: 'Cafés & Bakeries', count: 24 },
-  { name: 'Restaurants', count: 42 },
-  { name: 'Libraries', count: 8 },
-  { name: 'Malls', count: 15 },
-  { name: 'Museums', count: 12 },
-  { name: 'Coworking', count: 31 },
-];
+export const dynamic = 'force-dynamic';
 
-export default function CoolingPage() {
+export default async function CoolingPage() {
+  const meta = await fetchCategoryMeta();
+  const categories = meta?.categories ?? [];
+  const featured = meta?.featured;
+
   return (
     <div className="min-h-screen pb-32" data-page="cooling">
       <header className="fixed top-0 z-50 flex h-16 w-full items-center justify-between bg-surface/80 px-margin-mobile shadow-sm backdrop-blur-md">
@@ -19,18 +18,19 @@ export default function CoolingPage() {
       <main className="mx-auto max-w-4xl px-margin-mobile pt-24">
         <section className="mb-8 rounded-xl bg-gradient-to-br from-primary-container/20 to-secondary-container/20 p-6">
           <h2 className="text-2xl font-semibold">Categories</h2>
-          <p className="mt-2 text-on-surface-variant">
-            Find the perfect refuge from the heat.
-          </p>
+          <p className="mt-2 text-on-surface-variant">Find the perfect refuge from the heat.</p>
         </section>
 
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
           {categories.map((cat) => (
-            <GlassCard key={cat.name} className="flex flex-col items-center p-6 text-center">
+            <GlassCard key={cat.category} className="flex flex-col items-center p-6 text-center">
               <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary-container/30 text-2xl">
                 ❄
               </div>
-              <span className="font-semibold">{cat.name}</span>
+              <span className="font-semibold">
+                {PLACE_CATEGORY_LABELS[cat.category as keyof typeof PLACE_CATEGORY_LABELS] ??
+                  cat.category}
+              </span>
               <span className="mt-2 text-xs font-bold uppercase text-secondary">
                 {cat.count} places
               </span>
@@ -38,20 +38,30 @@ export default function CoolingPage() {
           ))}
         </div>
 
-        <section className="mt-8">
-          <h3 className="mb-4 text-lg font-semibold">Today&apos;s Highlight</h3>
-          <GlassCard className="h-48 overflow-hidden">
-            <div className="flex h-full flex-col justify-end bg-gradient-to-t from-black/50 to-primary-container/30 p-4">
-              <span className="text-xs font-bold uppercase text-white/90">
-                Most popular in libraries
-              </span>
-              <h4 className="text-xl font-semibold text-white">Central Library</h4>
-            </div>
-          </GlassCard>
-        </section>
+        {featured && (
+          <section className="mt-8">
+            <h3 className="mb-4 text-lg font-semibold">Today&apos;s Highlight</h3>
+            <GlassCard className="h-48 overflow-hidden">
+              <div className="flex h-full flex-col justify-end bg-gradient-to-t from-black/50 to-primary-container/30 p-4">
+                <span className="text-xs font-bold uppercase text-white/90">
+                  Coldest pick nearby
+                </span>
+                <h4 className="text-xl font-semibold text-white">{featured.name}</h4>
+                <p className="text-sm text-white/80">
+                  {featured.aggregatedTemperatureC != null
+                    ? `${Math.round(featured.aggregatedTemperatureC)}°C · `
+                    : ''}
+                  {featured.aggregatedAcStrength
+                    ? AC_STRENGTH_LABELS[featured.aggregatedAcStrength]
+                    : ''}
+                </p>
+              </div>
+            </GlassCard>
+          </section>
+        )}
       </main>
 
-      <BottomNavBar active="cooling" />
+      <AppBottomNav active="cooling" />
     </div>
   );
 }

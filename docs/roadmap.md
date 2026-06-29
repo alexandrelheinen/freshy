@@ -177,11 +177,11 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 - [x] Add shared UI shell: `TopAppBar`, `BottomNavBar`, glass card primitives
 - [x] Set up Prisma + PostgreSQL (local Docker Compose with PostGIS image)
 - [x] Configure GitHub Actions: install, lint, typecheck
-- [ ] Deploy empty shell to Cloudflare Pages (preview + production)
+- [ ] Deploy empty shell to Cloudflare Pages (preview + production) — **you:** [setup-guide.md](setup-guide.md) Part E
 
 **Exit criteria:** App loads with correct branding, typography, and bottom navigation — no real data yet.
 
-**Before Phase 1:** complete [Milestone 0 — Bootstrap](milestones/phase-0-bootstrap.md) (Cloudflare Pages deploy, pilot city, Mapbox, remote DB).
+**Before Phase 1:** complete [Milestone 0 — Bootstrap](milestones/phase-0-bootstrap.md) or follow [setup-guide.md](setup-guide.md).
 
 ---
 
@@ -189,14 +189,14 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 
 **Goal:** Explore screen works with real geo data on a map.
 
-- [ ] Define Prisma schema: `Place`, `Category`
-- [ ] Seed database with ~50 sample venues in one pilot city (e.g. São Paulo or Porto)
-- [ ] Integrate Mapbox GL JS with custom light/cool map style
-- [ ] Implement geolocation (“you are here” marker)
-- [ ] Render place markers with coolness-based color intensity
-- [ ] Build floating search bar + category filter chips (client-side filter first)
-- [ ] Bottom preview card when a marker is selected (name, distance, temp, AC bar)
-- [ ] API: `GET /places?lat&lng&radius&category&q`
+- [x] Define Prisma schema: `Place`, `Category`
+- [x] Seed database with ~50 sample venues in one pilot city (São Paulo)
+- [x] Integrate Mapbox GL JS with custom light/cool map style (requires `NEXT_PUBLIC_MAPBOX_TOKEN`)
+- [x] Implement geolocation (“you are here” marker)
+- [x] Render place markers with coolness-based color intensity
+- [x] Build floating search bar + category filter chips (client-side filter first)
+- [x] Bottom preview card when a marker is selected (name, distance, temp, AC bar)
+- [x] API: `GET /places?lat&lng&radius&category&q`
 
 **Exit criteria:** User opens app, sees map, taps pins, reads preview card. Matches `mapa_freshy` screen.
 
@@ -206,12 +206,12 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 
 **Goal:** Full place page with static/seeded content.
 
-- [ ] Route: `/places/[slug]`
-- [ ] Hero image, open/closed badge, interior temperature, AC strength component
-- [ ] Amenity chips, description, mini-map section
-- [ ] “Como Chegar” — deep link to Google Maps / Waze / Apple Maps
-- [ ] Share place (Web Share API + fallback copy link)
-- [ ] API: `GET /places/:slug`
+- [x] Route: `/places/[slug]`
+- [x] Hero image, open/closed badge, interior temperature, AC strength component
+- [x] Amenity chips, description, mini-map section
+- [x] “Get Directions” — deep link to Google Maps
+- [x] Share place (Web Share API + fallback copy link)
+- [x] API: `GET /places/:slug`
 
 **Exit criteria:** Tapping a marker → detail page. Matches `detalhes_do_local` screen.
 
@@ -221,11 +221,11 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 
 **Goal:** Browse places by type without the map.
 
-- [ ] Route: `/cooling` (Categories screen)
-- [ ] Category grid with live counts from DB
-- [ ] “Destaque de Hoje” — featured place (editorial flag or highest score)
+- [x] Route: `/cooling` (Categories screen)
+- [x] Category grid with live counts from DB
+- [x] “Today’s Highlight” — featured place (coldest FRIGID venue)
 - [ ] Category drill-down list view
-- [ ] Wire bottom nav: Explore ↔ Cooling ↔ Profile
+- [x] Wire bottom nav: Explore ↔ Cooling ↔ Profile
 
 **Exit criteria:** Cooling tab matches `categorias_de_lugares` screen.
 
