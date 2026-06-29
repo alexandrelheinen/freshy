@@ -131,14 +131,18 @@ Port display-lg and body-lg scales into tailwind preset with unit tests.
 4. Wait for CI:
    - Format, lint, typecheck, test, build
    - Page screenshots (UI changes)
+5. Confirm the PR is **mergeable** into current `main`:
+   - `git fetch origin && git rebase origin/main` (resolve conflicts if any)
+   - `git push --force-with-lease` after a rebase
+   - On GitHub, the PR must not show merge or rebase conflicts
 
-**Output:** PR with green CI and screenshot previews.
+**Output:** PR with green CI, screenshot previews, and a mergeable branch.
 
 ### Step 9 — Review and merge
 
 - Address review feedback; repeat Steps 3–6 for each fix.
 - Ensure roadmap checkboxes are updated if the item is complete.
-- Merge to `main` only after CI passes.
+- Merge to `main` only after CI passes **and** the PR remains mergeable.
 
 ---
 
@@ -158,7 +162,7 @@ flowchart TD
     I --> J{Passes?}
     J -->|No| E
     J -->|Yes| K[Commit + push + PR]
-    K --> L[CI green + review]
+    K --> L[CI green + PR mergeable]
     L --> M[Merge to main]
 ```
 
@@ -234,6 +238,7 @@ This keeps review easy and proves TDD was followed.
 | ------------------------------------ | ------------------------------------------------- |
 | Implement first, test later          | Misses design feedback; often untested edge cases |
 | Skip `validation.sh` before PR       | Wastes CI time; blocks merge                      |
+| Mark task done with a conflicting PR | Branch cannot merge or rebase; blocks integration |
 | Large PRs spanning multiple phases   | Hard to review; conflicts with roadmap ordering   |
 | Ad-hoc colors/spacing outside tokens | Breaks design consistency                         |
 | Commit secrets or `.env`             | Security incident                                 |
