@@ -79,16 +79,16 @@ const DESCRIPTIONS = [
 ];
 
 const STREETS = [
-  'Augusta St',
-  'Paulista Ave',
-  'Consolação St',
-  'Ipiranga Ave',
-  'Brigadeiro Faria Lima Ave',
-  'Oscar Freire St',
-  'Rebouças Ave',
-  'Tatuapé Square',
-  'Liberdade District',
-  'Historic Center',
+  'Rue Martre',
+  'Rue de Paris',
+  'Bd Jean Jaurès',
+  'Rue de l\'Ancienne Mairie',
+  'Rue Villeneuve',
+  'Rue Claude Monet',
+  'Rue Buffon',
+  'Avenue Anatole France',
+  'Rue de l\'Église',
+  'Place de la République',
 ];
 
 function slugify(name: string): string {
@@ -155,7 +155,7 @@ async function main() {
         category,
         latitude: offsetCoordinate(index, 'lat'),
         longitude: offsetCoordinate(index, 'lng'),
-        address: `${STREETS[index % STREETS.length]}, ${PILOT_CITY.name}`,
+        address: `${STREETS[index % STREETS.length]}, ${PILOT_CITY.postalCode} ${PILOT_CITY.name}`,
         aggregatedTemperatureC: temp,
         aggregatedAcStrength: ac,
       });
