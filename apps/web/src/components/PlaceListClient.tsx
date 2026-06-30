@@ -1,13 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import {
-  PLACE_TAG_LABELS,
-  PLACE_TAGS,
-  MaterialIcon,
-  PLACE_CATEGORY_LABELS,
-  type PlaceCategory,
-} from '@freshy/ui';
+import { PLACE_TAGS, MaterialIcon, PLACE_CATEGORY_LABELS, type PlaceCategory } from '@freshy/ui';
 import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceListCard } from './PlaceListCard';
 import type { PlaceDto } from '../lib/api';

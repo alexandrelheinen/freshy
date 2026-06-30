@@ -16,7 +16,7 @@ describe('create-place', () => {
       latitude: 48.9,
       longitude: 2.3,
       aggregatedTemperatureC: 22,
-      aggregatedAcStrength: 'COMFORTABLE',
+      aggregatedFreshnessLevel: 'MODEST_AC',
       tags: ['calm'],
       status: 'PUBLISHED',
     });
@@ -31,7 +31,7 @@ describe('create-place', () => {
       latitude: 48.9,
       longitude: 2.3,
       aggregatedTemperatureC: 40,
-      aggregatedAcStrength: 'COMFORTABLE',
+      aggregatedFreshnessLevel: 'MODEST_AC',
     });
     assert.equal(parsed.success, false);
   });

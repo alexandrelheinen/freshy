@@ -2,18 +2,18 @@
 
 import Link from 'next/link';
 import {
-  AC_STRENGTH_LABELS,
+  FRESHNESS_LEVEL_LABELS,
   PLACE_TAG_LABELS,
   MaterialIcon,
   ROUTES,
   getPlacePhotoUrl,
   filterValidPlaceTags,
   type PlaceCategory,
-  type PlaceTagId,
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
-import { acStrengthLevel, formatDistanceWithWalk } from '../lib/api';
-import { acStrengthLabel, acStrengthPowerLabel } from './map-markers';
+import { freshnessBarState, formatDistanceWithWalk } from '../lib/api';
+import { freshnessLabel, freshnessPowerLabel } from './map-markers';
+import { FreshnessBar } from '@freshy/ui';
 
 export function PlaceListCard({
   place,
@@ -26,8 +26,9 @@ export function PlaceListCard({
   bookmarkFilled?: boolean;
   onBookmarkClick?: () => void;
 }) {
-  const level = acStrengthLevel(place.aggregatedAcStrength);
+  const bar = freshnessBarState(place.aggregatedFreshnessLevel);
   const placeTags = filterValidPlaceTags(place.tags ?? []);
+  const isGreen = bar.tone === 'green';
 
   return (
     <Link href={ROUTES.place(place.slug)} className="group block">
@@ -53,21 +54,21 @@ export function PlaceListCard({
               </button>
             </div>
           ) : null}
-          {place.aggregatedAcStrength ? (
+          {place.aggregatedFreshnessLevel ? (
             <div
               className={`absolute bottom-3 left-3 flex items-center gap-1 rounded-full px-3 py-1 font-label-caps text-label-caps shadow-md ${
-                place.aggregatedAcStrength === 'FRIGID'
-                  ? 'bg-primary text-on-primary'
-                  : place.aggregatedAcStrength === 'COMFORTABLE'
-                    ? 'bg-primary/70 text-on-primary backdrop-blur-md'
+                isGreen
+                  ? 'bg-emerald-600 text-white'
+                  : bar.segments >= 3
+                    ? 'bg-primary text-on-primary'
                     : 'bg-primary/70 text-on-primary backdrop-blur-md'
               }`}
             >
               <MaterialIcon
-                name={place.aggregatedAcStrength === 'FRIGID' ? 'ac_unit' : 'climate_mini_split'}
+                name={isGreen ? 'nature' : bar.segments >= 3 ? 'ac_unit' : 'climate_mini_split'}
                 size={14}
               />
-              {acStrengthLabel(place.aggregatedAcStrength)}
+              {freshnessLabel(place.aggregatedFreshnessLevel)}
             </div>
           ) : null}
         </div>
@@ -95,18 +96,26 @@ export function PlaceListCard({
                 {PLACE_TAG_LABELS[tag]}
               </span>
             ))}
-            {place.aggregatedAcStrength ? (
-              <span className="rounded-full bg-secondary-fixed px-3 py-1 text-[10px] font-bold uppercase text-on-secondary-fixed-variant">
-                {AC_STRENGTH_LABELS[place.aggregatedAcStrength]}
+            {place.aggregatedFreshnessLevel ? (
+              <span
+                className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase ${
+                  isGreen
+                    ? 'bg-emerald-100 text-emerald-800'
+                    : 'bg-secondary-fixed text-on-secondary-fixed-variant'
+                }`}
+              >
+                {FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]}
               </span>
             ) : null}
           </div>
-          <div className="flex items-center gap-1">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className={`status-bar-segment ${i <= level ? 'active' : ''}`} />
-            ))}
-            <span className="ml-2 text-[10px] font-bold uppercase text-primary">
-              {acStrengthPowerLabel(place.aggregatedAcStrength)}
+          <div className="flex items-center gap-2">
+            <FreshnessBar segments={bar.segments} tone={bar.tone} />
+            <span
+              className={`text-[10px] font-bold uppercase ${
+                isGreen ? 'text-emerald-700' : 'text-primary'
+              }`}
+            >
+              {freshnessPowerLabel(place.aggregatedFreshnessLevel)}
             </span>
           </div>
         </div>

@@ -85,7 +85,7 @@ Monorepo layout: [docs/architecture.md](docs/architecture.md).
 | [docs/setup-guide.md](docs/setup-guide.md)                                               | Long-form first-time setup (local + cloud)                  |
 | [docs/infrastructure.md](docs/infrastructure.md)                                         | Cloudflare vs external providers (current + target)         |
 | [docs/architecture.md](docs/architecture.md)                                             | Repo layout, local dev ports, CI                            |
-| [docs/roadmap.md](docs/roadmap.md)                                                       | Product phases and backlog                                  |
+| [docs/place-classification.md](docs/place-classification.md)                             | Place tags and freshness level catalogs                     |
 | [CONTRIBUTING.md](CONTRIBUTING.md)                                                       | Dev cycle, TDD, PR rules                                    |
 | [.cursor/rules/contributing-and-writing.mdc](.cursor/rules/contributing-and-writing.mdc) | Cursor agent writing and code standards                     |
 

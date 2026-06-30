@@ -1,4 +1,4 @@
-import { PrismaClient, PlaceCategory, AcStrength } from '@prisma/client';
+import { PrismaClient, PlaceCategory, FreshnessLevel } from '@prisma/client';
 import { filterValidPlaceTags } from '@freshy/config/place-tags';
 import { PILOT_CITY } from '../src/geo';
 
@@ -122,9 +122,16 @@ function offsetCoordinate(index: number, axis: 'lat' | 'lng'): number {
   return base + delta;
 }
 
-function pickAcStrength(index: number): AcStrength {
-  const options = [AcStrength.LIGHTLY_COOLED, AcStrength.COMFORTABLE, AcStrength.FRIGID];
-  return options[index % options.length] ?? AcStrength.COMFORTABLE;
+function pickFreshnessLevel(index: number, category: PlaceCategory): FreshnessLevel {
+  if (category === PlaceCategory.PUBLIC_SPACE && index % 5 === 0) {
+    return FreshnessLevel.NATURALLY_FRESH;
+  }
+  const options = [
+    FreshnessLevel.GOOD_VENTILATION,
+    FreshnessLevel.MODEST_AC,
+    FreshnessLevel.VERY_COLD_AC,
+  ];
+  return options[index % options.length] ?? FreshnessLevel.MODEST_AC;
 }
 
 async function main() {
@@ -149,20 +156,22 @@ async function main() {
     longitude: number;
     address: string;
     aggregatedTemperatureC: number;
-    aggregatedAcStrength: AcStrength;
+    aggregatedFreshnessLevel: FreshnessLevel;
     tags: string[];
   }> = [];
 
   for (const category of Object.values(PlaceCategory)) {
     for (const name of VENUE_NAMES[category]) {
       const slug = slugify(name);
-      const ac = pickAcStrength(index);
+      const freshness = pickFreshnessLevel(index, category);
       const temp =
-        ac === AcStrength.FRIGID
+        freshness === FreshnessLevel.VERY_COLD_AC
           ? 18 + (index % 3)
-          : ac === AcStrength.COMFORTABLE
+          : freshness === FreshnessLevel.MODEST_AC
             ? 21 + (index % 3)
-            : 24 + (index % 2);
+            : freshness === FreshnessLevel.NATURALLY_FRESH
+              ? 22 + (index % 2)
+              : 24 + (index % 2);
 
       places.push({
         slug,
@@ -173,7 +182,7 @@ async function main() {
         longitude: offsetCoordinate(index, 'lng'),
         address: `${STREETS[index % STREETS.length]}, ${PILOT_CITY.postalCode} ${PILOT_CITY.name}`,
         aggregatedTemperatureC: temp,
-        aggregatedAcStrength: ac,
+        aggregatedFreshnessLevel: freshness,
         tags: filterValidPlaceTags(CATEGORY_TAGS[category]),
       });
       index += 1;

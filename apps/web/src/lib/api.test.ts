@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  acStrengthLevel,
+  freshnessBarState,
   directionsUrl,
   formatDistance,
   formatDistanceWithWalk,
@@ -24,9 +24,10 @@ describe('@freshy/web api helpers', () => {
     assert.equal(formatRelativeTime(yesterday), 'Yesterday');
   });
 
-  it('maps AC strength to bar level', () => {
-    assert.equal(acStrengthLevel('FRIGID'), 3);
-    assert.equal(acStrengthLevel('LIGHTLY_COOLED'), 1);
+  it('maps freshness level to bar segments', () => {
+    assert.equal(freshnessBarState('VERY_COLD_AC').segments, 3);
+    assert.equal(freshnessBarState('GOOD_VENTILATION').segments, 1);
+    assert.equal(freshnessBarState('NATURALLY_FRESH').tone, 'green');
   });
 
   it('builds directions URL from address when available', () => {

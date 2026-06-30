@@ -8,7 +8,8 @@ import {
   PLACE_TAG_ICONS,
   PLACE_TAG_LABELS,
   PLACE_TAGS,
-  AcStrengthBar,
+  FRESHNESS_LEVELS,
+  FreshnessBar,
   MaterialIcon,
   PILOT_CITY,
   PLACE_CATEGORY_LABELS,
@@ -16,17 +17,10 @@ import {
   type MaterialIconName,
   type PlaceCategory,
   type PlaceTagId,
+  type FreshnessLevelId,
 } from '@freshy/ui';
 import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { createUserPlace } from '../lib/user-api';
-
-type AcStrengthChoice = 'LIGHTLY_COOLED' | 'COMFORTABLE' | 'FRIGID';
-
-const AC_OPTIONS: Array<{ value: AcStrengthChoice; level: 1 | 2 | 3; label: string }> = [
-  { value: 'LIGHTLY_COOLED', level: 1, label: 'Lightly Cooled' },
-  { value: 'COMFORTABLE', level: 2, label: 'Comfortable' },
-  { value: 'FRIGID', level: 3, label: 'Frigid' },
-];
 
 export function AddPlaceClient() {
   const router = useRouter();
@@ -36,7 +30,7 @@ export function AddPlaceClient() {
   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
   const [temperature, setTemperature] = useState(22);
-  const [acStrength, setAcStrength] = useState<AcStrengthChoice>('COMFORTABLE');
+  const [freshnessLevel, setFreshnessLevel] = useState<FreshnessLevelId>('MODEST_AC');
   const [tags, setTags] = useState<PlaceTagId[]>(['calm']);
   const [latitude, setLatitude] = useState<number>(PILOT_CITY.latitude);
   const [longitude, setLongitude] = useState<number>(PILOT_CITY.longitude);
@@ -74,7 +68,7 @@ export function AddPlaceClient() {
       latitude,
       longitude,
       aggregatedTemperatureC: temperature,
-      aggregatedAcStrength: acStrength,
+      aggregatedFreshnessLevel: freshnessLevel,
       tags,
       status,
     });
@@ -86,7 +80,7 @@ export function AddPlaceClient() {
     setError('Could not save place. Check that you are signed in and the API is running.');
   }
 
-  const selectedAc = AC_OPTIONS.find((o) => o.value === acStrength)!;
+  const selectedFreshness = FRESHNESS_LEVELS.find((level) => level.id === freshnessLevel)!;
 
   if (!isLoaded) {
     return (
@@ -218,32 +212,34 @@ export function AddPlaceClient() {
           </div>
         </div>
         <div>
-          <label className="mb-3 block font-label-caps text-on-surface-variant">AC intensity</label>
-          <div className="grid grid-cols-3 gap-2 md:gap-3">
-            {AC_OPTIONS.map((option) => (
+          <label className="mb-3 block font-label-caps text-on-surface-variant">
+            Freshness level
+          </label>
+          <div className="grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3">
+            {FRESHNESS_LEVELS.map((option) => (
               <button
-                key={option.value}
+                key={option.id}
                 type="button"
-                onClick={() => setAcStrength(option.value)}
+                onClick={() => setFreshnessLevel(option.id as FreshnessLevelId)}
                 className={`flex flex-col items-center gap-2 rounded-2xl border p-3 transition-all active:scale-95 ${
-                  acStrength === option.value
+                  freshnessLevel === option.id
                     ? 'border-2 border-primary bg-primary/5'
                     : 'border-outline-variant/20 bg-surface/50 hover:border-primary/40'
                 }`}
               >
-                <AcStrengthBar level={option.level} />
+                <FreshnessBar segments={option.barSegments} tone={option.tone} />
                 <span
-                  className={`text-[10px] font-bold uppercase ${
-                    acStrength === option.value ? 'text-primary' : 'text-on-surface-variant'
+                  className={`text-center text-[10px] font-bold uppercase ${
+                    freshnessLevel === option.id ? 'text-primary' : 'text-on-surface-variant'
                   }`}
                 >
-                  {option.label}
+                  {option.shortLabel}
                 </span>
               </button>
             ))}
           </div>
           <p className="mt-2 text-center font-body-sm text-on-primary-container opacity-80">
-            {selectedAc.label}
+            {selectedFreshness.label}
           </p>
         </div>
       </section>
@@ -317,7 +313,7 @@ export function AddPlaceClient() {
               <h3 className="mb-4 font-title-md text-primary">Preview</h3>
               <p className="font-title-md text-on-surface">{name || 'Place name'}</p>
               <p className="mt-1 text-body-sm text-on-surface-variant">
-                {PLACE_CATEGORY_LABELS[category]} · {temperature}°C · {selectedAc.label}
+                {PLACE_CATEGORY_LABELS[category]} · {temperature}°C · {selectedFreshness.label}
               </p>
               <p className="mt-4 text-body-sm text-on-surface-variant">
                 {address || 'Address will appear here'}

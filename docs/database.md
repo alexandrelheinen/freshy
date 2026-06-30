@@ -55,7 +55,8 @@ erDiagram
         string address
         string photoUrl
         float aggregatedTemperatureC
-        enum aggregatedAcStrength
+        enum aggregatedFreshnessLevel
+        string[] tags
         boolean isOpen
         datetime createdAt
         datetime updatedAt
@@ -102,22 +103,22 @@ App users. One demo user is seeded for development.
 
 Cooling venues on the map.
 
-| Column                   | Type            | Notes                                                       |
-| ------------------------ | --------------- | ----------------------------------------------------------- |
-| `id`                     | `TEXT` (cuid)   | Primary key                                                 |
-| `slug`                   | `TEXT`          | Unique URL slug, e.g. `ice-coffee-central`                  |
-| `name`                   | `TEXT`          | Display name                                                |
-| `description`            | `TEXT`          | Optional blurb                                              |
-| `category`               | `PlaceCategory` | See enums below                                             |
-| `latitude` / `longitude` | `FLOAT`         | WGS84 coordinates                                           |
-| `address`                | `TEXT`          | Optional street address                                     |
-| `photoUrl`               | `TEXT`          | Optional, R2 URL in production                              |
-| `aggregatedTemperatureC` | `FLOAT`         | Crowdsourced average (seed uses static values)              |
-| `aggregatedAcStrength`   | `AcStrength`    | Crowdsourced AC level                                       |
-| `amenities`              | `TEXT[]`        | Tags such as `FREE_WIFI`, `QUIET_ZONE` (default `[]`)       |
-| `createdById`            | `TEXT`          | Optional FK to `User` who submitted the place               |
-| `status`                 | `PlaceStatus`   | `DRAFT` or `PUBLISHED` (public list shows `PUBLISHED` only) |
-| `isOpen`                 | `BOOLEAN`       | Default `true`                                              |
+| Column                     | Type             | Notes                                                                         |
+| -------------------------- | ---------------- | ----------------------------------------------------------------------------- |
+| `id`                       | `TEXT` (cuid)    | Primary key                                                                   |
+| `slug`                     | `TEXT`           | Unique URL slug, e.g. `ice-coffee-central`                                    |
+| `name`                     | `TEXT`           | Display name                                                                  |
+| `description`              | `TEXT`           | Optional blurb                                                                |
+| `category`                 | `PlaceCategory`  | See enums below                                                               |
+| `latitude` / `longitude`   | `FLOAT`          | WGS84 coordinates                                                             |
+| `address`                  | `TEXT`           | Optional street address                                                       |
+| `photoUrl`                 | `TEXT`           | Optional, R2 URL in production                                                |
+| `aggregatedTemperatureC`   | `FLOAT`          | Crowdsourced average (seed uses static values)                                |
+| `aggregatedFreshnessLevel` | `FreshnessLevel` | Cooling quality tier (see [place-classification.md](place-classification.md)) |
+| `tags`                     | `TEXT[]`         | Tag IDs from `packages/config/place-tags.yaml` (default `[]`)                 |
+| `createdById`              | `TEXT`           | Optional FK to `User` who submitted the place                                 |
+| `status`                   | `PlaceStatus`    | `DRAFT` or `PUBLISHED` (public list shows `PUBLISHED` only)                   |
+| `isOpen`                   | `BOOLEAN`        | Default `true`                                                                |
 
 **Indexes:** `category`, `(latitude, longitude)`, unique `slug`.
 
@@ -152,13 +153,17 @@ User bookmarks (unique per user + place pair). Full list at `/saved`; carousel o
 | `COWORKING`    | Coworking          |
 | `PUBLIC_SPACE` | Public space       |
 
-### `AcStrength`
+### `FreshnessLevel`
 
-| Value            | Meaning     |
-| ---------------- | ----------- |
-| `LIGHTLY_COOLED` | Light AC    |
-| `COMFORTABLE`    | Comfortable |
-| `FRIGID`         | Very cold   |
+See [place-classification.md](place-classification.md) for full definitions.
+
+| Value              | Meaning                             |
+| ------------------ | ----------------------------------- |
+| `NONE`             | No mechanical cooling               |
+| `GOOD_VENTILATION` | Good ventilation, lowest blue tier  |
+| `MODEST_AC`        | Modest pleasant air conditioning    |
+| `VERY_COLD_AC`     | Very cold air conditioning          |
+| `NATURALLY_FRESH`  | Naturally cool, green pinnacle tier |
 
 ### `PlaceStatus`
 
@@ -224,6 +229,8 @@ Run from repository root unless noted.
 | -------------------------------------------- | ---------------------------------------------------- |
 | `20250629200000_init`                        | Creates enums, four tables, indexes, foreign keys    |
 | `20250630120000_place_amenities_and_creator` | Adds `amenities`, `createdById`, `status` on `Place` |
+| `20250630140000_place_tags`                  | Renames `amenities` to `tags`                        |
+| `20250630150000_freshness_levels`            | Replaces `AcStrength` with `FreshnessLevel` enum     |
 
 Migration SQL: [`packages/db/prisma/migrations/20250629200000_init/migration.sql`](../packages/db/prisma/migrations/20250629200000_init/migration.sql)
 

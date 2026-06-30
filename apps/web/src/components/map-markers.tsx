@@ -1,35 +1,57 @@
 'use client';
 
 import {
+  FRESHNESS_LEVEL_SHORT_LABELS,
   MaterialIcon,
   PLACE_CATEGORY_ICONS,
+  freshnessBarSegments,
+  freshnessTone,
+  type FreshnessLevelId,
   type MaterialIconName,
   type PlaceCategory,
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
 
-export function markerPinStyle(strength: PlaceDto['aggregatedAcStrength']): {
+function freshnessId(
+  strength: PlaceDto['aggregatedFreshnessLevel'],
+): FreshnessLevelId | null | undefined {
+  return strength as FreshnessLevelId | null | undefined;
+}
+
+export function markerPinStyle(strength: PlaceDto['aggregatedFreshnessLevel']): {
   bgClass: string;
   opacity: string;
 } {
-  if (strength === 'FRIGID') return { bgClass: 'bg-primary', opacity: '' };
-  if (strength === 'COMFORTABLE') return { bgClass: 'bg-primary', opacity: 'opacity-80' };
+  const tone = freshnessTone(freshnessId(strength));
+  if (tone === 'green') return { bgClass: 'bg-emerald-600', opacity: '' };
+  const segments = freshnessBarSegments(freshnessId(strength));
+  if (segments >= 3) return { bgClass: 'bg-primary', opacity: '' };
+  if (segments === 2) return { bgClass: 'bg-primary', opacity: 'opacity-80' };
   return { bgClass: 'bg-primary', opacity: 'opacity-60' };
 }
 
-export function desktopMarkerStyle(strength: PlaceDto['aggregatedAcStrength']): {
+export function desktopMarkerStyle(strength: PlaceDto['aggregatedFreshnessLevel']): {
   badgeClass: string;
   pinClass: string;
   textClass: string;
 } {
-  if (strength === 'FRIGID') {
+  const tone = freshnessTone(freshnessId(strength));
+  if (tone === 'green') {
+    return {
+      badgeClass: 'bg-emerald-600 text-white',
+      pinClass: 'bg-emerald-600',
+      textClass: 'text-emerald-700',
+    };
+  }
+  const segments = freshnessBarSegments(freshnessId(strength));
+  if (segments >= 3) {
     return {
       badgeClass: 'bg-primary text-white',
       pinClass: 'bg-primary',
       textClass: 'text-primary',
     };
   }
-  if (strength === 'COMFORTABLE') {
+  if (segments === 2) {
     return {
       badgeClass: 'bg-primary-container text-on-primary-container',
       pinClass: 'bg-primary-container',
@@ -48,17 +70,23 @@ export function categoryIcon(category: string): MaterialIconName {
   return (icon ?? 'climate_mini_split') as MaterialIconName;
 }
 
-export function acStrengthLabel(strength: PlaceDto['aggregatedAcStrength']): string {
-  if (strength === 'FRIGID') return 'FRIGID';
-  if (strength === 'COMFORTABLE') return 'COMFORTABLE';
-  return 'COOLED';
+export function freshnessLabel(strength: PlaceDto['aggregatedFreshnessLevel']): string {
+  const id = freshnessId(strength);
+  if (!id) return 'UNKNOWN';
+  return FRESHNESS_LEVEL_SHORT_LABELS[id].toUpperCase();
 }
 
-export function acStrengthPowerLabel(strength: PlaceDto['aggregatedAcStrength']): string {
-  if (strength === 'FRIGID') return 'MAX POWER';
-  if (strength === 'COMFORTABLE') return 'COMFORTABLE';
-  return 'LIGHT COOLING';
+export function freshnessPowerLabel(strength: PlaceDto['aggregatedFreshnessLevel']): string {
+  const id = freshnessId(strength);
+  if (!id) return 'UNKNOWN';
+  return FRESHNESS_LEVEL_SHORT_LABELS[id].toUpperCase();
 }
+
+/** @deprecated Use freshnessLabel */
+export const acStrengthLabel = freshnessLabel;
+
+/** @deprecated Use freshnessPowerLabel */
+export const acStrengthPowerLabel = freshnessPowerLabel;
 
 export function PlaceMapMarker({
   place,
@@ -72,8 +100,8 @@ export function PlaceMapMarker({
   onClick?: () => void;
 }) {
   const icon = categoryIcon(place.category);
-  const { bgClass, opacity } = markerPinStyle(place.aggregatedAcStrength);
-  const desktop = desktopMarkerStyle(place.aggregatedAcStrength);
+  const { bgClass, opacity } = markerPinStyle(place.aggregatedFreshnessLevel);
+  const desktop = desktopMarkerStyle(place.aggregatedFreshnessLevel);
   const temp =
     place.aggregatedTemperatureC != null ? `${Math.round(place.aggregatedTemperatureC)}°C` : null;
 

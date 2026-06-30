@@ -4,8 +4,8 @@ import { useAuth, SignInButton } from '@clerk/clerk-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import {
-  AC_STRENGTH_LABELS,
-  AcStrengthBar,
+  FRESHNESS_LEVEL_LABELS,
+  FreshnessBar,
   GlassCard,
   MaterialIcon,
   PLACE_CATEGORY_ICONS,
@@ -16,7 +16,7 @@ import {
 } from '@freshy/ui';
 import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { type PlaceDto } from '../lib/api';
-import { acStrengthLevel, formatRelativeTime } from '../lib/api';
+import { formatRelativeTime } from '../lib/api';
 import {
   fetchMyProfile,
   fetchMyReviews,
@@ -42,11 +42,11 @@ function SavedPlaceCard({ place }: { place: PlaceDto }) {
             alt=""
             className="h-full w-full object-cover"
           />
-          {place.aggregatedAcStrength ? (
+          {place.aggregatedFreshnessLevel ? (
             <div className="absolute right-2 top-2 flex items-center gap-1 rounded-lg bg-surface/90 px-2 py-1 shadow-sm backdrop-blur-md">
               <MaterialIcon name="ac_unit" filled size={14} className="text-primary" />
               <span className="font-label-caps text-primary">
-                {AC_STRENGTH_LABELS[place.aggregatedAcStrength]}
+                {FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]}
               </span>
             </div>
           ) : null}
@@ -66,8 +66,9 @@ function SavedPlaceCard({ place }: { place: PlaceDto }) {
 }
 
 function ReviewRow({ review }: { review: UserReviewDto }) {
-  const level = acStrengthLevel(
-    review.acStrength >= 4 ? 'FRIGID' : review.acStrength >= 3 ? 'COMFORTABLE' : 'LIGHTLY_COOLED',
+  const level = Math.min(
+    3,
+    Math.max(1, review.acStrength >= 4 ? 3 : review.acStrength >= 3 ? 2 : 1),
   );
   const label =
     review.acStrength >= 4 ? 'Frigid' : review.acStrength >= 3 ? 'Comfortable' : 'Cooled';
@@ -89,7 +90,7 @@ function ReviewRow({ review }: { review: UserReviewDto }) {
             </span>
           </div>
           <div className="mt-1 flex items-center gap-2">
-            <AcStrengthBar level={level} />
+            <FreshnessBar segments={level} tone="blue" />
             <span className="font-label-caps text-secondary">{label}</span>
           </div>
           {review.comment ? (

@@ -1,9 +1,7 @@
-import { existsSync, readFileSync } from 'fs';
-import { join } from 'path';
-import { parse } from 'yaml';
+export type PlaceTagId = 'calm' | 'comfortable' | 'pet_friendly' | 'shaded' | 'quiet' | 'free_wifi';
 
 export interface PlaceTagDefinition {
-  id: string;
+  id: PlaceTagId;
   label: string;
   icon: string;
 }
@@ -12,26 +10,7 @@ export interface PlaceTagConfig {
   tags: PlaceTagDefinition[];
 }
 
-const configDir = __dirname;
-
-function resolveYamlPath(): string {
-  const candidates = [join(configDir, 'place-tags.yaml'), join(configDir, '..', 'place-tags.yaml')];
-  for (const candidate of candidates) {
-    if (existsSync(candidate)) return candidate;
-  }
-  throw new Error('place-tags.yaml not found');
-}
-
-/** Load tag definitions from place-tags.yaml (Node.js only). */
-export function loadPlaceTagsFromYaml(): PlaceTagConfig {
-  const yamlPath = resolveYamlPath();
-  return parse(readFileSync(yamlPath, 'utf8')) as PlaceTagConfig;
-}
-
-/**
- * Runtime tag catalog. Keep in sync with place-tags.yaml.
- * Used by web and API bundles that cannot read the filesystem at runtime.
- */
+/** Runtime tag catalog. Keep in sync with place-tags.yaml. */
 export const PLACE_TAGS: readonly PlaceTagDefinition[] = [
   { id: 'calm', label: 'Calm', icon: 'spa' },
   { id: 'comfortable', label: 'Comfortable', icon: 'event_seat' },
@@ -39,11 +18,9 @@ export const PLACE_TAGS: readonly PlaceTagDefinition[] = [
   { id: 'shaded', label: 'Shaded', icon: 'wb_shade' },
   { id: 'quiet', label: 'Quiet', icon: 'volume_off' },
   { id: 'free_wifi', label: 'Free Wi-Fi', icon: 'wifi' },
-] as const;
+] as const satisfies readonly PlaceTagDefinition[];
 
-export type PlaceTagId = (typeof PLACE_TAGS)[number]['id'];
-
-export const PLACE_TAG_IDS: PlaceTagId[] = PLACE_TAGS.map((tag) => tag.id as PlaceTagId);
+export const PLACE_TAG_IDS: PlaceTagId[] = PLACE_TAGS.map((tag) => tag.id);
 
 export const PLACE_TAG_LABELS: Record<PlaceTagId, string> = Object.fromEntries(
   PLACE_TAGS.map((tag) => [tag.id, tag.label]),
