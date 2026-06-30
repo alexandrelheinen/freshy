@@ -1,9 +1,9 @@
 'use client';
 
-import { useAuth, SignInButton, UserButton } from '@clerk/clerk-react';
+import { useAuth, SignInButton } from '@clerk/clerk-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { AC_STRENGTH_LABELS, GlassCard, MaterialIcon, PLACE_CATEGORY_LABELS, ROUTES } from '@freshy/ui';
+import { AC_STRENGTH_LABELS, GlassCard, ROUTES } from '@freshy/ui';
 import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { type PlaceDto } from '../lib/api';
 import { fetchMyProfile, fetchMySavedPlaces, type UserProfileDto } from '../lib/user-api';
