@@ -199,7 +199,11 @@ Copy from **Quick copy** (Next.js block) or the **Publishable key** row — not 
 2. https://freshy-25e.pages.dev/profile → Sign in works
 3. Save a place → appears on profile
 
-**Docs:** [deploy-api.md#clerk-auth-full-v0--saved-places--profile](deploy-api.md)
+### Studio admin
+
+Grant `publicMetadata.role: "admin"` on operator accounts. See **[studio.md](studio.md)** for Clerk steps, `/studio` UI, and `/studio/*` API.
+
+**Docs:** [deploy-api.md#clerk-auth-full-v0--saved-places--profile](deploy-api.md), [studio.md](studio.md)
 
 ---
 

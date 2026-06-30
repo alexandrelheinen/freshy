@@ -7,7 +7,6 @@ import {
   type PrismaClient,
   haversineDistanceKm,
 } from '@freshy/db';
-import type { PlacePhotoCategory } from '@freshy/config/place-photos';
 import { withResolvedPlacePhoto } from './places';
 
 const DUPLICATE_RADIUS_KM = 0.05;
