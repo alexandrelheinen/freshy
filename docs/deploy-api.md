@@ -249,6 +249,16 @@ DATABASE_URL="your-neon-uri" pnpm --filter @freshy/db migrate:deploy
 2. Open `/profile` on the site → **Sign in**
 3. Save a place on `/places/ice-coffee-central` → appears on profile
 
+### Studio admin (optional)
+
+Operators who moderate the place database need Clerk **public metadata** `role: "admin"`. Full setup, API reference, and test steps: **[studio.md](studio.md)**.
+
+Quick check after granting admin:
+
+1. Sign out and sign in again.
+2. Open `/studio` → Studio dashboard loads.
+3. `curl -H "Authorization: Bearer <admin_token>" https://freshy-api.onrender.com/studio/stats` → `200`.
+
 ---
 
 ## Future | Cloudflare Workers + Hyperdrive

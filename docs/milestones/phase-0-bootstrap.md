@@ -483,7 +483,7 @@ Note remaining gaps for follow-up PRs:
 
 ```
 - Add place photo upload (UI only today)
-- Studio admin screens (deferred)
+- Studio admin screens: live at `/studio` ([studio.md](../studio.md))
 - Custom Mapbox style tuning
 ```
 

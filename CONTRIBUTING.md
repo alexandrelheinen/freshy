@@ -14,6 +14,7 @@ Thank you for contributing to **Freshy**, the mobile-first cooling map. This doc
 | [docs/milestones/](docs/milestones/)                                                     | Operational checklists per roadmap phase                                  |
 | [docs/milestones/phase-0-bootstrap.md](docs/milestones/phase-0-bootstrap.md)             | Milestone 0: accounts, deploy, pilot city (before Phase 1)                |
 | [docs/architecture.md](docs/architecture.md)                                             | Monorepo layout and data flow                                             |
+| [docs/studio.md](docs/studio.md)                                                         | Admin Studio: Clerk role, moderation API, testing                         |
 | [docs/infrastructure.md](docs/infrastructure.md)                                         | Cloudflare vs external providers (R2, Pages, Workers, Neon)               |
 | [docs/git-rules.md](docs/git-rules.md)                                                   | Branching, commits, PR checklist                                          |
 | [docs/stitch/freshy/DESIGN.md](docs/stitch/freshy/DESIGN.md)                             | Design tokens and UI reference                                            |

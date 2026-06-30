@@ -15,16 +15,17 @@
 
 ### Screens in scope (from Stitch)
 
-| Screen                                              | Route                           | Role                                                                                        |
-| --------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------- |
-| **Mapa Freshy** (`mapa_freshy`)                     | `/explore`                      | Home / Explore — interactive map, search, category chips, nearby place preview card         |
-| **Categorias de Lugares** (`categorias_de_lugares`) | `/cooling`                      | Cooling tab — browse by category (cafés, restaurants, libraries, malls, museums, coworking) |
-| **Lista de Lugares** (`lista_de_lugares`)           | `/cooling/[category]`, `/saved` | Filterable place list by category or saved bookmarks                                        |
-| **Detalhes do Local** (`detalhes_do_local`)         | `/places/[slug]`                | Place detail — temperature, AC strength, amenities, directions, climate reviews             |
-| **Meu Perfil** (`meu_perfil`)                       | `/profile`                      | Profile — saved places, user reviews, relief points, link to add a place                    |
-| **Adicionar Local** (`adicionar_novo_local`)        | `/profile/places/new`           | Submit a new cooling spot (authenticated)                                                   |
+| Screen                                              | Route                           | Role                                                                                               |
+| --------------------------------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **Mapa Freshy** (`mapa_freshy`)                     | `/explore`                      | Home / Explore — interactive map, search, category chips, nearby place preview card                |
+| **Categorias de Lugares** (`categorias_de_lugares`) | `/cooling`                      | Cooling tab — browse by category (cafés, restaurants, libraries, malls, museums, coworking)        |
+| **Lista de Lugares** (`lista_de_lugares`)           | `/cooling/[category]`, `/saved` | Filterable place list by category or saved bookmarks                                               |
+| **Detalhes do Local** (`detalhes_do_local`)         | `/places/[slug]`                | Place detail — temperature, AC strength, amenities, directions, climate reviews                    |
+| **Meu Perfil** (`meu_perfil`)                       | `/profile`                      | Profile — saved places, user reviews, relief points, link to add a place                           |
+| **Adicionar Local** (`adicionar_novo_local`)        | `/profile/places/new`           | Submit a new cooling spot (authenticated; saved as draft)                                          |
+| **Freshy Studio** (`freshy_studio_*`)               | `/studio`                       | Admin-only place moderation: validate, edit, merge duplicates, delete (see [studio.md](studio.md)) |
 
-**Deferred:** Freshy Studio (`freshy_studio_*`) — admin auth and moderation DB, separate workstream.
+**Studio docs:** [docs/studio.md](studio.md) — Clerk admin role, API, moderation workflow, and testing.
 
 ### Key product concepts
 
@@ -285,8 +286,8 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 
 **Goal:** Operate and grow the place database safely.
 
-- [ ] Admin UI (protected): approve new places, edit categories, feature “Destaque”
-- [ ] Place submission flow (user suggests a new venue → moderation queue)
+- [x] Admin UI (protected): approve new places, edit listings, merge duplicates, delete (`/studio`, see [studio.md](studio.md))
+- [x] Place submission flow (user suggests a new venue → `DRAFT` → moderation queue in Studio)
 - [ ] Image upload for places (R2 + Cloudflare Images resize pipeline)
 - [ ] Sentry + Cloudflare Web Analytics wired in production
 - [ ] Privacy policy, terms, LGPD-oriented consent for location data
