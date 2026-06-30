@@ -1,7 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { MaterialIcon, NAV_ICONS, NAV_ITEMS, type MaterialIconName } from '@freshy/ui';
+import {
+  BRAND_ICON,
+  MaterialIcon,
+  NAV_ICONS,
+  NAV_ITEMS,
+  type MaterialIconName,
+} from '@freshy/ui';
 
 export function AppBottomNav({
   active = 'explore',
@@ -40,7 +46,7 @@ export function AppTopNav({
   return (
     <header className="fixed top-0 z-50 hidden h-16 w-full items-center justify-between bg-surface/80 px-10 shadow-sm backdrop-blur-md md:flex">
       <Link href="/explore" className="flex items-center gap-2">
-        <MaterialIcon name="ac_unit" className="text-primary" size={32} />
+        <MaterialIcon name={BRAND_ICON} className="text-primary" size={32} />
         <span className="font-display-lg text-primary">Freshy</span>
       </Link>
 
@@ -81,7 +87,7 @@ export function AppTopNav({
           className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-primary-container bg-primary-container/30"
           aria-label="Profile"
         >
-          <MaterialIcon name="person" className="text-primary" />
+          <MaterialIcon name="digital_wellbeing" className="text-primary" />
         </Link>
       </div>
     </header>
@@ -111,7 +117,7 @@ export function AppMobileHeader({
         ) : null}
         {showBrand && !backHref ? (
           <>
-            <MaterialIcon name="ac_unit" className="text-primary" size={28} />
+            <MaterialIcon name={BRAND_ICON} className="text-primary" size={28} />
             <h1 className="font-display-lg text-2xl tracking-tight text-primary">Freshy</h1>
           </>
         ) : title ? (
@@ -125,7 +131,7 @@ export function AppMobileHeader({
         className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-primary-container bg-primary-container/30"
         aria-label="Profile"
       >
-        <MaterialIcon name="person" className="text-primary" />
+        <MaterialIcon name="digital_wellbeing" className="text-primary" />
       </Link>
     </header>
   );

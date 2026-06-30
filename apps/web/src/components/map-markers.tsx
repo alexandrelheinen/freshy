@@ -45,7 +45,7 @@ export function desktopMarkerStyle(strength: PlaceDto['aggregatedAcStrength']): 
 
 export function categoryIcon(category: string): MaterialIconName {
   const icon = PLACE_CATEGORY_ICONS[category as PlaceCategory];
-  return (icon ?? 'cyclone') as MaterialIconName;
+  return (icon ?? 'climate_mini_split') as MaterialIconName;
 }
 
 export function acStrengthLabel(strength: PlaceDto['aggregatedAcStrength']): string {

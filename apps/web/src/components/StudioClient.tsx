@@ -7,6 +7,7 @@ import {
   AC_STRENGTH_LABELS,
   AcStrengthBar,
   ALL_PLACE_CATEGORIES,
+  BRAND_ICON,
   BRAND_NAME,
   MaterialIcon,
   PLACE_CATEGORY_LABELS,
@@ -179,7 +180,7 @@ export function StudioClient() {
       <aside className="hidden w-72 shrink-0 flex-col border-r border-outline-variant/30 bg-surface-container-lowest md:sticky md:top-0 md:flex md:h-screen">
         <div className="px-8 py-8">
           <Link href={ROUTES.explore} className="flex items-center gap-3">
-            <MaterialIcon name="ac_unit" filled size={32} className="text-primary" />
+            <MaterialIcon name={BRAND_ICON} filled size={32} className="text-primary" />
             <span className="font-display-lg text-headline-lg text-primary">{BRAND_NAME}</span>
           </Link>
           <p className="mt-2 font-label-caps text-secondary opacity-60">PLACE STUDIO</p>
@@ -215,7 +216,7 @@ export function StudioClient() {
               {user?.imageUrl ? (
                 <img src={user.imageUrl} alt="" className="h-full w-full object-cover" />
               ) : (
-                <MaterialIcon name="person" className="text-primary" />
+                <MaterialIcon name="digital_wellbeing" className="text-primary" />
               )}
             </div>
             <div>
