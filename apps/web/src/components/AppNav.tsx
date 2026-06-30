@@ -1,13 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {
-  BRAND_ICON,
-  MaterialIcon,
-  NAV_ICONS,
-  NAV_ITEMS,
-  type MaterialIconName,
-} from '@freshy/ui';
+import { BRAND_ICON, MaterialIcon, NAV_ICONS, NAV_ITEMS, type MaterialIconName } from '@freshy/ui';
 
 export function AppBottomNav({
   active = 'explore',

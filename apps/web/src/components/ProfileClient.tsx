@@ -210,7 +210,11 @@ export function ProfileClient() {
                 </span>
               </GlassCard>
               <GlassCard className="flex flex-col items-center p-4 text-center md:p-6">
-                <MaterialIcon name="bookmark_heart" className="mb-2 text-primary md:hidden" size={28} />
+                <MaterialIcon
+                  name="bookmark_heart"
+                  className="mb-2 text-primary md:hidden"
+                  size={28}
+                />
                 <span className="font-headline-lg text-primary">{profile.savedCount}</span>
                 <span className="font-label-caps uppercase tracking-widest text-secondary">
                   Saved
