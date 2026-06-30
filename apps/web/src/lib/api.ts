@@ -95,7 +95,14 @@ export function acStrengthLevel(strength: PlaceDto['aggregatedAcStrength']): 1 |
   return 1;
 }
 
-export function directionsUrl(lat: number, lng: number, label: string): string {
-  const q = encodeURIComponent(`${label}@${lat},${lng}`);
-  return `https://www.google.com/maps/dir/?api=1&destination=${q}`;
+export function directionsUrl(options: {
+  latitude: number;
+  longitude: number;
+  address?: string | null;
+}): string {
+  const { latitude, longitude, address } = options;
+  const trimmed = address?.trim();
+  const destination =
+    trimmed && trimmed.length > 0 ? encodeURIComponent(trimmed) : `${latitude},${longitude}`;
+  return `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
 }

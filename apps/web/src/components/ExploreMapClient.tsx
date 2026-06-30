@@ -122,7 +122,11 @@ function ExplorePreviewCard({
             </div>
             <div className="flex gap-3">
               <a
-                href={directionsUrl(place.latitude, place.longitude, place.name)}
+                href={directionsUrl({
+                  latitude: place.latitude,
+                  longitude: place.longitude,
+                  address: place.address,
+                })}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary py-3 font-bold text-white shadow-lg shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98]"
