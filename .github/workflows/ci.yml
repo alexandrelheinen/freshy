@@ -79,7 +79,7 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm --filter @freshy/web exec playwright install chromium --with-deps
 
-      - name: Capture 4 page screenshots
+      - name: Capture 6 page screenshots
         run: |
           mkdir -p screenshots
           pnpm --filter @freshy/web screenshots

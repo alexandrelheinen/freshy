@@ -3,7 +3,9 @@ import { test, expect } from '@playwright/test';
 const pages = [
   { name: 'explore', path: '/explore', label: 'Freshy Map (Explore)' },
   { name: 'cooling', path: '/cooling', label: 'Categories (Cooling)' },
+  { name: 'place-list', path: '/cooling/cafe', label: 'Place List (Category)' },
   { name: 'place-detail', path: '/places/ice-coffee-central', label: 'Place Details' },
+  { name: 'saved', path: '/saved', label: 'Saved Places' },
   { name: 'profile', path: '/profile', label: 'My Profile' },
 ];
 

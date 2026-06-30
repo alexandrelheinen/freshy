@@ -54,21 +54,6 @@ export async function fetchPlaces(params?: {
   return json.data;
 }
 
-export async function fetchCategoryMeta(): Promise<CategoryMeta | null> {
-  const res = await fetch(`${API_BASE}/places/meta/categories`, { next: { revalidate: 60 } });
-  if (!res.ok) return null;
-  const json = (await res.json()) as { data: CategoryMeta };
-  return json.data;
-}
-
-export async function fetchPlace(slug: string): Promise<PlaceDetailDto | null> {
-  const res = await fetch(`${API_BASE}/places/${slug}`, { next: { revalidate: 30 } });
-  if (res.status === 404) return null;
-  if (!res.ok) return null;
-  const json = (await res.json()) as { data: PlaceDetailDto };
-  return json.data;
-}
-
 export function formatDistance(km: number | undefined): string {
   if (km == null) return '';
   if (km < 1) return `${Math.round(km * 1000)}m`;

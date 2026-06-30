@@ -46,17 +46,17 @@ freshy/
 
 ## Sub-projects mapped to roadmap phases
 
-| Phase              | Folder(s)                                      | Deliverable                    |
-| ------------------ | ---------------------------------------------- | ------------------------------ |
-| 0 — Foundation     | `packages/config`, `packages/ui`, root tooling | Design tokens, shared shell    |
-| 1 — Map            | `apps/web` `/explore`, `packages/db`           | Geo places, map UI             |
-| 2 — Place detail   | `apps/web` `/places/[slug]`                    | Detail page + API              |
-| 3 — Categories     | `apps/web` `/cooling`                          | Category browser               |
-| 4 — Auth & profile | `apps/web` `/profile`, `packages/api`          | **Clerk + saved places (live)** |
-| 5 — Reviews        | `packages/db` `Review`, `packages/api`         | Climate reviews, points        |
-| 6 — PWA            | `apps/web`                                     | Service worker, install prompt |
-| 7 — Launch         | `infrastructure/cloudflare`, CI/CD             | R2 assets, production deploy   |
-| Mobile             | `apps/mobile`                                  | Android + iOS via Expo EAS     |
+| Phase              | Folder(s)                                                    | Deliverable                           |
+| ------------------ | ------------------------------------------------------------ | ------------------------------------- |
+| 0 — Foundation     | `packages/config`, `packages/ui`, root tooling               | Design tokens, shared primitives      |
+| 1 — Map            | `apps/web` `/explore`, `packages/db`                         | Geo places, map UI                    |
+| 2 — Place detail   | `apps/web` `/places/[slug]`                                  | Detail page + API                     |
+| 3 — Categories     | `apps/web` `/cooling`, `/cooling/[category]`, `/saved`       | Category browser + lists              |
+| 4 — Auth & profile | `apps/web` `/profile`, `/profile/places/new`, `packages/api` | Clerk, saved places, user submissions |
+| 5 — Reviews        | `packages/db` `Review`, `packages/api`                       | Climate review write, points          |
+| 6 — PWA            | `apps/web`                                                   | Service worker, install prompt        |
+| 7 — Launch         | `infrastructure/cloudflare`, CI/CD                           | R2 assets, production deploy          |
+| Mobile             | `apps/mobile`                                                | Android + iOS via Expo EAS            |
 
 ## Data flow
 
@@ -104,10 +104,10 @@ R2 is optional locally — set `R2_*` env vars to test uploads.
 
 ## CI/CD
 
-| Workflow      | Trigger             | Actions                                                      |
-| ------------- | ------------------- | ------------------------------------------------------------ |
-| `ci.yml`      | Pull request        | Lint, typecheck, test, build, 4-page screenshots → R2, PR comment |
-| `release.yml` | GitHub Release `v*` | EAS build Android + iOS                                      |
+| Workflow      | Trigger             | Actions                                                           |
+| ------------- | ------------------- | ----------------------------------------------------------------- |
+| `ci.yml`      | Pull request        | Lint, typecheck, test, build, 6-page screenshots → R2, PR comment |
+| `release.yml` | GitHub Release `v*` | EAS build Android + iOS                                           |
 
 ## Scripts reference
 

@@ -12,10 +12,10 @@ Do sections **in order**. Skip nothing unless marked optional.
 
 ## Before you start
 
-| You need | Why |
-| -------- | --- |
-| Computer with admin rights | Install Node, Docker, browsers |
-| GitHub account | Repo + Actions secrets |
+| You need                                        | Why                                               |
+| ----------------------------------------------- | ------------------------------------------------- |
+| Computer with admin rights                      | Install Node, Docker, browsers                    |
+| GitHub account                                  | Repo + Actions secrets                            |
 | Credit card (usually not charged on free tiers) | Mapbox, Neon, Cloudflare may ask for verification |
 
 ---
@@ -213,22 +213,22 @@ Hosts the Next.js app at a URL like `freshy.pages.dev`.
 
 On **Set up builds and deployments**:
 
-| Field | Value |
-| ----- | ----- |
-| Project name | `freshy` |
-| Production branch | `main` |
-| Framework preset | Next.js |
-| Root directory | `apps/web` |
-| Build command | `cd ../.. && pnpm install && pnpm --filter @freshy/web build` |
-| Build output directory | `out` |
+| Field                  | Value                                                         |
+| ---------------------- | ------------------------------------------------------------- |
+| Project name           | `freshy`                                                      |
+| Production branch      | `main`                                                        |
+| Framework preset       | Next.js                                                       |
+| Root directory         | `apps/web`                                                    |
+| Build command          | `cd ../.. && pnpm install && pnpm --filter @freshy/web build` |
+| Build output directory | `out`                                                         |
 
 Click **Environment variables (advanced)** before first deploy:
 
-| Variable name | Value | Environments |
-| ------------- | ----- | ------------ |
-| `NODE_VERSION` | `20` | Production + Preview |
-| `NEXT_PUBLIC_MAPBOX_TOKEN` | your `pk....` | Production + Preview |
-| `NEXT_PUBLIC_API_URL` | `https://api.freshy.app` or temp `http://localhost:4000` until API is deployed | Production + Preview |
+| Variable name              | Value                                                                          | Environments         |
+| -------------------------- | ------------------------------------------------------------------------------ | -------------------- |
+| `NODE_VERSION`             | `20`                                                                           | Production + Preview |
+| `NEXT_PUBLIC_MAPBOX_TOKEN` | your `pk....`                                                                  | Production + Preview |
+| `NEXT_PUBLIC_API_URL`      | `https://api.freshy.app` or temp `http://localhost:4000` until API is deployed | Production + Preview |
 
 ### E3. Deploy
 
@@ -287,20 +287,20 @@ Your public base URL (no trailing slash): e.g. `https://pub-xxxxx.r2.dev`
 1. GitHub repo → **Settings** → **Secrets and variables** → **Actions**
 2. **New repository secret** for each:
 
-| Secret name | Where to get it |
-| ----------- | --------------- |
-| `R2_ACCOUNT_ID` | Cloudflare dashboard sidebar |
-| `R2_ACCESS_KEY_ID` | R2 API token creation |
-| `R2_SECRET_ACCESS_KEY` | R2 API token creation |
-| `R2_BUCKET_NAME` | `freshy-assets` |
-| `R2_PUBLIC_URL` | Public bucket URL from F3 |
-| `EXPO_TOKEN` | [expo.dev](https://expo.dev) → Account → Access tokens (mobile releases only) |
+| Secret name            | Where to get it                                                               |
+| ---------------------- | ----------------------------------------------------------------------------- |
+| `R2_ACCOUNT_ID`        | Cloudflare dashboard sidebar                                                  |
+| `R2_ACCESS_KEY_ID`     | R2 API token creation                                                         |
+| `R2_SECRET_ACCESS_KEY` | R2 API token creation                                                         |
+| `R2_BUCKET_NAME`       | `freshy-assets`                                                               |
+| `R2_PUBLIC_URL`        | Public bucket URL from F3                                                     |
+| `EXPO_TOKEN`           | [expo.dev](https://expo.dev) → Account → Access tokens (mobile releases only) |
 
 ### F5. Test CI screenshots
 
 1. Open any PR (or push a branch and open PR)
 2. Wait for **CI** workflow
-3. Bot comment should show 4 page screenshots (if R2 secrets are set)
+3. Bot comment should show page screenshots (Explore, Cooling, lists, detail, Saved, Profile — if R2 secrets are set)
 
 ---
 
@@ -342,23 +342,23 @@ Creating a GitHub **Release** tag `v0.1.0` triggers Android/iOS builds in CI.
 
 Record answers (GitHub Issue is fine):
 
-| Question | Default |
-| -------- | ------- |
-| Pilot city | Clichy, France (92110) |
-| Auth provider (Phase 4) | Clerk (live in production) |
+| Question                   | Default                                |
+| -------------------------- | -------------------------------------- |
+| Pilot city                 | Clichy, France (92110)                 |
+| Auth provider (Phase 4)    | Clerk (live in production)             |
 | First launch locale (i18n) | pt-BR via locale files when i18n ships |
 
 ---
 
 ## Final gate | ready for Phase 1?
 
-| # | Done? |
-| - | ----- |
-| Local `validation.sh` passes | [ ] |
-| Mapbox token in `.env` and Cloudflare Pages | [ ] |
-| Neon/Supabase DB + PostGIS + migrate + seed | [ ] |
-| Cloudflare Pages shows 4 screens | [ ] |
-| (Recommended) R2 secrets + PR screenshots work | [ ] |
+| #                                              | Done? |
+| ---------------------------------------------- | ----- |
+| Local `validation.sh` passes                   | [ ]   |
+| Mapbox token in `.env` and Cloudflare Pages    | [ ]   |
+| Neon/Supabase DB + PostGIS + migrate + seed    | [ ]   |
+| Cloudflare Pages shows Stitch screens          | [ ]   |
+| (Recommended) R2 secrets + PR screenshots work | [ ]   |
 
 When all checked → start Phase 1 on [roadmap.md](roadmap.md).
 
@@ -366,13 +366,13 @@ When all checked → start Phase 1 on [roadmap.md](roadmap.md).
 
 ## Quick links
 
-| Platform | URL |
-| -------- | --- |
-| Cloudflare dashboard | [dash.cloudflare.com](https://dash.cloudflare.com/) |
-| Neon | [console.neon.tech](https://console.neon.tech/) |
-| Mapbox tokens | [account.mapbox.com/access-tokens/](https://account.mapbox.com/access-tokens/) |
-| GitHub Actions secrets | `https://github.com/YOUR_USER/freshy/settings/secrets/actions` |
-| Freshy architecture | [infrastructure.md](infrastructure.md) |
+| Platform               | URL                                                                            |
+| ---------------------- | ------------------------------------------------------------------------------ |
+| Cloudflare dashboard   | [dash.cloudflare.com](https://dash.cloudflare.com/)                            |
+| Neon                   | [console.neon.tech](https://console.neon.tech/)                                |
+| Mapbox tokens          | [account.mapbox.com/access-tokens/](https://account.mapbox.com/access-tokens/) |
+| GitHub Actions secrets | `https://github.com/YOUR_USER/freshy/settings/secrets/actions`                 |
+| Freshy architecture    | [infrastructure.md](infrastructure.md)                                         |
 
 ---
 

@@ -62,7 +62,7 @@ step "Build all packages"
 pnpm build
 
 if [ "${SKIP_SCREENSHOTS}" != "1" ]; then
-  step "Playwright screenshots (4 app pages)"
+  step "Playwright screenshots (6 app pages)"
   mkdir -p "${ROOT_DIR}/screenshots"
   pnpm --filter @freshy/web exec playwright install chromium --with-deps 2>/dev/null || \
     pnpm --filter @freshy/web exec playwright install chromium

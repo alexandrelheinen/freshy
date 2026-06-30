@@ -11,7 +11,6 @@ export function PlaceActions({
   name: string;
   latitude: number;
   longitude: number;
-  slug?: string;
 }) {
   return (
     <div className="mt-6 flex flex-col gap-3">

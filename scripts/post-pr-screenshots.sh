@@ -27,7 +27,9 @@ echo "|--------|---------|" >> "${MARKDOWN_FILE}"
 PAGES=(
   "explore:Freshy Map (Explore)"
   "cooling:Categories (Cooling)"
+  "place-list:Place List (Category)"
   "place-detail:Place Details"
+  "saved:Saved Places"
   "profile:My Profile"
 )
 

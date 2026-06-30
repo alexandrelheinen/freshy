@@ -15,12 +15,12 @@ Freshy uses **PostgreSQL 16** with **PostGIS** (for future geo queries). The ORM
 Browser / mobile  →  REST API  →  Prisma  →  PostgreSQL (Neon)
 ```
 
-| Layer | Connects to DB? |
-| ----- | --------------- |
+| Layer                         | Connects to DB?                 |
+| ----------------------------- | ------------------------------- |
 | `apps/web` (Cloudflare Pages) | No — uses `NEXT_PUBLIC_API_URL` |
-| `apps/mobile` (Expo) | No — uses API URL |
-| `packages/api` (Express) | Yes — `DATABASE_URL` |
-| `packages/db` (Prisma) | Yes — migrations, seed, client |
+| `apps/mobile` (Expo)          | No — uses API URL               |
+| `packages/api` (Express)      | Yes — `DATABASE_URL`            |
+| `packages/db` (Prisma)        | Yes — migrations, seed, client  |
 
 ---
 
@@ -87,51 +87,54 @@ erDiagram
 
 App users. One demo user is seeded for development.
 
-| Column | Type | Notes |
-| ------ | ---- | ----- |
-| `id` | `TEXT` (cuid) | Primary key |
-| `clerkId` | `TEXT` | Unique; Clerk user id (null for seed-only users) |
-| `email` | `TEXT` | Unique |
-| `displayName` | `TEXT` | Shown in UI |
-| `username` | `TEXT` | Unique, e.g. `lucas_frescor` |
-| `avatarUrl` | `TEXT` | Optional, R2 URL in production |
-| `reliefPoints` | `INT` | Gamification score (default 0) |
-| `createdAt` / `updatedAt` | `TIMESTAMP` | Audit |
+| Column                    | Type          | Notes                                            |
+| ------------------------- | ------------- | ------------------------------------------------ |
+| `id`                      | `TEXT` (cuid) | Primary key                                      |
+| `clerkId`                 | `TEXT`        | Unique; Clerk user id (null for seed-only users) |
+| `email`                   | `TEXT`        | Unique                                           |
+| `displayName`             | `TEXT`        | Shown in UI                                      |
+| `username`                | `TEXT`        | Unique, e.g. `lucas_frescor`                     |
+| `avatarUrl`               | `TEXT`        | Optional, R2 URL in production                   |
+| `reliefPoints`            | `INT`         | Gamification score (default 0)                   |
+| `createdAt` / `updatedAt` | `TIMESTAMP`   | Audit                                            |
 
 ### `Place`
 
 Cooling venues on the map.
 
-| Column | Type | Notes |
-| ------ | ---- | ----- |
-| `id` | `TEXT` (cuid) | Primary key |
-| `slug` | `TEXT` | Unique URL slug, e.g. `ice-coffee-central` |
-| `name` | `TEXT` | Display name |
-| `description` | `TEXT` | Optional blurb |
-| `category` | `PlaceCategory` | See enums below |
-| `latitude` / `longitude` | `FLOAT` | WGS84 coordinates |
-| `address` | `TEXT` | Optional street address |
-| `photoUrl` | `TEXT` | Optional, R2 URL in production |
-| `aggregatedTemperatureC` | `FLOAT` | Crowdsourced average (seed uses static values) |
-| `aggregatedAcStrength` | `AcStrength` | Crowdsourced AC level |
-| `isOpen` | `BOOLEAN` | Default `true` |
+| Column                   | Type            | Notes                                                       |
+| ------------------------ | --------------- | ----------------------------------------------------------- |
+| `id`                     | `TEXT` (cuid)   | Primary key                                                 |
+| `slug`                   | `TEXT`          | Unique URL slug, e.g. `ice-coffee-central`                  |
+| `name`                   | `TEXT`          | Display name                                                |
+| `description`            | `TEXT`          | Optional blurb                                              |
+| `category`               | `PlaceCategory` | See enums below                                             |
+| `latitude` / `longitude` | `FLOAT`         | WGS84 coordinates                                           |
+| `address`                | `TEXT`          | Optional street address                                     |
+| `photoUrl`               | `TEXT`          | Optional, R2 URL in production                              |
+| `aggregatedTemperatureC` | `FLOAT`         | Crowdsourced average (seed uses static values)              |
+| `aggregatedAcStrength`   | `AcStrength`    | Crowdsourced AC level                                       |
+| `amenities`              | `TEXT[]`        | Tags such as `FREE_WIFI`, `QUIET_ZONE` (default `[]`)       |
+| `createdById`            | `TEXT`          | Optional FK to `User` who submitted the place               |
+| `status`                 | `PlaceStatus`   | `DRAFT` or `PUBLISHED` (public list shows `PUBLISHED` only) |
+| `isOpen`                 | `BOOLEAN`       | Default `true`                                              |
 
 **Indexes:** `category`, `(latitude, longitude)`, unique `slug`.
 
 ### `Review`
 
-User-submitted climate reviews for a place. Table exists; UI and write API ship in later phases.
+User-submitted climate reviews for a place. Displayed on place detail and profile when present; write API ships in Phase 5.
 
-| Column | Type | Notes |
-| ------ | ---- | ----- |
-| `userId` / `placeId` | `TEXT` | Foreign keys, cascade on delete |
-| `acStrength` | `INT` | 1–3 scale at API layer |
-| `temperatureC` | `FLOAT` | Optional felt temperature |
-| `comment` | `TEXT` | Optional text |
+| Column               | Type    | Notes                           |
+| -------------------- | ------- | ------------------------------- |
+| `userId` / `placeId` | `TEXT`  | Foreign keys, cascade on delete |
+| `acStrength`         | `INT`   | 1–3 scale at API layer          |
+| `temperatureC`       | `FLOAT` | Optional felt temperature       |
+| `comment`            | `TEXT`  | Optional text                   |
 
 ### `SavedPlace`
 
-User bookmarks (unique per user + place pair). Table exists; profile UI ships in Phase 4.
+User bookmarks (unique per user + place pair). Full list at `/saved`; carousel on `/profile`.
 
 ---
 
@@ -139,23 +142,30 @@ User bookmarks (unique per user + place pair). Table exists; profile UI ships in
 
 ### `PlaceCategory`
 
-| Value | UI label (English) |
-| ----- | ------------------ |
-| `CAFE` | Café |
-| `RESTAURANT` | Restaurant |
-| `LIBRARY` | Library |
-| `MALL` | Mall |
-| `MUSEUM` | Museum |
-| `COWORKING` | Coworking |
-| `PUBLIC_SPACE` | Public space |
+| Value          | UI label (English) |
+| -------------- | ------------------ |
+| `CAFE`         | Café               |
+| `RESTAURANT`   | Restaurant         |
+| `LIBRARY`      | Library            |
+| `MALL`         | Mall               |
+| `MUSEUM`       | Museum             |
+| `COWORKING`    | Coworking          |
+| `PUBLIC_SPACE` | Public space       |
 
 ### `AcStrength`
 
-| Value | Meaning |
-| ----- | ------- |
-| `LIGHTLY_COOLED` | Light AC |
-| `COMFORTABLE` | Comfortable |
-| `FRIGID` | Very cold |
+| Value            | Meaning     |
+| ---------------- | ----------- |
+| `LIGHTLY_COOLED` | Light AC    |
+| `COMFORTABLE`    | Comfortable |
+| `FRIGID`         | Very cold   |
+
+### `PlaceStatus`
+
+| Value       | Meaning                            |
+| ----------- | ---------------------------------- |
+| `DRAFT`     | Saved by user, not listed publicly |
+| `PUBLISHED` | Visible on map and category lists  |
 
 ---
 
@@ -164,15 +174,15 @@ User bookmarks (unique per user + place pair). Table exists; profile UI ships in
 Seed script: [`packages/db/prisma/seed.ts`](../packages/db/prisma/seed.ts)  
 Pilot config: [`packages/config/pilot-city.ts`](../packages/config/pilot-city.ts)
 
-| Item | Value |
-| ---- | ----- |
-| City | **Clichy, France** (92110) |
-| Center | `48.9042`, `2.3064` |
-| Default search radius | 2 km |
-| Seeded users | 1 — `lucas@freshy.app`, username `lucas_frescor` |
-| Seeded places | 50 — all categories, spread around center |
-| Seeded reviews | 0 |
-| Seeded saved places | 0 |
+| Item                  | Value                                            |
+| --------------------- | ------------------------------------------------ |
+| City                  | **Clichy, France** (92110)                       |
+| Center                | `48.9042`, `2.3064`                              |
+| Default search radius | 2 km                                             |
+| Seeded users          | 1 — `lucas@freshy.app`, username `lucas_frescor` |
+| Seeded places         | 50 — all categories, spread around center        |
+| Seeded reviews        | 0                                                |
+| Seeded saved places   | 0                                                |
 
 Seed is **idempotent** (`upsert` by email / slug). Safe to re-run.
 
@@ -180,10 +190,10 @@ Seed is **idempotent** (`upsert` by email / slug). Safe to re-run.
 
 ## Environment variables
 
-| Variable | Where | Purpose |
-| -------- | ----- | ------- |
-| `DATABASE_URL` | API host, local `.env`, CI | Postgres connection string (Neon URI) |
-| `NEXT_PUBLIC_API_URL` | Cloudflare Pages | Web → API base URL (**not** the database) |
+| Variable              | Where                      | Purpose                                   |
+| --------------------- | -------------------------- | ----------------------------------------- |
+| `DATABASE_URL`        | API host, local `.env`, CI | Postgres connection string (Neon URI)     |
+| `NEXT_PUBLIC_API_URL` | Cloudflare Pages           | Web → API base URL (**not** the database) |
 
 See [`.env.example`](../.env.example). Never commit production credentials.
 
@@ -195,14 +205,14 @@ See [`.env.example`](../.env.example). Never commit production credentials.
 
 Run from repository root unless noted.
 
-| Task | Command |
-| ---- | ------- |
-| Generate Prisma client | `pnpm db:generate` |
-| Create/apply migrations (local dev) | `pnpm db:migrate` |
-| Apply migrations (production / Neon) | `DATABASE_URL="..." pnpm --filter @freshy/db migrate:deploy` |
-| Seed demo data | `DATABASE_URL="..." pnpm db:seed` |
-| Browse data (GUI) | `DATABASE_URL="..." pnpm --filter @freshy/db studio` |
-| Enable PostGIS (Neon SQL Editor, once) | `CREATE EXTENSION IF NOT EXISTS postgis;` |
+| Task                                   | Command                                                      |
+| -------------------------------------- | ------------------------------------------------------------ |
+| Generate Prisma client                 | `pnpm db:generate`                                           |
+| Create/apply migrations (local dev)    | `pnpm db:migrate`                                            |
+| Apply migrations (production / Neon)   | `DATABASE_URL="..." pnpm --filter @freshy/db migrate:deploy` |
+| Seed demo data                         | `DATABASE_URL="..." pnpm db:seed`                            |
+| Browse data (GUI)                      | `DATABASE_URL="..." pnpm --filter @freshy/db studio`         |
+| Enable PostGIS (Neon SQL Editor, once) | `CREATE EXTENSION IF NOT EXISTS postgis;`                    |
 
 **Order for a fresh cloud database:** PostGIS → `db:generate` → `migrate:deploy` → `db:seed`.
 
@@ -210,9 +220,10 @@ Run from repository root unless noted.
 
 ## Migrations
 
-| Migration | Description |
-| --------- | ------------- |
-| `20250629200000_init` | Creates enums, four tables, indexes, foreign keys |
+| Migration                                    | Description                                          |
+| -------------------------------------------- | ---------------------------------------------------- |
+| `20250629200000_init`                        | Creates enums, four tables, indexes, foreign keys    |
+| `20250630120000_place_amenities_and_creator` | Adds `amenities`, `createdById`, `status` on `Place` |
 
 Migration SQL: [`packages/db/prisma/migrations/20250629200000_init/migration.sql`](../packages/db/prisma/migrations/20250629200000_init/migration.sql)
 
@@ -220,12 +231,17 @@ Migration SQL: [`packages/db/prisma/migrations/20250629200000_init/migration.sql
 
 ## How the API uses the database
 
-| Endpoint | DB usage |
-| -------- | -------- |
-| `GET /health` | No DB (optional R2 check) |
-| `GET /places` | `Place.findMany` + radius filter in app code |
-| `GET /places/meta/categories` | `Place.groupBy` + featured place |
-| `GET /places/:slug` | `Place.findUnique` + reviews with user |
+| Endpoint                               | DB usage                                         |
+| -------------------------------------- | ------------------------------------------------ |
+| `GET /health`                          | No DB (optional R2 check)                        |
+| `GET /places`                          | `Place.findMany` + radius filter in app code     |
+| `GET /places/meta/categories`          | `Place.groupBy` + featured place                 |
+| `GET /places/:slug`                    | `Place.findUnique` + reviews with user           |
+| `GET /users/me`                        | Profile with review and saved counts             |
+| `GET /users/me/saved`                  | Saved places for current user                    |
+| `GET /users/me/reviews`                | Reviews authored by current user                 |
+| `POST /users/me/places`                | Create user-submitted place (draft or published) |
+| `POST/DELETE /users/me/saved/:placeId` | Bookmark toggle                                  |
 
 Geo filtering today uses **Haversine in application code** ([`packages/db/src/geo.ts`](../packages/db/src/geo.ts)). PostGIS is enabled for future `ST_DWithin` / GIST indexes.
 
@@ -233,10 +249,10 @@ Geo filtering today uses **Haversine in application code** ([`packages/db/src/ge
 
 ## Hosting
 
-| Environment | Database | API |
-| ----------- | -------- | --- |
-| Local | Docker PostGIS (`setup-local-db.sh`) | Express `:4000` |
-| Production | **Neon** or Supabase | Express on Render (interim) → Cloudflare Workers + Hyperdrive (target) |
+| Environment | Database                             | API                                                                    |
+| ----------- | ------------------------------------ | ---------------------------------------------------------------------- |
+| Local       | Docker PostGIS (`setup-local-db.sh`) | Express `:4000`                                                        |
+| Production  | **Neon** or Supabase                 | Express on Render (interim) → Cloudflare Workers + Hyperdrive (target) |
 
 ---
 
