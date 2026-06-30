@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   detectDuplicatePlaceIds,
   mergePlacesSchema,
+  parseUpdateStudioPlaceFields,
   studioPlacesQuerySchema,
   updateStudioPlaceSchema,
 } from './studio-places';
@@ -22,6 +23,34 @@ describe('studio-places', () => {
       status: 'PUBLISHED',
     });
     assert.equal(parsed.success, true);
+  });
+
+  it('validates studio update with photo URL and tags', () => {
+    const parsed = updateStudioPlaceSchema.safeParse({
+      photoUrl: 'https://cdn.example.com/photo.jpg',
+      tags: ['calm', 'shaded'],
+    });
+    assert.equal(parsed.success, true);
+  });
+
+  it('allows clearing photo URL in studio update', () => {
+    const parsed = updateStudioPlaceSchema.safeParse({ photoUrl: null });
+    assert.equal(parsed.success, true);
+  });
+
+  it('parses multipart studio update fields', () => {
+    const parsed = parseUpdateStudioPlaceFields({
+      name: 'Updated Cafe',
+      tags: '["calm","foodie"]',
+      freshnessLevel: 'VERY_COLD_AC',
+      status: 'PUBLISHED',
+    });
+    assert.equal(parsed.success, true);
+    if (parsed.success) {
+      assert.equal(parsed.data.name, 'Updated Cafe');
+      assert.deepEqual(parsed.data.tags, ['calm', 'foodie']);
+      assert.equal(parsed.data.aggregatedFreshnessLevel, 'VERY_COLD_AC');
+    }
   });
 
   it('validates merge payload', () => {

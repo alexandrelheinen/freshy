@@ -5,13 +5,10 @@ import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   FRESHNESS_LEVEL_LABELS,
-  FRESHNESS_LEVELS,
   FreshnessBar,
-  ALL_PLACE_CATEGORIES,
   BRAND_ICON,
   BRAND_NAME,
   MaterialIcon,
-  PLACE_CATEGORY_LABELS,
   ROUTES,
   getPlacePhotoUrl,
   type MaterialIconName,
@@ -28,6 +25,7 @@ import {
   type StudioPlaceStatus,
   type StudioStatsDto,
 } from '../lib/studio-api';
+import { StudioPlaceEditModal } from './StudioPlaceEditModal';
 import { freshnessBarState } from '../lib/api';
 
 type StudioView = 'all' | 'verified' | 'pending' | 'duplicate';
@@ -147,20 +145,33 @@ export function StudioClient() {
     await loadData();
   }
 
-  async function handleSaveEdit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function handleSaveEdit(payload: {
+    name: string;
+    address: string | null;
+    category: string;
+    aggregatedFreshnessLevel: StudioPlaceDto['aggregatedFreshnessLevel'];
+    status: 'DRAFT' | 'PUBLISHED';
+    description: string | null;
+    tags: string[];
+    photoUrl: string | null | undefined;
+    photoFile: File | null;
+  }) {
     if (!editing) return;
-    const form = new FormData(event.currentTarget);
-    const ok = await updateStudioPlace(getToken, editing.id, {
-      name: String(form.get('name') ?? '').trim(),
-      address: String(form.get('address') ?? '').trim() || null,
-      category: String(form.get('category') ?? editing.category),
-      aggregatedFreshnessLevel: String(
-        form.get('freshnessLevel'),
-      ) as StudioPlaceDto['aggregatedFreshnessLevel'],
-      status: String(form.get('status')) as 'DRAFT' | 'PUBLISHED',
-      description: String(form.get('description') ?? '').trim() || null,
-    });
+    const ok = await updateStudioPlace(
+      getToken,
+      editing.id,
+      {
+        name: payload.name,
+        address: payload.address,
+        category: payload.category,
+        aggregatedFreshnessLevel: payload.aggregatedFreshnessLevel,
+        status: payload.status,
+        description: payload.description,
+        tags: payload.tags,
+        ...(payload.photoUrl !== undefined ? { photoUrl: payload.photoUrl } : {}),
+      },
+      payload.photoFile ? { photo: payload.photoFile } : undefined,
+    );
     if (!ok) {
       setActionError('Could not update place.');
       return;
@@ -443,96 +454,12 @@ export function StudioClient() {
       </main>
 
       {editing ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-inverse-surface/40 p-4">
-          <form
-            onSubmit={(event) => void handleSaveEdit(event)}
-            className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-outline-variant/20 bg-surface-container-lowest p-6 shadow-2xl"
-          >
-            <h3 className="font-headline-lg text-headline-lg text-on-surface">Edit place</h3>
-            <div className="mt-6 space-y-4">
-              <label className="block">
-                <span className="font-label-caps text-secondary">Name</span>
-                <input
-                  name="name"
-                  defaultValue={editing.name}
-                  className="mt-1 w-full rounded-xl border border-outline-variant/30 bg-surface px-3 py-2"
-                  required
-                />
-              </label>
-              <label className="block">
-                <span className="font-label-caps text-secondary">Address</span>
-                <input
-                  name="address"
-                  defaultValue={editing.address ?? ''}
-                  className="mt-1 w-full rounded-xl border border-outline-variant/30 bg-surface px-3 py-2"
-                />
-              </label>
-              <label className="block">
-                <span className="font-label-caps text-secondary">Category</span>
-                <select
-                  name="category"
-                  defaultValue={editing.category}
-                  className="mt-1 w-full rounded-xl border border-outline-variant/30 bg-surface px-3 py-2"
-                >
-                  {ALL_PLACE_CATEGORIES.map((category) => (
-                    <option key={category} value={category}>
-                      {PLACE_CATEGORY_LABELS[category]}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="block">
-                <span className="font-label-caps text-secondary">Freshness level</span>
-                <select
-                  name="freshnessLevel"
-                  defaultValue={editing.aggregatedFreshnessLevel ?? 'MODEST_AC'}
-                  className="mt-1 w-full rounded-xl border border-outline-variant/30 bg-surface px-3 py-2"
-                >
-                  {FRESHNESS_LEVELS.map((level) => (
-                    <option key={level.id} value={level.id}>
-                      {level.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="block">
-                <span className="font-label-caps text-secondary">Publication status</span>
-                <select
-                  name="status"
-                  defaultValue={editing.status}
-                  className="mt-1 w-full rounded-xl border border-outline-variant/30 bg-surface px-3 py-2"
-                >
-                  <option value="DRAFT">Draft (pending)</option>
-                  <option value="PUBLISHED">Published (verified)</option>
-                </select>
-              </label>
-              <label className="block">
-                <span className="font-label-caps text-secondary">Description</span>
-                <textarea
-                  name="description"
-                  defaultValue={editing.description ?? ''}
-                  rows={3}
-                  className="mt-1 w-full rounded-xl border border-outline-variant/30 bg-surface px-3 py-2"
-                />
-              </label>
-            </div>
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setEditing(null)}
-                className="rounded-full px-5 py-2 text-secondary"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="rounded-full bg-primary px-5 py-2 font-title-md text-on-primary"
-              >
-                Save changes
-              </button>
-            </div>
-          </form>
-        </div>
+        <StudioPlaceEditModal
+          key={editing.id}
+          place={editing}
+          onCancel={() => setEditing(null)}
+          onSave={handleSaveEdit}
+        />
       ) : null}
 
       {toast ? (
