@@ -10,6 +10,7 @@ export type MaterialIconName =
   | 'bookmark'
   | 'bookmark_heart'
   | 'call_merge'
+  | 'celebration'
   | 'check_circle'
   | 'chevron_left'
   | 'climate_mini_split'
@@ -50,6 +51,7 @@ export type MaterialIconName =
   | 'pending'
   | 'pending_actions'
   | 'person'
+  | 'pets'
   | 'publish'
   | 'remove'
   | 'restaurant'
@@ -70,6 +72,7 @@ export type MaterialIconName =
   | 'volume_off'
   | 'warning'
   | 'water_drop'
+  | 'wb_shade'
   | 'wifi';
 
 export function MaterialIcon({

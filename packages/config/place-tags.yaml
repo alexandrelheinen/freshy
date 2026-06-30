@@ -13,9 +13,12 @@ tags:
   - id: shaded
     label: Shaded
     icon: wb_shade
-  - id: quiet
-    label: Quiet
-    icon: volume_off
   - id: free_wifi
     label: Free Wi-Fi
     icon: wifi
+  - id: fun
+    label: Fun
+    icon: celebration
+  - id: foodie
+    label: Foodie
+    icon: restaurant

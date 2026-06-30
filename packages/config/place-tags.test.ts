@@ -15,10 +15,10 @@ function loadPlaceTagsFromYaml(): PlaceTagConfig {
 describe('place-tags', () => {
   it('loads tags from place-tags.yaml', () => {
     const config = loadPlaceTagsFromYaml();
-    assert.equal(config.tags.length, 6);
+    assert.equal(config.tags.length, 7);
     assert.deepEqual(
       config.tags.map((tag) => tag.id),
-      ['calm', 'comfortable', 'pet_friendly', 'shaded', 'quiet', 'free_wifi'],
+      ['calm', 'comfortable', 'pet_friendly', 'shaded', 'free_wifi', 'fun', 'foodie'],
     );
   });
 
