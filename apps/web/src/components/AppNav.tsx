@@ -38,7 +38,7 @@ export function AppTopNav({
   const desktopItems = NAV_ITEMS.filter((item) => item.id !== 'profile');
 
   return (
-    <header className="fixed top-0 z-50 hidden h-16 w-full items-center justify-between bg-surface/80 px-10 shadow-sm backdrop-blur-md md:flex">
+    <header className="fixed top-0 z-50 hidden h-16 w-full items-center justify-between bg-surface px-10 shadow-sm md:flex">
       <Link href="/explore" className="flex items-center gap-2">
         <MaterialIcon name={BRAND_ICON} className="text-primary" size={32} />
         <span className="font-display-lg text-primary">Freshy</span>
@@ -98,7 +98,7 @@ export function AppMobileHeader({
   showBrand?: boolean;
 }) {
   return (
-    <header className="fixed top-0 z-50 flex h-16 w-full items-center justify-between bg-surface/80 px-margin-mobile shadow-sm backdrop-blur-md md:hidden">
+    <header className="fixed top-0 z-50 flex h-16 w-full items-center justify-between bg-surface px-margin-mobile shadow-sm md:hidden">
       <div className="flex items-center gap-2">
         {backHref ? (
           <Link
