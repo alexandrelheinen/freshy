@@ -274,6 +274,17 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
 
   const needsResearch = mapViewDiffersFromSearch(viewState, searchAnchor);
 
+  const displaySearchRadiusKm = useMemo(
+    () =>
+      cappedSearchRadiusKm(
+        viewState.latitude,
+        viewState.zoom,
+        MAP_SEARCH.maxRadiusKm,
+        MAP_SEARCH.minRadiusKm,
+      ),
+    [viewState.latitude, viewState.zoom],
+  );
+
   const selected = useMemo(
     () => places.find((p) => p.slug === selectedSlug) ?? places[0],
     [places, selectedSlug],
@@ -637,8 +648,8 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
                   className="text-on-surface-variant hover:text-primary"
                 />
               </button>
-              <span className="min-w-[40px] text-center text-sm font-bold text-on-surface">
-                {Math.round((viewState.zoom / zoomForSearchRadius(viewState.latitude)) * 100)}%
+              <span className="min-w-[56px] text-center text-sm font-bold text-on-surface">
+                {formatSearchRadiusKm(displaySearchRadiusKm)}
               </span>
               <button type="button" onClick={zoomIn} aria-label="Zoom in">
                 <MaterialIcon name="add" className="text-on-surface-variant hover:text-primary" />
