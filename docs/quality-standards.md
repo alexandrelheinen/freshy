@@ -86,10 +86,10 @@ See also [CONTRIBUTING.md](../CONTRIBUTING.md) and [development-cycle.md](develo
 
 | Rule                                                                                       | Enforcement          |
 | ------------------------------------------------------------------------------------------ | -------------------- |
-| Use design tokens from `docs/stitch/freshy/DESIGN.md` — no ad-hoc hex colors in components | Code review          |
+| Use semantic design tokens — no ad-hoc hex colors in components (see [themes/modularity-spec.md](themes/modularity-spec.md)) | Code review + CI (planned) |
 | Import shared preset: `@freshy/config/tailwind`                                            | `tailwind.config.ts` |
 | Prefer Tailwind utility classes over custom CSS                                            | Code review          |
-| Glassmorphism: use `.glass` utility or `GlassCard` from `@freshy/ui`                       | UI package           |
+| Glassmorphism: use `.glass` utility or `GlassCard` from `@freshy/ui` (token-backed when `@freshy/theme` lands) | UI package           |
 | Mobile-first layouts; respect `margin-mobile` (20px) spacing token                         | Design system        |
 | `data-page` attribute on top-level page containers for Playwright screenshots              | E2E tests            |
 
@@ -98,12 +98,14 @@ See also [CONTRIBUTING.md](../CONTRIBUTING.md) and [development-cycle.md](develo
 | Tool           | Config                                             |
 | -------------- | -------------------------------------------------- |
 | Tailwind CSS 4 | `apps/web/tailwind.config.ts`, `postcss.config.js` |
-| Design tokens  | `packages/config/tailwind.preset.ts`               |
+| Design tokens  | `packages/config/tailwind.preset.ts` (today); `@freshy/theme` (target) |
+| Theme specs    | [themes/modularity-spec.md](themes/modularity-spec.md), [themes/dark-theme-spec.md](themes/dark-theme-spec.md) |
 
 ### References
 
 - [Tailwind CSS v4 docs](https://tailwindcss.com/docs) — utilities and configuration
-- [Freshy DESIGN.md](stitch/freshy/DESIGN.md) — colors, typography, spacing, components
+- [Freshy DESIGN.md](stitch/freshy/DESIGN.md) — visual design reference
+- [Theme modularity spec](themes/modularity-spec.md) — file-driven tokens and multi-theme rules
 - [WCAG 2.1 AA](https://www.w3.org/WAI/WCAG21/quickref/) — accessibility targets for UI
 
 ---

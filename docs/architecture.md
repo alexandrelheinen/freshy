@@ -17,7 +17,8 @@ freshy/
 │   ├── api/                 # @freshy/api — Express → Render (prod); Workers later
 │   ├── db/                  # @freshy/db — Prisma + PostgreSQL
 │   ├── ui/                  # @freshy/ui — Shared React components
-│   └── config/              # @freshy/config — ESLint + Tailwind preset
+│   ├── config/              # @freshy/config — ESLint + Tailwind preset
+│   └── theme/               # @freshy/theme — YAML themes, CSS vars (planned; see docs/themes/)
 ├── infrastructure/
 │   ├── docker/              # Local PostGIS via Docker Compose
 │   ├── cloudflare/          # R2, Pages, Workers wrangler template
@@ -38,6 +39,7 @@ freshy/
 │   ├── architecture.md      # This file
 │   ├── development-cycle.md # TDD workflow (mandatory)
 │   ├── quality-standards.md # Per-language quality rules
+│   ├── themes/              # Theme modularity + dark theme specs
 │   ├── git-rules.md         # Branching & PR rules
 │   └── milestones/          # Operational checklists per roadmap phase
 │       ├── README.md        # Milestone index
