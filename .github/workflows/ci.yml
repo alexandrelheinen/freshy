@@ -32,6 +32,9 @@ jobs:
       - name: Generate Prisma client
         run: pnpm db:generate
 
+      - name: Theme build
+        run: pnpm theme:build
+
       - name: Format check
         run: pnpm format:check
 
