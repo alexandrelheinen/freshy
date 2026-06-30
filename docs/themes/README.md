@@ -8,6 +8,7 @@ Technical specifications for modular theming: file-driven tokens, multi-theme su
 | -------- | ------- |
 | [modularity-spec.md](modularity-spec.md) | Target architecture: `@freshy/theme`, YAML token files, CSS variables, enforcement rules |
 | [dark-theme-spec.md](dark-theme-spec.md) | Next implementation step: ship dark mode as the first alternate theme on top of the modularity foundation |
+| [testing-spec.md](testing-spec.md) | Automated test catalog for compile, contrast, parity, and literal-color gate |
 
 ## Related references
 

@@ -399,15 +399,18 @@ Work is ordered. Do not ship alternate themes before Phase B is complete.
 
 ## 10. Testing strategy
 
+Full test catalog: **[testing-spec.md](testing-spec.md)**.
+
 | Test | Location | Asserts |
 | ---- | -------- | ------- |
-| Schema validation | `packages/theme/build/compile-themes.test.ts` | All themes have required roles |
-| Default parity | Same + `tailwind.preset.test.ts` | Compiled `default` matches legacy hex for each role |
-| CSS output | Snapshot or key assertions | `--color-primary` present per theme |
+| Schema / compile | `packages/theme/build/compile-themes.test.ts` | All themes compile; CSS vars and tokens generated |
+| Default parity | `packages/theme/build/parity.test.ts` | Compiled `default` matches legacy hex |
 | Contrast | `packages/theme/build/contrast.test.ts` | WCAG AA for `on-*` pairs |
-| ThemeProvider | `packages/ui/src/theme/ThemeProvider.test.tsx` | `data-theme` set, persistence |
-| E2E (optional) | Playwright | Toggle theme; screenshot diff on explore + profile |
-| Mobile | `apps/mobile` unit or snapshot | `colors.primary` matches web for same theme id |
+| Preset vars | `packages/config/tailwind.preset.test.ts` | Colors map to `var(--color-*)`; no hex in preset |
+| Literal-color gate | `packages/theme/build/check-no-literal-colors.ts` | No hex/rgba/white utilities in apps/ui |
+| Mobile parity | `apps/mobile/src/theme.test.ts` | Mobile colors match web default tokens |
+| ThemeProvider | `packages/ui/src/theme/ThemeProvider.test.tsx` | Phase C only |
+| E2E (optional) | Playwright | Theme CSS loaded on explore |
 
 ---
 
