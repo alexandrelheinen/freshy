@@ -102,8 +102,9 @@ export function PlaceMapMarker({
   const icon = categoryIcon(place.category);
   const { bgClass, opacity } = markerPinStyle(place.aggregatedFreshnessLevel);
   const desktop = desktopMarkerStyle(place.aggregatedFreshnessLevel);
-  const temp =
-    place.aggregatedTemperatureC != null ? `${Math.round(place.aggregatedTemperatureC)}°C` : null;
+  const freshnessBadge = place.aggregatedFreshnessLevel
+    ? freshnessLabel(place.aggregatedFreshnessLevel)
+    : null;
 
   if (variant === 'desktop') {
     return (
@@ -114,11 +115,11 @@ export function PlaceMapMarker({
           isSelected ? 'z-20' : 'z-10 opacity-80 hover:opacity-100'
         }`}
       >
-        {temp ? (
+        {freshnessBadge ? (
           <div
             className={`mb-1 whitespace-nowrap rounded-full px-3 py-1 text-sm font-bold shadow-lg ${desktop.badgeClass}`}
           >
-            {temp}
+            {freshnessBadge}
           </div>
         ) : null}
         <div

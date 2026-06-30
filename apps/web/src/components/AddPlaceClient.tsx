@@ -32,7 +32,6 @@ export function AddPlaceClient() {
   const [category, setCategory] = useState<PlaceCategory>('CAFE');
   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
-  const [temperature, setTemperature] = useState(22);
   const [freshnessLevel, setFreshnessLevel] = useState<FreshnessLevelId>('MODEST_AC');
   const [tags, setTags] = useState<PlaceTagId[]>(['calm']);
   const [latitude, setLatitude] = useState<number>(PILOT_CITY.latitude);
@@ -100,7 +99,6 @@ export function AddPlaceClient() {
         description: description.trim() || undefined,
         latitude,
         longitude,
-        aggregatedTemperatureC: temperature,
         aggregatedFreshnessLevel: freshnessLevel,
         tags,
         status: 'DRAFT',
@@ -246,24 +244,6 @@ export function AddPlaceClient() {
           <h3 className="font-title-md text-primary">Cooling status</h3>
         </div>
         <div>
-          <div className="mb-2 flex items-center justify-between">
-            <label className="font-label-caps text-on-surface-variant">Target temperature</label>
-            <span className="font-headline-lg-mobile text-primary">{temperature}°C</span>
-          </div>
-          <input
-            type="range"
-            min={16}
-            max={26}
-            value={temperature}
-            onChange={(e) => setTemperature(Number(e.target.value))}
-            className="slider-thumb h-2 w-full cursor-pointer appearance-none rounded-full bg-outline-variant"
-          />
-          <div className="mt-1 flex justify-between text-[10px] font-bold text-outline">
-            <span>16°C</span>
-            <span>26°C</span>
-          </div>
-        </div>
-        <div>
           <label className="mb-3 block font-label-caps text-on-surface-variant">
             Freshness level
           </label>
@@ -372,7 +352,7 @@ export function AddPlaceClient() {
               ) : null}
               <p className="font-title-md text-on-surface">{name || 'Place name'}</p>
               <p className="mt-1 text-body-sm text-on-surface-variant">
-                {PLACE_CATEGORY_LABELS[category]} · {temperature}°C · {selectedFreshness.label}
+                {PLACE_CATEGORY_LABELS[category]} · {selectedFreshness.label}
               </p>
               <p className="mt-4 text-body-sm text-on-surface-variant">
                 {address || 'Address will appear here'}

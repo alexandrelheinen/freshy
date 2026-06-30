@@ -15,7 +15,6 @@ describe('create-place', () => {
       address: '1 Rue Martre, 92110 Clichy',
       latitude: 48.9,
       longitude: 2.3,
-      aggregatedTemperatureC: 22,
       aggregatedFreshnessLevel: 'MODEST_AC',
       tags: ['calm'],
       status: 'PUBLISHED',
@@ -23,15 +22,14 @@ describe('create-place', () => {
     assert.equal(parsed.success, true);
   });
 
-  it('rejects invalid temperature', () => {
+  it('rejects invalid freshness level', () => {
     const parsed = createPlaceSchema.safeParse({
       name: 'Cool Spot',
       category: 'CAFE',
       address: '1 Rue Martre',
       latitude: 48.9,
       longitude: 2.3,
-      aggregatedTemperatureC: 40,
-      aggregatedFreshnessLevel: 'MODEST_AC',
+      aggregatedFreshnessLevel: 'INVALID',
     });
     assert.equal(parsed.success, false);
   });

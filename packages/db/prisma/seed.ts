@@ -166,7 +166,6 @@ async function main() {
     latitude: number;
     longitude: number;
     address: string;
-    aggregatedTemperatureC: number;
     aggregatedFreshnessLevel: FreshnessLevel;
     tags: string[];
   }> = [];
@@ -175,14 +174,6 @@ async function main() {
     for (const name of VENUE_NAMES[category]) {
       const slug = slugify(name);
       const freshness = pickFreshnessLevel(index, category);
-      const temp =
-        freshness === FreshnessLevel.VERY_COLD_AC
-          ? 18 + (index % 3)
-          : freshness === FreshnessLevel.MODEST_AC
-            ? 21 + (index % 3)
-            : freshness === FreshnessLevel.NATURALLY_FRESH
-              ? 22 + (index % 2)
-              : 24 + (index % 2);
 
       places.push({
         slug,
@@ -192,7 +183,6 @@ async function main() {
         latitude: offsetCoordinate(index, 'lat'),
         longitude: offsetCoordinate(index, 'lng'),
         address: `${STREETS[index % STREETS.length]}, ${PILOT_CITY.postalCode} ${PILOT_CITY.name}`,
-        aggregatedTemperatureC: temp,
         aggregatedFreshnessLevel: freshness,
         tags: filterValidPlaceTags(CATEGORY_TAGS[category]),
       });

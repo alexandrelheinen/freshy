@@ -118,15 +118,15 @@ Duplicate detection uses great-circle distance (`haversineDistanceKm` in `@fresh
 
 Implemented in `apps/web/src/components/StudioClient.tsx`, loaded client-only via `StudioPageShell` (static export + Clerk).
 
-| Area         | Behavior                                                                               |
-| ------------ | -------------------------------------------------------------------------------------- |
-| Sidebar      | Filters: **Places** (all), **Pending Validation**, **Conflicts (Merge)**               |
-| Stats cards  | Total verified, pending count, active conflicts, average temperature                   |
-| Table        | Name, location, coolness bar, status badge, row actions                                |
-| **Validate** | Publishes a pending place (`DRAFT` → `PUBLISHED`)                                      |
-| **Edit**     | Modal to change name, address, category, temperature, AC strength, status, description |
-| **Merge**    | Merges a duplicate into the older nearby place (see API below)                         |
-| **Delete**   | Permanently removes a place (with browser confirm dialog)                              |
+| Area         | Behavior                                                                      |
+| ------------ | ----------------------------------------------------------------------------- |
+| Sidebar      | Filters: **Places** (all), **Pending Validation**, **Conflicts (Merge)**      |
+| Stats cards  | Total verified, pending count, active conflicts, average freshness score      |
+| Table        | Name, location, coolness bar, status badge, row actions                       |
+| **Validate** | Publishes a pending place (`DRAFT` → `PUBLISHED`)                             |
+| **Edit**     | Modal to change name, address, category, freshness level, status, description |
+| **Merge**    | Merges a duplicate into the older nearby place (see API below)                |
+| **Delete**   | Permanently removes a place (with browser confirm dialog)                     |
 
 Access guard: `StudioPageClient` checks `user.publicMetadata.role === 'admin'` via `isStudioAdmin()` in `apps/web/src/lib/studio-api.ts`. Non-admins render `StudioNotFound`.
 

@@ -10,7 +10,6 @@ export interface PlaceDto {
   longitude: number;
   address: string | null;
   photoUrl?: string | null;
-  aggregatedTemperatureC: number | null;
   aggregatedFreshnessLevel:
     | 'NONE'
     | 'GOOD_VENTILATION'

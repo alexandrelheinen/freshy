@@ -98,6 +98,12 @@ export function freshnessTone(level: FreshnessLevelId | null | undefined): Fresh
   return definition?.tone ?? 'neutral';
 }
 
+export function freshnessLevelScore(level: FreshnessLevelId | null | undefined): number | null {
+  if (!level) return null;
+  const definition = FRESHNESS_LEVELS.find((entry) => entry.id === level);
+  return definition?.level ?? null;
+}
+
 export function isFreshnessLevelId(value: string): value is FreshnessLevelId {
   return FRESHNESS_LEVEL_IDS.includes(value as FreshnessLevelId);
 }

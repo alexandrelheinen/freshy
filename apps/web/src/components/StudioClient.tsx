@@ -155,7 +155,6 @@ export function StudioClient() {
       name: String(form.get('name') ?? '').trim(),
       address: String(form.get('address') ?? '').trim() || null,
       category: String(form.get('category') ?? editing.category),
-      aggregatedTemperatureC: Number(form.get('temperature')),
       aggregatedFreshnessLevel: String(
         form.get('freshnessLevel'),
       ) as StudioPlaceDto['aggregatedFreshnessLevel'],
@@ -272,8 +271,10 @@ export function StudioClient() {
             />
             <StatCard
               icon="ac_unit"
-              label="Cooling Index Avg"
-              value={stats?.averageTemperatureC != null ? `${stats.averageTemperatureC}°C` : '—'}
+              label="Avg Freshness"
+              value={
+                stats?.averageFreshnessScore != null ? `${stats.averageFreshnessScore} / 4` : '—'
+              }
               tone="primary"
             />
           </div>
@@ -479,17 +480,6 @@ export function StudioClient() {
                     </option>
                   ))}
                 </select>
-              </label>
-              <label className="block">
-                <span className="font-label-caps text-secondary">Temperature (°C)</span>
-                <input
-                  name="temperature"
-                  type="number"
-                  min={16}
-                  max={30}
-                  defaultValue={editing.aggregatedTemperatureC ?? 22}
-                  className="mt-1 w-full rounded-xl border border-outline-variant/30 bg-surface px-3 py-2"
-                />
               </label>
               <label className="block">
                 <span className="font-label-caps text-secondary">Freshness level</span>

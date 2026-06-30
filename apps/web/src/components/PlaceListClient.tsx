@@ -60,7 +60,11 @@ export function PlaceListClient({
       );
     }
     if (activeFilter === 'cold') {
-      list = list.filter((p) => p.aggregatedTemperatureC != null && p.aggregatedTemperatureC <= 22);
+      list = list.filter(
+        (p) =>
+          p.aggregatedFreshnessLevel === 'VERY_COLD_AC' ||
+          p.aggregatedFreshnessLevel === 'NATURALLY_FRESH',
+      );
     }
     if (activeFilter === 'nearby') {
       list = list.filter((p) => p.distanceKm != null && p.distanceKm <= 1);
@@ -70,7 +74,7 @@ export function PlaceListClient({
 
   const filterChips: Array<{ id: FilterChip; label: string }> = [
     { id: 'all', label: 'All' },
-    { id: 'cold', label: 'Under 22°C' },
+    { id: 'cold', label: 'Coldest' },
     { id: 'nearby', label: 'Within 1km' },
   ];
 

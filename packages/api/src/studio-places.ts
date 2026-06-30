@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { FRESHNESS_LEVEL_IDS } from '@freshy/config/freshness-levels';
+import { FRESHNESS_LEVEL_IDS, freshnessLevelScore } from '@freshy/config/freshness-levels';
 import { PLACE_TAG_IDS } from '@freshy/config/place-tags';
 import {
   FreshnessLevel,
@@ -30,7 +30,6 @@ export const updateStudioPlaceSchema = z
     address: z.string().trim().min(3).max(240).nullable().optional(),
     latitude: z.number().min(-90).max(90).optional(),
     longitude: z.number().min(-180).max(180).optional(),
-    aggregatedTemperatureC: z.number().min(16).max(30).nullable().optional(),
     aggregatedFreshnessLevel: z
       .enum(FRESHNESS_LEVEL_IDS as [string, ...string[]])
       .nullable()
@@ -73,7 +72,7 @@ export interface StudioStats {
   totalVerified: number;
   pendingValidation: number;
   activeConflicts: number;
-  averageTemperatureC: number | null;
+  averageFreshnessScore: number | null;
 }
 
 interface PlaceCoord {
@@ -168,26 +167,26 @@ export async function getStudioStats(prisma: PrismaClient): Promise<StudioStats>
       longitude: true,
       createdAt: true,
       status: true,
-      aggregatedTemperatureC: true,
+      aggregatedFreshnessLevel: true,
     },
   });
 
   const duplicateMap = detectDuplicatePlaceIds(places);
   const pendingValidation = places.filter((place) => place.status === 'DRAFT').length;
   const totalVerified = places.filter((place) => place.status === 'PUBLISHED').length;
-  const temps = places
-    .map((place) => place.aggregatedTemperatureC)
+  const scores = places
+    .map((place) => freshnessLevelScore(place.aggregatedFreshnessLevel))
     .filter((value): value is number => value != null);
-  const averageTemperatureC =
-    temps.length > 0
-      ? Math.round((temps.reduce((sum, value) => sum + value, 0) / temps.length) * 10) / 10
+  const averageFreshnessScore =
+    scores.length > 0
+      ? Math.round((scores.reduce((sum, value) => sum + value, 0) / scores.length) * 10) / 10
       : null;
 
   return {
     totalVerified,
     pendingValidation,
     activeConflicts: duplicateMap.size,
-    averageTemperatureC,
+    averageFreshnessScore,
   };
 }
 
