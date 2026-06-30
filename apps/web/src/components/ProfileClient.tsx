@@ -248,7 +248,7 @@ function ProfileWithClerk() {
               </div>
             </section>
 
-            <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+            <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">
               <GlassCard className="flex flex-col items-center p-4 text-center md:p-6">
                 <MaterialIcon name="reviews" className="mb-2 text-primary md:hidden" size={28} />
                 <span className="font-headline-lg text-primary">{profile.reviewCount}</span>
@@ -266,11 +266,6 @@ function ProfileWithClerk() {
                 <span className="font-label-caps uppercase tracking-widest text-secondary">
                   Saved
                 </span>
-              </GlassCard>
-              <GlassCard className="hidden flex-col items-center p-6 text-center md:flex">
-                <MaterialIcon name="thermostat" className="mb-2 text-primary" size={28} />
-                <span className="text-3xl font-bold text-on-surface">21°C</span>
-                <span className="font-label-caps text-on-surface-variant">Avg. Temp.</span>
               </GlassCard>
               <GlassCard className="hidden flex-col items-center p-6 text-center md:flex">
                 <MaterialIcon name="add_location" className="mb-2 text-primary" size={28} />
