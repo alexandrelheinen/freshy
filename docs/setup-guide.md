@@ -1,5 +1,6 @@
 # Freshy — Setup Guide (step-by-step)
 
+> **Already deployed?** Use [platforms.md](platforms.md) for dashboards, env vars, and recovery — this guide is for **first-time** setup.  
 > **Who is this for?** You, before Phase 1 coding can go live.  
 > **Working language:** English (docs and code in this repo).  
 > **Time:** About 2–4 hours the first time.  

@@ -1,7 +1,8 @@
 # Freshy — Deploy the API (connect web app to your database)
 
-> **Your situation:** The web app at `https://freshy-25e.pages.dev` loads, but `/explore` is empty because **there is no API server running yet**.  
-> **Your database is ready** (50 places in Neon). You only need to **deploy the API** and **point the web app at it**.
+> **Master platform reference:** [platforms.md](platforms.md) — all dashboards, env vars, and checklists in one place.
+
+> **Your situation:** The web app at `https://freshy-25e.pages.dev` loads from **Cloudflare Pages**. Data comes from **Render** + **Neon**. Auth uses **Clerk**.
 
 ---
 
@@ -20,18 +21,15 @@ You need **both**: database (done) + API (this guide).
 
 ---
 
-## Architecture (target state)
+## Architecture (production)
 
-```
-https://freshy-25e.pages.dev/explore
-        │
-        │  fetch(NEXT_PUBLIC_API_URL + "/places")
-        ▼
-https://freshy-api.onrender.com/places   ← you will create this
-        │
-        │  Prisma + DATABASE_URL
-        ▼
-Neon PostgreSQL (50 places)              ← you already have this
+```mermaid
+flowchart TB
+    Pages[freshy-25e.pages.dev] -->|fetch| Render[freshy-api.onrender.com]
+    Render -->|Prisma| Neon[(Neon — 50 places)]
+    Pages --> Clerk[Clerk sign-in]
+    Render -->|JWT| Clerk
+    Pages --> Mapbox[Mapbox map]
 ```
 
 ---
