@@ -1,4 +1,11 @@
-export type PlaceTagId = 'calm' | 'comfortable' | 'pet_friendly' | 'shaded' | 'quiet' | 'free_wifi';
+export type PlaceTagId =
+  | 'calm'
+  | 'comfortable'
+  | 'pet_friendly'
+  | 'shaded'
+  | 'free_wifi'
+  | 'fun'
+  | 'foodie';
 
 export interface PlaceTagDefinition {
   id: PlaceTagId;
@@ -16,8 +23,9 @@ export const PLACE_TAGS: readonly PlaceTagDefinition[] = [
   { id: 'comfortable', label: 'Comfortable', icon: 'event_seat' },
   { id: 'pet_friendly', label: 'Pet Friendly', icon: 'pets' },
   { id: 'shaded', label: 'Shaded', icon: 'wb_shade' },
-  { id: 'quiet', label: 'Quiet', icon: 'volume_off' },
   { id: 'free_wifi', label: 'Free Wi-Fi', icon: 'wifi' },
+  { id: 'fun', label: 'Fun', icon: 'celebration' },
+  { id: 'foodie', label: 'Foodie', icon: 'restaurant' },
 ] as const satisfies readonly PlaceTagDefinition[];
 
 export const PLACE_TAG_IDS: PlaceTagId[] = PLACE_TAGS.map((tag) => tag.id);

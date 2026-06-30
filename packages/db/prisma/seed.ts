@@ -8,10 +8,10 @@ const CATEGORY_TAGS: Record<PlaceCategory, string[]> = {
   [PlaceCategory.CAFE]: ['calm', 'comfortable', 'free_wifi'],
   [PlaceCategory.RESTAURANT]: ['comfortable', 'shaded'],
   [PlaceCategory.BAR]: ['comfortable', 'calm'],
-  [PlaceCategory.LIBRARY]: ['quiet', 'calm', 'free_wifi'],
+  [PlaceCategory.LIBRARY]: ['calm', 'free_wifi'],
   [PlaceCategory.MALL]: ['free_wifi', 'comfortable'],
-  [PlaceCategory.MUSEUM]: ['quiet', 'comfortable'],
-  [PlaceCategory.COWORKING]: ['free_wifi', 'quiet'],
+  [PlaceCategory.MUSEUM]: ['calm', 'comfortable'],
+  [PlaceCategory.COWORKING]: ['free_wifi', 'calm'],
   [PlaceCategory.PUBLIC_SPACE]: ['shaded', 'calm', 'pet_friendly'],
 };
 
