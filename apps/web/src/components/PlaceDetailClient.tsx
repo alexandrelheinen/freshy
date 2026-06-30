@@ -1,14 +1,17 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import {
   AcStrengthBar,
   AC_STRENGTH_LABELS,
   GlassCard,
+  MaterialIcon,
   PLACE_CATEGORY_LABELS,
+  ROUTES,
 } from '@freshy/ui';
-import { AppBottomNav } from './AppBottomNav';
+import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceActions } from './PlaceActions';
 
 const SavePlaceButton = dynamic(
@@ -57,23 +60,30 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
     PLACE_CATEGORY_LABELS[place.category as keyof typeof PLACE_CATEGORY_LABELS] ?? place.category;
 
   return (
-    <div className="min-h-screen pb-10" data-page="place-detail">
-      <header className="fixed top-0 z-50 flex h-16 w-full items-center bg-surface/80 px-margin-mobile shadow-sm backdrop-blur-md">
-        <h1 className="text-xl font-semibold text-primary">Place Details</h1>
-      </header>
+    <div className="min-h-screen pb-32 md:pb-8" data-page="place-detail">
+      <AppMobileHeader title="Place Details" backHref={ROUTES.explore} showBrand={false} />
+      <AppTopNav active="explore" />
 
-      <main className="pt-16">
+      <main className="mx-auto max-w-3xl pt-16 md:max-w-4xl">
         <section className="relative h-72 w-full overflow-hidden bg-gradient-to-br from-primary-container to-secondary-container">
-          <div className="absolute bottom-6 left-margin-mobile">
+          <div className="absolute right-4 top-20 rounded-full bg-primary px-3 py-1.5 text-lg font-bold text-white shadow-lg md:top-24">
+            {place.aggregatedTemperatureC != null
+              ? `${Math.round(place.aggregatedTemperatureC)}°C`
+              : '—'}
+          </div>
+          <div className="absolute bottom-6 left-margin-mobile md:left-10">
             <span className="rounded-full bg-primary-container px-3 py-1 text-xs font-bold uppercase">
               {place.isOpen !== false ? 'Open now' : 'Closed'}
             </span>
             <h2 className="mt-2 text-3xl font-bold text-white drop-shadow">{place.name}</h2>
-            <p className="text-sm text-white/80">{categoryLabel}</p>
+            <p className="flex items-center gap-1 text-sm text-white/80">
+              <MaterialIcon name="location_on" size={14} />
+              {categoryLabel}
+            </p>
           </div>
         </section>
 
-        <section className="relative z-10 -mt-8 grid grid-cols-2 gap-4 px-margin-mobile">
+        <section className="relative z-10 -mt-8 grid grid-cols-2 gap-4 px-margin-mobile md:px-10">
           <GlassCard className="flex flex-col items-center p-4 text-center">
             <span className="text-xs font-bold uppercase text-secondary">Interior</span>
             <div className="text-4xl font-bold text-primary">
@@ -96,7 +106,7 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
           </GlassCard>
         </section>
 
-        <section className="mt-6 px-margin-mobile">
+        <section className="mt-6 px-margin-mobile md:px-10">
           {place.address && (
             <p className="mb-4 text-sm text-on-surface-variant">{place.address}</p>
           )}
@@ -110,7 +120,7 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
           <SavePlaceButton placeId={place.id} />
         </section>
 
-        <section className="mt-8 px-margin-mobile">
+        <section className="mt-8 px-margin-mobile md:px-10">
           <h3 className="mb-4 text-xl font-semibold">Climate Reviews</h3>
           {place.reviews.length === 0 ? (
             <GlassCard className="p-4 text-on-surface-variant">No reviews yet.</GlassCard>
