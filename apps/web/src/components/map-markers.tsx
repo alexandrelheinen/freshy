@@ -115,7 +115,7 @@ export function PlaceMapMarker({
       type="button"
       onClick={onClick}
       className={`marker-float flex flex-col items-center transition-transform hover:scale-110 ${opacity}`}
-      style={{ animationDelay: `${place.id.charCodeAt(0) % 5 * 0.4}s` }}
+      style={{ animationDelay: `${(place.id.charCodeAt(0) % 5) * 0.4}s` }}
     >
       <div
         className={`rounded-full p-2 text-white shadow-xl ${bgClass} ${isSelected ? 'ring-2 ring-white ring-offset-2 ring-offset-primary/30' : ''}`}

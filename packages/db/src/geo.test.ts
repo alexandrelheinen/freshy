@@ -1,14 +1,18 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import {
-  PILOT_CITY,
-  filterPlacesByRadius,
-  haversineDistanceKm,
-} from './geo';
+import { PILOT_CITY, filterPlacesByRadius, haversineDistanceKm } from './geo';
 
 describe('@freshy/db geo', () => {
   it('computes zero distance for identical points', () => {
-    assert.equal(haversineDistanceKm(PILOT_CITY.latitude, PILOT_CITY.longitude, PILOT_CITY.latitude, PILOT_CITY.longitude), 0);
+    assert.equal(
+      haversineDistanceKm(
+        PILOT_CITY.latitude,
+        PILOT_CITY.longitude,
+        PILOT_CITY.latitude,
+        PILOT_CITY.longitude,
+      ),
+      0,
+    );
   });
 
   it('filters places within radius', () => {

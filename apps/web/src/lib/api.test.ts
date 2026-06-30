@@ -41,9 +41,6 @@ describe('@freshy/web api helpers', () => {
 
   it('builds directions URL from coordinates when address is missing', () => {
     const url = directionsUrl({ latitude: 48.9042, longitude: 2.3064, address: null });
-    assert.equal(
-      url,
-      'https://www.google.com/maps/dir/?api=1&destination=48.9042,2.3064',
-    );
+    assert.equal(url, 'https://www.google.com/maps/dir/?api=1&destination=48.9042,2.3064');
   });
 });

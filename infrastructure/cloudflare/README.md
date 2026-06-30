@@ -22,14 +22,14 @@ Freshy uses **Cloudflare** for hosting, CDN, object storage, and (in production)
 
 ### Bucket prefixes
 
-| Prefix | Purpose |
-| ------ | ------- |
-| `places/` | Venue photos |
-| `places/defaults/` | Category default place photos |
-| `avatars/` | User avatars |
-| `ci/` | PR screenshot previews (public read) |
-| `ci/main/latest/` | Production page screenshots after `main` deploy |
-| `releases/` | Optional mobile build mirrors |
+| Prefix             | Purpose                                         |
+| ------------------ | ----------------------------------------------- |
+| `places/`          | Venue photos                                    |
+| `places/defaults/` | Category default place photos                   |
+| `avatars/`         | User avatars                                    |
+| `ci/`              | PR screenshot previews (public read)            |
+| `ci/main/latest/`  | Production page screenshots after `main` deploy |
+| `releases/`        | Optional mobile build mirrors                   |
 
 ---
 
@@ -101,26 +101,26 @@ The `@freshy/api` package uses the S3-compatible API (`@aws-sdk/client-s3`).
 
 Repository → **Settings → Secrets and variables → Actions**:
 
-| Secret | Value |
-| ------ | ----- |
-| `R2_ACCOUNT_ID` | Cloudflare account ID |
-| `R2_ACCESS_KEY_ID` | R2 token access key |
-| `R2_SECRET_ACCESS_KEY` | R2 token secret |
-| `R2_BUCKET_NAME` | `freshy-assets` |
-| `R2_PUBLIC_URL` | Public base URL (no trailing slash) |
-| `DATABASE_URL` | Neon connection string (CD: `migrate deploy` on `main`) |
-| `EXPO_TOKEN` | Expo token (mobile releases — unchanged) |
+| Secret                 | Value                                                   |
+| ---------------------- | ------------------------------------------------------- |
+| `R2_ACCOUNT_ID`        | Cloudflare account ID                                   |
+| `R2_ACCESS_KEY_ID`     | R2 token access key                                     |
+| `R2_SECRET_ACCESS_KEY` | R2 token secret                                         |
+| `R2_BUCKET_NAME`       | `freshy-assets`                                         |
+| `R2_PUBLIC_URL`        | Public base URL (no trailing slash)                     |
+| `DATABASE_URL`         | Neon connection string (CD: `migrate deploy` on `main`) |
+| `EXPO_TOKEN`           | Expo token (mobile releases — unchanged)                |
 
 After configuring, open a test PR — the bot should post screenshots hosted on R2.
 
 ### CD workflows on `main`
 
-| Workflow | Trigger | Action |
-| -------- | ------- | ------ |
-| [migrate-database.yml](../../.github/workflows/migrate-database.yml) | Prisma migrations change | `migrate deploy` (needs `DATABASE_URL` secret) |
-| [sync-place-defaults.yml](../../.github/workflows/sync-place-defaults.yml) | Default place images change | `pnpm upload:place-defaults` |
-| [production-screenshots.yml](../../.github/workflows/production-screenshots.yml) | Web or UI change | Live Pages screenshots → `ci/main/latest/` |
-| [smoke-production.yml](../../.github/workflows/smoke-production.yml) | Every `main` push | API + web health checks |
+| Workflow                                                                         | Trigger                     | Action                                         |
+| -------------------------------------------------------------------------------- | --------------------------- | ---------------------------------------------- |
+| [migrate-database.yml](../../.github/workflows/migrate-database.yml)             | Prisma migrations change    | `migrate deploy` (needs `DATABASE_URL` secret) |
+| [sync-place-defaults.yml](../../.github/workflows/sync-place-defaults.yml)       | Default place images change | `pnpm upload:place-defaults`                   |
+| [production-screenshots.yml](../../.github/workflows/production-screenshots.yml) | Web or UI change            | Live Pages screenshots → `ci/main/latest/`     |
+| [smoke-production.yml](../../.github/workflows/smoke-production.yml)             | Every `main` push           | API + web health checks                        |
 
 Set `NEXT_PUBLIC_R2_PUBLIC_URL` on Cloudflare Pages (same value as `R2_PUBLIC_URL`) so the web app loads default place photos from R2.
 
@@ -136,21 +136,21 @@ Set `NEXT_PUBLIC_R2_PUBLIC_URL` on Cloudflare Pages (same value as `R2_PUBLIC_UR
 
 ### Build settings (monorepo)
 
-| Setting | Value |
-| ------- | ----- |
-| **Framework preset** | Next.js |
-| **Build command** | `cd ../.. && pnpm install && pnpm --filter @freshy/web build` |
+| Setting                    | Value                                                                                                          |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Framework preset**       | Next.js                                                                                                        |
+| **Build command**          | `cd ../.. && pnpm install && pnpm --filter @freshy/web build`                                                  |
 | **Build output directory** | `out` (static export — do **not** use `.next`; it includes webpack cache files over Cloudflare’s 25 MiB limit) |
-| **Node.js version** | 20 |
+| **Node.js version**        | 20                                                                                                             |
 
 For full Next.js 15 SSR on Pages, use the [OpenNext Cloudflare adapter](https://opennext.js.org/cloudflare) when moving beyond static shell deploy. Until then, set **Build output directory** to `out` (not `.next`).
 
 ### Environment variables (Pages)
 
-| Name | Example |
-| ---- | ------- |
-| `NEXT_PUBLIC_API_URL` | `https://api.freshy.app` |
-| `NEXT_PUBLIC_MAPBOX_TOKEN` | `pk.xxx` |
+| Name                       | Example                  |
+| -------------------------- | ------------------------ |
+| `NEXT_PUBLIC_API_URL`      | `https://api.freshy.app` |
+| `NEXT_PUBLIC_MAPBOX_TOKEN` | `pk.xxx`                 |
 
 Preview deployments are created automatically for each pull request.
 
@@ -173,11 +173,11 @@ See [Hyperdrive docs](https://developers.cloudflare.com/hyperdrive/) for connect
 
 If your domain is on Cloudflare:
 
-| Record | Target |
-| ------ | ------ |
+| Record       | Target                   |
+| ------------ | ------------------------ |
 | `@` or `www` | Cloudflare Pages project |
-| `api` | Workers custom domain |
-| `assets` | R2 custom domain |
+| `api`        | Workers custom domain    |
+| `assets`     | R2 custom domain         |
 
 ---
 
