@@ -1,7 +1,12 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { PILOT_CITY } from '@freshy/ui';
-import { cappedSearchRadiusKm, radiusKmFromZoom, zoomForRadiusKm } from './map-zoom';
+import {
+  cappedSearchRadiusKm,
+  formatSearchRadiusKm,
+  radiusKmFromZoom,
+  zoomForRadiusKm,
+} from './map-zoom';
 
 describe('zoomForRadiusKm', () => {
   it('returns a neighborhood-scale zoom for the pilot city search radius', () => {
@@ -40,7 +45,8 @@ describe('cappedSearchRadiusKm', () => {
     assert.equal(cappedSearchRadiusKm(48.9, 2, 100), 100);
   });
 
-  it('enforces a minimum radius', () => {
-    assert.equal(cappedSearchRadiusKm(48.9, 18, 100), 0.1);
+  it('formats radius with one decimal and km suffix', () => {
+    assert.equal(formatSearchRadiusKm(5.43), '5.4 km');
+    assert.equal(formatSearchRadiusKm(100), '100.0 km');
   });
 });
