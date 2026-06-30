@@ -255,7 +255,10 @@ export function ProfileClient() {
                 <div className="mb-4 flex items-center justify-between">
                   <h3 className="font-title-md text-on-surface">Saved Places</h3>
                   {savedPlaces.length > 0 ? (
-                    <Link href={ROUTES.saved} className="font-label-caps text-primary hover:underline">
+                    <Link
+                      href={ROUTES.saved}
+                      className="font-label-caps text-primary hover:underline"
+                    >
                       See all
                     </Link>
                   ) : null}

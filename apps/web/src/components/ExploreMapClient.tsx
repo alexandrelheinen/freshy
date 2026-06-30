@@ -18,12 +18,7 @@ import {
   type PlaceCategory,
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
-import {
-  acStrengthLevel,
-  directionsUrl,
-  formatDistance,
-  formatDistanceWithWalk,
-} from '../lib/api';
+import { acStrengthLevel, directionsUrl, formatDistance, formatDistanceWithWalk } from '../lib/api';
 import { CATEGORY_HIGHLIGHT_AMENITY } from '@freshy/ui';
 import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceMapMarker, UserLocationMarker, acStrengthLabel } from './map-markers';

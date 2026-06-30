@@ -1,6 +1,12 @@
 'use client';
 
-import { ALL_PLACE_CATEGORIES, PILOT_CITY, PLACE_CATEGORY_LABELS, ROUTES, type PlaceCategory } from '@freshy/ui';
+import {
+  ALL_PLACE_CATEGORIES,
+  PILOT_CITY,
+  PLACE_CATEGORY_LABELS,
+  ROUTES,
+  type PlaceCategory,
+} from '@freshy/ui';
 import { useCallback } from 'react';
 import { PlaceListClient } from './PlaceListClient';
 import { fetchPlaces } from '../lib/api';
@@ -15,9 +21,7 @@ function parseCategory(raw: string): PlaceCategory | null {
 
 export function CategoryPlacesClient({ categorySlug }: { categorySlug: string }) {
   const category = parseCategory(categorySlug);
-  const title = category
-    ? PLACE_CATEGORY_LABELS[category]
-    : categorySlug.replace(/-/g, ' ');
+  const title = category ? PLACE_CATEGORY_LABELS[category] : categorySlug.replace(/-/g, ' ');
 
   const loadPlaces = useCallback(async () => {
     if (!category) return [];
