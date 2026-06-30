@@ -89,7 +89,7 @@ flowchart TB
 | `R2_PUBLIC_URL` | Public URL for screenshot links in PR comments |
 | `EXPO_TOKEN` | Mobile EAS builds on release |
 
-**Docs:** [.github/workflows/ci.yml](../.github/workflows/ci.yml)
+**Docs:** [.github/workflows/ci.yml](../.github/workflows/ci.yml), [.github/workflows/smoke-production.yml](../.github/workflows/smoke-production.yml)
 
 ---
 

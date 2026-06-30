@@ -1,0 +1,26 @@
+name: Production smoke test
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: smoke-production
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    name: Verify live API and web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run production smoke test
+        env:
+          API_URL: https://freshy-api.onrender.com
+          WEB_URL: https://freshy-25e.pages.dev
+          R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
+          SMOKE_MAX_ATTEMPTS: 30
+          SMOKE_SLEEP_SECONDS: 20
+        run: bash scripts/smoke-production.sh
