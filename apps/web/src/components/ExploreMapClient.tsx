@@ -354,8 +354,18 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     });
   }, [activeCategory, loadPlaces, query, searchAnchor]);
 
-  const zoomIn = () => setViewState((v) => ({ ...v, zoom: Math.min(v.zoom + 1, 18) }));
-  const zoomOut = () => setViewState((v) => ({ ...v, zoom: Math.max(v.zoom - 1, 2) }));
+  const zoomIn = () =>
+    setViewState((v) => {
+      const next = { ...v, zoom: Math.min(v.zoom + 1, 18) };
+      setMapCenter({ lat: next.latitude, lng: next.longitude }, next.zoom);
+      return next;
+    });
+  const zoomOut = () =>
+    setViewState((v) => {
+      const next = { ...v, zoom: Math.max(v.zoom - 1, 2) };
+      setMapCenter({ lat: next.latitude, lng: next.longitude }, next.zoom);
+      return next;
+    });
   const researchHere = () => runSearch(viewState);
   const recenter = () => {
     if (userLocation) {
@@ -437,7 +447,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
             : 'bg-surface-container-high text-on-surface-variant hover:bg-secondary-container'
         }`}
       >
-        All Spots
+        All Places
       </button>
       {EXPLORE_FILTER_CHIPS.map((chip) => {
         const isActive = activeCategory === chip.category;
@@ -469,7 +479,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       />
       <input
         className="w-full rounded-xl border-none bg-surface-container-low py-3 pl-10 pr-4 font-body-lg text-on-surface placeholder:text-outline-variant focus:ring-2 focus:ring-primary/20 md:rounded-lg"
-        placeholder="Search chilled spots..."
+        placeholder="Search places..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
@@ -529,7 +539,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
             <MaterialIcon name="search" className="text-outline" />
             <input
               className="ml-2 w-full border-none bg-transparent font-body-lg focus:ring-0"
-              placeholder="Find a cool spot..."
+              placeholder="Find a place..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -546,7 +556,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
           </div>
           <div className="glass-panel pointer-events-auto flex flex-1 flex-col overflow-hidden rounded-xl border border-glass-border shadow-xl">
             <div className="flex items-center justify-between border-b border-outline-variant/20 p-4">
-              <h2 className="font-title-md text-on-surface">Nearby Cool Spots</h2>
+              <h2 className="font-title-md text-on-surface">Nearby Places</h2>
               <span className="rounded bg-primary-container px-2 py-0.5 text-xs font-bold text-primary">
                 {places.length} Results
               </span>
@@ -562,7 +572,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
               ))}
               {places.length === 0 ? (
                 <p className="p-4 text-center text-sm text-on-surface-variant">
-                  No cool spots found nearby.
+                  No places found nearby.
                 </p>
               ) : null}
             </div>
