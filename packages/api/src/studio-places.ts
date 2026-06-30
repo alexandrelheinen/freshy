@@ -1,14 +1,15 @@
 import { z } from 'zod';
+import { eq, like, or, sql, desc } from 'drizzle-orm';
 import { FRESHNESS_LEVEL_IDS, freshnessLevelScore } from '@freshy/config/freshness-levels';
 import { PLACE_TAG_IDS } from '@freshy/config/place-tags';
 import {
-  FreshnessLevel,
-  PlaceCategory,
+  PLACE_CATEGORIES,
   type Place,
-  type Prisma,
-  type PrismaClient,
+  type FreshnessLevel,
+  type Db,
   haversineDistanceKm,
 } from '@freshy/db';
+import { places as placesTable, reviews as reviewsTable, savedPlaces as savedPlacesTable } from '@freshy/db';
 import { withResolvedPlacePhoto } from './places';
 
 const DUPLICATE_RADIUS_KM = 0.05;
@@ -26,7 +27,7 @@ export const updateStudioPlaceSchema = z
   .object({
     name: z.string().trim().min(2).max(120).optional(),
     description: z.string().trim().max(1000).nullable().optional(),
-    category: z.nativeEnum(PlaceCategory).optional(),
+    category: z.enum(PLACE_CATEGORIES).optional(),
     address: z.string().trim().min(3).max(240).nullable().optional(),
     latitude: z.number().min(-90).max(90).optional(),
     longitude: z.number().min(-180).max(180).optional(),
@@ -141,12 +142,12 @@ interface PlaceCoord {
   id: string;
   latitude: number;
   longitude: number;
-  createdAt: Date;
+  createdAt: string;
 }
 
 /** Mark newer nearby places as duplicates of the oldest place in each cluster. */
 export function detectDuplicatePlaceIds(places: PlaceCoord[]): Map<string, string> {
-  const sorted = [...places].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+  const sorted = [...places].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
   const duplicates = new Map<string, string>();
 
   for (let i = 0; i < sorted.length; i += 1) {
@@ -185,23 +186,24 @@ function matchesStudioFilter(
   return place.studioStatus === 'duplicate';
 }
 
-export async function listStudioPlaces(
-  prisma: PrismaClient,
-  query: StudioPlacesQuery,
-): Promise<StudioPlacesPage> {
-  const where: Prisma.PlaceWhereInput = {};
+export async function listStudioPlaces(db: Db, query: StudioPlacesQuery): Promise<StudioPlacesPage> {
+  let allPlaces: Place[];
   if (query.q) {
-    where.OR = [
-      { name: { contains: query.q, mode: 'insensitive' } },
-      { address: { contains: query.q, mode: 'insensitive' } },
-      { slug: { contains: query.q, mode: 'insensitive' } },
-    ];
+    const pattern = `%${query.q}%`;
+    allPlaces = await db
+      .select()
+      .from(placesTable)
+      .where(
+        or(
+          like(placesTable.name, pattern),
+          like(placesTable.address, pattern),
+          like(placesTable.slug, pattern),
+        ),
+      )
+      .orderBy(desc(placesTable.createdAt));
+  } else {
+    allPlaces = await db.select().from(placesTable).orderBy(desc(placesTable.createdAt));
   }
-
-  const allPlaces = await prisma.place.findMany({
-    where,
-    orderBy: { createdAt: 'desc' },
-  });
 
   const duplicateMap = detectDuplicatePlaceIds(allPlaces);
   const enriched: StudioPlaceListItem[] = allPlaces.map((place) => {
@@ -221,23 +223,23 @@ export async function listStudioPlaces(
   return { items, total, page: query.page, limit: query.limit };
 }
 
-export async function getStudioStats(prisma: PrismaClient): Promise<StudioStats> {
-  const places = await prisma.place.findMany({
-    select: {
-      id: true,
-      latitude: true,
-      longitude: true,
-      createdAt: true,
-      status: true,
-      aggregatedFreshnessLevel: true,
-    },
-  });
+export async function getStudioStats(db: Db): Promise<StudioStats> {
+  const coordRows = await db
+    .select({
+      id: placesTable.id,
+      latitude: placesTable.latitude,
+      longitude: placesTable.longitude,
+      createdAt: placesTable.createdAt,
+      status: placesTable.status,
+      aggregatedFreshnessLevel: placesTable.aggregatedFreshnessLevel,
+    })
+    .from(placesTable);
 
-  const duplicateMap = detectDuplicatePlaceIds(places);
-  const pendingValidation = places.filter((place) => place.status === 'DRAFT').length;
-  const totalVerified = places.filter((place) => place.status === 'PUBLISHED').length;
-  const scores = places
-    .map((place) => freshnessLevelScore(place.aggregatedFreshnessLevel))
+  const duplicateMap = detectDuplicatePlaceIds(coordRows);
+  const pendingValidation = coordRows.filter((p) => p.status === 'DRAFT').length;
+  const totalVerified = coordRows.filter((p) => p.status === 'PUBLISHED').length;
+  const scores = coordRows
+    .map((p) => freshnessLevelScore(p.aggregatedFreshnessLevel))
     .filter((value): value is number => value != null);
   const averageFreshnessScore =
     scores.length > 0
@@ -253,89 +255,134 @@ export async function getStudioStats(prisma: PrismaClient): Promise<StudioStats>
 }
 
 export async function updateStudioPlace(
-  prisma: PrismaClient,
+  db: Db,
   placeId: string,
   input: UpdateStudioPlaceInput,
 ): Promise<Place> {
-  const { aggregatedFreshnessLevel, ...rest } = input;
-  const place = await prisma.place.update({
-    where: { id: placeId },
-    data: {
+  const now = new Date().toISOString();
+  const { tags, aggregatedFreshnessLevel, ...rest } = input;
+
+  await db
+    .update(placesTable)
+    .set({
       ...rest,
+      ...(tags !== undefined ? { tags: JSON.stringify(tags) } : {}),
       ...(aggregatedFreshnessLevel !== undefined
         ? { aggregatedFreshnessLevel: aggregatedFreshnessLevel as FreshnessLevel | null }
         : {}),
-    },
-  });
-  return withResolvedPlacePhoto(place);
+      updatedAt: now,
+    })
+    .where(eq(placesTable.id, placeId));
+
+  const rows = await db.select().from(placesTable).where(eq(placesTable.id, placeId)).limit(1);
+  return withResolvedPlacePhoto(rows[0]!);
 }
 
-export async function approveStudioPlace(prisma: PrismaClient, placeId: string): Promise<Place> {
-  const place = await prisma.place.update({
-    where: { id: placeId },
-    data: { status: 'PUBLISHED' },
-  });
-  return withResolvedPlacePhoto(place);
+export async function approveStudioPlace(db: Db, placeId: string): Promise<Place> {
+  const now = new Date().toISOString();
+  await db
+    .update(placesTable)
+    .set({ status: 'PUBLISHED', updatedAt: now })
+    .where(eq(placesTable.id, placeId));
+  const rows = await db.select().from(placesTable).where(eq(placesTable.id, placeId)).limit(1);
+  return withResolvedPlacePhoto(rows[0]!);
 }
 
-export async function deleteStudioPlace(prisma: PrismaClient, placeId: string): Promise<void> {
-  await prisma.place.delete({ where: { id: placeId } });
+export async function deleteStudioPlace(db: Db, placeId: string): Promise<void> {
+  await db.delete(placesTable).where(eq(placesTable.id, placeId));
 }
 
-export async function mergeStudioPlaces(
-  prisma: PrismaClient,
-  input: MergePlacesInput,
-): Promise<Place> {
-  const target = await prisma.place.findUnique({ where: { id: input.targetPlaceId } });
-  const source = await prisma.place.findUnique({ where: { id: input.sourcePlaceId } });
-  if (!target || !source) {
+export async function mergeStudioPlaces(db: Db, input: MergePlacesInput): Promise<Place> {
+  const targetRows = await db
+    .select()
+    .from(placesTable)
+    .where(eq(placesTable.id, input.targetPlaceId))
+    .limit(1);
+  const sourceRows = await db
+    .select()
+    .from(placesTable)
+    .where(eq(placesTable.id, input.sourcePlaceId))
+    .limit(1);
+  if (!targetRows[0] || !sourceRows[0]) {
     throw new Error('Place not found');
   }
 
-  await prisma.$transaction(async (tx) => {
-    const reviews = await tx.review.findMany({ where: { placeId: input.sourcePlaceId } });
-    for (const review of reviews) {
-      const existing = await tx.review.findFirst({
-        where: { userId: review.userId, placeId: input.targetPlaceId },
-      });
-      if (existing) {
-        await tx.review.delete({ where: { id: review.id } });
-      } else {
-        await tx.review.update({
-          where: { id: review.id },
-          data: { placeId: input.targetPlaceId },
-        });
-      }
-    }
+  // Move reviews from source to target (skip duplicates)
+  const sourceReviews = await db
+    .select()
+    .from(reviewsTable)
+    .where(eq(reviewsTable.placeId, input.sourcePlaceId));
 
-    const saved = await tx.savedPlace.findMany({ where: { placeId: input.sourcePlaceId } });
-    for (const row of saved) {
-      await tx.savedPlace.upsert({
-        where: {
-          userId_placeId: { userId: row.userId, placeId: input.targetPlaceId },
-        },
-        update: {},
-        create: { userId: row.userId, placeId: input.targetPlaceId },
+  for (const review of sourceReviews) {
+    const existing = await db
+      .select({ id: reviewsTable.id })
+      .from(reviewsTable)
+      .where(
+        sql`${reviewsTable.userId} = ${review.userId} AND ${reviewsTable.placeId} = ${input.targetPlaceId}`,
+      )
+      .limit(1);
+
+    if (existing.length > 0) {
+      await db.delete(reviewsTable).where(eq(reviewsTable.id, review.id));
+    } else {
+      await db
+        .update(reviewsTable)
+        .set({ placeId: input.targetPlaceId })
+        .where(eq(reviewsTable.id, review.id));
+    }
+  }
+
+  // Move saved places from source to target (skip duplicates)
+  const sourceSaved = await db
+    .select()
+    .from(savedPlacesTable)
+    .where(eq(savedPlacesTable.placeId, input.sourcePlaceId));
+
+  for (const row of sourceSaved) {
+    const existing = await db
+      .select({ id: savedPlacesTable.id })
+      .from(savedPlacesTable)
+      .where(
+        sql`${savedPlacesTable.userId} = ${row.userId} AND ${savedPlacesTable.placeId} = ${input.targetPlaceId}`,
+      )
+      .limit(1);
+
+    if (existing.length === 0) {
+      await db.insert(savedPlacesTable).values({
+        id: crypto.randomUUID(),
+        userId: row.userId,
+        placeId: input.targetPlaceId,
       });
     }
-    await tx.savedPlace.deleteMany({ where: { placeId: input.sourcePlaceId } });
-    await tx.place.delete({ where: { id: input.sourcePlaceId } });
-  });
+  }
 
-  const merged = await prisma.place.findUniqueOrThrow({ where: { id: input.targetPlaceId } });
-  return withResolvedPlacePhoto(merged);
+  await db.delete(savedPlacesTable).where(eq(savedPlacesTable.placeId, input.sourcePlaceId));
+  await db.delete(placesTable).where(eq(placesTable.id, input.sourcePlaceId));
+
+  const merged = await db
+    .select()
+    .from(placesTable)
+    .where(eq(placesTable.id, input.targetPlaceId))
+    .limit(1);
+  return withResolvedPlacePhoto(merged[0]!);
 }
 
 export async function getStudioPlace(
-  prisma: PrismaClient,
+  db: Db,
   placeId: string,
 ): Promise<StudioPlaceListItem | null> {
-  const place = await prisma.place.findUnique({ where: { id: placeId } });
-  if (!place) return null;
+  const rows = await db.select().from(placesTable).where(eq(placesTable.id, placeId)).limit(1);
+  if (!rows[0]) return null;
+  const place = rows[0];
 
-  const allPlaces = await prisma.place.findMany({
-    select: { id: true, latitude: true, longitude: true, createdAt: true },
-  });
+  const allPlaces = await db
+    .select({
+      id: placesTable.id,
+      latitude: placesTable.latitude,
+      longitude: placesTable.longitude,
+      createdAt: placesTable.createdAt,
+    })
+    .from(placesTable);
   const duplicateOfId = detectDuplicatePlaceIds(allPlaces).get(place.id) ?? null;
 
   return {

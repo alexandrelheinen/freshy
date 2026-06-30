@@ -1,11 +1,13 @@
 import { z } from 'zod';
+import { eq } from 'drizzle-orm';
 import { PLACE_TAG_IDS } from '@freshy/config/place-tags';
 import { FRESHNESS_LEVEL_IDS } from '@freshy/config/freshness-levels';
-import { FreshnessLevel, PlaceCategory, type Place, type PrismaClient } from '@freshy/db';
+import { PLACE_CATEGORIES, type Place, type FreshnessLevel, type Db } from '@freshy/db';
+import { places as placesTable } from '@freshy/db';
 
 export const createPlaceSchema = z.object({
   name: z.string().trim().min(2).max(120),
-  category: z.nativeEnum(PlaceCategory),
+  category: z.enum(PLACE_CATEGORIES),
   address: z.string().trim().min(3).max(240),
   description: z.string().trim().max(1000).optional(),
   latitude: z.number().min(-90).max(90).optional(),
@@ -25,10 +27,16 @@ export function slugifyPlaceName(name: string): string {
     .replace(/^-|-$/g, '');
 }
 
-export async function uniquePlaceSlug(prisma: PrismaClient, base: string): Promise<string> {
+export async function uniquePlaceSlug(db: Db, base: string): Promise<string> {
   let slug = base || 'place';
   let suffix = 0;
-  while (await prisma.place.findUnique({ where: { slug } })) {
+  while (true) {
+    const existing = await db
+      .select({ id: placesTable.id })
+      .from(placesTable)
+      .where(eq(placesTable.slug, slug))
+      .limit(1);
+    if (existing.length === 0) break;
     suffix += 1;
     slug = `${base}-${suffix}`;
   }
@@ -36,27 +44,36 @@ export async function uniquePlaceSlug(prisma: PrismaClient, base: string): Promi
 }
 
 export async function createUserPlace(
-  prisma: PrismaClient,
+  db: Db,
   userId: string,
   input: CreatePlaceInput & { latitude: number; longitude: number },
 ): Promise<Place> {
   const baseSlug = slugifyPlaceName(input.name);
-  const slug = await uniquePlaceSlug(prisma, baseSlug);
+  const slug = await uniquePlaceSlug(db, baseSlug);
+  const now = new Date().toISOString();
+  const id = crypto.randomUUID();
 
-  return prisma.place.create({
-    data: {
-      slug,
-      name: input.name,
-      description: input.description ?? null,
-      category: input.category,
-      latitude: input.latitude,
-      longitude: input.longitude,
-      address: input.address,
-      photoUrl: input.photoUrl ?? null,
-      aggregatedFreshnessLevel: input.aggregatedFreshnessLevel as FreshnessLevel,
-      tags: input.tags,
-      status: input.status,
-      createdById: userId,
-    },
+  await db.insert(placesTable).values({
+    id,
+    slug,
+    name: input.name,
+    description: input.description ?? null,
+    category: input.category,
+    latitude: input.latitude,
+    longitude: input.longitude,
+    address: input.address,
+    photoUrl: input.photoUrl ?? null,
+    aggregatedFreshnessLevel: input.aggregatedFreshnessLevel as FreshnessLevel,
+    tags: JSON.stringify(input.tags),
+    status: input.status,
+    createdById: userId,
+    updatedAt: now,
   });
+
+  const rows = await db
+    .select()
+    .from(placesTable)
+    .where(eq(placesTable.id, id))
+    .limit(1);
+  return rows[0]!;
 }
