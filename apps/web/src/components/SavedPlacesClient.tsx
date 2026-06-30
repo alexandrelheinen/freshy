@@ -29,7 +29,7 @@ export function SavedPlacesClient() {
 
   if (!isLoaded) {
     return (
-      <div className="min-h-screen pb-32" data-page="saved">
+      <div className="min-h-screen pb-mobile-nav" data-page="saved">
         <AppMobileHeader title="Saved Places" backHref={ROUTES.explore} showBrand={false} />
         <p className="py-32 text-center text-on-surface-variant">Loading…</p>
         <AppBottomNav active="saved" />
@@ -39,7 +39,7 @@ export function SavedPlacesClient() {
 
   if (!isSignedIn) {
     return (
-      <div className="min-h-screen pb-32" data-page="saved">
+      <div className="min-h-screen pb-mobile-nav" data-page="saved">
         <AppMobileHeader title="Saved Places" backHref={ROUTES.explore} showBrand={false} />
         <AppTopNav active="saved" />
         <main className="mx-auto mt-20 max-w-md px-margin-mobile pt-8 text-center md:px-10">

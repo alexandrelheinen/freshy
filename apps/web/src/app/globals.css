@@ -4,8 +4,37 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --app-bottom-nav-content-height: 5rem;
+  --app-mobile-action-bar-height: 5.25rem;
+  --app-bottom-nav-height: calc(
+    var(--app-bottom-nav-content-height) + env(safe-area-inset-bottom, 0px)
+  );
+  --app-mobile-nav-with-action-height: calc(
+    var(--app-bottom-nav-height) + var(--app-mobile-action-bar-height)
+  );
+}
+
 body {
   min-height: 100dvh;
+}
+
+@layer utilities {
+  .pb-mobile-nav {
+    padding-bottom: var(--app-bottom-nav-height);
+  }
+
+  .pb-mobile-nav-action {
+    padding-bottom: var(--app-mobile-nav-with-action-height);
+  }
+
+  .bottom-above-mobile-nav {
+    bottom: var(--app-bottom-nav-height);
+  }
+
+  .inset-pb-mobile-nav {
+    padding-bottom: var(--app-bottom-nav-height);
+  }
 }
 
 .glass {

@@ -421,7 +421,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
   );
 
   return (
-    <div className="relative min-h-screen pb-32 md:pb-0" data-page="explore">
+    <div className="relative min-h-screen pb-mobile-nav md:pb-0" data-page="explore">
       <AppMobileHeader />
       <AppTopNav active="explore" />
 
@@ -475,7 +475,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         </div>
 
         {/* Mobile: bottom overlay stack (FABs above preview card, both above bottom nav) */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex flex-col items-end gap-3 px-margin-mobile pb-32 md:hidden">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex flex-col items-end gap-3 px-margin-mobile inset-pb-mobile-nav md:hidden">
           <div className="pointer-events-auto flex flex-col gap-2">
             <button
               type="button"

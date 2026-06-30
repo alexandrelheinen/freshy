@@ -102,7 +102,7 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
       : null;
 
   return (
-    <div className="min-h-screen pb-32 md:pb-8" data-page="place-detail">
+    <div className="min-h-screen pb-mobile-nav md:pb-8" data-page="place-detail">
       <header className="fixed top-0 z-50 flex h-16 w-full items-center justify-between bg-surface/80 px-margin-mobile shadow-sm backdrop-blur-md md:hidden">
         <div className="flex items-center gap-2">
           <Link

@@ -113,7 +113,7 @@ export function CoolingClient() {
   const featured = meta?.featured;
 
   return (
-    <div className="min-h-screen pb-32 md:pb-8" data-page="cooling">
+    <div className="min-h-screen pb-mobile-nav md:pb-8" data-page="cooling">
       <AppMobileHeader />
       <AppTopNav active="cooling" />
 
