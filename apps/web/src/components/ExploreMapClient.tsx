@@ -13,14 +13,15 @@ import {
   PILOT_CITY,
   PLACE_CATEGORY_ICONS,
   PLACE_CATEGORY_LABELS,
+  PLACE_TAG_LABELS,
   ROUTES,
+  filterValidPlaceTags,
   type MaterialIconName,
   type PlaceCategory,
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
 import { acStrengthLevel, directionsUrl, formatDistance, formatDistanceWithWalk } from '../lib/api';
 import { mapStyleUrl, type MapStyleId } from '../lib/map-styles';
-import { CATEGORY_HIGHLIGHT_AMENITY } from '@freshy/ui';
 import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceMapMarker, UserLocationMarker, acStrengthLabel } from './map-markers';
 
@@ -183,8 +184,11 @@ function ExplorePreviewCard({
               <AcStrengthBar level={strengthLevel} />
             </div>
             <div className="rounded bg-secondary-container px-2 py-1 text-[9px] font-bold uppercase text-on-secondary-container">
-              {CATEGORY_HIGHLIGHT_AMENITY[place.category as PlaceCategory] ??
-                PLACE_CATEGORY_LABELS[place.category as PlaceCategory] ??
+              {filterValidPlaceTags(place.tags ?? [])
+                .slice(0, 1)
+                .map((tag) => PLACE_TAG_LABELS[tag])
+                .join('') ||
+                PLACE_CATEGORY_LABELS[place.category as PlaceCategory] ||
                 place.category}
             </div>
           </div>

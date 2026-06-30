@@ -1,0 +1,21 @@
+# Canonical list of tags that can be assigned to places.
+# Edit this file to add or change tags, then run `pnpm --filter @freshy/config test`.
+tags:
+  - id: calm
+    label: Calm
+    icon: spa
+  - id: comfortable
+    label: Comfortable
+    icon: event_seat
+  - id: pet_friendly
+    label: Pet Friendly
+    icon: pets
+  - id: shaded
+    label: Shaded
+    icon: wb_shade
+  - id: quiet
+    label: Quiet
+    icon: volume_off
+  - id: free_wifi
+    label: Free Wi-Fi
+    icon: wifi

@@ -3,11 +3,13 @@
 import Link from 'next/link';
 import {
   AC_STRENGTH_LABELS,
-  CATEGORY_HIGHLIGHT_AMENITY,
+  PLACE_TAG_LABELS,
   MaterialIcon,
   ROUTES,
   getPlacePhotoUrl,
+  filterValidPlaceTags,
   type PlaceCategory,
+  type PlaceTagId,
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
 import { acStrengthLevel, formatDistanceWithWalk } from '../lib/api';
@@ -25,6 +27,7 @@ export function PlaceListCard({
   onBookmarkClick?: () => void;
 }) {
   const level = acStrengthLevel(place.aggregatedAcStrength);
+  const placeTags = filterValidPlaceTags(place.tags ?? []);
 
   return (
     <Link href={ROUTES.place(place.slug)} className="group block">
@@ -84,11 +87,14 @@ export function PlaceListCard({
             </div>
           ) : null}
           <div className="mb-4 flex flex-wrap gap-2">
-            {CATEGORY_HIGHLIGHT_AMENITY[place.category as PlaceCategory] ? (
-              <span className="rounded-full bg-secondary-fixed px-3 py-1 text-[10px] font-bold uppercase text-on-secondary-fixed-variant">
-                {CATEGORY_HIGHLIGHT_AMENITY[place.category as PlaceCategory]}
+            {placeTags.slice(0, 2).map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full bg-secondary-fixed px-3 py-1 text-[10px] font-bold uppercase text-on-secondary-fixed-variant"
+              >
+                {PLACE_TAG_LABELS[tag]}
               </span>
-            ) : null}
+            ))}
             {place.aggregatedAcStrength ? (
               <span className="rounded-full bg-secondary-fixed px-3 py-1 text-[10px] font-bold uppercase text-on-secondary-fixed-variant">
                 {AC_STRENGTH_LABELS[place.aggregatedAcStrength]}

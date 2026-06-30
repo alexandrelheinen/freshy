@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { PLACE_TAG_IDS } from '@freshy/config/place-tags';
 import {
   AcStrength,
   PlaceCategory,
@@ -30,7 +31,7 @@ export const updateStudioPlaceSchema = z
     longitude: z.number().min(-180).max(180).optional(),
     aggregatedTemperatureC: z.number().min(16).max(30).nullable().optional(),
     aggregatedAcStrength: z.nativeEnum(AcStrength).nullable().optional(),
-    amenities: z.array(z.string()).optional(),
+    tags: z.array(z.enum(PLACE_TAG_IDS as [string, ...string[]])).optional(),
     isOpen: z.boolean().optional(),
     status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
   })

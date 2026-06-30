@@ -1,16 +1,17 @@
 import { PrismaClient, PlaceCategory, AcStrength } from '@prisma/client';
+import { filterValidPlaceTags } from '@freshy/config/place-tags';
 import { PILOT_CITY } from '../src/geo';
 
 const prisma = new PrismaClient();
 
-const CATEGORY_AMENITIES: Record<PlaceCategory, string[]> = {
-  [PlaceCategory.CAFE]: ['FREE_WIFI', 'COMFY_SEATING'],
-  [PlaceCategory.RESTAURANT]: ['COMFY_SEATING', 'FREE_WATER'],
-  [PlaceCategory.LIBRARY]: ['QUIET_ZONE', 'FREE_WIFI', 'POWER_OUTLETS'],
-  [PlaceCategory.MALL]: ['FREE_WIFI', 'COMFY_SEATING'],
-  [PlaceCategory.MUSEUM]: ['QUIET_ZONE', 'COMFY_SEATING'],
-  [PlaceCategory.COWORKING]: ['FREE_WIFI', 'POWER_OUTLETS', 'LAPTOP_SPACE'],
-  [PlaceCategory.PUBLIC_SPACE]: ['COMFY_SEATING', 'FREE_WATER'],
+const CATEGORY_TAGS: Record<PlaceCategory, string[]> = {
+  [PlaceCategory.CAFE]: ['calm', 'comfortable', 'free_wifi'],
+  [PlaceCategory.RESTAURANT]: ['comfortable', 'shaded'],
+  [PlaceCategory.LIBRARY]: ['quiet', 'calm', 'free_wifi'],
+  [PlaceCategory.MALL]: ['free_wifi', 'comfortable'],
+  [PlaceCategory.MUSEUM]: ['quiet', 'comfortable'],
+  [PlaceCategory.COWORKING]: ['free_wifi', 'quiet'],
+  [PlaceCategory.PUBLIC_SPACE]: ['shaded', 'calm', 'pet_friendly'],
 };
 
 const VENUE_NAMES: Record<PlaceCategory, string[]> = {
@@ -149,7 +150,7 @@ async function main() {
     address: string;
     aggregatedTemperatureC: number;
     aggregatedAcStrength: AcStrength;
-    amenities: string[];
+    tags: string[];
   }> = [];
 
   for (const category of Object.values(PlaceCategory)) {
@@ -173,7 +174,7 @@ async function main() {
         address: `${STREETS[index % STREETS.length]}, ${PILOT_CITY.postalCode} ${PILOT_CITY.name}`,
         aggregatedTemperatureC: temp,
         aggregatedAcStrength: ac,
-        amenities: CATEGORY_AMENITIES[category],
+        tags: filterValidPlaceTags(CATEGORY_TAGS[category]),
       });
       index += 1;
     }

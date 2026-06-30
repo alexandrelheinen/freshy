@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { PLACE_TAG_IDS } from '@freshy/config/place-tags';
 import { AcStrength, PlaceCategory, type Place, type PrismaClient } from '@freshy/db';
 
 export const createPlaceSchema = z.object({
@@ -10,7 +11,7 @@ export const createPlaceSchema = z.object({
   longitude: z.number().min(-180).max(180),
   aggregatedTemperatureC: z.number().min(16).max(30),
   aggregatedAcStrength: z.nativeEnum(AcStrength),
-  amenities: z.array(z.string()).default([]),
+  tags: z.array(z.enum(PLACE_TAG_IDS as [string, ...string[]])).default([]),
   status: z.enum(['DRAFT', 'PUBLISHED']).default('PUBLISHED'),
 });
 
@@ -52,7 +53,7 @@ export async function createUserPlace(
       address: input.address,
       aggregatedTemperatureC: input.aggregatedTemperatureC,
       aggregatedAcStrength: input.aggregatedAcStrength,
-      amenities: input.amenities,
+      tags: input.tags,
       status: input.status,
       createdById: userId,
     },
