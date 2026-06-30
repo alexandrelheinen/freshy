@@ -57,6 +57,7 @@ describe('@freshy/ui tokens', () => {
     assert.equal(NAV_ICONS.saved, 'bookmark_heart');
     assert.equal(NAV_ICONS.cooling, 'climate_mini_split');
     assert.equal(NAV_ICONS.profile, 'digital_wellbeing');
+    assert.equal(PLACE_CATEGORY_ICONS.PUBLIC_SPACE, 'nature');
   });
 
   it('lists typography scale keys aligned with DESIGN.md', () => {
