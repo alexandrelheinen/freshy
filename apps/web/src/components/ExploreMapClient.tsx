@@ -581,28 +581,33 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
 
         {/* Mobile: bottom overlay stack (FABs above preview card, both above bottom nav) */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex flex-col items-end gap-3 px-margin-mobile inset-pb-mobile-nav md:hidden">
-          <div className="pointer-events-auto flex flex-col gap-2">
-            <button
-              type="button"
-              onClick={toggleMapStyle}
-              className="glass flex h-12 w-12 items-center justify-center rounded-full border border-glass-border shadow-lg transition-transform active:scale-95"
-              aria-label={
-                mapStyleId === 'streets' ? 'Switch to satellite view' : 'Switch to map view'
-              }
-            >
-              <MaterialIcon
-                name={mapStyleId === 'streets' ? 'satellite_alt' : 'map'}
-                className="text-primary"
-              />
-            </button>
-            <button
-              type="button"
-              onClick={recenter}
-              className="glass flex h-12 w-12 items-center justify-center rounded-full border border-glass-border shadow-lg transition-transform active:scale-95"
-              aria-label="My location"
-            >
-              <MaterialIcon name="my_location" className="text-primary" />
-            </button>
+          <div className="pointer-events-auto flex items-center gap-2">
+            <span className="glass rounded-full border border-glass-border px-3 py-1.5 text-xs font-bold text-on-surface shadow-lg">
+              {formatSearchRadiusKm(displaySearchRadiusKm)}
+            </span>
+            <div className="flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={toggleMapStyle}
+                className="glass flex h-12 w-12 items-center justify-center rounded-full border border-glass-border shadow-lg transition-transform active:scale-95"
+                aria-label={
+                  mapStyleId === 'streets' ? 'Switch to satellite view' : 'Switch to map view'
+                }
+              >
+                <MaterialIcon
+                  name={mapStyleId === 'streets' ? 'satellite_alt' : 'map'}
+                  className="text-primary"
+                />
+              </button>
+              <button
+                type="button"
+                onClick={recenter}
+                className="glass flex h-12 w-12 items-center justify-center rounded-full border border-glass-border shadow-lg transition-transform active:scale-95"
+                aria-label="My location"
+              >
+                <MaterialIcon name="my_location" className="text-primary" />
+              </button>
+            </div>
           </div>
           {selected ? (
             <div className="pointer-events-auto w-full">
