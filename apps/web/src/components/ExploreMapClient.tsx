@@ -199,6 +199,8 @@ function NearbyListItem({
   isSelected: boolean;
   onSelect: () => void;
 }) {
+  const freshness = freshnessBarState(place.aggregatedFreshnessLevel);
+
   return (
     <button
       type="button"
@@ -226,10 +228,9 @@ function NearbyListItem({
           ) : null}
           <div className="mt-2 flex items-center gap-2">
             {place.aggregatedFreshnessLevel ? (
-              <span className="flex items-center text-[10px] font-bold text-primary">
-                <MaterialIcon name="ac_unit" size={14} className="mr-1" />
-                {FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]}
-              </span>
+              <div className="w-16">
+                <FreshnessBar segments={freshness.segments} tone={freshness.tone} />
+              </div>
             ) : null}
             {place.distanceKm != null ? (
               <span className="text-[10px] text-outline">
