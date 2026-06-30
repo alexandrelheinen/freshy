@@ -2,11 +2,14 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   ALL_PLACE_CATEGORIES,
+  BRAND_ICON,
   BRAND_NAME,
   BRAND_TITLE,
   DEFAULT_PLACE_PHOTO_PATHS,
   getPlacePhotoUrl,
+  NAV_ICONS,
   PILOT_CITY,
+  PLACE_CATEGORY_ICONS,
   ROUTES,
   TYPOGRAPHY_SCALE,
 } from './tokens';
@@ -46,6 +49,14 @@ describe('@freshy/ui tokens', () => {
     );
     if (saved) process.env.NEXT_PUBLIC_R2_PUBLIC_URL = saved;
     else delete process.env.NEXT_PUBLIC_R2_PUBLIC_URL;
+  });
+
+  it('defines navigation and brand icons', () => {
+    assert.equal(BRAND_ICON, 'nest_farsight_cool');
+    assert.equal(NAV_ICONS.explore, 'explore');
+    assert.equal(NAV_ICONS.saved, 'bookmark_heart');
+    assert.equal(NAV_ICONS.cooling, 'climate_mini_split');
+    assert.equal(NAV_ICONS.profile, 'digital_wellbeing');
   });
 
   it('lists typography scale keys aligned with DESIGN.md', () => {

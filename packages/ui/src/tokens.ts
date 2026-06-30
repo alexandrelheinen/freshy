@@ -8,6 +8,7 @@ import {
 
 export const BRAND_NAME = 'Freshy';
 export const BRAND_TITLE = 'Freshy | Cooling Map';
+export const BRAND_ICON = 'nest_farsight_cool';
 
 export const TYPOGRAPHY_SCALE = [
   'display-lg',
@@ -103,14 +104,14 @@ export const PLACE_CATEGORY_ICONS: Record<PlaceCategory, string> = {
   MALL: 'shopping_bag',
   MUSEUM: 'museum',
   COWORKING: 'laptop_mac',
-  PUBLIC_SPACE: 'park',
+  PUBLIC_SPACE: 'nature',
 };
 
 export const NAV_ICONS: Record<'explore' | 'saved' | 'cooling' | 'profile', string> = {
-  explore: 'map',
-  saved: 'bookmark',
-  cooling: 'cyclone',
-  profile: 'person',
+  explore: 'explore',
+  saved: 'bookmark_heart',
+  cooling: 'climate_mini_split',
+  profile: 'digital_wellbeing',
 };
 
 export const PLACE_CATEGORY_LABELS: Record<

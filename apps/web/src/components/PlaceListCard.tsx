@@ -46,7 +46,7 @@ export function PlaceListCard({
                 className="glass flex h-10 w-10 items-center justify-center rounded-full text-primary shadow-sm transition-transform active:scale-90"
                 aria-label={bookmarkFilled ? 'Remove from saved' : 'Save place'}
               >
-                <MaterialIcon name="bookmark" filled={bookmarkFilled} />
+                <MaterialIcon name="bookmark_heart" filled={bookmarkFilled} />
               </button>
             </div>
           ) : null}
@@ -61,7 +61,7 @@ export function PlaceListCard({
               }`}
             >
               <MaterialIcon
-                name={place.aggregatedAcStrength === 'FRIGID' ? 'ac_unit' : 'cyclone'}
+                name={place.aggregatedAcStrength === 'FRIGID' ? 'ac_unit' : 'climate_mini_split'}
                 size={14}
               />
               {acStrengthLabel(place.aggregatedAcStrength)}
