@@ -35,6 +35,17 @@ describe('@freshy/ui tokens', () => {
     );
   });
 
+  it('uses NEXT_PUBLIC_R2_PUBLIC_URL for defaults when configured', () => {
+    const saved = process.env.NEXT_PUBLIC_R2_PUBLIC_URL;
+    process.env.NEXT_PUBLIC_R2_PUBLIC_URL = 'https://assets.freshy.app';
+    assert.equal(
+      getPlacePhotoUrl(null, 'MUSEUM'),
+      'https://assets.freshy.app/places/defaults/default-museum.png',
+    );
+    if (saved) process.env.NEXT_PUBLIC_R2_PUBLIC_URL = saved;
+    else delete process.env.NEXT_PUBLIC_R2_PUBLIC_URL;
+  });
+
   it('lists typography scale keys aligned with DESIGN.md', () => {
     assert.deepEqual(TYPOGRAPHY_SCALE, [
       'display-lg',

@@ -52,6 +52,7 @@ flowchart LR
 | Prefix | Content | Public read |
 | ------ | ------- | ----------- |
 | `places/` | Venue photos | Yes (via custom domain or `r2.dev`) |
+| `places/defaults/` | Category default place photos | Yes |
 | `avatars/` | User profile images | Yes |
 | `ci/` | PR screenshot previews | Yes (for GitHub PR comments) |
 | `releases/` | Mobile build mirrors (optional) | No |

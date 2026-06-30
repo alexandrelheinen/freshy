@@ -1,5 +1,10 @@
 /** Re-export design token names for consumers that cannot import Tailwind preset directly. */
 export { PILOT_CITY } from '@freshy/config/pilot-city';
+import {
+  defaultPlacePhotoLocalPath,
+  resolvePlacePhotoUrl,
+  type PlacePhotoCategory,
+} from '@freshy/config/place-photos';
 
 export const BRAND_NAME = 'Freshy';
 export const BRAND_TITLE = 'Freshy | Cooling Map';
@@ -93,18 +98,23 @@ export const ALL_PLACE_CATEGORIES: PlaceCategory[] = [
 ];
 
 export const DEFAULT_PLACE_PHOTO_PATHS: Record<PlaceCategory, string> = {
-  CAFE: '/place-defaults/default-cafe.png',
-  RESTAURANT: '/place-defaults/default-restaurant.png',
-  LIBRARY: '/place-defaults/default-library.png',
-  MALL: '/place-defaults/default-mall.png',
-  MUSEUM: '/place-defaults/default-museum.png',
-  COWORKING: '/place-defaults/default-coworking.png',
-  PUBLIC_SPACE: '/place-defaults/default-public_space.png',
+  CAFE: defaultPlacePhotoLocalPath('CAFE'),
+  RESTAURANT: defaultPlacePhotoLocalPath('RESTAURANT'),
+  LIBRARY: defaultPlacePhotoLocalPath('LIBRARY'),
+  MALL: defaultPlacePhotoLocalPath('MALL'),
+  MUSEUM: defaultPlacePhotoLocalPath('MUSEUM'),
+  COWORKING: defaultPlacePhotoLocalPath('COWORKING'),
+  PUBLIC_SPACE: defaultPlacePhotoLocalPath('PUBLIC_SPACE'),
 };
 
 export function getPlacePhotoUrl(
   photoUrl: string | null | undefined,
   category: PlaceCategory,
 ): string {
-  return photoUrl ?? DEFAULT_PLACE_PHOTO_PATHS[category];
+  const publicAssetBaseUrl = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? '';
+  return resolvePlacePhotoUrl(
+    photoUrl,
+    category as PlacePhotoCategory,
+    publicAssetBaseUrl || undefined,
+  );
 }

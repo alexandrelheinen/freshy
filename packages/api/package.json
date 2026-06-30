@@ -16,13 +16,13 @@
     "@aws-sdk/client-s3": "^3.726.1",
     "@aws-sdk/s3-request-presigner": "^3.726.1",
     "@clerk/backend": "^3.8.5",
+    "@freshy/config": "workspace:*",
     "@freshy/db": "workspace:*",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@freshy/config": "workspace:*",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.2",

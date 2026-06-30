@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import type { Place, Prisma } from '@freshy/db';
 import { PlaceCategory, type PrismaClient, PILOT_CITY, filterPlacesByRadius } from '@freshy/db';
+import type { PlacePhotoCategory } from '@freshy/config/place-photos';
+import { resolvePlacePhotoForApi } from './place-photo-url';
 
 export const placesQuerySchema = z.object({
   lat: z.coerce.number().min(-90).max(90).optional(),
@@ -11,6 +13,15 @@ export const placesQuerySchema = z.object({
 });
 
 export type PlacesQuery = z.infer<typeof placesQuerySchema>;
+
+export function withResolvedPlacePhoto<T extends Pick<Place, 'photoUrl' | 'category'>>(
+  place: T,
+): T {
+  return {
+    ...place,
+    photoUrl: resolvePlacePhotoForApi(place.photoUrl, place.category as PlacePhotoCategory),
+  };
+}
 
 export interface PlaceListItem extends Place {
   distanceKm?: number;
@@ -39,10 +50,12 @@ export async function listPlaces(
   const places = await prisma.place.findMany({ where, orderBy: { name: 'asc' } });
   const withDistance = filterPlacesByRadius(places, lat, lng, radiusKm);
 
-  return withDistance.map(({ place, distanceKm }) => ({
-    ...place,
-    distanceKm: Math.round(distanceKm * 100) / 100,
-  }));
+  return withDistance.map(({ place, distanceKm }) =>
+    withResolvedPlacePhoto({
+      ...place,
+      distanceKm: Math.round(distanceKm * 100) / 100,
+    }),
+  );
 }
 
 export async function categoryCounts(
@@ -57,8 +70,9 @@ export async function categoryCounts(
 }
 
 export async function featuredPlace(prisma: PrismaClient): Promise<Place | null> {
-  return prisma.place.findFirst({
+  const place = await prisma.place.findFirst({
     where: { aggregatedAcStrength: 'FRIGID' },
     orderBy: { aggregatedTemperatureC: 'asc' },
   });
+  return place ? withResolvedPlacePhoto(place) : null;
 }
