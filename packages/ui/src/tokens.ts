@@ -36,6 +36,7 @@ export const ROUTES = {
   place: (slug: string) => `/places/${slug}`,
   profile: '/profile',
   addPlace: '/profile/places/new',
+  studio: '/studio',
 } as const;
 
 /** Primary amenity chip shown on explore preview cards per category. */

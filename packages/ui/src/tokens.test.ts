@@ -23,6 +23,7 @@ describe('@freshy/ui tokens', () => {
     assert.equal(ROUTES.explore, '/explore');
     assert.equal(ROUTES.place('demo'), '/places/demo');
     assert.equal(ROUTES.addPlace, '/profile/places/new');
+    assert.equal(ROUTES.studio, '/studio');
   });
 
   it('maps each place category to a default photo path', () => {

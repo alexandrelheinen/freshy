@@ -11,6 +11,7 @@ import {
   withResolvedPlacePhoto,
 } from './places';
 import { registerUserRoutes } from './user-routes';
+import { registerStudioRoutes } from './studio-routes';
 
 const prisma = new PrismaClient();
 
@@ -67,7 +68,7 @@ export function createApp(): Express {
           },
         },
       });
-      if (!place) {
+      if (!place || place.status !== 'PUBLISHED') {
         res.status(404).json({ error: 'Place not found' });
         return;
       }
@@ -78,6 +79,7 @@ export function createApp(): Express {
   });
 
   registerUserRoutes(app, prisma);
+  registerStudioRoutes(app, prisma);
 
   return app;
 }
