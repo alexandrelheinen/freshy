@@ -1,25 +1,33 @@
 'use client';
 
-import { useAuth } from '@clerk/clerk-react';
+import { useAuth, SignInButton } from '@clerk/clerk-react';
 import Link from 'next/link';
-import { SignInButton } from '@clerk/clerk-react';
 import { ROUTES } from '@freshy/ui';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceListClient } from './PlaceListClient';
-import { fetchMySavedPlaces } from '../lib/user-api';
+import { fetchMySavedPlaces, unsavePlaceForUser } from '../lib/user-api';
 
 export function SavedPlacesClient() {
   const { isLoaded, isSignedIn, getToken } = useAuth();
+  const [reloadKey, setReloadKey] = useState(0);
 
   const loadSaved = useCallback(async () => {
     if (!isSignedIn) return [];
     return fetchMySavedPlaces(getToken);
-  }, [isSignedIn, getToken]);
+  }, [isSignedIn, getToken, reloadKey]);
+
+  const handleUnsave = useCallback(
+    async (placeId: string) => {
+      const ok = await unsavePlaceForUser(getToken, placeId);
+      if (ok) setReloadKey((k) => k + 1);
+    },
+    [getToken],
+  );
 
   if (!isLoaded) {
     return (
-      <div className="min-h-screen pb-32">
+      <div className="min-h-screen pb-32" data-page="saved">
         <AppMobileHeader title="Saved Places" backHref={ROUTES.explore} showBrand={false} />
         <p className="py-32 text-center text-on-surface-variant">Loading…</p>
         <AppBottomNav active="saved" />
@@ -57,14 +65,18 @@ export function SavedPlacesClient() {
   }
 
   return (
-    <PlaceListClient
-      title="Saved Places"
-      backHref={ROUTES.explore}
-      loadPlaces={loadSaved}
-      showBookmark
-      navActive="saved"
-      searchPlaceholder="Search saved places…"
-      emptyMessage="No saved places yet. Explore the map and save spots you love."
-    />
+    <div data-page="saved">
+      <PlaceListClient
+        title="Saved Places"
+        subtitle="Your personal oasis collection in the city."
+        backHref={ROUTES.explore}
+        loadPlaces={loadSaved}
+        showBookmark
+        onUnsave={handleUnsave}
+        navActive="saved"
+        searchPlaceholder="Search saved places…"
+        emptyMessage="No saved places yet. Explore the map and save spots you love."
+      />
+    </div>
   );
 }
