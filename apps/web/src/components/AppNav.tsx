@@ -230,8 +230,10 @@ export function AppMobileHeader({
         {leading}
         {showBrand && !backHref ? (
           <>
-            <MaterialIcon name={BRAND_ICON} className="text-primary" size={28} />
-            <h1 className="font-display-lg text-2xl tracking-tight text-primary">Freshy</h1>
+            <div className="flex h-10 w-10 items-center justify-center">
+              <MaterialIcon name={BRAND_ICON} className="text-primary" size={40} />
+            </div>
+            <h1 className="font-display-lg text-3xl tracking-tight text-primary">Freshy</h1>
           </>
         ) : title ? (
           <h1 className="font-headline-lg-mobile text-headline-lg-mobile tracking-tight text-primary">
