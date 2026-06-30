@@ -35,10 +35,72 @@ export const updateStudioPlaceSchema = z
       .nullable()
       .optional(),
     tags: z.array(z.enum(PLACE_TAG_IDS as [string, ...string[]])).optional(),
+    photoUrl: z.string().url().nullable().optional(),
     isOpen: z.boolean().optional(),
     status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
   })
   .refine((data) => Object.keys(data).length > 0, { message: 'At least one field is required' });
+
+function parseOptionalNumber(value: unknown): number | undefined {
+  if (value == null || value === '') return undefined;
+  const num = Number(value);
+  return Number.isFinite(num) ? num : undefined;
+}
+
+function parseTagsField(value: unknown): string[] | undefined {
+  if (value == null) return undefined;
+  if (Array.isArray(value)) {
+    return value.filter((tag): tag is string => typeof tag === 'string');
+  }
+  if (typeof value !== 'string' || value.trim() === '') return [];
+  try {
+    const parsed: unknown = JSON.parse(value);
+    return Array.isArray(parsed)
+      ? parsed.filter((tag): tag is string => typeof tag === 'string')
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function parseOptionalBoolean(value: unknown): boolean | undefined {
+  if (value === true || value === 'true') return true;
+  if (value === false || value === 'false') return false;
+  return undefined;
+}
+
+/** Parse multipart or urlencoded studio update fields from form bodies. */
+export function parseUpdateStudioPlaceFields(
+  body: Record<string, unknown>,
+): ReturnType<typeof updateStudioPlaceSchema.safeParse> {
+  const tags = parseTagsField(body.tags);
+  const photoUrlRaw = body.photoUrl;
+  const photoUrl =
+    photoUrlRaw === '' || photoUrlRaw === 'null'
+      ? null
+      : typeof photoUrlRaw === 'string'
+        ? photoUrlRaw
+        : undefined;
+
+  return updateStudioPlaceSchema.safeParse({
+    name: typeof body.name === 'string' ? body.name : undefined,
+    description: typeof body.description === 'string' ? body.description : undefined,
+    category: typeof body.category === 'string' ? body.category : undefined,
+    address: typeof body.address === 'string' ? body.address : undefined,
+    latitude: parseOptionalNumber(body.latitude),
+    longitude: parseOptionalNumber(body.longitude),
+    aggregatedFreshnessLevel:
+      typeof body.aggregatedFreshnessLevel === 'string'
+        ? body.aggregatedFreshnessLevel
+        : typeof body.freshnessLevel === 'string'
+          ? body.freshnessLevel
+          : undefined,
+    tags,
+    photoUrl,
+    isOpen: parseOptionalBoolean(body.isOpen),
+    status: typeof body.status === 'string' ? body.status : undefined,
+  });
+}
 
 export type UpdateStudioPlaceInput = z.infer<typeof updateStudioPlaceSchema>;
 

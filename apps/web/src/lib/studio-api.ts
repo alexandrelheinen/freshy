@@ -41,8 +41,13 @@ export interface UpdateStudioPlacePayload {
     | 'NATURALLY_FRESH'
     | null;
   tags?: string[];
+  photoUrl?: string | null;
   isOpen?: boolean;
   status?: 'DRAFT' | 'PUBLISHED';
+}
+
+export interface UpdateStudioPlaceOptions {
+  photo?: File | null;
 }
 
 async function studioFetch(
@@ -132,7 +137,33 @@ export async function updateStudioPlace(
   getToken: () => Promise<string | null>,
   placeId: string,
   payload: UpdateStudioPlacePayload,
+  options?: UpdateStudioPlaceOptions,
 ): Promise<boolean> {
+  const photo = options?.photo ?? null;
+
+  if (photo) {
+    const form = new FormData();
+    if (payload.name != null) form.append('name', payload.name);
+    if (payload.description != null) form.append('description', payload.description);
+    if (payload.category != null) form.append('category', payload.category);
+    if (payload.address != null) form.append('address', payload.address);
+    if (payload.latitude != null) form.append('latitude', String(payload.latitude));
+    if (payload.longitude != null) form.append('longitude', String(payload.longitude));
+    if (payload.aggregatedFreshnessLevel != null) {
+      form.append('aggregatedFreshnessLevel', payload.aggregatedFreshnessLevel);
+    }
+    if (payload.tags != null) form.append('tags', JSON.stringify(payload.tags));
+    if (payload.status != null) form.append('status', payload.status);
+    if (payload.isOpen != null) form.append('isOpen', String(payload.isOpen));
+    form.append('photo', photo);
+
+    const res = await studioFetch(`/studio/places/${placeId}`, getToken, {
+      method: 'PATCH',
+      body: form,
+    });
+    return res.ok;
+  }
+
   const res = await studioFetch(`/studio/places/${placeId}`, getToken, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
