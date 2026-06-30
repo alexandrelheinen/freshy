@@ -143,3 +143,37 @@ export async function unsavePlace(
 ): Promise<void> {
   await prisma.savedPlace.deleteMany({ where: { userId, placeId } });
 }
+
+export interface UserReviewItem {
+  id: string;
+  comment: string | null;
+  acStrength: number;
+  createdAt: string;
+  place: {
+    id: string;
+    slug: string;
+    name: string;
+    category: string;
+  };
+}
+
+export async function listUserReviews(
+  prisma: PrismaClient,
+  userId: string,
+): Promise<UserReviewItem[]> {
+  const rows = await prisma.review.findMany({
+    where: { userId },
+    orderBy: { createdAt: 'desc' },
+    take: 10,
+    include: {
+      place: { select: { id: true, slug: true, name: true, category: true } },
+    },
+  });
+  return rows.map((row) => ({
+    id: row.id,
+    comment: row.comment,
+    acStrength: row.acStrength,
+    createdAt: row.createdAt.toISOString(),
+    place: row.place,
+  }));
+}

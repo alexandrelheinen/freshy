@@ -5,10 +5,13 @@ import {
   getUserProfile,
   isPlaceSaved,
   listSavedPlaces,
+  listUserReviews,
   savePlace,
   syncUserFromClerk,
   unsavePlace,
 } from './users';
+import { createPlaceSchema, createUserPlace } from './create-place';
+import { withResolvedPlacePhoto } from './places';
 
 function paramId(value: string | string[]): string {
   return Array.isArray(value) ? value[0]! : value;
@@ -39,6 +42,33 @@ export function registerUserRoutes(app: Express, prisma: PrismaClient): void {
     try {
       const data = await getUserProfile(prisma, user.id);
       res.json({ data });
+    } catch {
+      res.status(503).json({ error: 'Database unavailable' });
+    }
+  });
+
+  app.get('/users/me/reviews', requireAuth, async (req, res) => {
+    const user = await withDbUser(prisma, req, res);
+    if (!user) return;
+    try {
+      const data = await listUserReviews(prisma, user.id);
+      res.json({ data });
+    } catch {
+      res.status(503).json({ error: 'Database unavailable' });
+    }
+  });
+
+  app.post('/users/me/places', requireAuth, async (req, res) => {
+    const user = await withDbUser(prisma, req, res);
+    if (!user) return;
+    const parsed = createPlaceSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: 'Invalid body', details: parsed.error.flatten() });
+      return;
+    }
+    try {
+      const place = await createUserPlace(prisma, user.id, parsed.data);
+      res.status(201).json({ data: withResolvedPlacePhoto(place) });
     } catch {
       res.status(503).json({ error: 'Database unavailable' });
     }
