@@ -146,7 +146,7 @@ export function ProfileClient() {
   }, [isLoaded, isSignedIn, getToken]);
 
   return (
-    <div className="min-h-screen pb-32 md:pb-8" data-page="profile">
+    <div className="min-h-screen pb-mobile-nav md:pb-8" data-page="profile">
       <AppMobileHeader />
       <AppTopNav active="profile" />
 

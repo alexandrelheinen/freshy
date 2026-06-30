@@ -7,7 +7,7 @@ const SavedPlacesClient = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex min-h-screen items-center justify-center pb-32" data-page="saved">
+      <div className="flex min-h-screen items-center justify-center pb-mobile-nav" data-page="saved">
         <p className="text-on-surface-variant">Loading saved places…</p>
       </div>
     ),

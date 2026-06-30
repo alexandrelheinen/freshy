@@ -79,7 +79,7 @@ export function PlaceListClient({
   ];
 
   return (
-    <div className="min-h-screen pb-32 md:pb-8" data-page="place-list">
+    <div className="min-h-screen pb-mobile-nav md:pb-8" data-page="place-list">
       <AppMobileHeader title={title} backHref={backHref} showBrand={false} />
       <AppTopNav active={navActive} />
 

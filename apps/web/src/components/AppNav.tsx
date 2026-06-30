@@ -9,7 +9,7 @@ export function AppBottomNav({
   active?: 'explore' | 'saved' | 'cooling' | 'profile';
 }) {
   return (
-    <nav className="fixed bottom-0 z-50 flex w-full items-center justify-around rounded-t-xl border-t border-outline-variant/20 bg-surface/90 px-4 pb-6 pt-2 shadow-[0_-4px_20px_rgba(0,0,0,0.04)] backdrop-blur-lg md:hidden">
+    <nav className="fixed bottom-0 z-50 flex w-full items-center justify-around rounded-t-xl border-t border-outline-variant/20 bg-surface/90 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_20px_rgba(0,0,0,0.04)] backdrop-blur-lg md:hidden">
       {NAV_ITEMS.map((item) => {
         const isActive = active === item.id;
         const iconName = NAV_ICONS[item.id] as MaterialIconName;
