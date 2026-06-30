@@ -28,6 +28,7 @@ Freshy uses **Cloudflare** for hosting, CDN, object storage, and (in production)
 | `places/defaults/` | Category default place photos |
 | `avatars/` | User avatars |
 | `ci/` | PR screenshot previews (public read) |
+| `ci/main/latest/` | Production page screenshots after `main` deploy |
 | `releases/` | Optional mobile build mirrors |
 
 ---
@@ -107,9 +108,21 @@ Repository → **Settings → Secrets and variables → Actions**:
 | `R2_SECRET_ACCESS_KEY` | R2 token secret |
 | `R2_BUCKET_NAME` | `freshy-assets` |
 | `R2_PUBLIC_URL` | Public base URL (no trailing slash) |
+| `DATABASE_URL` | Neon connection string (CD: `migrate deploy` on `main`) |
 | `EXPO_TOKEN` | Expo token (mobile releases — unchanged) |
 
 After configuring, open a test PR — the bot should post screenshots hosted on R2.
+
+### CD workflows on `main`
+
+| Workflow | Trigger | Action |
+| -------- | ------- | ------ |
+| [migrate-database.yml](../../.github/workflows/migrate-database.yml) | Prisma migrations change | `migrate deploy` (needs `DATABASE_URL` secret) |
+| [sync-place-defaults.yml](../../.github/workflows/sync-place-defaults.yml) | Default place images change | `pnpm upload:place-defaults` |
+| [production-screenshots.yml](../../.github/workflows/production-screenshots.yml) | Web or UI change | Live Pages screenshots → `ci/main/latest/` |
+| [smoke-production.yml](../../.github/workflows/smoke-production.yml) | Every `main` push | API + web health checks |
+
+Set `NEXT_PUBLIC_R2_PUBLIC_URL` on Cloudflare Pages (same value as `R2_PUBLIC_URL`) so the web app loads default place photos from R2.
 
 ---
 
