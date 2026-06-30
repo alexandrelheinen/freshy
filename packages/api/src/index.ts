@@ -8,6 +8,7 @@ import {
   featuredPlace,
   listPlaces,
   placesQuerySchema,
+  withResolvedPlacePhoto,
 } from './places';
 import { registerUserRoutes } from './user-routes';
 
@@ -70,7 +71,7 @@ export function createApp(): Express {
         res.status(404).json({ error: 'Place not found' });
         return;
       }
-      res.json({ data: place });
+      res.json({ data: withResolvedPlacePhoto(place) });
     } catch {
       res.status(503).json({ error: 'Database unavailable' });
     }

@@ -5,10 +5,11 @@
   "exports": {
     "./eslint": "./eslint.config.mjs",
     "./pilot-city": "./pilot-city.js",
+    "./place-photos": "./place-photos.ts",
     "./tailwind": "./tailwind.preset.ts"
   },
   "scripts": {
-    "test": "tsx --test tailwind.preset.test.ts"
+    "test": "tsx --test place-photos.test.ts tailwind.preset.test.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

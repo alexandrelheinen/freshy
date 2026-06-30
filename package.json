@@ -21,7 +21,8 @@
     "db:seed": "pnpm --filter @freshy/db seed",
     "build:api": "pnpm db:generate && pnpm --filter @freshy/db build && pnpm --filter @freshy/api build",
     "start:api": "node packages/api/dist/server.js",
-    "screenshots": "pnpm --filter @freshy/web screenshots"
+    "screenshots": "pnpm --filter @freshy/web screenshots",
+    "upload:place-defaults": "tsx scripts/upload-place-defaults.ts"
   },
   "devDependencies": {
     "eslint": "^9.17.0",

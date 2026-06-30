@@ -25,6 +25,7 @@ Freshy uses **Cloudflare** for hosting, CDN, object storage, and (in production)
 | Prefix | Purpose |
 | ------ | ------- |
 | `places/` | Venue photos |
+| `places/defaults/` | Category default place photos |
 | `avatars/` | User avatars |
 | `ci/` | PR screenshot previews (public read) |
 | `releases/` | Optional mobile build mirrors |
