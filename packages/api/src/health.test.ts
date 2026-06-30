@@ -14,15 +14,15 @@ describe('health', () => {
     });
   });
 
-  it('reports db unavailable when the probe query fails', async () => {
+  it('reports db unavailable when the Place probe fails', async () => {
     const status = await checkDatabaseHealth(async () => {
-      throw new Error('connection refused');
+      throw new Error('column Place.status does not exist');
     });
     assert.equal(status, 'unavailable');
   });
 
-  it('reports db ok when the probe query succeeds', async () => {
-    const status = await checkDatabaseHealth(async () => 1);
+  it('reports db ok when the Place probe succeeds', async () => {
+    const status = await checkDatabaseHealth(async () => ({ id: 'place_1' }));
     assert.equal(status, 'ok');
   });
 });

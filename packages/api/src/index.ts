@@ -23,7 +23,9 @@ export function createApp(): Express {
   app.use(express.json());
 
   app.get('/health', async (_req, res) => {
-    const db = await checkDatabaseHealth((sql) => prisma.$queryRawUnsafe(sql));
+    const db = await checkDatabaseHealth(() =>
+      prisma.place.findFirst({ where: { status: 'PUBLISHED' }, select: { id: true } }),
+    );
     res.json(buildHealthSnapshot(db, isR2Configured(), isClerkConfigured()));
   });
 

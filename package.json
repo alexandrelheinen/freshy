@@ -20,6 +20,7 @@
     "db:migrate": "pnpm --filter @freshy/db migrate",
     "db:seed": "pnpm --filter @freshy/db seed",
     "build:api": "pnpm db:generate && pnpm --filter @freshy/config build && pnpm --filter @freshy/db build && pnpm --filter @freshy/api build",
+    "build:api:render": "pnpm build:api && pnpm --filter @freshy/db migrate:deploy",
     "smoke:api": "bash scripts/smoke-api-start.sh",
     "smoke:web": "bash scripts/smoke-web-build.sh",
     "start:api": "node packages/api/dist/server.js",
