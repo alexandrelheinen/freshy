@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Production smoke test: API + web after deploy to Render / Cloudflare Pages.
+# Production smoke test: API Worker + Cloudflare Pages.
 set -euo pipefail
 
-API_URL="${API_URL:-https://freshy-api.onrender.com}"
+API_URL="${API_URL:-https://freshy-api.alexandrelheinen.workers.dev}"
 WEB_URL="${WEB_URL:-https://freshy-25e.pages.dev}"
 R2_PUBLIC_URL="${R2_PUBLIC_URL:-}"
 MAX_ATTEMPTS="${SMOKE_MAX_ATTEMPTS:-30}"

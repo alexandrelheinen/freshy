@@ -29,9 +29,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Generate Prisma client
-        run: pnpm db:generate
-
       - name: Theme build
         run: pnpm theme:build
 
@@ -50,7 +47,7 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: API deploy smoke (Render parity)
+      - name: API deploy smoke (Cloudflare Worker parity)
         run: pnpm smoke:api
 
       - name: Web deploy smoke (Cloudflare Pages parity)
@@ -79,12 +76,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Generate Prisma client
-        run: pnpm db:generate
-
       - name: Build web app
         env:
-          NEXT_PUBLIC_API_URL: https://freshy-api.onrender.com
+          NEXT_PUBLIC_API_URL: https://freshy-api.alexandrelheinen.workers.dev
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           NEXT_PUBLIC_MAPBOX_TOKEN: ${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }}
         run: pnpm --filter @freshy/web build
