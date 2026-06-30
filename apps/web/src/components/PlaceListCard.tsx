@@ -3,14 +3,14 @@
 import Link from 'next/link';
 import {
   AC_STRENGTH_LABELS,
+  CATEGORY_HIGHLIGHT_AMENITY,
   MaterialIcon,
-  PLACE_CATEGORY_LABELS,
   ROUTES,
   getPlacePhotoUrl,
   type PlaceCategory,
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
-import { acStrengthLevel, formatDistance } from '../lib/api';
+import { acStrengthLevel, formatDistanceWithWalk } from '../lib/api';
 import { acStrengthLabel, acStrengthPowerLabel } from './map-markers';
 
 export function PlaceListCard({
@@ -80,13 +80,15 @@ export function PlaceListCard({
           {place.distanceKm != null ? (
             <div className="mb-3 flex items-center gap-2 text-outline">
               <MaterialIcon name="distance" size={16} />
-              <span className="font-body-sm">{formatDistance(place.distanceKm)} away</span>
+              <span className="font-body-sm">{formatDistanceWithWalk(place.distanceKm)}</span>
             </div>
           ) : null}
           <div className="mb-4 flex flex-wrap gap-2">
-            <span className="rounded-full bg-secondary-fixed px-3 py-1 text-[10px] font-bold uppercase text-on-secondary-fixed-variant">
-              {PLACE_CATEGORY_LABELS[place.category as PlaceCategory] ?? place.category}
-            </span>
+            {CATEGORY_HIGHLIGHT_AMENITY[place.category as PlaceCategory] ? (
+              <span className="rounded-full bg-secondary-fixed px-3 py-1 text-[10px] font-bold uppercase text-on-secondary-fixed-variant">
+                {CATEGORY_HIGHLIGHT_AMENITY[place.category as PlaceCategory]}
+              </span>
+            ) : null}
             {place.aggregatedAcStrength ? (
               <span className="rounded-full bg-secondary-fixed px-3 py-1 text-[10px] font-bold uppercase text-on-secondary-fixed-variant">
                 {AC_STRENGTH_LABELS[place.aggregatedAcStrength]}

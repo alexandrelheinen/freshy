@@ -32,6 +32,7 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
   return (
     <PlaceListClient
       title={title}
+      subtitle={`Browse ${title.toLowerCase()} with reliable cooling nearby.`}
       backHref={ROUTES.cooling}
       loadPlaces={loadPlaces}
       navActive="cooling"
