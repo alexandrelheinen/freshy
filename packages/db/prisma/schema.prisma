@@ -10,6 +10,7 @@ datasource db {
 enum PlaceCategory {
   CAFE
   RESTAURANT
+  BAR
   LIBRARY
   MALL
   MUSEUM

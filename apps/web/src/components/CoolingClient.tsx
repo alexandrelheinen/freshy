@@ -24,6 +24,7 @@ const DESKTOP_BENTO: Array<{ category: PlaceCategory; colSpan?: 1 | 2 }> = [
   { category: 'CAFE', colSpan: 2 },
   { category: 'LIBRARY' },
   { category: 'RESTAURANT' },
+  { category: 'BAR' },
   { category: 'MUSEUM' },
   { category: 'COWORKING', colSpan: 2 },
   { category: 'MALL' },

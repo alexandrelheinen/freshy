@@ -1,6 +1,14 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 
-const categories = ['Cafés', 'Restaurants', 'Libraries', 'Malls', 'Museums', 'Coworking'];
+const categories = [
+  'Cafés',
+  'Restaurants',
+  'Bars',
+  'Libraries',
+  'Malls & Shops',
+  'Museums',
+  'Coworking',
+];
 
 export default function CoolingScreen() {
   return (

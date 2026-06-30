@@ -10,7 +10,7 @@ import {
 
 describe('@freshy/config place-photos', () => {
   it('defines one default asset per place category', () => {
-    assert.equal(PLACE_PHOTO_CATEGORIES.length, 7);
+    assert.equal(PLACE_PHOTO_CATEGORIES.length, 8);
     assert.equal(defaultPlacePhotoFilename('PUBLIC_SPACE'), 'default-public_space.png');
     assert.equal(defaultPlacePhotoR2Key('CAFE'), 'places/defaults/default-cafe.png');
     assert.equal(defaultPlacePhotoLocalPath('MALL'), '/place-defaults/default-mall.png');

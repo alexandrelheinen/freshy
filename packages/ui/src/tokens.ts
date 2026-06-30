@@ -33,6 +33,7 @@ export const TYPOGRAPHY_SCALE = [
 export type PlaceCategory =
   | 'CAFE'
   | 'RESTAURANT'
+  | 'BAR'
   | 'LIBRARY'
   | 'MALL'
   | 'MUSEUM'
@@ -53,6 +54,7 @@ export const ROUTES = {
 export const PLACE_CATEGORY_ICONS: Record<PlaceCategory, string> = {
   CAFE: 'local_cafe',
   RESTAURANT: 'restaurant',
+  BAR: 'local_bar',
   LIBRARY: 'menu_book',
   MALL: 'shopping_bag',
   MUSEUM: 'museum',
@@ -68,13 +70,14 @@ export const NAV_ICONS: Record<'explore' | 'saved' | 'cooling' | 'profile', stri
 };
 
 export const PLACE_CATEGORY_LABELS: Record<
-  'CAFE' | 'RESTAURANT' | 'LIBRARY' | 'MALL' | 'MUSEUM' | 'COWORKING' | 'PUBLIC_SPACE',
+  'CAFE' | 'RESTAURANT' | 'BAR' | 'LIBRARY' | 'MALL' | 'MUSEUM' | 'COWORKING' | 'PUBLIC_SPACE',
   string
 > = {
   CAFE: 'Cafés & Bakeries',
   RESTAURANT: 'Restaurants',
+  BAR: 'Bars',
   LIBRARY: 'Libraries',
-  MALL: 'Malls',
+  MALL: 'Malls & Shops',
   MUSEUM: 'Museums',
   COWORKING: 'Coworking',
   PUBLIC_SPACE: 'Public Spaces',
@@ -105,12 +108,13 @@ export const EXPLORE_FILTER_CHIPS: Array<{ label: string; category?: PlaceCatego
   { label: 'Cafes', category: 'CAFE' },
   { label: 'Restaurants', category: 'RESTAURANT' },
   { label: 'Public Spaces', category: 'PUBLIC_SPACE' },
-  { label: 'Malls', category: 'MALL' },
+  { label: 'Malls & Shops', category: 'MALL' },
 ];
 
 export const ALL_PLACE_CATEGORIES: PlaceCategory[] = [
   'CAFE',
   'RESTAURANT',
+  'BAR',
   'LIBRARY',
   'MALL',
   'MUSEUM',
@@ -121,6 +125,7 @@ export const ALL_PLACE_CATEGORIES: PlaceCategory[] = [
 export const DEFAULT_PLACE_PHOTO_PATHS: Record<PlaceCategory, string> = {
   CAFE: defaultPlacePhotoLocalPath('CAFE'),
   RESTAURANT: defaultPlacePhotoLocalPath('RESTAURANT'),
+  BAR: defaultPlacePhotoLocalPath('BAR'),
   LIBRARY: defaultPlacePhotoLocalPath('LIBRARY'),
   MALL: defaultPlacePhotoLocalPath('MALL'),
   MUSEUM: defaultPlacePhotoLocalPath('MUSEUM'),

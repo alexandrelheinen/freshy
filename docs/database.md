@@ -145,13 +145,14 @@ User bookmarks (unique per user + place pair). Full list at `/saved`; carousel o
 
 | Value          | UI label (English) |
 | -------------- | ------------------ |
-| `CAFE`         | Café               |
-| `RESTAURANT`   | Restaurant         |
-| `LIBRARY`      | Library            |
-| `MALL`         | Mall               |
-| `MUSEUM`       | Museum             |
+| `CAFE`         | Cafés & Bakeries   |
+| `RESTAURANT`   | Restaurants        |
+| `BAR`          | Bars               |
+| `LIBRARY`      | Libraries          |
+| `MALL`         | Malls & Shops      |
+| `MUSEUM`       | Museums            |
 | `COWORKING`    | Coworking          |
-| `PUBLIC_SPACE` | Public space       |
+| `PUBLIC_SPACE` | Public Spaces      |
 
 ### `FreshnessLevel`
 
