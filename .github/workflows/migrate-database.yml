@@ -38,13 +38,14 @@ jobs:
       - name: Apply migrations
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_DATABASE_URL: ${{ secrets.DIRECT_DATABASE_URL }}
         run: |
-          if [ -z "${DATABASE_URL:-}" ]; then
+          if [ -z "${DATABASE_URL:-}" ] && [ -z "${DIRECT_DATABASE_URL:-}" ]; then
             echo "::error::DATABASE_URL secret is not configured. Add your Neon connection string to GitHub secrets."
-            echo "Apply manually: DATABASE_URL=... pnpm --filter @freshy/db migrate:deploy"
+            echo "Apply manually: pnpm migrate:deploy:production"
             if [ "${{ github.event_name }}" = "push" ]; then
               exit 1
             fi
             exit 0
           fi
-          pnpm --filter @freshy/db migrate:deploy
+          pnpm migrate:deploy:production

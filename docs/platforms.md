@@ -133,10 +133,10 @@ Set under **Settings → Environment variables** (Production **and** Preview):
 
 ### Build & start commands
 
-| Field             | Value                                                                         |
-| ----------------- | ----------------------------------------------------------------------------- |
-| **Build Command** | `corepack enable && pnpm install && pnpm build:api:render`                    |
-| **Start Command** | `pnpm --filter @freshy/db migrate:deploy && node packages/api/dist/server.js` |
+| Field             | Value                                                                |
+| ----------------- | -------------------------------------------------------------------- |
+| **Build Command** | `corepack enable && pnpm install && pnpm build:api:render`           |
+| **Start Command** | `pnpm migrate:deploy:production && node packages/api/dist/server.js` |
 
 Blueprint: [infrastructure/render/render.yaml](../infrastructure/render/render.yaml)
 
@@ -145,7 +145,8 @@ Blueprint: [infrastructure/render/render.yaml](../infrastructure/render/render.y
 | Variable                   | Purpose                                              |
 | -------------------------- | ---------------------------------------------------- |
 | `NODE_VERSION`             | `20`                                                 |
-| `DATABASE_URL`             | Neon connection URI                                  |
+| `DATABASE_URL`             | Neon pooled connection URI (running API)             |
+| `DIRECT_DATABASE_URL`      | Neon direct URI for migrations (non-pooler host)     |
 | `CLERK_SECRET_KEY`         | Clerk **Secret key** (`sk_test_...`)                 |
 | `CLERK_AUTHORIZED_PARTIES` | `https://freshy-25e.pages.dev,http://localhost:3000` |
 | `PORT`                     | Set automatically by Render                          |

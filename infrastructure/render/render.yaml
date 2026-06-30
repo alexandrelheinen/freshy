@@ -9,10 +9,12 @@ services:
     plan: free
     region: frankfurt
     buildCommand: corepack enable && pnpm install && pnpm build:api:render
-    startCommand: pnpm --filter @freshy/db migrate:deploy && node packages/api/dist/server.js
+    startCommand: pnpm migrate:deploy:production && node packages/api/dist/server.js
     healthCheckPath: /health
     envVars:
       - key: NODE_VERSION
         value: '20'
       - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_DATABASE_URL
         sync: false
