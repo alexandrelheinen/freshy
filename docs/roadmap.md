@@ -1,4 +1,4 @@
-# Freshy — Stack, Infrastructure & Development Roadmap
+# Freshy | Stack, Infrastructure & Development Roadmap
 
 > Reference designs: [`docs/stitch/`](stitch/) (Stitch export)  
 > Design system: [`docs/stitch/freshy/DESIGN.md`](stitch/freshy/DESIGN.md)
@@ -7,7 +7,7 @@
 
 ## 1. What Freshy Is
 
-**Freshy** is a mobile-first **cooling map** — a discovery app that helps people escape urban heat by finding nearby places with reliable air conditioning and thermal comfort.
+**Freshy** is a mobile-first **cooling map**, a discovery app that helps people escape urban heat by finding nearby places with reliable air conditioning and thermal comfort.
 
 **Target users:** commuters, tourists, and remote workers moving through hot cities.
 
@@ -72,10 +72,10 @@ UI copy in source is **English** until i18n lands; Stitch mockups may show other
 
 | Concern             | Technology                                                                | Notes                                                    |
 | ------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------- |
-| **API**             | Express (local dev) → **Cloudflare Workers** (production)                 | Start with Express; deploy to Workers + Hyperdrive       |
+| **API**             | Express on **Render** (production today); **Cloudflare Workers** + Hyperdrive (planned) | Render ships first; migrate to Workers when ready |
 | **ORM**             | Prisma                                                                    | Migrations, type-safe queries                            |
 | **Database**        | PostgreSQL 16 + **PostGIS**                                               | `ST_DWithin`, spatial indexes for “near me”              |
-| **Auth**            | [Clerk](https://clerk.com/) or [Supabase Auth](https://supabase.com/auth) | Social login (Google), JWT sessions                      |
+| **Auth**            | [Clerk](https://clerk.com/) (live)                                        | JWT verification in `packages/api`; sign-in on web PWA  |
 | **File storage**    | **Cloudflare R2**                                                         | Place photos, avatars, CI screenshots                    |
 | **Search**          | PostgreSQL full-text + PostGIS filters                                    | Upgrade to Meilisearch if search latency matters         |
 | **Background jobs** | Cloudflare Queues or BullMQ + Redis                                       | Score aggregation, image processing, notifications       |
@@ -95,7 +95,7 @@ UI copy in source is **English** until i18n lands; Stitch mockups may show other
 | Concern           | Technology                                             |
 | ----------------- | ------------------------------------------------------ |
 | **Hosting (web)** | **Cloudflare Pages** (OpenNext adapter for Next.js 15) |
-| **Hosting (API)** | **Cloudflare Workers** + Hyperdrive                    |
+| **Hosting (API)** | **Render** (Express today); **Cloudflare Workers** + Hyperdrive (target) |
 | **Hosting (DB)**  | Neon or Supabase (managed Postgres + PostGIS)          |
 | **Object storage**| **Cloudflare R2**                                      |
 | **CDN / edge**    | Cloudflare CDN (Pages + R2)                            |
@@ -177,9 +177,9 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 - [x] Add shared UI shell: `TopAppBar`, `BottomNavBar`, glass card primitives
 - [x] Set up Prisma + PostgreSQL (local Docker Compose with PostGIS image)
 - [x] Configure GitHub Actions: install, lint, typecheck
-- [ ] Deploy empty shell to Cloudflare Pages (preview + production) — **you:** [setup-guide.md](setup-guide.md) Part E
+- [x] Deploy web app to Cloudflare Pages (preview + production). Live: [freshy-25e.pages.dev](https://freshy-25e.pages.dev/explore)
 
-**Exit criteria:** App loads with correct branding, typography, and bottom navigation — no real data yet.
+**Exit criteria:** App loads with correct branding, typography, and bottom navigation. **Met** (Public v0 live).
 
 **Before Phase 1:** complete [Milestone 0 — Bootstrap](milestones/phase-0-bootstrap.md) or follow [setup-guide.md](setup-guide.md).
 
@@ -190,7 +190,7 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 **Goal:** Explore screen works with real geo data on a map.
 
 - [x] Define Prisma schema: `Place`, `Category`
-- [x] Seed database with ~50 sample venues in one pilot city (São Paulo)
+- [x] Seed database with ~50 sample venues in one pilot city (**Clichy, France**, 92110)
 - [x] Integrate Mapbox GL JS with custom light/cool map style (requires `NEXT_PUBLIC_MAPBOX_TOKEN`)
 - [x] Implement geolocation (“you are here” marker)
 - [x] Render place markers with coolness-based color intensity
@@ -231,16 +231,17 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 
 ---
 
-### Phase 4 — Auth & User Profile
+### Phase 4 | Auth & User Profile
 
 **Goal:** Accounts, saved places, basic profile.
 
-- [ ] Integrate Clerk or Supabase Auth (Google + email)
-- [ ] Route: `/profile` — avatar, username, stats (reviews count, saved count)
-- [ ] Saved places: toggle bookmark on detail page; horizontal carousel on profile
-- [ ] API: `POST/DELETE /users/me/saved/:placeId`, `GET /users/me`
+- [x] Integrate **Clerk** (Google + email)
+- [x] Route: `/profile` (avatar, username, stats: reviews count, saved count)
+- [x] Saved places: toggle bookmark on detail page; horizontal carousel on profile
+- [x] API: `POST/DELETE /users/me/saved/:placeId`, `GET /users/me`
+- [x] Deploy API on **Render** with Clerk JWT verification
 
-**Exit criteria:** Logged-in user saves places and sees them on profile. Matches `meu_perfil` shell (reviews empty until Phase 5).
+**Exit criteria:** Logged-in user saves places and sees them on profile. **Met** (Full v0 minimal live). Reviews empty until Phase 5.
 
 ---
 
@@ -316,10 +317,14 @@ flowchart TB
     end
 
     subgraph cf [Cloudflare]
-        Pages[Pages — web]
-        Workers[Workers — API]
+        Pages[Pages | web LIVE]
+        Workers[Workers | API TARGET]
         Hyperdrive[Hyperdrive]
         R2[(R2)]
+    end
+
+    subgraph api_host [API host]
+        Render[Render | API LIVE]
     end
 
     subgraph data [External Data]
@@ -328,17 +333,20 @@ flowchart TB
 
     subgraph external [External Services]
         Mapbox[Mapbox Maps]
-        Auth[Clerk / Supabase Auth]
+        Auth[Clerk]
         Sentry[Sentry]
         EAS[Expo EAS]
     end
 
     PWA --> Pages
-    Mobile --> Workers
-    Pages --> Workers
-    Workers --> Hyperdrive --> PG
+    Mobile --> Render
+    Pages --> Render
+    Render --> Hyperdrive --> PG
+    Workers -.-> Hyperdrive --> PG
     Workers --> R2
+    Render --> R2
     PWA --> Mapbox
+    Render --> Auth
     Workers --> Auth
     EAS -.-> Mobile
 ```
@@ -372,11 +380,11 @@ A single strong full-stack developer can execute Phases 0–5; Phase 7 benefits 
 
 ## 8. Immediate Next Steps
 
-1. **Phase 0 kickoff** — scaffold monorepo and port design tokens
-2. **Pick pilot city** — determines seed data and map center
-3. **Choose auth provider** — Clerk (fastest) vs Supabase (DB bundled)
-4. **Mapbox account** — custom style matching Freshy cool palette
-5. **Convert Stitch screens** — use `docs/stitch/*/code.html` as layout reference while building React components
+1. **Phase 5 kickoff** — climate review form, score aggregation, relief points
+2. **Category drill-down** — finish Phase 3 list view from cooling tab
+3. **Custom domain** — Pages + API hostname (optional)
+4. **Workers migration** — replace Render with Cloudflare Workers + Hyperdrive when ready
+5. **PWA polish** — service worker, install prompt (Phase 6)
 
 ---
 

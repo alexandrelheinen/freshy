@@ -5,7 +5,7 @@
 **Live app:** https://freshy-25e.pages.dev/explore  
 **Live API:** https://freshy-api.onrender.com
 
-> **Platform checklist (Neon, Render, Pages, Clerk, Mapbox, …):** [docs/platforms.md](docs/platforms.md) — read this first when you forget where something is configured.
+> **Platform checklist (Neon, Render, Pages, Clerk, Mapbox, …):** [docs/platforms.md](docs/platforms.md). Read this first when you forget where something is configured.
 
 ---
 
@@ -65,7 +65,7 @@ Full platform details: [docs/platforms.md](docs/platforms.md).
 | Path              | Package          | Description                          |
 | ----------------- | ---------------- | ------------------------------------ |
 | `apps/web`        | `@freshy/web`    | Next.js PWA → **Cloudflare Pages**   |
-| `apps/mobile`     | `@freshy/mobile` | Expo — Android & iOS (EAS, future)   |
+| `apps/mobile`     | `@freshy/mobile` | Expo (Android & iOS, EAS, future)    |
 | `packages/api`    | `@freshy/api`    | Express REST API → **Render** (prod) |
 | `packages/db`     | `@freshy/db`     | Prisma + PostgreSQL (**Neon** prod)  |
 | `packages/ui`     | `@freshy/ui`     | Shared React components              |
@@ -87,6 +87,7 @@ Monorepo layout: [docs/architecture.md](docs/architecture.md).
 | [docs/architecture.md](docs/architecture.md) | Repo layout, local dev ports, CI |
 | [docs/roadmap.md](docs/roadmap.md) | Product phases and backlog |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Dev cycle, TDD, PR rules |
+| [.cursor/rules/contributing-and-writing.mdc](.cursor/rules/contributing-and-writing.mdc) | Cursor agent writing and code standards |
 
 ---
 
@@ -137,8 +138,8 @@ flowchart LR
     Release[Git tag v*] --> EAS[Expo EAS mobile]
 ```
 
-- **Pull requests** — lint, typecheck, tests, build; optional 4-page screenshot comment via **R2**
-- **Releases** (`v*`) — Expo EAS Android/iOS (when configured)
+- **Pull requests:** lint, typecheck, tests, build; optional 4-page screenshot comment via **R2**
+- **Releases** (`v*`): Expo EAS Android/iOS (when configured)
 
 GitHub secrets for R2 + EAS: [infrastructure/cloudflare/README.md](infrastructure/cloudflare/README.md).
 
@@ -148,11 +149,11 @@ GitHub secrets for R2 + EAS: [infrastructure/cloudflare/README.md](infrastructur
 
 | Version | Status |
 | ------- | ------ |
-| **Public v0** | Live — explore, cooling, place detail, map |
-| **Full v0 minimal** | Live — Clerk sign-in, saved places, profile from API |
+| **Public v0** | Live: explore, cooling, place detail, map |
+| **Full v0 minimal** | Live: Clerk sign-in, saved places, profile from API |
 | **Next** | Climate reviews, relief points, custom domain, Workers API |
 
-Pilot city: **Clichy, France** (92110) — 50 seeded places.
+Pilot city: **Clichy, France** (92110), 50 seeded places.
 
 ---
 

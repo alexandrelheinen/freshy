@@ -1,4 +1,4 @@
-# Freshy — Deploy the API (connect web app to your database)
+# Freshy | Deploy the API (connect web app to your database)
 
 > **Master platform reference:** [platforms.md](platforms.md) — all dashboards, env vars, and checklists in one place.
 
@@ -10,8 +10,8 @@
 
 | What you have | What it is | Can it run `/places`? |
 | ------------- | ---------- | --------------------- |
-| `freshy-25e.pages.dev` | Cloudflare **Pages** — static Next.js site | No — it only serves HTML/JS |
-| `api.freshy-25e.pages.dev` | Another **Pages** site (or empty project) | No — Pages is not a Node/Express server |
+| `freshy-25e.pages.dev` | Cloudflare **Pages**: static Next.js site | No; it only serves HTML/JS |
+| `api.freshy-25e.pages.dev` | Another **Pages** site (or empty project) | No; Pages is not a Node/Express server |
 
 The Freshy API is an **Express + Prisma** program in `packages/api`. It must run on a **Node server** (Render, Railway, Fly.io, etc.) until we ship Cloudflare Workers.
 
@@ -26,7 +26,7 @@ You need **both**: database (done) + API (this guide).
 ```mermaid
 flowchart TB
     Pages[freshy-25e.pages.dev] -->|fetch| Render[freshy-api.onrender.com]
-    Render -->|Prisma| Neon[(Neon — 50 places)]
+    Render -->|Prisma| Neon[(Neon, 50 places)]
     Pages --> Clerk[Clerk sign-in]
     Render -->|JWT| Clerk
     Pages --> Mapbox[Mapbox map]
@@ -34,21 +34,21 @@ flowchart TB
 
 ---
 
-## Step-by-step — deploy API on Render (free tier)
+## Step-by-step | deploy API on Render (free tier)
 
 Render is the fastest way to get a public API URL. Alternatives: Railway, Fly.io (same idea: Node service + `DATABASE_URL`).
 
-### Step 1 — Push your repo to GitHub
+### Step 1 | Push your repo to GitHub
 
 Render deploys from GitHub. Skip if the repo is already there.
 
-### Step 2 — Create a Render account
+### Step 2 | Create a Render account
 
 1. Open [https://render.com](https://render.com)
 2. Sign up with **GitHub**
 3. Authorize Render to read your repositories
 
-### Step 3 — Create a Web Service
+### Step 3 | Create a Web Service
 
 1. Dashboard → **New +** → **Web Service**
 2. Connect the **freshy** repository
@@ -59,17 +59,17 @@ Render deploys from GitHub. Skip if the repo is already there.
 | **Name** | `freshy-api` |
 | **Region** | Frankfurt or closest to Neon (`eu-west-2`) |
 | **Branch** | `main` |
-| **Root Directory** | *(leave empty — repo root)* |
+| **Root Directory** | *(leave empty, repo root)* |
 | **Runtime** | **Node** |
 | **Instance type** | Free |
 
-4. **Build Command** — copy **only** the line below (do not include the word “Command” or any table header):
+4. **Build Command**: copy **only** the line below (do not include the word “Command” or any table header):
 
 ```
 corepack enable && pnpm install && pnpm build:api
 ```
 
-5. **Start Command** — copy **only** this line:
+5. **Start Command**: copy **only** this line:
 
 ```
 node packages/api/dist/server.js
@@ -77,7 +77,7 @@ node packages/api/dist/server.js
 
 Or click **Apply Blueprint** if you imported [`infrastructure/render/render.yaml`](../infrastructure/render/render.yaml).
 
-### Step 4 — Add environment variables (after fixing build/start commands)
+### Step 4 | Add environment variables (after fixing build/start commands)
 
 On the service → **Environment**:
 
@@ -88,7 +88,7 @@ On the service → **Environment**:
 
 Click **Save Changes**. Render will deploy (first build ~3–5 minutes).
 
-### Step 5 — Copy your API URL
+### Step 5 | Copy your API URL
 
 When deploy is green, Render shows a URL like:
 
@@ -96,7 +96,7 @@ When deploy is green, Render shows a URL like:
 https://freshy-api.onrender.com
 ```
 
-### Step 6 — Test the API
+### Step 6 | Test the API
 
 Open in your browser:
 
@@ -118,15 +118,15 @@ https://freshy-api.onrender.com/places
 
 Expected: JSON with `"data": [ ... 50 places ... ]`.
 
-**If you see `503 Database unavailable`:** check `DATABASE_URL` on Render (typo, expired password, or Neon project paused — open Neon dashboard to wake it).
+**If you see `503 Database unavailable`:** check `DATABASE_URL` on Render (typo, expired password, or Neon project paused; open Neon dashboard dashboard to wake it).
 
 **Free tier cold start:** first request after idle may take ~30 seconds. Wait and refresh.
 
 ---
 
-## Step-by-step — connect Cloudflare Pages to the API
+## Step-by-step | connect Cloudflare Pages to the API
 
-### Step 7 — Set `NEXT_PUBLIC_API_URL` on Pages
+### Step 7 | Set `NEXT_PUBLIC_API_URL` on Pages
 
 1. [Cloudflare dashboard](https://dash.cloudflare.com) → **Workers & Pages**
 2. Open project **freshy-25e** (your web app, not “api”)
@@ -138,11 +138,11 @@ Expected: JSON with `"data": [ ... 50 places ... ]`.
 | `NEXT_PUBLIC_API_URL` | `https://freshy-api.onrender.com` | **Production** and **Preview** |
 | `NODE_VERSION` | `20` | Production + Preview |
 
-Use your **actual Render URL** — no trailing slash.
+Use your **actual Render URL**: no trailing slash.
 
 5. **Save**
 
-### Step 8 — Redeploy the web app
+### Step 8 | Redeploy the web app
 
 Env vars apply only after a new build.
 
@@ -152,7 +152,7 @@ Env vars apply only after a new build.
 
 Wait for build ✓.
 
-### Step 9 — Verify the live site
+### Step 9 | Verify the live site
 
 1. Open [https://freshy-25e.pages.dev/explore](https://freshy-25e.pages.dev/explore)
 2. You should see **places on the map and in the list**
@@ -162,7 +162,7 @@ Wait for build ✓.
 
 ---
 
-## Optional — Mapbox token
+## Optional | Mapbox token
 
 The map needs a Mapbox token or the map area may stay blank even when places load in the list.
 
@@ -176,7 +176,7 @@ The map needs a Mapbox token or the map area may stay blank even when places loa
 
 | Item | Action |
 | ---- | ------ |
-| Cloudflare Pages project **`api.freshy-25e`** | Not needed — delete or ignore. The API does not live on Pages. |
+| Cloudflare Pages project **`api.freshy-25e`** | Not needed; delete or ignore or ignore. The API does not live on Pages. |
 | `NEXT_PUBLIC_API_URL` = `whatever` | Must be your real API URL (e.g. Render) |
 
 ---
@@ -212,7 +212,7 @@ In another terminal or browser:
 
 ---
 
-## Clerk auth (Full v0 — saved places & profile)
+## Clerk auth (Full v0 | saved places & profile)
 
 1. [dashboard.clerk.com](https://dashboard.clerk.com) → **Create application** → name `freshy`
 2. **Configure** → **Email, Phone, Username** → enable **Google** (optional) + **Email**
@@ -251,7 +251,7 @@ DATABASE_URL="your-neon-uri" pnpm --filter @freshy/db migrate:deploy
 
 ---
 
-## Future — Cloudflare Workers + Hyperdrive
+## Future | Cloudflare Workers + Hyperdrive
 
 Production target is API on **Cloudflare Workers** with **Hyperdrive** → Neon. That replaces Render when implemented. Until then, Render (or similar) is the supported path.
 

@@ -1,0 +1,61 @@
+---
+description: Freshy contribution standards: writing, naming, TDD, and idiomatic code. Source of truth is CONTRIBUTING.md.
+alwaysApply: true
+---
+
+# Freshy | contribution and writing standards
+
+Read [CONTRIBUTING.md](../../CONTRIBUTING.md) before editing this repo. These rules summarize what agents and contributors must follow; the linked docs have full detail.
+
+## Writing and naming
+
+- **English only** in docs, code, commits, PR titles, logs, and user-facing strings (except Stitch design references under `docs/stitch/`).
+- **No em dashes (`—`)** in titles, headings, product names, labels, metadata, or README/docs prose. Use:
+  - `|` for title parts (`Freshy | Setup Guide`)
+  - `-` for compounds (`read-only MVP`)
+  - commas or colons in sentences (`Live: explore, cooling, place detail`)
+- Import brand titles from `packages/ui/src/tokens.ts` (`BRAND_NAME`, `BRAND_TITLE`); do not duplicate.
+- Write docs **idiomatically**: clear, complete sentences; tables and checklists where they help; avoid telegraphic fragments. Structure like enforceable rules; read like good technical prose.
+
+## How we build (mandatory)
+
+Follow [docs/development-cycle.md](../../docs/development-cycle.md) in order:
+
+1. Pick work from [docs/roadmap.md](../../docs/roadmap.md)
+2. Branch (`feat/*` or `cursor/*`)
+3. **Red → Green → Refactor** (TDD is default, not optional)
+4. Run `bash scripts/validation.sh` before opening a PR
+5. A task is **done** only when the PR is **mergeable** into `main` (no conflicts)
+
+## Code style (TypeScript and monorepo)
+
+Match existing code in the file and package you touch. See [docs/quality-standards.md](../../docs/quality-standards.md).
+
+- **Strict TypeScript**; no `any` without a one-line justification
+- **Prettier + ESLint** (`pnpm format:check`, `pnpm lint`); max-warnings 0
+- **Workspace imports**: `@freshy/ui`, `@freshy/db`, `@freshy/api`, `@freshy/config`
+- **Tests**: co-locate `foo.test.ts` next to `foo.ts`; add or update tests with behavior changes
+- **React**: functional components; hooks at top level; prefer `@clerk/clerk-react` on web (static export, not `@clerk/nextjs`)
+- **API**: Express in `packages/api`; verify Clerk JWT in auth middleware; no secrets in diffs
+- **DB**: schema changes need Prisma migrations; update `.env.example` for new env vars
+- **Minimal diffs**: one logical change; no drive-by refactors or unrelated fixes
+
+## Production context (June 2026)
+
+| Layer | Today |
+| ----- | ----- |
+| Web | Cloudflare Pages (`freshy-25e.pages.dev`) |
+| API | Render Express (`freshy-api.onrender.com`) |
+| DB | Neon PostgreSQL + PostGIS |
+| Auth | Clerk |
+| Pilot city | Clichy, France (92110) |
+
+Platform checklists: [docs/platforms.md](../../docs/platforms.md). Do not document São Paulo as the default pilot city or Supabase as the auth choice unless comparing alternatives.
+
+## PR checklist (short)
+
+- [ ] Tests cover new/changed behavior
+- [ ] Docs updated when workflow or architecture changes
+- [ ] No em dashes in new titles or README edits
+- [ ] `validation.sh` passes locally
+- [ ] PR rebases cleanly on `main`

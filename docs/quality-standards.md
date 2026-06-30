@@ -1,4 +1,4 @@
-# Quality Standards — Freshy
+# Quality Standards | Freshy
 
 This document defines **quality rules** and **authoritative references** for every language and format used in the Freshy monorepo. All contributors must follow these standards; CI enforces the automated checks listed below.
 

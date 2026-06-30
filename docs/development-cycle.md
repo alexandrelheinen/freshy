@@ -1,4 +1,4 @@
-# Development Cycle — Freshy
+# Development Cycle | Freshy
 
 This document defines the **mandatory step-by-step development cycle** for Freshy. **Test-driven development (TDD)** is the primary method for implementing behavior — not an optional add-on.
 
@@ -22,7 +22,7 @@ If a change has no test, it is incomplete. Exceptions (pure config, docs-only) m
 
 Follow these steps **in order** for every change. Do not skip or reorder.
 
-### Step 1 — Select work
+### Step 1 | Select work
 
 - Open [docs/roadmap.md](roadmap.md) and find the **current phase**.
 - Pick the **next unchecked item** in that phase (or a bug fix tied to existing scope).
@@ -30,7 +30,7 @@ Follow these steps **in order** for every change. Do not skip or reorder.
 
 **Output:** A clear, single-scope task (one roadmap checkbox or one bug).
 
-### Step 2 — Create a branch
+### Step 2 | Create a branch
 
 ```bash
 git checkout main
@@ -42,7 +42,7 @@ git checkout -b cursor/<feature>-e20f      # cloud agents
 
 Branch naming rules: [git-rules.md](git-rules.md).
 
-### Step 3 — Red (failing test)
+### Step 3 | Red (failing test)
 
 Before production code:
 
@@ -65,7 +65,7 @@ pnpm test
 
 **Output:** A failing test that describes the desired behavior in code.
 
-### Step 4 — Green (minimal implementation)
+### Step 4 | Green (minimal implementation)
 
 1. Implement only what is needed to pass the test.
 2. Re-run tests until green:
@@ -78,7 +78,7 @@ pnpm test
 
 **Output:** All new and existing tests pass.
 
-### Step 5 — Refactor
+### Step 5 | Refactor
 
 With green tests:
 
@@ -94,7 +94,7 @@ pnpm typecheck
 
 **Output:** Cleaner code, same green tests.
 
-### Step 6 — Validate locally
+### Step 6 | Validate locally
 
 Run the full pipeline before committing:
 
@@ -110,7 +110,7 @@ SKIP_DB=1 SKIP_SCREENSHOTS=1 bash scripts/validation.sh
 
 **Output:** Local validation passes (or documented reason for skipped steps).
 
-### Step 7 — Commit
+### Step 7 | Commit
 
 - **One logical change per commit** (may be multiple commits per PR: e.g. test first, then implementation).
 - Message format: imperative mood, English, concise.
@@ -123,7 +123,7 @@ Port display-lg and body-lg scales into tailwind preset with unit tests.
 
 **Output:** Focused git history.
 
-### Step 8 — Open a pull request
+### Step 8 | Open a pull request
 
 1. Push branch: `git push -u origin <branch>`
 2. Fill in the [PR template](../.github/pull_request_template.md)
@@ -138,7 +138,7 @@ Port display-lg and body-lg scales into tailwind preset with unit tests.
 
 **Output:** PR with green CI, screenshot previews, and a mergeable branch.
 
-### Step 9 — Review and merge
+### Step 9 | Review and merge
 
 - Address review feedback; repeat Steps 3–6 for each fix.
 - Ensure roadmap checkboxes are updated if the item is complete.

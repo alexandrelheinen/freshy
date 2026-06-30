@@ -3,7 +3,7 @@
 | Path           | Description                                              |
 | -------------- | -------------------------------------------------------- |
 | `docker/`      | Local PostgreSQL + PostGIS (`docker-compose.yml`)        |
-| `cloudflare/`  | R2, Pages, Workers — setup guide and `wrangler` template |
+| `cloudflare/`  | R2, Pages, Workers: setup guide and `wrangler` template |
 | `render/`      | Render blueprint for production API (`render.yaml`)      |
 
 **All platforms (Neon, Render, Pages, Clerk, …):** [docs/platforms.md](../docs/platforms.md)
