@@ -1,5 +1,6 @@
-import type { NextFunction, Request, Response } from 'express';
 import { createClerkClient, verifyToken } from '@clerk/backend';
+import type { Context, Next } from 'hono';
+import type { Env } from './worker';
 
 export interface AuthContext {
   clerkUserId: string;
@@ -27,119 +28,109 @@ export function extractRoleFromClaims(payload: Record<string, unknown>): string 
   return undefined;
 }
 
+export function isClerkConfigured(env: Env): boolean {
+  return Boolean(env.CLERK_SECRET_KEY);
+}
+
+function buildClerkClient(secretKey: string) {
+  return createClerkClient({ secretKey });
+}
+
 async function resolveAdminRole(
   clerkUserId: string,
   tokenPayload: Record<string, unknown>,
+  secretKey: string,
 ): Promise<string | undefined> {
   const fromToken = extractRoleFromClaims(tokenPayload);
   if (fromToken) return fromToken;
 
-  const clerk = getClerkClient();
+  const clerk = buildClerkClient(secretKey);
   const user = await clerk.users.getUser(clerkUserId);
   const role = user.publicMetadata?.role;
   return typeof role === 'string' ? role : undefined;
 }
 
-declare global {
-  // Express Request augmentation uses the standard namespace pattern.
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace Express {
-    interface Request {
-      auth?: AuthContext;
-    }
-  }
-}
-
-let clerkClient: ReturnType<typeof createClerkClient> | null = null;
-
-export function isClerkConfigured(): boolean {
-  return Boolean(process.env.CLERK_SECRET_KEY);
-}
-
-function getClerkClient() {
-  if (!process.env.CLERK_SECRET_KEY) {
-    throw new Error('CLERK_SECRET_KEY is not configured');
-  }
-  if (!clerkClient) {
-    clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
-  }
-  return clerkClient;
-}
-
-export async function requireAuth(req: Request, res: Response, next: NextFunction): Promise<void> {
-  if (!isClerkConfigured()) {
-    res.status(503).json({ error: 'Auth not configured' });
+/** Hono middleware: requires a valid Clerk Bearer token. Sets c.var.auth. */
+export async function requireAuth(c: Context<{ Bindings: Env }>, next: Next): Promise<void> {
+  const env = c.env;
+  if (!isClerkConfigured(env)) {
+    c.res = c.json({ error: 'Auth not configured' }, 503);
     return;
   }
 
-  const header = req.headers.authorization;
+  const header = c.req.header('Authorization');
   if (!header?.startsWith('Bearer ')) {
-    res.status(401).json({ error: 'Unauthorized' });
+    c.res = c.json({ error: 'Unauthorized' }, 401);
     return;
   }
 
   const token = header.slice('Bearer '.length);
   try {
-    const authorizedParties = process.env.CLERK_AUTHORIZED_PARTIES?.split(',')
+    const authorizedParties = env.CLERK_AUTHORIZED_PARTIES?.split(',')
       .map((s) => s.trim())
       .filter(Boolean);
     const payload = await verifyToken(token, {
-      secretKey: process.env.CLERK_SECRET_KEY!,
+      secretKey: env.CLERK_SECRET_KEY!,
       ...(authorizedParties?.length ? { authorizedParties } : {}),
     });
     const clerkUserId = payload.sub;
     if (!clerkUserId) {
-      res.status(401).json({ error: 'Unauthorized' });
+      c.res = c.json({ error: 'Unauthorized' }, 401);
       return;
     }
-    req.auth = {
+    c.set('clerkUserId', clerkUserId);
+    c.set('clerkRole', extractRoleFromClaims(payload as Record<string, unknown>));
+    await next();
+  } catch {
+    c.res = c.json({ error: 'Unauthorized' }, 401);
+  }
+}
+
+/** Hono middleware: requires a valid Clerk Bearer token with admin role. */
+export async function requireAdmin(c: Context<{ Bindings: Env }>, next: Next): Promise<void> {
+  const env = c.env;
+  if (!isClerkConfigured(env)) {
+    c.res = c.json({ error: 'Auth not configured' }, 503);
+    return;
+  }
+
+  const header = c.req.header('Authorization');
+  if (!header?.startsWith('Bearer ')) {
+    c.res = c.json({ error: 'Not found' }, 404);
+    return;
+  }
+
+  const token = header.slice('Bearer '.length);
+  try {
+    const authorizedParties = env.CLERK_AUTHORIZED_PARTIES?.split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const payload = await verifyToken(token, {
+      secretKey: env.CLERK_SECRET_KEY!,
+      ...(authorizedParties?.length ? { authorizedParties } : {}),
+    });
+    const clerkUserId = payload.sub;
+    if (!clerkUserId) {
+      c.res = c.json({ error: 'Not found' }, 404);
+      return;
+    }
+
+    const role = await resolveAdminRole(
       clerkUserId,
-      role: extractRoleFromClaims(payload as Record<string, unknown>),
-    };
-    next();
-  } catch {
-    res.status(401).json({ error: 'Unauthorized' });
-  }
-}
-
-export async function requireAdmin(req: Request, res: Response, next: NextFunction): Promise<void> {
-  if (!isClerkConfigured()) {
-    res.status(503).json({ error: 'Auth not configured' });
-    return;
-  }
-
-  const header = req.headers.authorization;
-  if (!header?.startsWith('Bearer ')) {
-    res.status(404).json({ error: 'Not found' });
-    return;
-  }
-
-  const token = header.slice('Bearer '.length);
-  try {
-    const authorizedParties = process.env.CLERK_AUTHORIZED_PARTIES?.split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
-    const payload = await verifyToken(token, {
-      secretKey: process.env.CLERK_SECRET_KEY!,
-      ...(authorizedParties?.length ? { authorizedParties } : {}),
-    });
-    const clerkUserId = payload.sub;
-    if (!clerkUserId) {
-      res.status(404).json({ error: 'Not found' });
-      return;
-    }
-
-    const role = await resolveAdminRole(clerkUserId, payload as Record<string, unknown>);
+      payload as Record<string, unknown>,
+      env.CLERK_SECRET_KEY!,
+    );
     if (!isAdminRole(role)) {
-      res.status(404).json({ error: 'Not found' });
+      c.res = c.json({ error: 'Not found' }, 404);
       return;
     }
 
-    req.auth = { clerkUserId, role };
-    next();
+    c.set('clerkUserId', clerkUserId);
+    c.set('clerkRole', role);
+    await next();
   } catch {
-    res.status(404).json({ error: 'Not found' });
+    c.res = c.json({ error: 'Not found' }, 404);
   }
 }
 
-export { getClerkClient };
+export { buildClerkClient };

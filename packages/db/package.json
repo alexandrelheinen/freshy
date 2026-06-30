@@ -9,21 +9,19 @@
     "lint": "eslint src --config ../../eslint.config.mjs --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "test": "bash ../../scripts/run-ts-tests.sh src",
-    "generate": "prisma generate",
-    "migrate": "prisma migrate dev",
-    "migrate:deploy": "prisma migrate deploy",
-    "seed": "tsx prisma/seed.ts",
-    "studio": "prisma studio"
+    "generate": "drizzle-kit generate",
+    "migrate:local": "wrangler d1 migrations apply freshy-db --local",
+    "migrate:remote": "wrangler d1 migrations apply freshy-db --remote"
   },
   "dependencies": {
     "@freshy/config": "workspace:*",
-    "@prisma/client": "^6.1.0"
+    "drizzle-orm": "^0.44.2"
   },
   "devDependencies": {
     "@freshy/config": "workspace:*",
     "@types/node": "^22.10.2",
+    "drizzle-kit": "^0.31.1",
     "eslint": "^9.17.0",
-    "prisma": "^6.1.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   }
