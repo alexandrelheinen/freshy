@@ -40,8 +40,11 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           if [ -z "${DATABASE_URL:-}" ]; then
-            echo "::warning::DATABASE_URL secret is not configured. Add your Neon connection string to enable automatic migrations on main."
+            echo "::error::DATABASE_URL secret is not configured. Add your Neon connection string to GitHub secrets."
             echo "Apply manually: DATABASE_URL=... pnpm --filter @freshy/db migrate:deploy"
+            if [ "${{ github.event_name }}" = "push" ]; then
+              exit 1
+            fi
             exit 0
           fi
           pnpm --filter @freshy/db migrate:deploy

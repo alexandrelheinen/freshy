@@ -2,6 +2,7 @@ import express, { type Express } from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@freshy/db';
 import { isClerkConfigured } from './auth';
+import { buildHealthSnapshot, checkDatabaseHealth } from './health';
 import { isR2Configured } from './storage/r2';
 import {
   categoryCounts,
@@ -21,13 +22,9 @@ export function createApp(): Express {
   app.use(cors());
   app.use(express.json());
 
-  app.get('/health', (_req, res) => {
-    res.json({
-      status: 'ok',
-      service: 'freshy-api',
-      r2: isR2Configured() ? 'configured' : 'not-configured',
-      auth: isClerkConfigured() ? 'configured' : 'not-configured',
-    });
+  app.get('/health', async (_req, res) => {
+    const db = await checkDatabaseHealth((sql) => prisma.$queryRawUnsafe(sql));
+    res.json(buildHealthSnapshot(db, isR2Configured(), isClerkConfigured()));
   });
 
   app.get('/places', async (req, res) => {

@@ -2,7 +2,7 @@
 
 import { useAuth, SignInButton } from '@clerk/clerk-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState, type ChangeEvent } from 'react';
 import {
   ALL_PLACE_CATEGORIES,
   PLACE_TAG_ICONS,
@@ -22,6 +22,9 @@ import {
 import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { createUserPlace } from '../lib/user-api';
 
+const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
+const PLACE_SUBMITTED_KEY = 'freshy-place-submitted';
+
 export function AddPlaceClient() {
   const router = useRouter();
   const { isLoaded, isSignedIn, getToken } = useAuth();
@@ -36,6 +39,35 @@ export function AddPlaceClient() {
   const [longitude, setLongitude] = useState<number>(PILOT_CITY.longitude);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (photoPreview) {
+        URL.revokeObjectURL(photoPreview);
+      }
+    };
+  }, [photoPreview]);
+
+  function handlePhotoChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setError('Choose a PNG or JPG image.');
+      return;
+    }
+    if (file.size > MAX_PHOTO_BYTES) {
+      setError('Image must be 10MB or smaller.');
+      return;
+    }
+
+    setPhotoPreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return URL.createObjectURL(file);
+    });
+    setError(null);
+  }
 
   function toggleTag(tag: PlaceTagId) {
     setTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
@@ -53,31 +85,35 @@ export function AddPlaceClient() {
     );
   }
 
-  async function submit(status: 'DRAFT' | 'PUBLISHED') {
+  async function submit() {
     setError(null);
     if (!name.trim() || !address.trim()) {
       setError('Name and address are required.');
       return;
     }
     setSubmitting(true);
-    const result = await createUserPlace(getToken, {
-      name: name.trim(),
-      category,
-      address: address.trim(),
-      description: description.trim() || undefined,
-      latitude,
-      longitude,
-      aggregatedTemperatureC: temperature,
-      aggregatedFreshnessLevel: freshnessLevel,
-      tags,
-      status,
-    });
-    setSubmitting(false);
-    if (result) {
-      router.push(status === 'PUBLISHED' ? ROUTES.place(result.slug) : ROUTES.profile);
-      return;
+    try {
+      const result = await createUserPlace(getToken, {
+        name: name.trim(),
+        category,
+        address: address.trim(),
+        description: description.trim() || undefined,
+        latitude,
+        longitude,
+        aggregatedTemperatureC: temperature,
+        aggregatedFreshnessLevel: freshnessLevel,
+        tags,
+        status: 'DRAFT',
+      });
+      if (result.ok) {
+        sessionStorage.setItem(PLACE_SUBMITTED_KEY, result.slug);
+        router.push(ROUTES.profile);
+        return;
+      }
+      setError(result.error);
+    } finally {
+      setSubmitting(false);
     }
-    setError('Could not save place. Check that you are signed in and the API is running.');
   }
 
   const selectedFreshness = FRESHNESS_LEVELS.find((level) => level.id === freshnessLevel)!;
@@ -110,16 +146,32 @@ export function AddPlaceClient() {
     <>
       <section>
         <label className="relative flex aspect-video w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-outline-variant bg-surface-container-high transition-all active:scale-[0.98] hover:border-primary/40">
-          <MaterialIcon name="add_a_photo" className="mb-2 text-4xl text-on-surface-variant" />
-          <p className="font-body-sm font-semibold text-on-surface-variant">Add place photos</p>
-          <p className="text-[10px] uppercase tracking-wider opacity-60">PNG, JPG up to 10MB</p>
+          {photoPreview ? (
+            <img
+              src={photoPreview}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          ) : (
+            <>
+              <MaterialIcon name="add_a_photo" className="mb-2 text-4xl text-on-surface-variant" />
+              <p className="font-body-sm font-semibold text-on-surface-variant">Add place photos</p>
+              <p className="text-[10px] uppercase tracking-wider opacity-60">PNG, JPG up to 10MB</p>
+            </>
+          )}
           <input
             type="file"
-            accept="image/*"
+            accept="image/png,image/jpeg,image/webp"
             className="absolute inset-0 opacity-0"
             aria-label="Upload photo"
+            onChange={handlePhotoChange}
           />
         </label>
+        {photoPreview ? (
+          <p className="mt-2 text-center font-body-sm text-on-surface-variant">
+            Preview only. Photo upload to the server is not available yet.
+          </p>
+        ) : null}
       </section>
 
       <section className="space-y-4">
@@ -297,11 +349,11 @@ export function AddPlaceClient() {
             <button
               type="button"
               disabled={submitting}
-              onClick={() => void submit('PUBLISHED')}
+              onClick={() => void submit()}
               className="flex items-center gap-2 rounded-xl bg-primary px-6 py-2 font-label-caps text-on-primary shadow-lg hover:opacity-90 active:scale-95 disabled:opacity-50"
             >
               <MaterialIcon name="publish" size={20} />
-              Create and Publish
+              Submit for Review
             </button>
           </div>
         </div>
@@ -311,6 +363,13 @@ export function AddPlaceClient() {
           <div className="hidden lg:col-span-5 lg:block">
             <div className="sticky top-24 rounded-3xl border border-primary-container/30 bg-primary-container/10 p-6">
               <h3 className="mb-4 font-title-md text-primary">Preview</h3>
+              {photoPreview ? (
+                <img
+                  src={photoPreview}
+                  alt=""
+                  className="mb-4 aspect-video w-full rounded-xl object-cover"
+                />
+              ) : null}
               <p className="font-title-md text-on-surface">{name || 'Place name'}</p>
               <p className="mt-1 text-body-sm text-on-surface-variant">
                 {PLACE_CATEGORY_LABELS[category]} · {temperature}°C · {selectedFreshness.label}
@@ -323,22 +382,14 @@ export function AddPlaceClient() {
         </div>
       </main>
 
-      <footer className="fixed bottom-0 z-50 w-full space-y-2 border-t border-outline-variant/20 bg-surface/90 px-margin-mobile pb-8 pt-4 backdrop-blur-lg md:hidden">
+      <footer className="fixed bottom-0 z-50 w-full border-t border-outline-variant/20 bg-surface/90 px-margin-mobile pb-8 pt-4 backdrop-blur-lg md:hidden">
         <button
           type="button"
           disabled={submitting}
-          onClick={() => void submit('PUBLISHED')}
+          onClick={() => void submit()}
           className="h-14 w-full rounded-xl bg-primary font-headline-lg-mobile text-on-primary shadow-lg shadow-primary/20 active:scale-95 disabled:opacity-50"
         >
-          Create and Publish
-        </button>
-        <button
-          type="button"
-          disabled={submitting}
-          onClick={() => void submit('DRAFT')}
-          className="h-12 w-full rounded-xl bg-transparent font-title-md text-secondary hover:bg-secondary/5"
-        >
-          Save as Draft
+          Submit for Review
         </button>
       </footer>
 

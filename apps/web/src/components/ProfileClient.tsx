@@ -111,6 +111,15 @@ export function ProfileClient() {
   const [reviews, setReviews] = useState<UserReviewDto[]>([]);
   const [activeTab, setActiveTab] = useState<ProfileTab>('saved');
   const [loading, setLoading] = useState(true);
+  const [submittedPlaceSlug, setSubmittedPlaceSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    const slug = sessionStorage.getItem('freshy-place-submitted');
+    if (slug) {
+      sessionStorage.removeItem('freshy-place-submitted');
+      setSubmittedPlaceSlug(slug);
+    }
+  }, []);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -163,6 +172,15 @@ export function ProfileClient() {
           <p className="py-16 text-center text-on-surface-variant">Loading profile…</p>
         ) : profile ? (
           <>
+            {submittedPlaceSlug ? (
+              <div className="mb-6 rounded-xl border border-primary-container bg-primary-container/20 px-4 py-3 text-body-sm text-on-surface">
+                <p className="font-title-md text-primary">Place submitted for review</p>
+                <p className="mt-1 text-on-surface-variant">
+                  Your cooling spot is pending validation. It will appear on the map after an admin
+                  approves it in Studio.
+                </p>
+              </div>
+            ) : null}
             <section className="mb-8 flex flex-col items-center md:mb-12 md:flex-row md:items-end md:gap-8">
               <div className="relative mb-4 md:mb-0">
                 {profile.avatarUrl ? (
