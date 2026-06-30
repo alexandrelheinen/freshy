@@ -35,7 +35,7 @@ export async function listPlaces(
   const lng = query.lng ?? PILOT_CITY.longitude;
   const radiusKm = query.radius ?? PILOT_CITY.defaultRadiusKm;
 
-  const where: Prisma.PlaceWhereInput = {};
+  const where: Prisma.PlaceWhereInput = { status: 'PUBLISHED' };
   if (query.category) {
     where.category = query.category;
   }

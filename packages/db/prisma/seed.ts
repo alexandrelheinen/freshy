@@ -3,6 +3,16 @@ import { PILOT_CITY } from '../src/geo';
 
 const prisma = new PrismaClient();
 
+const CATEGORY_AMENITIES: Record<PlaceCategory, string[]> = {
+  [PlaceCategory.CAFE]: ['FREE_WIFI', 'COMFY_SEATING'],
+  [PlaceCategory.RESTAURANT]: ['COMFY_SEATING', 'FREE_WATER'],
+  [PlaceCategory.LIBRARY]: ['QUIET_ZONE', 'FREE_WIFI', 'POWER_OUTLETS'],
+  [PlaceCategory.MALL]: ['FREE_WIFI', 'COMFY_SEATING'],
+  [PlaceCategory.MUSEUM]: ['QUIET_ZONE', 'COMFY_SEATING'],
+  [PlaceCategory.COWORKING]: ['FREE_WIFI', 'POWER_OUTLETS', 'LAPTOP_SPACE'],
+  [PlaceCategory.PUBLIC_SPACE]: ['COMFY_SEATING', 'FREE_WATER'],
+};
+
 const VENUE_NAMES: Record<PlaceCategory, string[]> = {
   [PlaceCategory.CAFE]: [
     'Arctic Brew Coffee',
@@ -139,6 +149,7 @@ async function main() {
     address: string;
     aggregatedTemperatureC: number;
     aggregatedAcStrength: AcStrength;
+    amenities: string[];
   }> = [];
 
   for (const category of Object.values(PlaceCategory)) {
@@ -158,6 +169,7 @@ async function main() {
         address: `${STREETS[index % STREETS.length]}, ${PILOT_CITY.postalCode} ${PILOT_CITY.name}`,
         aggregatedTemperatureC: temp,
         aggregatedAcStrength: ac,
+        amenities: CATEGORY_AMENITIES[category],
       });
       index += 1;
     }

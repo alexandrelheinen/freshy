@@ -23,6 +23,11 @@ enum AcStrength {
   FRIGID
 }
 
+enum PlaceStatus {
+  DRAFT
+  PUBLISHED
+}
+
 model User {
   id           String   @id @default(cuid())
   clerkId      String?  @unique
@@ -36,6 +41,7 @@ model User {
 
   reviews      Review[]
   savedPlaces  SavedPlace[]
+  createdPlaces Place[] @relation("PlaceCreator")
 }
 
 model Place {
@@ -50,15 +56,20 @@ model Place {
   photoUrl                String?
   aggregatedTemperatureC  Float?
   aggregatedAcStrength    AcStrength?
+  amenities               String[]      @default([])
   isOpen                  Boolean       @default(true)
+  createdById             String?
+  status                  PlaceStatus   @default(PUBLISHED)
   createdAt               DateTime      @default(now())
   updatedAt               DateTime      @updatedAt
 
   reviews      Review[]
   savedPlaces  SavedPlace[]
+  createdBy    User?         @relation("PlaceCreator", fields: [createdById], references: [id], onDelete: SetNull)
 
   @@index([category])
   @@index([latitude, longitude])
+  @@index([createdById])
 }
 
 model Review {
