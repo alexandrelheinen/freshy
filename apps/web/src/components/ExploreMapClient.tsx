@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Map, { Marker } from 'react-map-gl';
 import Link from 'next/link';
 import {
@@ -8,6 +8,7 @@ import {
   FreshnessBar,
   EXPLORE_FILTER_CHIPS,
   GlassCard,
+  MAP_SEARCH,
   MaterialIcon,
   getPlacePhotoUrl,
   PLACE_CATEGORY_ICONS,
@@ -26,12 +27,23 @@ import {
   formatDistanceWithWalk,
 } from '../lib/api';
 import { mapStyleUrl, type MapStyleId } from '../lib/map-styles';
+import { cappedSearchRadiusKm, formatSearchRadiusKm } from '../lib/map-zoom';
 import { locationStatusMessage } from '../lib/location-messages';
 import { useUserLocation } from '../lib/use-user-location';
 import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceMapMarker, UserLocationMarker, freshnessLabel } from './map-markers';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
+
+type MapSearchAnchor = { latitude: number; longitude: number; zoom: number };
+
+function mapViewDiffersFromSearch(view: MapSearchAnchor, search: MapSearchAnchor): boolean {
+  return (
+    Math.abs(view.latitude - search.latitude) > 0.0005 ||
+    Math.abs(view.longitude - search.longitude) > 0.0005 ||
+    Math.abs(view.zoom - search.zoom) > 0.1
+  );
+}
 
 function chipIcon(category?: PlaceCategory): MaterialIconName | null {
   if (!category) return null;
@@ -235,19 +247,32 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     mapCenter,
     mapZoom,
     setMapCenter,
-    searchRadiusKm,
     zoomForSearchRadius,
   } = useUserLocation();
-  const [viewState, setViewState] = useState<{
-    latitude: number;
-    longitude: number;
-    zoom: number;
-  }>(() => ({
+  const [viewState, setViewState] = useState<MapSearchAnchor>(() => ({
+    latitude: mapCenter.lat,
+    longitude: mapCenter.lng,
+    zoom: mapZoom,
+  }));
+  const [searchAnchor, setSearchAnchor] = useState<MapSearchAnchor>(() => ({
     latitude: mapCenter.lat,
     longitude: mapCenter.lng,
     zoom: mapZoom,
   }));
   const [mapStyleId, setMapStyleId] = useState<MapStyleId>('streets');
+
+  const activeSearchRadiusKm = useMemo(
+    () =>
+      cappedSearchRadiusKm(
+        searchAnchor.latitude,
+        searchAnchor.zoom,
+        MAP_SEARCH.maxRadiusKm,
+        MAP_SEARCH.minRadiusKm,
+      ),
+    [searchAnchor],
+  );
+
+  const needsResearch = mapViewDiffersFromSearch(viewState, searchAnchor);
 
   const selected = useMemo(
     () => places.find((p) => p.slug === selectedSlug) ?? places[0],
@@ -255,11 +280,17 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
   );
 
   const loadPlaces = useCallback(
-    async (opts: { lat: number; lng: number; category?: string; q?: string }) => {
+    async (opts: { lat: number; lng: number; zoom: number; category?: string; q?: string }) => {
+      const radius = cappedSearchRadiusKm(
+        opts.lat,
+        opts.zoom,
+        MAP_SEARCH.maxRadiusKm,
+        MAP_SEARCH.minRadiusKm,
+      );
       const params = new URLSearchParams();
       params.set('lat', String(opts.lat));
       params.set('lng', String(opts.lng));
-      params.set('radius', String(searchRadiusKm));
+      params.set('radius', String(radius));
       if (opts.category) params.set('category', opts.category);
       if (opts.q) params.set('q', opts.q);
 
@@ -272,54 +303,55 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         setSelectedSlug(json.data[0].slug);
       }
     },
-    [selectedSlug, searchRadiusKm],
+    [selectedSlug],
   );
 
+  const runSearch = useCallback(
+    (anchor: MapSearchAnchor) => {
+      setSearchAnchor(anchor);
+      setMapCenter({ lat: anchor.latitude, lng: anchor.longitude }, anchor.zoom);
+      void loadPlaces({
+        lat: anchor.latitude,
+        lng: anchor.longitude,
+        zoom: anchor.zoom,
+        category: activeCategory,
+        q: query || undefined,
+      });
+    },
+    [activeCategory, loadPlaces, query, setMapCenter],
+  );
+
+  const skipFilterReload = useRef(true);
+
   useEffect(() => {
-    void loadPlaces({
-      lat: mapCenter.lat,
-      lng: mapCenter.lng,
-      category: activeCategory,
-      q: query || undefined,
-    });
+    runSearch(searchAnchor);
     // Initial load for the stored or pilot map center.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (!userLocation) return;
-    const zoom = zoomForSearchRadius(userLocation.lat);
-    setViewState({
-      latitude: userLocation.lat,
-      longitude: userLocation.lng,
-      zoom,
-    });
-    setMapCenter(userLocation, zoom);
+    if (skipFilterReload.current) {
+      skipFilterReload.current = false;
+      return;
+    }
     void loadPlaces({
-      lat: userLocation.lat,
-      lng: userLocation.lng,
+      lat: searchAnchor.latitude,
+      lng: searchAnchor.longitude,
+      zoom: searchAnchor.zoom,
       category: activeCategory,
       q: query || undefined,
     });
-  }, [userLocation, activeCategory, loadPlaces, query, setMapCenter, zoomForSearchRadius]);
+  }, [activeCategory, loadPlaces, query, searchAnchor]);
 
   const zoomIn = () => setViewState((v) => ({ ...v, zoom: Math.min(v.zoom + 1, 18) }));
   const zoomOut = () => setViewState((v) => ({ ...v, zoom: Math.max(v.zoom - 1, 2) }));
+  const researchHere = () => runSearch(viewState);
   const recenter = () => {
     if (userLocation) {
       const zoom = zoomForSearchRadius(userLocation.lat);
-      setViewState({
-        latitude: userLocation.lat,
-        longitude: userLocation.lng,
-        zoom,
-      });
-      setMapCenter(userLocation, zoom);
-      void loadPlaces({
-        lat: userLocation.lat,
-        lng: userLocation.lng,
-        category: activeCategory,
-        q: query || undefined,
-      });
+      const anchor = { latitude: userLocation.lat, longitude: userLocation.lng, zoom };
+      setViewState(anchor);
+      runSearch(anchor);
     } else {
       requestLocation();
     }
@@ -329,14 +361,8 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
   const handleMapMoveEnd = useCallback(
     (latitude: number, longitude: number, zoom: number) => {
       setMapCenter({ lat: latitude, lng: longitude }, zoom);
-      void loadPlaces({
-        lat: latitude,
-        lng: longitude,
-        category: activeCategory,
-        q: query || undefined,
-      });
     },
-    [activeCategory, loadPlaces, query, setMapCenter],
+    [setMapCenter],
   );
 
   const mapContent = MAPBOX_TOKEN ? (
@@ -444,7 +470,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       ? locationStatusMessage({
           permissionDenied: locationDenied,
           locationError,
-          searchRadiusKm,
+          searchRadiusKm: activeSearchRadiusKm,
           usingGps: userLocation != null,
         })
       : null;
@@ -456,6 +482,19 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
 
       <main className="relative h-screen w-full overflow-hidden pt-16">
         <div className="absolute inset-0">{mapContent}</div>
+
+        <button
+          type="button"
+          onClick={researchHere}
+          disabled={!needsResearch}
+          className={`absolute left-1/2 top-20 z-40 -translate-x-1/2 rounded-full px-6 py-2.5 font-label-caps shadow-lg transition-all md:top-[4.5rem] ${
+            needsResearch
+              ? 'bg-primary text-on-primary hover:brightness-110 active:scale-[0.98]'
+              : 'pointer-events-none bg-surface-container-high/60 text-on-surface-variant/50'
+          }`}
+        >
+          Research here
+        </button>
 
         {exploreLocationMessage ? (
           <div className="absolute bottom-28 left-4 right-4 z-30 mx-auto max-w-md rounded-xl border border-outline-variant/30 bg-surface/95 p-4 text-center shadow-lg backdrop-blur md:bottom-8 md:left-10 md:right-auto">
