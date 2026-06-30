@@ -11,6 +11,7 @@ import {
   type PlaceCategory,
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
+import { truncatePlaceName } from '../lib/truncate-place-name';
 
 function freshnessId(
   strength: PlaceDto['aggregatedFreshnessLevel'],
@@ -88,6 +89,17 @@ export const acStrengthLabel = freshnessLabel;
 /** @deprecated Use freshnessPowerLabel */
 export const acStrengthPowerLabel = freshnessPowerLabel;
 
+function MarkerNameTooltip({ name }: { name: string }) {
+  return (
+    <div
+      className="pointer-events-none absolute bottom-full z-30 mb-1 whitespace-nowrap rounded-full bg-marker-label-bg px-2 py-0.5 text-[10px] font-bold text-primary opacity-0 shadow-lg backdrop-blur-sm transition-opacity group-hover:opacity-100 md:px-3 md:py-1 md:text-sm"
+      aria-hidden
+    >
+      {truncatePlaceName(name)}
+    </div>
+  );
+}
+
 export function PlaceMapMarker({
   place,
   isSelected,
@@ -102,26 +114,18 @@ export function PlaceMapMarker({
   const icon = categoryIcon(place.category);
   const { bgClass, opacity } = markerPinStyle(place.aggregatedFreshnessLevel);
   const desktop = desktopMarkerStyle(place.aggregatedFreshnessLevel);
-  const freshnessBadge = place.aggregatedFreshnessLevel
-    ? freshnessLabel(place.aggregatedFreshnessLevel)
-    : null;
 
   if (variant === 'desktop') {
     return (
       <button
         type="button"
         onClick={onClick}
-        className={`flex flex-col items-center transition-transform hover:scale-110 ${
+        aria-label={place.name}
+        className={`group relative flex flex-col items-center transition-transform hover:scale-110 ${
           isSelected ? 'z-20' : 'z-10 opacity-80 hover:opacity-100'
         }`}
       >
-        {freshnessBadge ? (
-          <div
-            className={`mb-1 whitespace-nowrap rounded-full px-3 py-1 text-sm font-bold shadow-lg ${desktop.badgeClass}`}
-          >
-            {freshnessBadge}
-          </div>
-        ) : null}
+        <MarkerNameTooltip name={place.name} />
         <div
           className={`flex items-center justify-center rounded-full border-2 border-marker-border shadow-xl ${
             isSelected ? 'marker-pulse h-10 w-10' : 'h-8 w-8'
@@ -143,19 +147,16 @@ export function PlaceMapMarker({
     <button
       type="button"
       onClick={onClick}
-      className={`marker-float flex flex-col items-center transition-transform hover:scale-110 ${opacity}`}
+      aria-label={place.name}
+      className={`marker-float group relative flex flex-col items-center transition-transform hover:scale-110 ${opacity}`}
       style={{ animationDelay: `${(place.id.charCodeAt(0) % 5) * 0.4}s` }}
     >
+      <MarkerNameTooltip name={place.name} />
       <div
         className={`rounded-full p-2 text-on-primary shadow-xl ${bgClass} ${isSelected ? 'ring-2 ring-marker-ring ring-offset-2 ring-offset-primary/30' : ''}`}
       >
         <MaterialIcon name={icon} size={20} />
       </div>
-      {isSelected ? (
-        <div className="mt-1 rounded-full bg-marker-label-bg px-2 py-0.5 text-[10px] font-bold text-primary shadow-sm backdrop-blur-sm">
-          {place.name.length > 16 ? `${place.name.slice(0, 14)}…` : place.name}
-        </div>
-      ) : null}
     </button>
   );
 }
