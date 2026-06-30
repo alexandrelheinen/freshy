@@ -9,7 +9,11 @@ import {
   type Db,
   haversineDistanceKm,
 } from '@freshy/db';
-import { places as placesTable, reviews as reviewsTable, savedPlaces as savedPlacesTable } from '@freshy/db';
+import {
+  places as placesTable,
+  reviews as reviewsTable,
+  savedPlaces as savedPlacesTable,
+} from '@freshy/db';
 import { withResolvedPlacePhoto } from './places';
 
 const DUPLICATE_RADIUS_KM = 0.05;
@@ -142,12 +146,16 @@ interface PlaceCoord {
   id: string;
   latitude: number;
   longitude: number;
-  createdAt: string;
+  createdAt: string | Date;
+}
+
+function createdAtMs(value: string | Date): number {
+  return new Date(value).getTime();
 }
 
 /** Mark newer nearby places as duplicates of the oldest place in each cluster. */
 export function detectDuplicatePlaceIds(places: PlaceCoord[]): Map<string, string> {
-  const sorted = [...places].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+  const sorted = [...places].sort((a, b) => createdAtMs(a.createdAt) - createdAtMs(b.createdAt));
   const duplicates = new Map<string, string>();
 
   for (let i = 0; i < sorted.length; i += 1) {
@@ -186,7 +194,10 @@ function matchesStudioFilter(
   return place.studioStatus === 'duplicate';
 }
 
-export async function listStudioPlaces(db: Db, query: StudioPlacesQuery): Promise<StudioPlacesPage> {
+export async function listStudioPlaces(
+  db: Db,
+  query: StudioPlacesQuery,
+): Promise<StudioPlacesPage> {
   let allPlaces: Place[];
   if (query.q) {
     const pattern = `%${query.q}%`;
@@ -367,10 +378,7 @@ export async function mergeStudioPlaces(db: Db, input: MergePlacesInput): Promis
   return withResolvedPlacePhoto(merged[0]!);
 }
 
-export async function getStudioPlace(
-  db: Db,
-  placeId: string,
-): Promise<StudioPlaceListItem | null> {
+export async function getStudioPlace(db: Db, placeId: string): Promise<StudioPlaceListItem | null> {
   const rows = await db.select().from(placesTable).where(eq(placesTable.id, placeId)).limit(1);
   if (!rows[0]) return null;
   const place = rows[0];

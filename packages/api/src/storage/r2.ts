@@ -1,24 +1,7 @@
-import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { getSignedUrl as awsGetSignedUrl } from '@aws-sdk/s3-request-presigner';
-
-const bucketName = process.env.R2_BUCKET_NAME ?? 'freshy-assets';
-const accountId = process.env.R2_ACCOUNT_ID ?? '';
-const publicBaseUrl = (process.env.R2_PUBLIC_URL ?? '').replace(/\/$/, '');
-
-let client: S3Client | null = null;
-
-function getClient(): S3Client {
-  if (!client) {
-    client = new S3Client({
-      region: 'auto',
-      endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
-      credentials: {
-        accessKeyId: process.env.R2_ACCESS_KEY_ID ?? '',
-        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ?? '',
-      },
-    });
-  }
-  return client;
+/** R2 upload context from Cloudflare Worker bindings. */
+export interface R2Context {
+  bucket: R2Bucket;
+  publicBaseUrl: string;
 }
 
 export interface UploadResult {
@@ -27,43 +10,41 @@ export interface UploadResult {
   publicUrl: string;
 }
 
-function buildPublicUrl(objectPath: string): string {
-  if (publicBaseUrl) {
-    return `${publicBaseUrl}/${objectPath}`;
-  }
-  return `https://${bucketName}.r2.dev/${objectPath}`;
+function buildPublicUrl(publicBaseUrl: string, objectPath: string): string {
+  return `${publicBaseUrl.replace(/\/$/, '')}/${objectPath}`;
 }
 
-/** Upload a buffer to Cloudflare R2. */
+export function isR2Configured(ctx: R2Context | null | undefined): boolean {
+  return Boolean(ctx?.bucket && ctx.publicBaseUrl);
+}
+
+/** Upload bytes to R2 via the Worker binding. */
 export async function uploadAsset(
+  ctx: R2Context,
   objectPath: string,
-  data: Buffer,
+  data: ArrayBuffer | Uint8Array,
   contentType: string,
 ): Promise<UploadResult> {
-  await getClient().send(
-    new PutObjectCommand({
-      Bucket: bucketName,
-      Key: objectPath,
-      Body: data,
-      ContentType: contentType,
-      CacheControl: 'public, max-age=31536000',
-    }),
-  );
+  await ctx.bucket.put(objectPath, data, {
+    httpMetadata: { contentType },
+    customMetadata: {},
+  });
 
-  return { bucket: bucketName, objectPath, publicUrl: buildPublicUrl(objectPath) };
+  return {
+    bucket: 'freshy-assets',
+    objectPath,
+    publicUrl: buildPublicUrl(ctx.publicBaseUrl, objectPath),
+  };
 }
 
-/** Generate a presigned URL for private objects (e.g. pending moderation). */
-export async function getSignedUrl(objectPath: string, expiresInSeconds = 3600): Promise<string> {
-  const command = new GetObjectCommand({ Bucket: bucketName, Key: objectPath });
-  return awsGetSignedUrl(getClient(), command, { expiresIn: expiresInSeconds });
-}
-
-export function isR2Configured(): boolean {
-  return Boolean(
-    process.env.R2_ACCOUNT_ID &&
-    process.env.R2_ACCESS_KEY_ID &&
-    process.env.R2_SECRET_ACCESS_KEY &&
-    process.env.R2_BUCKET_NAME,
-  );
+/** Build R2 context from Worker env bindings. */
+export function r2ContextFromEnv(env: {
+  FRESHY_ASSETS?: R2Bucket;
+  R2_PUBLIC_URL?: string;
+}): R2Context | null {
+  const publicBaseUrl = env.R2_PUBLIC_URL?.replace(/\/$/, '') ?? '';
+  if (!env.FRESHY_ASSETS || !publicBaseUrl) {
+    return null;
+  }
+  return { bucket: env.FRESHY_ASSETS, publicBaseUrl };
 }

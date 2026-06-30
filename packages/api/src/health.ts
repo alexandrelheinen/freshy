@@ -1,6 +1,6 @@
 export type HealthSnapshot = {
   status: 'ok';
-  service: 'freshy-api';
+  service: 'freshy-api-worker';
   r2: 'configured' | 'not-configured';
   auth: 'configured' | 'not-configured';
   db: 'ok' | 'unavailable';
@@ -25,7 +25,7 @@ export function buildHealthSnapshot(
 ): HealthSnapshot {
   return {
     status: 'ok',
-    service: 'freshy-api',
+    service: 'freshy-api-worker',
     r2: r2Configured ? 'configured' : 'not-configured',
     auth: authConfigured ? 'configured' : 'not-configured',
     db,
