@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Freshy | Adicionar Novo Local</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-primary": "#89d0ed",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#b6c9d4",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f7f9fb",
+                        "secondary-fixed": "#d2e6f0",
+                        "primary-fixed-dim": "#89d0ed",
+                        "primary-container": "#87ceeb",
+                        "on-surface": "#191c1e",
+                        "on-tertiary-fixed": "#002020",
+                        "on-secondary-fixed-variant": "#374952",
+                        "surface-dim": "#d8dadc",
+                        "surface-container-low": "#f2f4f6",
+                        "secondary-container": "#cfe3ee",
+                        "on-surface-variant": "#3f484c",
+                        "on-primary-fixed-variant": "#004d62",
+                        "on-tertiary-fixed-variant": "#2c4c4c",
+                        "surface-container-high": "#e6e8ea",
+                        "tertiary": "#446464",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#bfc8cd",
+                        "on-secondary-container": "#53656f",
+                        "on-primary-fixed": "#001f29",
+                        "inverse-surface": "#2d3133",
+                        "surface-container": "#eceef0",
+                        "on-primary-container": "#005870",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#375757",
+                        "tertiary-fixed": "#c6e9e9",
+                        "secondary": "#4f616a",
+                        "primary": "#0c6780",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface-variant": "#e0e3e5",
+                        "surface-tint": "#0c6780",
+                        "on-background": "#191c1e",
+                        "on-secondary-fixed": "#0b1e26",
+                        "tertiary-fixed-dim": "#abcdcd",
+                        "tertiary-container": "#a9cbcb",
+                        "outline": "#6f787d",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#eff1f3",
+                        "error": "#ba1a1a",
+                        "background": "#f7f9fb",
+                        "surface": "#f7f9fb",
+                        "primary-fixed": "#baeaff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "xs": "8px",
+                        "md": "16px",
+                        "margin-mobile": "20px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "sm": "12px",
+                        "gutter-mobile": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Inter"],
+                        "title-md": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", {"lineHeight": "30px", "fontWeight": "600"}],
+                        "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #0c6780;
+            box-shadow: 0 0 0 2px rgba(12, 103, 128, 0.1);
+        }
+        .slider-thumb::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #0c6780;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-lg min-h-screen">
+<!-- Top Navigation Anchor (Shared Component Mapping) -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-xl h-16 bg-surface/80 backdrop-blur-md shadow-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-size: 28px;">ac_unit</span>
+<h1 class="font-display-lg text-primary tracking-tight text-[24px]">Freshy</h1>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 rounded-full hover:bg-primary/10 transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold overflow-hidden border-2 border-white shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A high-quality professional portrait of a modern city administrator in a bright, airy office environment. The lighting is soft and natural, reflecting a clean light-mode aesthetic. The individual has a friendly but professional expression, wearing minimalist clothing in shades of soft grey and white. The background is slightly out of focus, showing a clean, modern workspace." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiGcKleqKQMPQkwTzl9uUcJzjcb-JLugdGhsK8K_rgpGg5XivqhxUFT0JVL2arLqq2WR_PePax0pFap0rnhhaBwRz-IARBMUQa1Vd-XUwXZzdcEpS1f0OZhjYtjtbg4c1ESAROdINGcwqGIsD3CEluyVTskoACFfACHWZBit170J7s5YAUrtkMR83cK6jIKbuPfn9D5AFkYMfWEWnUmpcs9GF7W_DVp4kwTX8c8SReMPeaWom72SUr7alVYVEGZJeGcoXhzRB_EGyE"/>
+</div>
+</div>
+</header>
+<div class="flex pt-16 min-h-screen">
+<!-- Sidebar Navigation (Responsive Pivot) -->
+<aside class="hidden md:flex flex-col w-64 fixed left-0 top-16 bottom-0 bg-surface-container-low border-r border-outline-variant/20 p-md z-40">
+<nav class="flex flex-col gap-xs">
+<a class="flex items-center gap-md px-md py-3 rounded-xl text-secondary hover:bg-primary/5 transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-caps">Visão Geral</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 rounded-xl bg-primary-container text-on-primary-container shadow-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_location</span>
+<span class="font-label-caps">Novo Local</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 rounded-xl text-secondary hover:bg-primary/5 transition-colors" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-caps">Gerenciar Mapa</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 rounded-xl text-secondary hover:bg-primary/5 transition-colors" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps">Estatísticas</span>
+</a>
+<div class="mt-xl pt-xl border-t border-outline-variant/20">
+<a class="flex items-center gap-md px-md py-3 rounded-xl text-secondary hover:bg-primary/5 transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps">Configurações</span>
+</a>
+</div>
+</nav>
+<div class="mt-auto p-md bg-primary-fixed-dim/20 rounded-2xl border border-primary/10">
+<p class="text-xs font-bold text-primary mb-1 uppercase tracking-wider">Cota de Locais</p>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden mb-2">
+<div class="bg-primary h-full w-3/4 rounded-full"></div>
+</div>
+<p class="text-[10px] text-on-surface-variant">75 de 100 locais utilizados no plano Premium.</p>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 p-xl bg-background">
+<div class="max-w-5xl mx-auto">
+<!-- Header Actions -->
+<div class="flex items-center justify-between mb-xl">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Adicionar Novo Local</h2>
+<p class="text-on-surface-variant mt-1">Cadastre um novo refúgio climático para a rede Freshy.</p>
+</div>
+<div class="flex gap-md">
+<button class="px-md py-2 border border-outline text-secondary rounded-xl font-label-caps hover:bg-surface-container transition-colors">Descartar</button>
+<button class="px-lg py-2 bg-primary text-on-primary rounded-xl font-label-caps flex items-center gap-2 shadow-lg hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[20px]">publish</span>
+                            Criar e Publicar
+                        </button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-xl">
+<!-- Left Column: Basic Info & Photo -->
+<div class="lg:col-span-7 flex flex-col gap-xl">
+<!-- Photo Upload Section -->
+<section class="glass-card rounded-3xl p-xl shadow-sm">
+<h3 class="font-title-md text-title-md mb-md flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">image</span>
+                                Fotografia do Local
+                            </h3>
+<div class="relative group cursor-pointer border-2 border-dashed border-outline-variant rounded-2xl aspect-video overflow-hidden flex flex-col items-center justify-center bg-surface-container-low hover:border-primary/50 transition-colors">
+<img class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-40 transition-opacity" data-alt="A wide-angle, bright interior shot of a minimalist modern cafe featuring light wood furniture, white walls, and large windows. The lighting is crisp and cool, suggesting a refreshing air-conditioned environment. No people are present, emphasizing the serene and clean architecture. The scene includes subtle indoor plants to add a touch of life against the modern glass-morphic aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuHGoQBRxAEOfdfGcZHS-Qb3h4RMZ-Pr0jrYXjDerwT09lmax6AEkTAlufos-54RWfv_UoNNDWpVG5COAfTZvaILLP5t1hvP8aKrE1VPQQJ-sDbw_hUUts4uEBTURxE_pSY3l4j4Zplq-2JZ-mTp6fJmzmODG7_0OuSGv43fVvgBb7DDeDlyZvJ6M7pFS0qAdkormiF0JtAXHe4yE3vl1ZoQ2x9SjtXf2Uokd7zX3tu-Vnp9GiuDex7HyJo_1c661wqgAEEwk2qWd5"/>
+<div class="relative z-10 flex flex-col items-center gap-xs">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
+<span class="material-symbols-outlined text-[32px]">add_a_photo</span>
+</div>
+<p class="font-bold text-on-surface">Upload de Imagem Principal</p>
+<p class="text-body-sm text-on-surface-variant">Arraste ou clique para selecionar (PNG, JPG até 5MB)</p>
+</div>
+</div>
+</section>
+<!-- Basic Information -->
+<section class="glass-card rounded-3xl p-xl shadow-sm">
+<h3 class="font-title-md text-title-md mb-md flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">info</span>
+                                Informações Básicas
+                            </h3>
+<div class="flex flex-col gap-md">
+<div class="grid grid-cols-1 gap-md">
+<div class="flex flex-col gap-base">
+<label class="text-label-caps text-on-surface-variant ml-1">Nome do Estabelecimento</label>
+<input class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl px-md py-3 text-on-surface" placeholder="Ex: Livraria do Centro ou Café Gelado" type="text"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="flex flex-col gap-base">
+<label class="text-label-caps text-on-surface-variant ml-1">Categoria</label>
+<select class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl px-md py-3 text-on-surface appearance-none">
+<option>Cafeteria / Restaurante</option>
+<option>Biblioteca / Espaço Cultural</option>
+<option>Shopping / Galeria</option>
+<option>Coworking</option>
+<option>Museu</option>
+</select>
+</div>
+<div class="flex flex-col gap-base">
+<label class="text-label-caps text-on-surface-variant ml-1">Horário de Pico</label>
+<input class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl px-md py-3 text-on-surface" placeholder="14:00 - 17:00" type="text"/>
+</div>
+</div>
+<div class="flex flex-col gap-base">
+<label class="text-label-caps text-on-surface-variant ml-1">Endereço Completo</label>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl pl-md pr-xl py-3 text-on-surface" placeholder="Rua, Número, Bairro, Cidade" type="text"/>
+<span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant">location_on</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Cooling Status & Amenities -->
+<div class="lg:col-span-5 flex flex-col gap-xl">
+<!-- Cooling Status -->
+<section class="glass-card rounded-3xl p-xl shadow-sm border-l-4 border-primary">
+<h3 class="font-title-md text-title-md mb-xl flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">ac_unit</span>
+                                Status de Refrigeração
+                            </h3>
+<div class="flex flex-col gap-xl">
+<!-- Temperature Slider -->
+<div class="flex flex-col gap-md">
+<div class="flex justify-between items-end">
+<label class="text-label-caps text-on-surface-variant">Temperatura Interna Média</label>
+<span class="text-display-lg font-display-lg text-primary" id="temp-value">22°C</span>
+</div>
+<input class="w-full h-2 bg-primary-container rounded-full appearance-none slider-thumb cursor-pointer" id="temp-slider" max="28" min="16" type="range" value="22"/>
+<div class="flex justify-between text-[10px] font-bold text-on-surface-variant uppercase">
+<span>Ártico (16°)</span>
+<span>Tropical (28°)</span>
+</div>
+</div>
+<!-- AC Intensity Bar Selection -->
+<div class="flex flex-col gap-md">
+<label class="text-label-caps text-on-surface-variant">Intensidade do Ar-Condicionado</label>
+<div class="flex gap-xs">
+<button class="flex-1 flex flex-col items-center gap-2 p-md rounded-2xl bg-surface-container-low border border-outline-variant/20 hover:border-primary/40 transition-all group active:scale-95" onclick="setAC(1)">
+<div class="flex gap-1 h-2 w-full">
+<div class="flex-1 bg-primary rounded-full"></div>
+<div class="flex-1 bg-surface-container-highest rounded-full"></div>
+<div class="flex-1 bg-surface-container-highest rounded-full"></div>
+</div>
+<span class="text-[10px] font-bold uppercase text-on-surface-variant group-hover:text-primary">Suave</span>
+</button>
+<button class="flex-1 flex flex-col items-center gap-2 p-md rounded-2xl bg-primary/5 border-2 border-primary transition-all group active:scale-95" onclick="setAC(2)">
+<div class="flex gap-1 h-2 w-full">
+<div class="flex-1 bg-primary rounded-full"></div>
+<div class="flex-1 bg-primary rounded-full"></div>
+<div class="flex-1 bg-surface-container-highest rounded-full"></div>
+</div>
+<span class="text-[10px] font-bold uppercase text-primary">Confortável</span>
+</button>
+<button class="flex-1 flex flex-col items-center gap-2 p-md rounded-2xl bg-surface-container-low border border-outline-variant/20 hover:border-primary/40 transition-all group active:scale-95" onclick="setAC(3)">
+<div class="flex gap-1 h-2 w-full">
+<div class="flex-1 bg-primary rounded-full"></div>
+<div class="flex-1 bg-primary rounded-full"></div>
+<div class="flex-1 bg-primary rounded-full"></div>
+</div>
+<span class="text-[10px] font-bold uppercase text-on-surface-variant group-hover:text-primary">Frio Intenso</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Amenities Chips -->
+<section class="glass-card rounded-3xl p-xl shadow-sm">
+<h3 class="font-title-md text-title-md mb-md flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">stars</span>
+                                Comodidades (Amenities)
+                            </h3>
+<p class="text-body-sm text-on-surface-variant mb-md">Selecione os benefícios extras oferecidos no local.</p>
+<div class="flex flex-wrap gap-sm">
+<label class="flex items-center gap-2 px-md py-2 rounded-full bg-secondary-container text-on-secondary-container border border-primary/10 cursor-pointer hover:bg-primary-container transition-colors">
+<input checked="" class="hidden" type="checkbox"/>
+<span class="material-symbols-outlined text-[18px]">wifi</span>
+<span class="text-label-caps">Wi-Fi Grátis</span>
+</label>
+<label class="flex items-center gap-2 px-md py-2 rounded-full bg-surface-container-highest text-on-surface-variant border border-outline-variant/20 cursor-pointer hover:bg-secondary-container transition-colors">
+<input class="hidden" type="checkbox"/>
+<span class="material-symbols-outlined text-[18px]">volume_off</span>
+<span class="text-label-caps">Zona Silenciosa</span>
+</label>
+<label class="flex items-center gap-2 px-md py-2 rounded-full bg-surface-container-highest text-on-surface-variant border border-outline-variant/20 cursor-pointer hover:bg-secondary-container transition-colors">
+<input class="hidden" type="checkbox"/>
+<span class="material-symbols-outlined text-[18px]">power</span>
+<span class="text-label-caps">Tomadas</span>
+</label>
+<label class="flex items-center gap-2 px-md py-2 rounded-full bg-surface-container-highest text-on-surface-variant border border-outline-variant/20 cursor-pointer hover:bg-secondary-container transition-colors">
+<input class="hidden" type="checkbox"/>
+<span class="material-symbols-outlined text-[18px]">water_drop</span>
+<span class="text-label-caps">Água Cortesia</span>
+</label>
+<label class="flex items-center gap-2 px-md py-2 rounded-full bg-surface-container-highest text-on-surface-variant border border-outline-variant/20 cursor-pointer hover:bg-secondary-container transition-colors">
+<input class="hidden" type="checkbox"/>
+<span class="material-symbols-outlined text-[18px]">laptop_mac</span>
+<span class="text-label-caps">Espaço Laptop</span>
+</label>
+<button class="flex items-center gap-2 px-md py-2 rounded-full border-2 border-dashed border-outline-variant text-on-surface-variant hover:text-primary hover:border-primary transition-all">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span class="text-label-caps">Outro</span>
+</button>
+</div>
+</section>
+<!-- Coolness Score Preview -->
+<div class="bg-primary p-xl rounded-3xl text-on-primary shadow-xl overflow-hidden relative">
+<div class="relative z-10">
+<p class="text-label-caps opacity-80 mb-1">Coolness Score Previsto</p>
+<div class="flex items-center gap-md">
+<span class="text-[48px] font-bold">9.2</span>
+<div class="flex flex-col">
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div></div></div></div></div></div></div></div></main></div></body></html>

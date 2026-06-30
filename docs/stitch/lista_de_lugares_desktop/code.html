@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Freshy - Saved Places</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-primary": "#89d0ed",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#b6c9d4",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f7f9fb",
+                        "secondary-fixed": "#d2e6f0",
+                        "primary-fixed-dim": "#89d0ed",
+                        "primary-container": "#87ceeb",
+                        "on-surface": "#191c1e",
+                        "on-tertiary-fixed": "#002020",
+                        "on-secondary-fixed-variant": "#374952",
+                        "surface-dim": "#d8dadc",
+                        "surface-container-low": "#f2f4f6",
+                        "secondary-container": "#cfe3ee",
+                        "on-surface-variant": "#3f484c",
+                        "on-primary-fixed-variant": "#004d62",
+                        "on-tertiary-fixed-variant": "#2c4c4c",
+                        "surface-container-high": "#e6e8ea",
+                        "tertiary": "#446464",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#bfc8cd",
+                        "on-secondary-container": "#53656f",
+                        "on-primary-fixed": "#001f29",
+                        "inverse-surface": "#2d3133",
+                        "surface-container": "#eceef0",
+                        "on-primary-container": "#005870",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#375757",
+                        "tertiary-fixed": "#c6e9e9",
+                        "secondary": "#4f616a",
+                        "primary": "#0c6780",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface-variant": "#e0e3e5",
+                        "surface-tint": "#0c6780",
+                        "on-background": "#191c1e",
+                        "on-secondary-fixed": "#0b1e26",
+                        "tertiary-fixed-dim": "#abcdcd",
+                        "tertiary-container": "#a9cbcb",
+                        "outline": "#6f787d",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#eff1f3",
+                        "error": "#ba1a1a",
+                        "background": "#f7f9fb",
+                        "surface": "#f7f9fb",
+                        "primary-fixed": "#baeaff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "xs": "8px",
+                        "md": "16px",
+                        "margin-mobile": "20px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "sm": "12px",
+                        "gutter-mobile": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Inter"],
+                        "title-md": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", {"lineHeight": "30px", "fontWeight": "600"}],
+                        "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #bfc8cd;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="text-on-surface bg-background min-h-screen">
+<!-- Top Navigation Bar (Desktop & Mobile) -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-margin-mobile h-16 bg-surface/80 dark:bg-surface-container/80 backdrop-blur-md shadow-sm">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center p-2 rounded-full hover:bg-primary/10 transition-colors active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim" style="font-size: 24px;">ac_unit</span>
+</div>
+<h1 class="font-display-lg text-primary dark:text-primary-fixed-dim tracking-tight text-[24px]">Freshy</h1>
+</div>
+<!-- Desktop Navigation Items -->
+<nav class="hidden md:flex items-center gap-lg">
+<div class="flex items-center gap-xs px-4 py-2 rounded-full text-on-surface-variant dark:text-outline-variant hover:bg-primary/10 transition-colors cursor-pointer">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-caps text-label-caps">Explore</span>
+</div>
+<div class="flex items-center gap-xs px-4 py-2 rounded-full bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="font-label-caps text-label-caps">Saved</span>
+</div>
+<div class="flex items-center gap-xs px-4 py-2 rounded-full text-on-surface-variant dark:text-outline-variant hover:bg-primary/10 transition-colors cursor-pointer">
+<span class="material-symbols-outlined">cyclone</span>
+<span class="font-label-caps text-label-caps">Cooling</span>
+</div>
+</nav>
+<div class="flex items-center">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container cursor-pointer hover:opacity-80 transition-opacity">
+<img class="w-full h-full object-cover" data-alt="A professional profile portrait of a modern city traveler in a minimalist setting. The subject has a calm expression, wearing high-tech breathable summer clothing in neutral grey tones. The background is a soft, out-of-focus urban park with cool blue and green hues, reflecting a refreshing and vital brand personality. Lighting is natural and airy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0f4xN2b0letf-iCRglDZXsFt9ScI1mEy5Es79N5vQ-0_fULALosNWJwD1erPd77m8-5sGPOQo1FOwi6ZOnS3IVeOXm7i8Lua_oKIl3DFXnoqSpx3zVnho-iZHu_i6d-Sfz_StufzvvQ9q1Y-uYFznA-TnHldrTGWR7M23ED7atovQ7HSv5aW2HjvZC0nbu_BXg4o-Vgz3mT4BcCc4jrWC_771HShcP8V4pyyblq25iK-6E6YkgoP5NbPn0m4_kF79rBsHYGfkDGxm"/>
+</div>
+</div>
+</header>
+<!-- Sidebar (Desktop only) -->
+<aside class="fixed left-0 top-16 bottom-0 w-64 bg-surface-container-low hidden md:flex flex-col p-lg border-r border-outline-variant/20 overflow-y-auto custom-scrollbar">
+<div class="mb-xl">
+<h2 class="font-title-md text-title-md text-primary mb-md">Categories</h2>
+<div class="space-y-base">
+<button class="w-full flex items-center gap-md p-md rounded-xl bg-primary/10 text-primary font-title-md text-[16px] text-left">
+<span class="material-symbols-outlined">favorite</span>
+<span>All Favorites</span>
+</button>
+<button class="w-full flex items-center gap-md p-md rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors text-left">
+<span class="material-symbols-outlined">coffee</span>
+<span>Cool Cafes</span>
+</button>
+<button class="w-full flex items-center gap-md p-md rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors text-left">
+<span class="material-symbols-outlined">menu_book</span>
+<span>Libraries</span>
+</button>
+<button class="w-full flex items-center gap-md p-md rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors text-left">
+<span class="material-symbols-outlined">park</span>
+<span>Shaded Parks</span>
+</button>
+<button class="w-full flex items-center gap-md p-md rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors text-left">
+<span class="material-symbols-outlined">museum</span>
+<span>Museums</span>
+</button>
+</div>
+</div>
+<div class="mt-auto">
+<div class="bg-primary-container/20 rounded-xl p-md">
+<p class="font-body-sm text-body-sm text-on-primary-container mb-xs">Heat Alert</p>
+<p class="text-on-surface text-[12px] leading-tight">Current temp in Madrid is 34°C. 12 nearby spots are currently "Frigid".</p>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 pt-24 pb-32 px-margin-mobile md:px-xl">
+<!-- Header & Search -->
+<section class="max-w-6xl mx-auto mb-xl">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md mb-lg">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Saved Places</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Your personal oasis collection in the city.</p>
+</div>
+<div class="flex items-center gap-sm">
+<div class="glass-morphism relative flex items-center rounded-full border border-outline-variant/30 px-md py-sm w-full md:w-80 shadow-sm focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+<span class="material-symbols-outlined text-outline">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full ml-sm text-on-surface placeholder:text-outline font-body-sm" placeholder="Search saved places..." type="text"/>
+</div>
+<button class="bg-surface-container-highest p-sm rounded-full text-primary hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+</div>
+<!-- Chips / Filter Row -->
+<div class="flex items-center gap-xs overflow-x-auto pb-xs custom-scrollbar">
+<button class="flex items-center gap-xs px-md py-xs rounded-full bg-primary text-on-primary font-label-caps text-label-caps whitespace-nowrap">
+                    All
+                </button>
+<button class="flex items-center gap-xs px-md py-xs rounded-full bg-secondary-container text-on-secondary-container font-label-caps text-label-caps whitespace-nowrap">
+                    Under 22°C
+                </button>
+<button class="flex items-center gap-xs px-md py-xs rounded-full bg-secondary-container text-on-secondary-container font-label-caps text-label-caps whitespace-nowrap">
+                    Within 1km
+                </button>
+<button class="flex items-center gap-xs px-md py-xs rounded-full bg-secondary-container text-on-secondary-container font-label-caps text-label-caps whitespace-nowrap">
+                    Free Wi-Fi
+                </button>
+<button class="flex items-center gap-xs px-md py-xs rounded-full bg-secondary-container text-on-secondary-container font-label-caps text-label-caps whitespace-nowrap">
+                    Quiet Zones
+                </button>
+</div>
+</section>
+<!-- Places Grid -->
+<section class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-lg">
+<!-- Place Card 1 -->
+<div class="group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_20px_20px_rgba(12,103,128,0.04)] hover:shadow-[0_20px_40px_rgba(12,103,128,0.1)] transition-all duration-300 transform hover:-translate-y-1">
+<div class="relative h-48 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A lush, modern indoor vertical garden within a minimalist building. The space features large glass windows and white walls, creating an airy and brightly lit light-mode aesthetic. Soft morning light filters through, highlighting the vibrant green foliage. The scene is calm and cooling, designed to evoke immediate thermal relief." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmbdAZIn7HBqTzU8suCjA474hUN6zxk7bkZseAdC6Ek2JwWK3f4DnSgl00otCm22tmrcv1T5oHgEEkG2EpkNvLh_tMBk2nP3BSGhGsn_7qYhEQhbuACo5VUlr3ObAwiAlWQ4rNGLtxe63l8xuh0GIu6glEnP4xvuaLwAbv1MO924s1kSwUDv_F5CbkTuknqPS5_SdGidbroMyyyKN1mD1uNXlNHHOTi0CYUw3ZXeuOryPIm9VlRiLjy0w8cea5Girkb0QwdZDUICDJ"/>
+<div class="absolute top-md right-md flex flex-col gap-xs items-end">
+<div class="bg-white/80 backdrop-blur-md rounded-lg p-xs flex flex-col items-center shadow-sm">
+<span class="text-primary font-bold text-[18px]">19°C</span>
+<span class="text-[10px] uppercase font-bold text-outline">Indoor</span>
+</div>
+<div class="bg-primary px-sm py-1 rounded-full text-white text-[10px] font-bold shadow-sm">
+                            FRIGID
+                        </div>
+</div>
+</div>
+<div class="p-md">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="font-title-md text-title-md text-on-surface">The Crystal Atrium</h3>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</div>
+<p class="text-on-surface-variant font-body-sm text-body-sm mb-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                        0.4 km away • Plaza Mayor Area
+                    </p>
+<div class="flex flex-wrap gap-xs mb-md">
+<span class="bg-secondary-fixed text-on-secondary-fixed-variant px-xs py-1 rounded-lg text-[11px] font-semibold">Free Wi-Fi</span>
+<span class="bg-secondary-fixed text-on-secondary-fixed-variant px-xs py-1 rounded-lg text-[11px] font-semibold">Charging</span>
+<span class="bg-secondary-fixed text-on-secondary-fixed-variant px-xs py-1 rounded-lg text-[11px] font-semibold">Quiet</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="flex-1 h-1.5 rounded-full bg-outline-variant/30 overflow-hidden flex">
+<div class="w-full h-full bg-primary"></div>
+</div>
+<span class="font-label-caps text-[10px] text-primary">MAX COOLING</span>
+</div>
+</div>
+</div>
+<!-- Place Card 2 -->
+<div class="group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_20px_20px_rgba(12,103,128,0.04)] hover:shadow-[0_20px_40px_rgba(12,103,128,0.1)] transition-all duration-300 transform hover:-translate-y-1">
+<div class="relative h-48 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A chic, minimalist coffee shop with polished concrete floors and large frosted glass panels. The interior is decorated with sleek, light-colored furniture and scattered potted palms. The lighting is soft and diffused, creating a serene, ice-like ambiance. The overall style is high-end modern minimalism with a cooling, revitalizing atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBT-QP-qMphbwVjcc6zowtzuAcXm1qgfnxcvs-4u8pW3KMrHDhupaTOgTsTrnmwiU5EL4Xrc01pCkqOQcyiLUYC6N6JVQ0KSLjJdxp8wNkzsr0B874oqQmUmCqLMd1DXPlmUMFIShvre-Q2HNYEsF32twqk37T40Q4h2DBBgnOGV4mo9PbX5eoE3RxM0dZp1ERVKW00C_J0v3j24uvtLNS6MVR8bAdz00Pmdzw0u5G5jksjQ9eo3S5xtP1ZwjQQ6A8WrLir3XHFJg4F"/>
+<div class="absolute top-md right-md flex flex-col gap-xs items-end">
+<div class="bg-white/80 backdrop-blur-md rounded-lg p-xs flex flex-col items-center shadow-sm">
+<span class="text-primary font-bold text-[18px]">22°C</span>
+<span class="text-[10px] uppercase font-bold text-outline">Indoor</span>
+</div>
+<div class="bg-primary-container px-sm py-1 rounded-full text-on-primary-container text-[10px] font-bold shadow-sm">
+                            COMFORTABLE
+                        </div>
+</div>
+</div>
+<div class="p-md">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="font-title-md text-title-md text-on-surface">Cyan Brew Coffee</h3>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</div>
+<p class="text-on-surface-variant font-body-sm text-body-sm mb-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                        1.2 km away • Gran Vía
+                    </p>
+<div class="flex flex-wrap gap-xs mb-md">
+<span class="bg-secondary-fixed text-on-secondary-fixed-variant px-xs py-1 rounded-lg text-[11px] font-semibold">Specialty Coffee</span>
+<span class="bg-secondary-fixed text-on-secondary-fixed-variant px-xs py-1 rounded-lg text-[11px] font-semibold">AC+</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="flex-1 h-1.5 rounded-full bg-outline-variant/30 overflow-hidden flex">
+<div class="w-2/3 h-full bg-primary"></div>
+</div>
+<span class="font-label-caps text-[10px] text-primary">GOOD COOLING</span>
+</div>
+</div>
+</div>
+<!-- Place Card 3 -->
+<div class="group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_20px_20px_rgba(12,103,128,0.04)] hover:shadow-[0_20px_40px_rgba(12,103,128,0.1)] transition-all duration-300 transform hover:-translate-y-1">
+<div class="relative h-48 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A serene underground library with white marble walls and recessed blue accent lighting. Shelves of books are neatly organized in a minimalist fashion. The environment appears chilled and exceptionally quiet, offering a sense of total refuge from the city heat. Soft, cool-toned lighting highlights the textures of the stone and paper." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbwtIpnzecN4ff9djgTaYgHcfgF3FGV7UF50FOs7ceRxcvp5jcD4CwHaT2IontI4-AT62XfkLIsTK6ad7VGPQbOqEsNeHfPz7XySfB9x-H3hv9y_MU0zRqq4uo1jtxZvbwbYhGdNQ2z4w8lHo7usfgFRHigIY7zRZ0ly_WvNE4DxpDesLOb-LUMOsdOdfVjFMEx8Eq1nPp3gYUG7zbREeuEKib3Wfnx9nEtU0f3xLRTZbLNi7L8HizovCi05ZwlLm8SzciZsWRAG2P"/>
+<div class="absolute top-md right-md flex flex-col gap-xs items-end">
+<div class="bg-white/80 backdrop-blur-md rounded-lg p-xs flex flex-col items-center shadow-sm">
+<span class="text-primary font-bold text-[18px]">18°C</span>
+<span class="text-[10px] uppercase font-bold text-outline">Indoor</span>
+</div>
+<div class="bg-primary px-sm py-1 rounded-full text-white text-[10px] font-bold shadow-sm">
+                            FRIGID
+                        </div>
+</div>
+</div>
+<div class="p-md">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="font-title-md text-title-md text-on-surface">The Ice Vault Library</h3>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</div>
+<p class="text-on-surface-variant font-body-sm text-body-sm mb-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                        0.8 km away • Salamanca District
+                    </p>
+<div class="flex flex-wrap gap-xs mb-md">
+<span class="bg-secondary-fixed text-on-secondary-fixed-variant px-xs py-1 rounded-lg text-[11px] font-semibold">Silent</span>
+<span class="bg-secondary-fixed text-on-secondary-fixed-variant px-xs py-1 rounded-lg text-[11px] font-semibold">No Phone Zone</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="flex-1 h-1.5 rounded-full bg-outline-variant/30 overflow-hidden flex">
+<div class="w-full h-full bg-primary"></div>
+</div>
+<span class="font-label-caps text-[10px] text-primary">MAX COOLING</span>
+</div>
+</div>
+</div>
+<!-- Place Card 4 -->
+<div class="group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_20px_20px_rgba(12,103,128,0.04)] hover:shadow-[0_20px_40px_rgba(12,103,128,0.1)] transition-all duration-300 transform hover:-translate-y-1">
+<div class="relative h-48 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A modern art gallery with vast white spaces, polished light grey floors, and minimal installations. Large ceiling fans rotate slowly above. The space feels extremely airy and spacious, with a cool breeze practically visible. The lighting is bright and high-key, using a clean palette of whites and blues to emphasize freshness and relief." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxBYo1sGxhyVIabEGRg-m_AkPqcbUrvziEpAOV9QLdM0wZp-8qmcY9SzEGglcU9AeKiM8qpOEv7v2eXZtXAQk3leydEl5ZOuYyhCPvx_YVkA8ybrfzbV2u3JlO6oriDWLk1ckASxP4NdEHqBBSo1ZWkAKMyR5LWOuwaZ8-E-GumEw7kTYdxaulo4AroA9w3lTkl5bw9bi2-wp56YLMERk58N96fpNhJq9R2YPzgbOOL-nP9gVguj7aj6cLRHhZW7C50w0Iouqr2WtT"/>
+<div class="absolute top-md right-md flex flex-col gap-xs items-end">
+<div class="bg-white/80 backdrop-blur-md rounded-lg p-xs flex flex-col items-center shadow-sm">
+<span class="text-primary font-bold text-[18px]">21°C</span>
+<span class="text-[10px] uppercase font-bold text-outline">Indoor</span>
+</div>
+<div class="bg-primary px-sm py-1 rounded-full text-white text-[10px] font-bold shadow-sm">
+                            FRIGID
+                        </div>
+</div>
+</div>
+<div class="p-md">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="font-title-md text-title-md text-on-surface">Neo-Frost Gallery</h3>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</div>
+<p class="text-on-surface-variant font-body-sm text-body-sm mb-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                        1.5 km away • Chueca
+                    </p>
+<div class="flex flex-wrap gap-xs mb-md">
+<span class="bg-secondary-fixed text-on-secondary-fixed-variant px-xs py-1 rounded-lg text-[11px] font-semibold">Art</span>
+<span class="bg-secondary-fixed text-on-secondary-fixed-variant px-xs py-1 rounded-lg text-[11px] font-semibold">High AC</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="flex-1 h-1.5 rounded-full bg-outline-variant/30 overflow-hidden flex">
+<div class="w-full h-full bg-primary"></div>
+</div>
+<span class="font-label-caps text-[10px] text-primary">MAX COOLING</span>
+</div>
+</div>
+</div>
+<!-- Empty State / Add Card -->
+<div class="group relative border-2 border-dashed border-outline-variant/40 rounded-xl flex flex-col items-center justify-center p-xl hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer">
+<div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-[32px]">add</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface text-center">Add New Spot</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-center max-w-[160px]">Discovered a cool oasis? Save it here.</p>
+</div>
+</section>
+</main>
+<!-- Mobile Bottom Navigation (Visible only on mobile) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-surface/90 dark:bg-surface-container-highest/90 backdrop-blur-lg border-t border-outline-variant/20 shadow-[0_-4px_20px_rgba(0,0,0,0.04)] rounded-t-xl">
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:opacity-80 transition-opacity active:scale-90 duration-200">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-caps text-label-caps">Explore</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-full px-4 py-1 hover:opacity-80 transition-opacity active:scale-90 duration-200">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="font-label-caps text-label-caps">Saved</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:opacity-80 transition-opacity active:scale-90 duration-200">
+<span class="material-symbols-outlined">cyclone</span>
+<span class="font-label-caps text-label-caps">Cooling</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:opacity-80 transition-opacity active:scale-90 duration-200">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-caps text-label-caps">Profile</span>
+</button>
+</nav>
+<!-- Floating Atmosphere Elements -->
+<div class="fixed top-24 right-8 pointer-events-none opacity-20 hidden lg:block">
+<div class="w-64 h-64 rounded-full bg-primary-container blur-3xl animate-pulse"></div>
+</div>
+<div class="fixed bottom-32 left-8 pointer-events-none opacity-10 hidden lg:block">
+<div class="w-48 h-48 rounded-full bg-secondary blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
+</div>
+<script>
+        // Simple Interaction logic
+        document.querySelectorAll('.group').forEach(card => {
+            card.addEventListener('click', () => {
+                console.log('Navigate to location details...');
+            });
+        });
+
+        // Filter chip selection toggle
+        const chips = document.querySelectorAll('.font-label-caps.whitespace-nowrap');
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chips.forEach(c => {
+                    c.classList.remove('bg-primary', 'text-on-primary');
+                    c.classList.add('bg-secondary-container', 'text-on-secondary-container');
+                });
+                chip.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+                chip.classList.add('bg-primary', 'text-on-primary');
+            });
+        });
+    </script>
+</body></html>

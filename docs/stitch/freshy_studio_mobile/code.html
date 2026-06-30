@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Freshy - Place Management Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#2c4c4c",
+                    "inverse-on-surface": "#eff1f3",
+                    "tertiary-container": "#a9cbcb",
+                    "on-tertiary-container": "#375757",
+                    "on-primary-fixed-variant": "#004d62",
+                    "tertiary-fixed-dim": "#abcdcd",
+                    "on-tertiary": "#ffffff",
+                    "surface-dim": "#d8dadc",
+                    "secondary": "#4f616a",
+                    "surface-container-high": "#e6e8ea",
+                    "primary-fixed-dim": "#89d0ed",
+                    "on-surface-variant": "#3f484c",
+                    "on-error-container": "#93000a",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed": "#001f29",
+                    "outline": "#6f787d",
+                    "on-background": "#191c1e",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#baeaff",
+                    "background": "#f7f9fb",
+                    "on-secondary-container": "#53656f",
+                    "surface-container-low": "#f2f4f6",
+                    "secondary-container": "#cfe3ee",
+                    "surface-bright": "#f7f9fb",
+                    "outline-variant": "#bfc8cd",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#002020",
+                    "on-secondary-fixed": "#0b1e26",
+                    "secondary-fixed": "#d2e6f0",
+                    "surface-container-lowest": "#ffffff",
+                    "primary": "#0c6780",
+                    "surface-container": "#eceef0",
+                    "on-primary-container": "#005870",
+                    "surface-container-highest": "#e0e3e5",
+                    "secondary-fixed-dim": "#b6c9d4",
+                    "on-surface": "#191c1e",
+                    "tertiary-fixed": "#c6e9e9",
+                    "inverse-primary": "#89d0ed",
+                    "primary-container": "#87ceeb",
+                    "inverse-surface": "#2d3133",
+                    "on-secondary-fixed-variant": "#374952",
+                    "tertiary": "#446464",
+                    "on-primary": "#ffffff",
+                    "surface-tint": "#0c6780",
+                    "on-error": "#ffffff",
+                    "surface-variant": "#e0e3e5",
+                    "surface": "#f7f9fb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "8px",
+                    "xl": "32px",
+                    "margin-mobile": "20px",
+                    "gutter-mobile": "12px",
+                    "md": "16px",
+                    "base": "4px",
+                    "sm": "12px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "label-caps": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "title-md": ["Inter"]
+            },
+            "fontSize": {
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "headline-lg": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "30px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-margin-mobile h-16 bg-surface/80 backdrop-blur-md shadow-sm">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="ac_unit">ac_unit</span>
+<h1 class="font-display-lg text-primary tracking-tight" style="font-size: 24px;">Freshy</h1>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A high-quality professional portrait of a modern office administrator in a bright, airy office environment. The lighting is soft and natural, emphasizing a refreshing and clean atmosphere. The colors are dominated by soft sky blues and crisp whites, reflecting the Freshy brand identity of thermal comfort and professional efficiency." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXyOTy1yEMPoPBcoJmmeh7NpxK0Qv7q7eNym6iOv_m2KBRjtMQSrYhNebYxB1smPcHzyALb0YYCUepo_1oxiIqbMHzOI3OYVGjZu1HZaO4u-wsjvS9e2yjrqOco0wLOMSnN5_gJMYpTAxVGuCr_VIyjhjbypcY_3f4sf4mHFXqveT9rGqphAx62Ay0ZV6EUzW0dZwDRYjnrT4Rs4zUXMTMhKruU6nld1yioETLOvbDKmOAGx_-OnxYyxb1efjp5v8kv1cyc8nhO_x2"/>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<main class="pt-20 px-margin-mobile">
+<!-- Search and Filter Section -->
+<section class="mb-lg">
+<div class="flex flex-col gap-sm">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-container-low border-none rounded-xl text-body-lg focus:ring-2 focus:ring-primary/20 transition-all outline-none glass-card" placeholder="Search establishments..." type="text"/>
+</div>
+<!-- Quick Filters -->
+<div class="flex gap-xs overflow-x-auto hide-scrollbar pb-1">
+<button class="bg-primary text-on-primary px-4 py-2 rounded-full font-label-caps text-label-caps whitespace-nowrap shadow-sm">All Entries</button>
+<button class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full font-label-caps text-label-caps whitespace-nowrap active:scale-95 transition-transform">Pending Validation</button>
+<button class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full font-label-caps text-label-caps whitespace-nowrap active:scale-95 transition-transform">Duplicates</button>
+<button class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full font-label-caps text-label-caps whitespace-nowrap active:scale-95 transition-transform">Verified</button>
+</div>
+</div>
+</section>
+<!-- Stats Overview (Asymmetric Bento Lite) -->
+<section class="grid grid-cols-2 gap-sm mb-lg">
+<div class="col-span-2 glass-card rounded-xl p-md flex flex-col justify-between border-l-4 border-primary">
+<p class="font-label-caps text-label-caps text-on-surface-variant">Daily Validations</p>
+<div class="flex items-end justify-between">
+<span class="font-display-lg text-primary text-[32px]">142</span>
+<span class="text-tertiary font-bold text-body-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span> +12%
+                    </span>
+</div>
+</div>
+</section>
+<!-- Place List -->
+<section class="flex flex-col gap-md">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-xs">Manage Places</h2>
+<!-- Place Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-outline-variant/30 active:scale-[0.98] transition-transform">
+<div class="h-32 w-full bg-surface-container relative">
+<img class="w-full h-full object-cover" data-alt="A beautifully designed interior of a modern urban cafe with large windows and lush green plants. The atmosphere is crisp and cool, featuring minimalist sky blue furniture and polished concrete floors. The lighting is bright and ethereal, perfectly capturing the refreshing 'Freshy' brand aesthetic for a thermal comfort haven." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbGqoHYUfwZfPd4GDCmzy7eEUJlwIfybTN6Qkk7Ki12_CbdODAYYQAmrQNmoI8JBP84_mXZ3-93mkO6GoktjZ0ymg_DEgQ70ggFzG4UOyXaA21zQ6p-Q4920di-5wK92pi4FpTlMiy7OLvxI0aa0iRYn3q-Nu8MtuuigOLmZ8qQG0HBZH6IKFtemBNmpYWvDztGQPauTkOUML-mWuxGKGsLkcA0TSGHbxPXWdHgUmUlQid8enhrUsz2gQ1vARnnMZkaoGVy8vnhDn0"/>
+<div class="absolute top-2 right-2 bg-primary/90 text-on-primary px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">High AC</div>
+</div>
+<div class="p-md">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">Artisan Cooling Hub</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="location_on">location_on</span> Midtown District
+                            </p>
+</div>
+<div class="bg-tertiary-container/30 text-on-tertiary-container px-2 py-1 rounded-md text-[12px] font-bold">9.2 Score</div>
+</div>
+<div class="flex gap-xs mt-lg">
+<button class="flex-1 bg-primary text-on-primary py-2 rounded-lg font-label-caps text-label-caps flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-sm" data-icon="verified">verified</span> Validate
+                        </button>
+<button class="flex-1 border border-outline text-on-surface-variant py-2 rounded-lg font-label-caps text-label-caps flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-sm" data-icon="call_merge">call_merge</span> Merge
+                        </button>
+</div>
+</div>
+</div>
+<!-- Place Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-outline-variant/30 active:scale-[0.98] transition-transform">
+<div class="h-32 w-full bg-surface-container relative">
+<img class="w-full h-full object-cover" data-alt="A wide-angle shot of a serene public library reading room with high ceilings and sophisticated air conditioning vents. The space is filled with soft, diffused sunlight reflecting off pale blue surfaces and organized white bookshelves. The image exudes a sense of quiet, chilled productivity, consistent with the Freshy UI's airy and refreshing atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpIc9Scshs2a3QlFAlmFIaD6Y1hm2fBsgroOGzi8CHLxKeleZL3mDK6yP6gx6IcrrEBOkKXUyaD0C9wE3I-RY1HMy4pcyP4bOKDafodaHEUfbzvsl2PF2USxn2wcPSNtipZKWLmyOrv6mygxIxptQASs_cH7rTQWViaGeEUrjCFSunWQqQ9Oo-YX_TPVWdWAR2Exc2KQWlNfjTuMBzVdLNV4BHObcntAq2Yqqd_ET4vCvC6QGa0_sQy_XQ0Ev96m__RpMnKgWApGf-"/>
+<div class="absolute top-2 right-2 bg-secondary/90 text-on-primary px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">Medium AC</div>
+</div>
+<div class="p-md">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">Central Library North</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="location_on">location_on</span> Civic Plaza
+                            </p>
+</div>
+<div class="bg-error-container text-on-error-container px-2 py-1 rounded-md text-[12px] font-bold">Duplicate?</div>
+</div>
+<div class="flex gap-xs mt-lg">
+<button class="flex-1 bg-primary text-on-primary py-2 rounded-lg font-label-caps text-label-caps flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-sm" data-icon="verified">verified</span> Validate
+                        </button>
+<button class="flex-1 border border-primary text-primary py-2 rounded-lg font-label-caps text-label-caps flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-sm" data-icon="call_merge" style="font-variation-settings: 'FILL' 1;">call_merge</span> Merge (2)
+                        </button>
+</div>
+</div>
+</div>
+<!-- Place Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-outline-variant/30 active:scale-[0.98] transition-transform opacity-70">
+<div class="h-32 w-full bg-surface-container relative grayscale">
+<img class="w-full h-full object-cover" data-alt="A close-up photograph of a contemporary workspace lobby with frosted glass partitions and sleek metallic finishes. The environment is clean and clinical yet inviting, illuminated by soft blue neon accents that suggest a cool, temperature-controlled environment. The overall composition is balanced and modern, aligning with the CMS management aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuALIZub0ZR8nqsKcZUSelEzrdUVKd9sawqhcI2w4x25rG3m-klBKmeV52fToo7sdolaBMThRzJY6V3fYE2sQkg_K-s2r-JbcVaLQZy3x7GWBYa5T1NNwua0SbhbVOOHXYppYWd1b7RSX0o6pueV4xALphIrk25KKNpiL2AaQTrYFCenwiPjDN3-p3C72hcYpx6lxQAjWFpfxzbQ2UA2Y3-fXbWlbxjXSQoaun0lpcqqVL2HMeY8I34Vnl69nYRgmm-oMxQrkWGeRj-H"/>
+</div>
+<div class="p-md">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">Transit Oasis</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="location_on">location_on</span> Under Review
+                            </p>
+</div>
+</div>
+<div class="mt-4 h-1 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="bg-primary h-full w-2/3"></div>
+</div>
+<p class="text-[10px] text-outline mt-1 font-label-caps">Validation Progress: 66%</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-on-primary rounded-2xl shadow-xl flex items-center justify-center active:scale-90 transition-transform z-40">
+<span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+</button>
+<!-- Bottom Nav Bar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-surface/90 backdrop-blur-lg border-t border-outline-variant/20 shadow-[0_-4px_20px_rgba(0,0,0,0.04)] rounded-t-xl">
+<!-- Explore (Inactive) -->
+<div class="flex flex-col items-center justify-center text-secondary hover:opacity-80 transition-opacity active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-label-caps text-label-caps">Explore</span>
+</div>
+<!-- Places (Active based on context of Studio) -->
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="domain" style="font-variation-settings: 'FILL' 1;">domain</span>
+<span class="font-label-caps text-label-caps">Places</span>
+</div>
+<!-- Validations (Inactive) -->
+<div class="flex flex-col items-center justify-center text-secondary hover:opacity-80 transition-opacity active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-label-caps text-label-caps">Validations</span>
+</div>
+<!-- Profile (Inactive) -->
+<div class="flex flex-col items-center justify-center text-secondary hover:opacity-80 transition-opacity active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-caps text-label-caps">Profile</span>
+</div>
+</nav>
+<script>
+        // Simple micro-interaction for the search bar focus effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('scale-[1.02]');
+            searchInput.parentElement.style.transition = 'transform 0.3s ease';
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('scale-[1.02]');
+        });
+
+        // Toggle Active State Logic Simulation
+        const navItems = document.querySelectorAll('nav > div');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navItems.forEach(i => {
+                    i.className = "flex flex-col items-center justify-center text-secondary hover:opacity-80 transition-opacity active:scale-90 duration-200";
+                    const span = i.querySelector('.material-symbols-outlined');
+                    if(span) span.style.fontVariationSettings = "'FILL' 0";
+                });
+                item.className = "flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-90 duration-200";
+                const activeSpan = item.querySelector('.material-symbols-outlined');
+                if(activeSpan) activeSpan.style.fontVariationSettings = "'FILL' 1";
+            });
+        });
+    </script>
+</body></html>
