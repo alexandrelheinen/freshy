@@ -18,7 +18,7 @@
     "build": "tsc",
     "lint": "eslint src --config ../../eslint.config.mjs --max-warnings 0",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test \"src/**/*.test.ts\""
+    "test": "bash ../../scripts/run-ts-tests.sh src"
   },
   "peerDependencies": {
     "react": ">=18.0.0"
