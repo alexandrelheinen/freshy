@@ -102,8 +102,8 @@ export interface CreatePlacePayload {
   category: string;
   address: string;
   description?: string;
-  latitude: number;
-  longitude: number;
+  latitude?: number;
+  longitude?: number;
   aggregatedFreshnessLevel:
     | 'NONE'
     | 'GOOD_VENTILATION'
@@ -112,6 +112,10 @@ export interface CreatePlacePayload {
     | 'NATURALLY_FRESH';
   tags: string[];
   status: 'DRAFT' | 'PUBLISHED';
+}
+
+export interface CreatePlaceOptions {
+  photo?: File | null;
 }
 
 export type CreatePlaceResult = { ok: true; slug: string } | { ok: false; error: string };
@@ -137,6 +141,11 @@ export function createPlaceErrorMessage(status: number, body: unknown): string {
     return 'Service temporarily unavailable. Try again in a few minutes.';
   }
   if (status === 400) {
+    const errorText =
+      body && typeof body === 'object' && 'error' in body && typeof body.error === 'string'
+        ? body.error
+        : '';
+    if (errorText) return errorText;
     return 'Check the form: name needs at least 2 characters, address at least 3.';
   }
   return 'Could not save place. Check your connection and try again.';
@@ -145,13 +154,32 @@ export function createPlaceErrorMessage(status: number, body: unknown): string {
 export async function createUserPlace(
   getToken: () => Promise<string | null>,
   payload: CreatePlacePayload,
+  options?: CreatePlaceOptions,
 ): Promise<CreatePlaceResult> {
   try {
-    const res = await authFetch('/users/me/places', getToken, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
+    const photo = options?.photo ?? null;
+    let res: Response;
+
+    if (photo) {
+      const form = new FormData();
+      form.append('name', payload.name);
+      form.append('category', payload.category);
+      form.append('address', payload.address);
+      if (payload.description) form.append('description', payload.description);
+      if (payload.latitude != null) form.append('latitude', String(payload.latitude));
+      if (payload.longitude != null) form.append('longitude', String(payload.longitude));
+      form.append('aggregatedFreshnessLevel', payload.aggregatedFreshnessLevel);
+      form.append('tags', JSON.stringify(payload.tags));
+      form.append('photo', photo);
+      res = await authFetch('/users/me/places', getToken, { method: 'POST', body: form });
+    } else {
+      res = await authFetch('/users/me/places', getToken, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+    }
+
     if (!res.ok) {
       const body = (await res.json().catch(() => ({}))) as unknown;
       return { ok: false, error: createPlaceErrorMessage(res.status, body) };

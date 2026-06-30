@@ -1,13 +1,13 @@
 import { z } from 'zod';
 import type { Place, Prisma } from '@freshy/db';
-import { PlaceCategory, type PrismaClient, PILOT_CITY, filterPlacesByRadius } from '@freshy/db';
+import { PlaceCategory, type PrismaClient, filterPlacesByRadius } from '@freshy/db';
 import type { PlacePhotoCategory } from '@freshy/config/place-photos';
 import { resolvePlacePhotoForApi } from './place-photo-url';
 
 export const placesQuerySchema = z.object({
-  lat: z.coerce.number().min(-90).max(90).optional(),
-  lng: z.coerce.number().min(-180).max(180).optional(),
-  radius: z.coerce.number().min(0.1).max(50).optional().default(PILOT_CITY.defaultRadiusKm),
+  lat: z.coerce.number().min(-90).max(90),
+  lng: z.coerce.number().min(-180).max(180),
+  radius: z.coerce.number().min(0.1).max(50).optional().default(3),
   category: z.nativeEnum(PlaceCategory).optional(),
   q: z.string().trim().optional(),
 });
@@ -31,9 +31,9 @@ export async function listPlaces(
   prisma: PrismaClient,
   query: PlacesQuery,
 ): Promise<PlaceListItem[]> {
-  const lat = query.lat ?? PILOT_CITY.latitude;
-  const lng = query.lng ?? PILOT_CITY.longitude;
-  const radiusKm = query.radius ?? PILOT_CITY.defaultRadiusKm;
+  const lat = query.lat;
+  const lng = query.lng;
+  const radiusKm = query.radius ?? 3;
 
   const where: Prisma.PlaceWhereInput = { status: 'PUBLISHED' };
   if (query.category) {

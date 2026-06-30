@@ -212,7 +212,8 @@ Run from repository root unless noted.
 | Generate Prisma client                 | `pnpm db:generate`                                           |
 | Create/apply migrations (local dev)    | `pnpm db:migrate`                                            |
 | Apply migrations (production / Neon)   | `DATABASE_URL="..." pnpm --filter @freshy/db migrate:deploy` |
-| Seed demo data                         | `DATABASE_URL="..." pnpm db:seed`                            |
+| Seed demo data (local only)            | `SEED_DEMO=true DATABASE_URL="..." pnpm db:seed`             |
+| Seed demo user only (default)          | `DATABASE_URL="..." pnpm db:seed`                            |
 | Browse data (GUI)                      | `DATABASE_URL="..." pnpm --filter @freshy/db studio`         |
 | Enable PostGIS (Neon SQL Editor, once) | `CREATE EXTENSION IF NOT EXISTS postgis;`                    |
 

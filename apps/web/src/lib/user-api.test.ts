@@ -15,7 +15,12 @@ describe('user-api create place errors', () => {
   });
 
   it('maps validation failures to form guidance', () => {
-    assert.match(createPlaceErrorMessage(400, { error: 'Invalid body' }), /check the form/i);
+    assert.equal(createPlaceErrorMessage(400, { error: 'Invalid body' }), 'Invalid body');
+    assert.match(
+      createPlaceErrorMessage(400, { error: 'Could not resolve this address.' }),
+      /could not resolve/i,
+    );
+    assert.match(createPlaceErrorMessage(400, {}), /check the form/i);
   });
 
   it('maps network-style failures to a generic retry message', () => {
