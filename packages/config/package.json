@@ -6,8 +6,10 @@
     "./eslint": "./eslint.config.mjs",
     "./pilot-city": "./pilot-city.js",
     "./place-photos": {
-      "types": "./dist/place-photos.d.ts",
-      "default": "./dist/place-photos.js"
+      "types": "./place-photos.ts",
+      "import": "./place-photos.ts",
+      "require": "./dist/place-photos.js",
+      "default": "./place-photos.ts"
     },
     "./tailwind": "./tailwind.preset.ts"
   },

@@ -64,6 +64,9 @@ pnpm build
 step "API deploy smoke (Render parity)"
 pnpm smoke:api
 
+step "Web deploy smoke (Cloudflare Pages parity)"
+pnpm smoke:web
+
 if [ "${SKIP_SCREENSHOTS}" != "1" ]; then
   step "Playwright screenshots (6 app pages)"
   mkdir -p "${ROOT_DIR}/screenshots"
