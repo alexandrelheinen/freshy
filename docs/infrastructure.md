@@ -1,9 +1,31 @@
 # Freshy — Infrastructure & Cloud Providers
 
-Freshy is **Cloudflare-first**: hosting, CDN, object storage, edge API, and DNS run on Cloudflare wherever the platform supports them. Services Cloudflare does not offer (PostGIS, native mobile builds, map tiles) stay on specialized providers.
+Freshy uses **Cloudflare** for the web app (Pages), **Render** for the API (interim), **Neon** for Postgres, **Clerk** for auth, and **Mapbox** for maps. Cloudflare **Workers + Hyperdrive** are the target API host later.
 
-> Setup guides: [`infrastructure/cloudflare/`](../infrastructure/cloudflare/README.md)  
-> Local database: [`infrastructure/docker/`](../infrastructure/docker/docker-compose.yml)
+> **Master platform checklist:** [docs/platforms.md](platforms.md)  
+> **Deploy steps:** [docs/deploy-api.md](deploy-api.md)  
+> **Local database:** [infrastructure/docker/docker-compose.yml](../infrastructure/docker/docker-compose.yml)
+
+---
+
+## Production today (June 2026)
+
+| Service | Provider | URL |
+| ------- | -------- | --- |
+| Web | Cloudflare Pages | https://freshy-25e.pages.dev |
+| API | Render | https://freshy-api.onrender.com |
+| Database | Neon | PostGIS enabled |
+| Auth | Clerk | JWT → Render API |
+| Maps | Mapbox | Token on Pages |
+
+```mermaid
+flowchart LR
+    Pages[Cloudflare Pages] -->|HTTPS| Render[Render API]
+    Render --> Neon[(Neon)]
+    Pages --> Mapbox[Mapbox]
+    Pages --> Clerk[Clerk]
+    Render --> Clerk
+```
 
 ---
 
@@ -12,7 +34,7 @@ Freshy is **Cloudflare-first**: hosting, CDN, object storage, edge API, and DNS 
 | Service | Cloudflare product | Freshy usage | Phase |
 | ------- | ------------------ | ------------ | ----- |
 | **Web app (PWA)** | **Pages** (+ OpenNext adapter) | Next.js SSR/RSC, PR previews, production | 0 |
-| **REST API** | **Workers** (Hono or Express via node compat) | `/places`, `/health`, write endpoints | 1–7 |
+| **REST API** | **Render** (today) → **Workers** (target) | Express on Render; Workers + Hyperdrive planned | 0–1 |
 | **DB connection pooling** | **Hyperdrive** | Pool connections from Workers → external Postgres | 1+ |
 | **Object storage** | **R2** | Place photos, avatars, CI screenshots, release mirrors | 0 |
 | **CDN / edge cache** | **CDN** (built into Pages & R2) | Static assets, public images | 0 |
@@ -46,11 +68,13 @@ Cloudflare **D1** is SQLite-only and does **not** support PostGIS. Map rendering
 | **Maps & geocoding** | **Mapbox GL JS** | No first-party map tile / geocoding product |
 | **Mobile builds** | **Expo EAS** | Apple App Store & Google Play toolchain |
 | **CI pipeline** | **GitHub Actions** | Lint, test, build, screenshot upload to R2 |
-| **End-user auth** | **Clerk** or **Supabase Auth** | OAuth / social login (Cloudflare Access is for internal/admin) |
+| **End-user auth** | **Clerk** (live) | Sign-in, saved places, profile — `packages/api` verifies JWT |
 | **Error monitoring** | **Sentry** (optional) | Full-stack error grouping & alerts |
 | **Transactional email** | **Resend** or **SendGrid** (optional) | Welcome emails, review reminders |
 
-### How external services connect to Cloudflare
+### How services connect (target architecture)
+
+Workers/Hyperdrive replace Render when the edge API ships. Diagram shows **target**; **today** the API box is **Render**.
 
 ```mermaid
 flowchart TB
@@ -60,18 +84,19 @@ flowchart TB
     end
 
     subgraph cf [Cloudflare]
-        Pages[Pages — web]
-        Workers[Workers — API]
-        Hyperdrive[Hyperdrive]
-        R2[(R2)]
+        Pages[Pages — web LIVE]
+        Workers[Workers — API TARGET]
+        Hyperdrive[Hyperdrive TARGET]
+        R2[(R2 optional)]
         DNS[DNS]
     end
 
-    subgraph external [External — required]
-        PG[(Neon / Supabase Postgres + PostGIS)]
+    subgraph external [External]
+        Render[Render API LIVE]
+        PG[(Neon Postgres + PostGIS)]
         Mapbox[Mapbox]
         EAS[Expo EAS]
-        Auth[Clerk / Supabase Auth]
+        Clerk[Clerk LIVE]
     end
 
     subgraph ci [GitHub Actions]
@@ -79,12 +104,14 @@ flowchart TB
     end
 
     Web --> Pages
-    Mobile --> Workers
-    Pages --> Workers
-    Workers --> Hyperdrive --> PG
+    Pages -->|NEXT_PUBLIC_API_URL| Render
+    Pages -.->|future| Workers
+    Mobile -.-> Workers
+    Render --> PG
+    Workers -.-> Hyperdrive -.-> PG
     Workers --> R2
     Web --> Mapbox
-    Workers --> Auth
+    Render --> Clerk
     GHA --> R2
     EAS -.-> Mobile
     DNS --> Pages
@@ -98,10 +125,13 @@ See root [`.env.example`](../.env.example). Summary:
 
 | Variable | Where set | Purpose |
 | -------- | --------- | ------- |
-| `DATABASE_URL` | Local `.env`, Neon/Supabase, Workers secrets | Prisma → Postgres |
-| `R2_*` | Local `.env`, GitHub Actions secrets, Workers secrets | Object storage |
-| `NEXT_PUBLIC_API_URL` | Pages env | Web → API base URL |
-| `NEXT_PUBLIC_MAPBOX_TOKEN` | Pages env | Map tiles |
+| `DATABASE_URL` | Local `.env`, **Render**, Neon | Prisma → Postgres |
+| `CLERK_SECRET_KEY` | **Render** | Verify Clerk JWT on API |
+| `CLERK_AUTHORIZED_PARTIES` | **Render** | Allowed frontend origins |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | **Cloudflare Pages** | Clerk in browser |
+| `R2_*` | Local `.env`, GitHub Actions secrets | Object storage (optional) |
+| `NEXT_PUBLIC_API_URL` | **Cloudflare Pages** | Web → Render API |
+| `NEXT_PUBLIC_MAPBOX_TOKEN` | **Cloudflare Pages** | Map tiles |
 | `EXPO_TOKEN` | GitHub Actions secrets | EAS mobile builds |
 
 ### GitHub Actions secrets (CI screenshots → R2)
@@ -119,21 +149,29 @@ See root [`.env.example`](../.env.example). Summary:
 
 ## 4. Repository layout (infrastructure)
 
+```mermaid
+flowchart TB
+    subgraph repo [Monorepo freshy/]
+        apps_web[apps/web]
+        apps_mobile[apps/mobile]
+        pkg_api[packages/api]
+        pkg_db[packages/db]
+        pkg_ui[packages/ui]
+        pkg_config[packages/config]
+        infra_docker[infrastructure/docker]
+        infra_cf[infrastructure/cloudflare]
+        infra_render[infrastructure/render]
+        scripts[scripts/]
+        docs[docs/]
+    end
+
+    apps_web --> pkg_ui
+    apps_web --> pkg_config
+    pkg_api --> pkg_db
+    pkg_db --> infra_docker
 ```
-freshy/
-├── apps/
-│   ├── web/                    # Next.js → deploy to Cloudflare Pages
-│   └── mobile/                 # Expo → EAS (external)
-├── packages/
-│   ├── api/                    # Express (local dev) + R2 adapter; Workers target
-│   └── db/                     # Prisma → Neon/Supabase via Hyperdrive in prod
-├── infrastructure/
-│   ├── docker/                 # Local PostGIS only
-│   └── cloudflare/             # R2, Pages, Workers, wrangler config
-│       ├── README.md           # Step-by-step Cloudflare setup
-│       └── wrangler.toml.example
-└── .github/workflows/          # CI → R2 upload for PR screenshots
-```
+
+See also [platforms.md](platforms.md) for what deploys where.
 
 ---
 
@@ -141,11 +179,11 @@ freshy/
 
 | Phase | Cloudflare | External |
 | ----- | ---------- | -------- |
-| **0 — Foundation** | Pages ? Pages (shell), R2 (CI screenshots) | Neon/Supabase (remote DB), Mapbox token |
-| **1 — Map** | Workers API + Hyperdrive | Mapbox GL JS |
-| **4 — Auth** | Workers validates JWT | Clerk or Supabase Auth |
-| **5 — Reviews** | Queues (optional) for aggregation | — |
-| **7 — Launch** | Images, Turnstile, Web Analytics, Access | Sentry |
+| **0 — Foundation** | Pages (web LIVE), R2 (optional CI) | Neon, Mapbox, **Render API**, **Clerk** |
+| **1 — Map** | — | Mapbox GL JS, Render `/places` |
+| **4 — Auth** | — | **Clerk LIVE**, saved places API |
+| **5 — Reviews** | Queues (optional) | Review write API |
+| **7 — Launch** | Workers + Hyperdrive (replace Render), Images, Turnstile | Sentry |
 
 ---
 

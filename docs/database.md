@@ -1,6 +1,7 @@
 # Freshy — Database Design
 
 > **Source of truth for structure:** [`packages/db/prisma/schema.prisma`](../packages/db/prisma/schema.prisma)  
+> **All platforms:** [platforms.md](platforms.md)  
 > **Setup (Neon, migrate, seed):** see the database sections in [`setup-guide.md`](setup-guide.md)  
 > **Production API wiring:** [`deploy-api.md`](deploy-api.md)
 

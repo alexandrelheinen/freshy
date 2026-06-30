@@ -4,7 +4,9 @@
 
 Freshy is a **pnpm monorepo** managed with **Turborepo**. Each sub-project lives in its own folder with independent `package.json`, scripts, and CI integration.
 
-**Hosting strategy:** Cloudflare-first (Pages, Workers, R2). PostgreSQL + PostGIS runs on Neon or Supabase; Mapbox and Expo EAS remain external.
+**Hosting strategy:** Web on **Cloudflare Pages**; API on **Render** (interim); database on **Neon**; auth on **Clerk**. Target: Cloudflare Workers + Hyperdrive for API.
+
+> **All platforms & dashboards:** [platforms.md](platforms.md)
 
 ```
 freshy/
@@ -12,13 +14,14 @@ freshy/
 │   ├── web/                 # @freshy/web — Next.js PWA → Cloudflare Pages
 │   └── mobile/              # @freshy/mobile — Expo (Android/iOS) → EAS
 ├── packages/
-│   ├── api/                 # @freshy/api — Express (local) + R2; Workers in prod
+│   ├── api/                 # @freshy/api — Express → Render (prod); Workers later
 │   ├── db/                  # @freshy/db — Prisma + PostgreSQL
 │   ├── ui/                  # @freshy/ui — Shared React components
 │   └── config/              # @freshy/config — ESLint + Tailwind preset
 ├── infrastructure/
 │   ├── docker/              # Local PostGIS via Docker Compose
-│   └── cloudflare/          # R2, Pages, Workers setup + wrangler template
+│   ├── cloudflare/          # R2, Pages, Workers wrangler template
+│   └── render/              # Render blueprint (render.yaml)
 ├── scripts/
 │   ├── validation.sh        # Full local validation pipeline
 │   ├── build.sh             # Compile all packages
@@ -27,7 +30,8 @@ freshy/
 ├── docs/
 │   ├── stitch/              # Stitch design export (reference)
 │   ├── database.md          # Schema, seed, migrations, env vars
-│   ├── deploy-api.md        # Connect Pages → API → Neon (production)
+│   ├── deploy-api.md        # Connect Pages → Render → Neon (production)
+│   ├── platforms.md         # All platforms, env vars, checklists (START HERE)
 │   ├── infrastructure.md    # Cloudflare vs external providers
 │   ├── roadmap.md           # Product & phase plan
 │   ├── architecture.md      # This file
@@ -48,7 +52,7 @@ freshy/
 | 1 — Map            | `apps/web` `/explore`, `packages/db`           | Geo places, map UI             |
 | 2 — Place detail   | `apps/web` `/places/[slug]`                    | Detail page + API              |
 | 3 — Categories     | `apps/web` `/cooling`                          | Category browser               |
-| 4 — Auth & profile | `apps/web` `/profile`, `packages/api`          | User accounts, saved places    |
+| 4 — Auth & profile | `apps/web` `/profile`, `packages/api`          | **Clerk + saved places (live)** |
 | 5 — Reviews        | `packages/db` `Review`, `packages/api`         | Climate reviews, points        |
 | 6 — PWA            | `apps/web`                                     | Service worker, install prompt |
 | 7 — Launch         | `infrastructure/cloudflare`, CI/CD             | R2 assets, production deploy   |
@@ -56,14 +60,17 @@ freshy/
 
 ## Data flow
 
+**Production:** Pages → Render API → Neon. **Local:** web → Express → Docker PostGIS.
+
 ```mermaid
 flowchart LR
-    Web[apps/web] --> API[packages/api]
-    Mobile[apps/mobile] --> API
-    API --> DB[(PostgreSQL via Hyperdrive)]
-    API --> R2[(Cloudflare R2)]
+    Web[apps/web] -->|NEXT_PUBLIC_API_URL| API[packages/api]
+    Mobile[apps/mobile] -.-> API
+    API --> DB[(Neon / local PostGIS)]
+    API --> Clerk[Clerk JWT verify]
+    API -.-> R2[(R2 optional)]
     Web --> UI[packages/ui]
-    Mobile --> UI
+    Web --> Mapbox[Mapbox]
     DB --> Prisma[packages/db]
 ```
 

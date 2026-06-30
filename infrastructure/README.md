@@ -4,6 +4,9 @@
 | -------------- | -------------------------------------------------------- |
 | `docker/`      | Local PostgreSQL + PostGIS (`docker-compose.yml`)        |
 | `cloudflare/`  | R2, Pages, Workers — setup guide and `wrangler` template |
+| `render/`      | Render blueprint for production API (`render.yaml`)      |
+
+**All platforms (Neon, Render, Pages, Clerk, …):** [docs/platforms.md](../docs/platforms.md)
 
 **Local database:**
 
@@ -11,6 +14,8 @@
 bash scripts/setup-local-db.sh
 ```
 
-**Cloudflare (R2, Pages, CI screenshots):** [cloudflare/README.md](cloudflare/README.md)
+**Deploy API + connect Pages:** [docs/deploy-api.md](../docs/deploy-api.md)
 
-**Architecture overview (what runs where):** [docs/infrastructure.md](../docs/infrastructure.md)
+**Cloudflare (R2, Pages):** [cloudflare/README.md](cloudflare/README.md)
+
+**Architecture overview:** [docs/infrastructure.md](../docs/infrastructure.md)
