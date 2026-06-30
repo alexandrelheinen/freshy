@@ -1,72 +1,169 @@
 'use client';
 
+import { useUser } from '@clerk/clerk-react';
 import Link from 'next/link';
-import { BRAND_ICON, MaterialIcon, NAV_ICONS, NAV_ITEMS, type MaterialIconName } from '@freshy/ui';
+import { useState, type ReactNode } from 'react';
+import {
+  BRAND_ICON,
+  MaterialIcon,
+  NAV_ICONS,
+  NAV_ITEMS,
+  ROUTES,
+  type MaterialIconName,
+} from '@freshy/ui';
+import { isStudioAdmin } from '../lib/studio-api';
 
-export function AppBottomNav({
-  active = 'explore',
+export type NavActiveId = 'explore' | 'saved' | 'cooling' | 'profile' | 'studio';
+
+const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
+
+function ClerkAdminFlag({ children }: { children: (isAdmin: boolean) => ReactNode }) {
+  const { user } = useUser();
+  return <>{children(isStudioAdmin(user?.publicMetadata))}</>;
+}
+
+const MAIN_NAV_ITEMS = NAV_ITEMS.filter((item) => item.id !== 'profile');
+
+function ThemePlaceholder() {
+  return (
+    <button
+      type="button"
+      disabled
+      className="flex h-10 items-center gap-2 rounded-full bg-surface-container-high px-3 text-on-surface-variant/50 transition-colors"
+      aria-label="Theme"
+    >
+      <MaterialIcon name="routine" className="text-on-surface-variant/50" />
+      <span className="hidden font-label-caps sm:inline">Theme</span>
+    </button>
+  );
+}
+  return (
+    <Link
+      href={ROUTES.profile}
+      className={`flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-primary-container bg-primary-container/30 ${className}`}
+      aria-label="Profile"
+    >
+      <MaterialIcon name="digital_wellbeing" className="text-primary" />
+    </Link>
+  );
+}
+
+function NavLink({
+  href,
+  label,
+  iconName,
+  isActive,
+  onClick,
 }: {
-  active?: 'explore' | 'saved' | 'cooling' | 'profile';
+  href: string;
+  label: string;
+  iconName: MaterialIconName;
+  isActive: boolean;
+  onClick?: () => void;
 }) {
   return (
-    <nav className="fixed bottom-0 z-50 flex w-full items-center justify-around rounded-t-xl border-t border-outline-variant/20 bg-surface/90 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-2 shadow-nav backdrop-blur-lg md:hidden">
-      {NAV_ITEMS.map((item) => {
-        const isActive = active === item.id;
-        const iconName = NAV_ICONS[item.id] as MaterialIconName;
-        return (
-          <Link
+    <Link
+      href={href}
+      onClick={onClick}
+      className={`group flex items-center gap-2 font-label-caps transition-colors ${
+        isActive ? 'text-primary' : 'text-on-surface-variant hover:text-primary'
+      }`}
+    >
+      <MaterialIcon
+        name={iconName}
+        filled={isActive}
+        size={22}
+        className="transition-transform group-hover:scale-110"
+      />
+      {label}
+    </Link>
+  );
+}
+
+function MobileNavMenu({
+  active,
+  isAdmin,
+  open,
+  onClose,
+}: {
+  active?: NavActiveId;
+  isAdmin: boolean;
+  open: boolean;
+  onClose: () => void;
+}) {
+  if (!open) return null;
+
+  return (
+    <nav className="absolute left-0 right-0 top-16 z-40 border-b border-outline-variant/20 bg-surface shadow-lg md:hidden">
+      <div className="flex flex-col gap-1 px-margin-mobile py-3">
+        {MAIN_NAV_ITEMS.map((item) => (
+          <NavLink
             key={item.id}
             href={item.href}
-            className={`flex flex-col items-center justify-center rounded-full px-4 py-1 text-label-caps transition-transform active:scale-90 ${
-              isActive ? 'bg-primary-container text-on-primary-container' : 'text-secondary'
-            }`}
-          >
-            <MaterialIcon name={iconName} filled={isActive} size={22} />
-            <span className="mt-0.5">{item.label}</span>
-          </Link>
-        );
-      })}
+            label={item.label}
+            iconName={NAV_ICONS[item.id] as MaterialIconName}
+            isActive={active === item.id}
+            onClick={onClose}
+          />
+        ))}
+        {isAdmin ? (
+          <NavLink
+            href={ROUTES.studio}
+            label="Studio"
+            iconName="dashboard_2_edit"
+            isActive={active === 'studio'}
+            onClick={onClose}
+          />
+        ) : null}
+        <NavLink
+          href={ROUTES.profile}
+          label="Profile"
+          iconName={NAV_ICONS.profile as MaterialIconName}
+          isActive={active === 'profile'}
+          onClick={onClose}
+        />
+      </div>
     </nav>
   );
 }
 
-export function AppTopNav({
-  active = 'explore',
-}: {
-  active?: 'explore' | 'saved' | 'cooling' | 'profile';
-}) {
-  const desktopItems = NAV_ITEMS.filter((item) => item.id !== 'profile');
+/** @deprecated Bottom navigation replaced by the mobile header menu. */
+export function AppBottomNav(_props: { active?: NavActiveId }) {
+  return null;
+}
+
+export function AppTopNav({ active = 'explore' }: { active?: NavActiveId }) {
+  const studioLink = (isAdmin: boolean) =>
+    isAdmin ? (
+      <NavLink
+        href={ROUTES.studio}
+        label="Studio"
+        iconName="dashboard_2_edit"
+        isActive={active === 'studio'}
+      />
+    ) : null;
 
   return (
     <header className="fixed top-0 z-50 hidden h-16 w-full items-center justify-between bg-surface px-10 shadow-sm md:flex">
-      <Link href="/explore" className="flex items-center gap-2">
-        <MaterialIcon name={BRAND_ICON} className="text-primary" size={32} />
-        <span className="font-display-lg text-primary">Freshy</span>
-      </Link>
+      <div className="flex items-center gap-10">
+        <Link href={ROUTES.explore} className="flex items-center gap-2">
+          <MaterialIcon name={BRAND_ICON} className="text-primary" size={32} />
+          <span className="font-display-lg text-primary">Freshy</span>
+        </Link>
 
-      <nav className="flex items-center gap-8">
-        {desktopItems.map((item) => {
-          const isActive = active === item.id;
-          const iconName = NAV_ICONS[item.id] as MaterialIconName;
-          return (
-            <Link
+        <nav className="flex items-center gap-8">
+          {MAIN_NAV_ITEMS.map((item) => (
+            <NavLink
               key={item.id}
               href={item.href}
-              className={`group flex flex-col items-center font-label-caps transition-colors ${
-                isActive ? 'text-primary' : 'text-on-surface-variant hover:text-primary'
-              }`}
-            >
-              <MaterialIcon
-                name={iconName}
-                filled={isActive}
-                size={22}
-                className="mb-0.5 transition-transform group-hover:scale-110"
-              />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
+              label={item.label}
+              iconName={NAV_ICONS[item.id] as MaterialIconName}
+              isActive={active === item.id}
+            />
+          ))}
+          {clerkEnabled ? <ClerkAdminFlag>{studioLink}</ClerkAdminFlag> : null}
+        </nav>
+      </div>
 
       <div className="flex items-center gap-4">
         <button
@@ -76,13 +173,7 @@ export function AppTopNav({
         >
           <MaterialIcon name="notifications" className="text-on-surface-variant" />
         </button>
-        <Link
-          href="/profile"
-          className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-primary-container bg-primary-container/30"
-          aria-label="Profile"
-        >
-          <MaterialIcon name="digital_wellbeing" className="text-primary" />
-        </Link>
+        <ProfileAvatarLink />
       </div>
     </header>
   );
@@ -92,23 +183,53 @@ export function AppMobileHeader({
   title,
   backHref,
   showBrand = true,
+  active = 'explore',
 }: {
   title?: string;
   backHref?: string;
   showBrand?: boolean;
+  active?: NavActiveId;
 }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  let leading: ReactNode;
+  if (backHref) {
+    leading = (
+      <Link
+        href={backHref}
+        className="rounded-full p-2 text-primary transition-colors hover:bg-primary/10 active:scale-95"
+        aria-label="Go back"
+      >
+        <MaterialIcon name="arrow_back" />
+      </Link>
+    );
+  } else {
+    leading = (
+      <button
+        type="button"
+        onClick={() => setMenuOpen((open) => !open)}
+        className="rounded-full p-2 text-primary transition-colors hover:bg-primary/10 active:scale-95"
+        aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+        aria-expanded={menuOpen}
+      >
+        <MaterialIcon name={menuOpen ? 'close' : 'menu'} />
+      </button>
+    );
+  }
+
+  const mobileMenu = (isAdmin: boolean) => (
+    <MobileNavMenu
+      active={active}
+      isAdmin={isAdmin}
+      open={menuOpen && !backHref}
+      onClose={() => setMenuOpen(false)}
+    />
+  );
+
   return (
     <header className="fixed top-0 z-50 flex h-16 w-full items-center justify-between bg-surface px-margin-mobile shadow-sm md:hidden">
       <div className="flex items-center gap-2">
-        {backHref ? (
-          <Link
-            href={backHref}
-            className="rounded-full p-2 text-primary transition-colors hover:bg-primary/10 active:scale-95"
-            aria-label="Go back"
-          >
-            <MaterialIcon name="arrow_back" />
-          </Link>
-        ) : null}
+        {leading}
         {showBrand && !backHref ? (
           <>
             <MaterialIcon name={BRAND_ICON} className="text-primary" size={28} />
@@ -120,13 +241,8 @@ export function AppMobileHeader({
           </h1>
         ) : null}
       </div>
-      <Link
-        href="/profile"
-        className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-primary-container bg-primary-container/30"
-        aria-label="Profile"
-      >
-        <MaterialIcon name="digital_wellbeing" className="text-primary" />
-      </Link>
+      <ProfileAvatarLink />
+      {clerkEnabled ? <ClerkAdminFlag>{mobileMenu}</ClerkAdminFlag> : mobileMenu(false)}
     </header>
   );
 }

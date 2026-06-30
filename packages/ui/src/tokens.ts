@@ -103,8 +103,8 @@ export {
 
 export const NAV_ITEMS = [
   { id: 'explore' as const, label: 'Explore', href: ROUTES.explore },
+  { id: 'cooling' as const, label: 'Categories', href: ROUTES.cooling },
   { id: 'saved' as const, label: 'Saved', href: ROUTES.saved },
-  { id: 'cooling' as const, label: 'Cooling', href: ROUTES.cooling },
   { id: 'profile' as const, label: 'Profile', href: ROUTES.profile },
 ];
 

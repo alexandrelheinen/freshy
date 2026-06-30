@@ -30,7 +30,7 @@ import { mapStyleUrl, type MapStyleId } from '../lib/map-styles';
 import { cappedSearchRadiusKm, formatSearchRadiusKm } from '../lib/map-zoom';
 import { locationStatusMessage } from '../lib/location-messages';
 import { useUserLocation } from '../lib/use-user-location';
-import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
+import { AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceMapMarker, UserLocationMarker, freshnessLabel } from './map-markers';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
@@ -497,8 +497,8 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       : null;
 
   return (
-    <div className="relative min-h-screen pb-mobile-nav md:pb-0" data-page="explore">
-      <AppMobileHeader />
+    <div className="relative min-h-screen" data-page="explore">
+      <AppMobileHeader active="explore" />
       <AppTopNav active="explore" />
 
       <main className="relative h-screen w-full overflow-hidden pt-16">
@@ -580,7 +580,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         </div>
 
         {/* Mobile: bottom overlay stack (FABs above preview card, both above bottom nav) */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex flex-col items-end gap-3 px-margin-mobile inset-pb-mobile-nav md:hidden">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex flex-col items-end gap-3 px-margin-mobile pb-4 md:hidden">
           <div className="pointer-events-auto flex items-center gap-2">
             <span className="glass rounded-full border border-glass-border px-3 py-1.5 text-xs font-bold text-on-surface shadow-lg">
               {formatSearchRadiusKm(displaySearchRadiusKm)}
@@ -673,8 +673,6 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
           </div>
         </div>
       </main>
-
-      <AppBottomNav active="explore" />
     </div>
   );
 }

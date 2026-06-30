@@ -4,7 +4,7 @@ import { useAuth, SignInButton } from '@clerk/clerk-react';
 import Link from 'next/link';
 import { ROUTES } from '@freshy/ui';
 import { useCallback, useState } from 'react';
-import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
+import { AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceListClient } from './PlaceListClient';
 import { fetchMySavedPlaces, unsavePlaceForUser } from '../lib/user-api';
 
@@ -12,7 +12,7 @@ const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 
 function SavedPlacesSignedOutView({ showSignIn }: { showSignIn: boolean }) {
   return (
-    <div className="min-h-screen pb-mobile-nav" data-page="saved">
+    <div className="min-h-screen pb-8" data-page="saved">
       <AppMobileHeader title="Saved Places" backHref={ROUTES.explore} showBrand={false} />
       <AppTopNav active="saved" />
       <main className="mx-auto mt-20 max-w-md px-margin-mobile pt-8 text-center md:px-10">
@@ -34,7 +34,6 @@ function SavedPlacesSignedOutView({ showSignIn }: { showSignIn: boolean }) {
           </Link>
         </p>
       </main>
-      <AppBottomNav active="saved" />
     </div>
   );
 }
@@ -60,10 +59,9 @@ function SavedPlacesWithClerk() {
 
   if (!isLoaded) {
     return (
-      <div className="min-h-screen pb-mobile-nav" data-page="saved">
+      <div className="min-h-screen pb-8" data-page="saved">
         <AppMobileHeader title="Saved Places" backHref={ROUTES.explore} showBrand={false} />
         <p className="py-32 text-center text-on-surface-variant">Loading…</p>
-        <AppBottomNav active="saved" />
       </div>
     );
   }

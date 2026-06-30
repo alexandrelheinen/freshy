@@ -7,10 +7,7 @@ const ProfileClient = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div
-        className="flex min-h-screen items-center justify-center pb-mobile-nav"
-        data-page="profile"
-      >
+      <div className="flex min-h-screen items-center justify-center pb-8" data-page="profile">
         <p className="text-on-surface-variant">Loading profile…</p>
       </div>
     ),

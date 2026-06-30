@@ -7,7 +7,7 @@ const AddPlaceClient = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex min-h-screen items-center justify-center pb-mobile-nav">
+      <div className="flex min-h-screen items-center justify-center pb-8">
         <p className="text-on-surface-variant">Loading form…</p>
       </div>
     ),

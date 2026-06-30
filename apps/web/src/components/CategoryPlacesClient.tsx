@@ -51,7 +51,7 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
   });
 
   return (
-    <div className="min-h-screen pb-mobile-nav" data-page="place-list">
+    <div className="min-h-screen pb-8" data-page="place-list">
       {statusMessage ? (
         <div className="border-b border-outline-variant/20 bg-surface-container-low px-6 py-4 text-center">
           <p className="text-sm text-on-surface-variant">{statusMessage}</p>
