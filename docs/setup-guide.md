@@ -1,4 +1,4 @@
-# Freshy — Setup Guide (step-by-step)
+# Freshy | Setup Guide (step-by-step)
 
 > **Already deployed?** Use [platforms.md](platforms.md) for dashboards, env vars, and recovery — this guide is for **first-time** setup.  
 > **Who is this for?** You, before Phase 1 coding can go live.  
@@ -20,7 +20,7 @@ Do sections **in order**. Skip nothing unless marked optional.
 
 ---
 
-## Part A — Your computer (30 minutes)
+## Part A | Your computer (30 minutes)
 
 ### A1. Install Node.js 20+
 
@@ -82,21 +82,21 @@ Expected last line: `All validation checks passed.`
 
 ---
 
-## Part B — Pilot city (5 minutes)
+## Part B | Pilot city (5 minutes)
 
-Pick **one** city for seed data (default in repo: **São Paulo**).
+Pick **one** city for seed data (default in repo: **Clichy, France**, 92110).
 
 Write this in a GitHub Issue or notes file:
 
 ```
-Pilot city: São Paulo
-Center: -23.5505, -46.6333
+Pilot city: Clichy, France (92110)
+Center: 48.9042, 2.3064
 Search radius: 2 km
 ```
 
 ---
 
-## Part C — Mapbox (10 minutes)
+## Part C | Mapbox (10 minutes)
 
 Mapbox powers the map on `/explore`.
 
@@ -137,7 +137,7 @@ You can add later as `NEXT_PUBLIC_MAPBOX_STYLE=...`
 
 ---
 
-## Part D — Cloud database — Neon (15 minutes)
+## Part D | Cloud database — Neon (15 minutes)
 
 Local Docker Postgres is for development only. Production and team sharing need a cloud DB.
 
@@ -197,7 +197,7 @@ If you prefer Supabase:
 
 ---
 
-## Part E — Cloudflare Pages — web app (20 minutes)
+## Part E | Cloudflare Pages — web app (20 minutes)
 
 Hosts the Next.js app at a URL like `freshy.pages.dev`.
 
@@ -249,7 +249,7 @@ Every pull request gets a preview URL automatically under **Workers & Pages** �
 
 ---
 
-## Part F — Cloudflare R2 — file storage + CI screenshots (15 minutes)
+## Part F | Cloudflare R2 — file storage + CI screenshots (15 minutes)
 
 ### F1. Create bucket
 
@@ -304,7 +304,7 @@ Your public base URL (no trailing slash): e.g. `https://pub-xxxxx.r2.dev`
 
 ---
 
-## Part G — Cloudflare Workers + Hyperdrive — API (when ready)
+## Part G | Cloudflare Workers + Hyperdrive — API (when ready)
 
 The API runs on Express locally (`pnpm dev` → port 4000). Production target is **Workers**.
 
@@ -325,7 +325,7 @@ Until Workers deploy exists, run API locally or on any Node host with `DATABASE_
 
 ---
 
-## Part H — Expo EAS — mobile (optional, for releases)
+## Part H | Expo EAS — mobile (optional, for releases)
 
 Only needed when cutting a mobile release.
 
@@ -338,19 +338,19 @@ Creating a GitHub **Release** tag `v0.1.0` triggers Android/iOS builds in CI.
 
 ---
 
-## Part I — Product decisions (10 minutes)
+## Part I | Product decisions (10 minutes)
 
 Record answers (GitHub Issue is fine):
 
 | Question | Default |
 | -------- | ------- |
-| Pilot city | São Paulo |
-| Auth provider (Phase 4) | Clerk or Supabase Auth |
+| Pilot city | Clichy, France (92110) |
+| Auth provider (Phase 4) | Clerk (live in production) |
 | First launch locale (i18n) | pt-BR via locale files when i18n ships |
 
 ---
 
-## Final gate — ready for Phase 1?
+## Final gate | ready for Phase 1?
 
 | # | Done? |
 | - | ----- |

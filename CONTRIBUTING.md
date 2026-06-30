@@ -6,6 +6,7 @@ Thank you for contributing to **Freshy**, the mobile-first cooling map. This doc
 
 | Resource                                                     | Purpose                                                               |
 | ------------------------------------------------------------ | --------------------------------------------------------------------- |
+| [.cursor/rules/contributing-and-writing.mdc](.cursor/rules/contributing-and-writing.mdc) | Cursor agent: writing, naming, TDD, idiomatic code (summary of this file) |
 | [docs/development-cycle.md](docs/development-cycle.md)       | **Mandatory** step-by-step workflow and test-driven development (TDD) |
 | [docs/quality-standards.md](docs/quality-standards.md)       | Quality rules and external references **per language**                |
 | [docs/roadmap.md](docs/roadmap.md)                           | Product phases: pick work from the current phase                      |

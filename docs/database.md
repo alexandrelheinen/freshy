@@ -1,4 +1,4 @@
-# Freshy — Database Design
+# Freshy | Database Design
 
 > **Source of truth for structure:** [`packages/db/prisma/schema.prisma`](../packages/db/prisma/schema.prisma)  
 > **All platforms:** [platforms.md](platforms.md)  

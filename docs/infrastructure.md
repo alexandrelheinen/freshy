@@ -1,4 +1,4 @@
-# Freshy — Infrastructure & Cloud Providers
+# Freshy | Infrastructure & Cloud Providers
 
 Freshy uses **Cloudflare** for the web app (Pages), **Render** for the API (interim), **Neon** for Postgres, **Clerk** for auth, and **Mapbox** for maps. Cloudflare **Workers + Hyperdrive** are the target API host later.
 

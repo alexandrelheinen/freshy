@@ -1,4 +1,4 @@
-# Freshy — Platforms & services reference
+# Freshy | Platforms & services reference
 
 > **Purpose:** Single checklist of every external platform Freshy uses, what it does, where to click, and which env vars belong where.  
 > **Update this file** when you add or change a provider.
@@ -9,7 +9,7 @@
 | ----- | -------- | -------- |
 | Web app | Cloudflare Pages | https://freshy-25e.pages.dev |
 | API | Render | https://freshy-api.onrender.com |
-| Database | Neon | *(connection string only — no public URL)* |
+| Database | Neon | *(connection string only, no public URL)* |
 | Auth | Clerk | https://dashboard.clerk.com |
 | Maps | Mapbox | *(token in Pages env)* |
 | Source code | GitHub | https://github.com/alexandrelheinen/freshy |
@@ -24,7 +24,7 @@ flowchart TB
         Browser[Browser / PWA]
     end
 
-    subgraph prod [Production — live today]
+    subgraph prod [Production, live today]
         Pages["Cloudflare Pages<br/>freshy-25e.pages.dev"]
         Render["Render Web Service<br/>freshy-api.onrender.com"]
         Neon[(Neon PostgreSQL + PostGIS)]
@@ -38,7 +38,7 @@ flowchart TB
         LocalWeb[Next.js :3000]
     end
 
-    subgraph future [Planned — not production API yet]
+    subgraph future [Planned, not production API yet]
         Workers[Cloudflare Workers]
         Hyperdrive[Cloudflare Hyperdrive]
         R2[Cloudflare R2]
@@ -46,7 +46,7 @@ flowchart TB
 
     subgraph tooling [Tooling]
         GitHub[GitHub repo + Actions]
-        EAS[Expo EAS — mobile releases]
+        EAS[Expo EAS, mobile releases]
     end
 
     Browser --> Pages
@@ -69,7 +69,7 @@ flowchart TB
 
 ---
 
-## 1. GitHub — source code & CI
+## 1. GitHub | source code & CI
 
 | Item | Value |
 | ---- | ----- |
@@ -78,7 +78,7 @@ flowchart TB
 | **Branch for production** | `main` |
 | **What you do here** | Push code, merge PRs, configure Actions secrets |
 
-### GitHub Actions secrets (optional — PR screenshots)
+### GitHub Actions secrets (optional, PR screenshots)
 
 | Secret | Used for |
 | ------ | -------- |
@@ -93,14 +93,14 @@ flowchart TB
 
 ---
 
-## 2. Cloudflare Pages — web app (frontend)
+## 2. Cloudflare Pages | web app (frontend)
 
 | Item | Value |
 | ---- | ----- |
 | **Dashboard** | https://dash.cloudflare.com → **Workers & Pages** → **freshy-25e** |
 | **Live site** | https://freshy-25e.pages.dev |
 | **Deploys from** | GitHub `main` (auto on push) |
-| **Build root** | `apps/web` (monorepo build from repo root — see project settings) |
+| **Build root** | `apps/web` (monorepo build from repo root; see project settings) |
 | **Output** | Static export (`out/`) |
 
 ### Environment variables (Pages)
@@ -110,7 +110,7 @@ Set under **Settings → Environment variables** (Production **and** Preview):
 | Variable | Example / notes |
 | -------- | ---------------- |
 | `NODE_VERSION` | `20` |
-| `NEXT_PUBLIC_API_URL` | `https://freshy-api.onrender.com` — **no trailing slash** |
+| `NEXT_PUBLIC_API_URL` | `https://freshy-api.onrender.com`, **no trailing slash** |
 | `NEXT_PUBLIC_MAPBOX_TOKEN` | Mapbox public token (`pk....`) |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk **Publishable key** (`pk_test_...`) |
 
@@ -120,7 +120,7 @@ Set under **Settings → Environment variables** (Production **and** Preview):
 
 ---
 
-## 3. Render — API (backend)
+## 3. Render | API (backend)
 
 | Item | Value |
 | ---- | ----- |
@@ -153,13 +153,13 @@ Blueprint: [infrastructure/render/render.yaml](../infrastructure/render/render.y
 
 ---
 
-## 4. Neon — PostgreSQL database
+## 4. Neon | PostgreSQL database
 
 | Item | Value |
 | ---- | ----- |
 | **Dashboard** | https://console.neon.tech |
 | **Role** | Production Postgres 16 + PostGIS, shared by Render API |
-| **Pilot city data** | Clichy, France — 50 seeded places, 1 demo user |
+| **Pilot city data** | Clichy, France, 50 seeded places, 1 demo user |
 
 ### What you do here
 
@@ -175,7 +175,7 @@ Blueprint: [infrastructure/render/render.yaml](../infrastructure/render/render.y
 
 ---
 
-## 5. Clerk — authentication
+## 5. Clerk | authentication
 
 | Item | Value |
 | ---- | ----- |
@@ -202,7 +202,7 @@ Copy from **Quick copy** (Next.js block) or the **Publishable key** row — not 
 
 ---
 
-## 6. Mapbox — map tiles
+## 6. Mapbox | map tiles
 
 | Item | Value |
 | ---- | ----- |
@@ -218,7 +218,7 @@ Local: same variable in root `.env`.
 
 ---
 
-## 7. Docker — local database only
+## 7. Docker | local database only
 
 | Item | Value |
 | ---- | ----- |
@@ -231,23 +231,23 @@ Local: same variable in root `.env`.
 bash scripts/setup-local-db.sh
 ```
 
-Not used in production — production uses **Neon**.
+Not used in production; production uses **Neon**.
 
 ---
 
-## 8. Cloudflare R2 — object storage (optional)
+## 8. Cloudflare R2 | object storage (optional)
 
 | Item | Value |
 | ---- | ----- |
 | **Dashboard** | https://dash.cloudflare.com → **R2** |
 | **Role** | Place photos, avatars, **CI PR screenshots** (when configured) |
-| **Status** | Optional — API reports `"r2":"not-configured"` until set |
+| **Status** | Optional; API reports `"r2":"not-configured"` until set |
 
 **Docs:** [infrastructure/cloudflare/README.md](../infrastructure/cloudflare/README.md)
 
 ---
 
-## 9. Expo EAS — mobile builds (future)
+## 9. Expo EAS | mobile builds (future)
 
 | Item | Value |
 | ---- | ----- |
@@ -305,19 +305,19 @@ flowchart LR
 
 ---
 
-## Master checklist — new environment or disaster recovery
+## Master checklist | new environment or disaster recovery
 
 Use this when onboarding or rebuilding from scratch:
 
-- [ ] **GitHub** — repo cloned, `pnpm install` works locally
-- [ ] **Neon** — project created, PostGIS enabled, migrate + seed (50 places)
-- [ ] **Render** — `freshy-api` service, build/start commands, `DATABASE_URL` + Clerk env
-- [ ] **Cloudflare Pages** — `freshy-25e`, API URL + Mapbox + Clerk publishable key
-- [ ] **Clerk** — Freshy app, keys copied to Render + Pages
-- [ ] **Mapbox** — public token on Pages
-- [ ] **Verify** — `/health` auth configured, `/explore` shows map, `/profile` sign-in, save place works
-- [ ] **(Optional) R2 + GitHub secrets** — PR screenshot previews
-- [ ] **(Optional) EAS** — mobile releases
+- [ ] **GitHub**: repo cloned, `pnpm install` works locally
+- [ ] **Neon**: project created, PostGIS enabled, migrate + seed (50 places)
+- [ ] **Render**: `freshy-api` service, build/start commands, `DATABASE_URL` + Clerk env
+- [ ] **Cloudflare Pages**: `freshy-25e`, API URL + Mapbox + Clerk publishable key
+- [ ] **Clerk**: Freshy app, keys copied to Render + Pages
+- [ ] **Mapbox**: public token on Pages
+- [ ] **Verify**: `/health` auth configured, `/explore` shows map, `/profile` sign-in, save place works
+- [ ] **(Optional) R2 + GitHub secrets**: PR screenshot previews
+- [ ] **(Optional) EAS**: mobile releases
 
 ---
 

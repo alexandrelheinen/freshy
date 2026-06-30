@@ -1,4 +1,4 @@
-# Freshy — Architecture & Repository Layout
+# Freshy | Architecture & Repository Layout
 
 ## Overview
 

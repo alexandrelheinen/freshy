@@ -1,4 +1,4 @@
-# Cloudflare — Freshy
+# Cloudflare | Freshy
 
 Freshy uses **Cloudflare** for hosting, CDN, object storage, and (in production) the edge API. This guide covers account setup for **R2**, **Pages**, and CI screenshot uploads.
 
@@ -45,12 +45,12 @@ Note your **Account ID** (right sidebar on any Cloudflare dashboard page).
 
 PR comments embed image URLs. Choose one:
 
-### Option A — R2 public bucket (`*.r2.dev`)
+### Option A | R2 public bucket (`*.r2.dev`)
 
 1. Bucket → **Settings** → enable **Public access** (r2.dev subdomain)
 2. Set `R2_PUBLIC_URL=https://pub-<hash>.r2.dev`
 
-### Option B — Custom domain (recommended for production)
+### Option B | Custom domain (recommended for production)
 
 1. Bucket → **Settings** → **Connect Domain** → e.g. `assets.freshy.app`
 2. Add the CNAME Cloudflare provides

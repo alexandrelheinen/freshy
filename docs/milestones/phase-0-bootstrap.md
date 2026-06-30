@@ -1,4 +1,4 @@
-# Milestone 0 — Bootstrap (before Phase 1)
+# Milestone 0 | Bootstrap (before Phase 1)
 
 > **Type:** operational milestone · [Setup guide (detailed)](../setup-guide.md) · [Milestone index](README.md) · Roadmap phase: [0 — Foundation](../roadmap.md#phase-0--foundation)  
 > **Audience:** You, before writing Phase 1 code.  
@@ -222,7 +222,7 @@ Docker provides local Postgres. For deploy and Phase 1 you need a database **on 
 
 ---
 
-### Option A — Neon (recommended)
+### Option A | Neon (recommended)
 
 #### 4A.1 Create account and project
 
@@ -281,7 +281,7 @@ Save `DATABASE_URL` in a password manager. You will add it to Cloudflare (Worker
 
 ---
 
-### Option B — Supabase (alternative)
+### Option B | Supabase (alternative)
 
 #### 4B.1 Create project
 
