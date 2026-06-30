@@ -22,6 +22,7 @@ describe('@freshy/ui tokens', () => {
   it('defines route helpers', () => {
     assert.equal(ROUTES.explore, '/explore');
     assert.equal(ROUTES.place('demo'), '/places/demo');
+    assert.equal(ROUTES.addPlace, '/profile/places/new');
   });
 
   it('maps each place category to a default photo path', () => {
