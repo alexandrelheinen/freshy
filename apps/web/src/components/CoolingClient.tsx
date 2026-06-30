@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   FRESHNESS_LEVEL_LABELS,
-  DEFAULT_PLACE_PHOTO_PATHS,
   GlassCard,
   MaterialIcon,
   PLACE_CATEGORY_ICONS,
@@ -119,42 +118,20 @@ export function CoolingClient() {
 
       <main className="mx-auto max-w-4xl px-margin-mobile pb-8 pt-24 md:max-w-7xl md:px-10">
         {/* Mobile hero */}
-        <section className="relative mb-8 overflow-hidden rounded-xl p-6 md:hidden">
-          <div className="absolute inset-0 z-0 bg-gradient-to-br from-primary-container/30 to-secondary-container/30 opacity-80" />
-          <div className="relative z-10">
-            <h2 className="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">
-              Categories
-            </h2>
-            <p className="mt-2 max-w-xs font-body-lg text-on-surface-variant">
-              Find the perfect refuge from the heat.
-            </p>
-          </div>
+        <section className="mb-8 md:hidden">
+          <h2 className="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">
+            Explore place categories
+          </h2>
         </section>
 
-        {/* Desktop hero banner */}
-        <section className="relative mb-10 hidden h-80 overflow-hidden rounded-[32px] shadow-sm md:block">
-          <img
-            src={DEFAULT_PLACE_PHOTO_PATHS.LIBRARY}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 flex items-center bg-gradient-to-r from-primary/80 via-primary/30 to-transparent px-12">
-            <div className="max-w-lg space-y-4 text-on-scrim">
-              <h1 className="font-display-lg text-display-lg">
-                Explore thermal refuges across the city.
-              </h1>
-              <p className="font-body-lg opacity-90">
-                From quiet libraries to chilled cafés, find the perfect environment to escape urban
-                heat today.
-              </p>
-              <Link
-                href={ROUTES.explore}
-                className="inline-block rounded-full bg-surface-container-lowest px-6 py-3 font-semibold text-primary shadow-lg transition-transform hover:bg-primary-fixed active:scale-95"
-              >
-                Discover nearby spots
-              </Link>
-            </div>
-          </div>
+        {/* Desktop header */}
+        <section className="mb-10 hidden md:block">
+          <h1 className="font-headline-lg text-headline-lg text-on-surface">
+            Explore place categories
+          </h1>
+          <p className="mt-2 max-w-2xl font-body-lg text-on-surface-variant">
+            Browse places by type and open the map when you are ready to search nearby.
+          </p>
         </section>
 
         {/* Mobile category grid */}
