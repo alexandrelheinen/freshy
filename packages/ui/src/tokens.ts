@@ -1,5 +1,6 @@
 /** Re-export design token names for consumers that cannot import Tailwind preset directly. */
 export { PILOT_CITY } from '@freshy/config/pilot-city';
+export { MAP_SEARCH } from '@freshy/config/map-search';
 import { getDefaultThemeTokens } from '@freshy/theme/tokens';
 import {
   defaultPlacePhotoLocalPath,
