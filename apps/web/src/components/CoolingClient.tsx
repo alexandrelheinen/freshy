@@ -79,16 +79,16 @@ function CategoryDesktopCard({
           alt=""
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-        <div className="absolute bottom-6 left-6 text-white">
+        <div className="absolute inset-0 bg-gradient-to-t from-scrim-strong via-scrim-weak to-transparent" />
+        <div className="absolute bottom-6 left-6 text-on-scrim">
           <div className={`flex items-center gap-3 ${colSpan === 2 ? 'mb-2' : 'mb-3'}`}>
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur-md">
-              <MaterialIcon name={icon} className="text-white" size={22} />
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-glass-highlight backdrop-blur-md">
+              <MaterialIcon name={icon} className="text-on-scrim" size={22} />
             </div>
             {colSpan === 2 ? <span className="font-title-md text-title-md">{label}</span> : null}
           </div>
           {colSpan !== 2 ? <p className="font-title-md text-title-md">{label}</p> : null}
-          <p className="font-body-sm text-white/80">
+          <p className="font-body-sm text-on-scrim/80">
             {count} {count === 1 ? 'place' : 'places'} available
           </p>
         </div>
@@ -139,7 +139,7 @@ export function CoolingClient() {
             className="absolute inset-0 h-full w-full object-cover"
           />
           <div className="absolute inset-0 flex items-center bg-gradient-to-r from-primary/80 via-primary/30 to-transparent px-12">
-            <div className="max-w-lg space-y-4 text-white">
+            <div className="max-w-lg space-y-4 text-on-scrim">
               <h1 className="font-display-lg text-display-lg">
                 Explore thermal refuges across the city.
               </h1>
@@ -149,7 +149,7 @@ export function CoolingClient() {
               </p>
               <Link
                 href={ROUTES.explore}
-                className="inline-block rounded-full bg-white px-6 py-3 font-semibold text-primary shadow-lg transition-transform hover:bg-primary-fixed active:scale-95"
+                className="inline-block rounded-full bg-surface-container-lowest px-6 py-3 font-semibold text-primary shadow-lg transition-transform hover:bg-primary-fixed active:scale-95"
               >
                 Discover nearby spots
               </Link>
@@ -201,12 +201,12 @@ export function CoolingClient() {
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-scrim-strong to-transparent" />
                 <div className="absolute bottom-0 flex flex-col justify-end p-4 md:p-6">
-                  <span className="mb-2 font-label-caps text-label-caps text-white/90">
+                  <span className="mb-2 font-label-caps text-label-caps text-on-scrim/90">
                     COLDEST PICK NEARBY
                   </span>
-                  <h4 className="font-headline-lg-mobile text-headline-lg-mobile text-white md:font-headline-lg md:text-headline-lg">
+                  <h4 className="font-headline-lg-mobile text-headline-lg-mobile text-on-scrim md:font-headline-lg md:text-headline-lg">
                     {featured.name}
                   </h4>
                   <div className="mt-2 flex items-center gap-2">
@@ -215,7 +215,7 @@ export function CoolingClient() {
                         <div key={i} className="h-1.5 w-4 rounded-full bg-primary" />
                       ))}
                     </div>
-                    <span className="text-[10px] font-bold text-white/80">
+                    <span className="text-[10px] font-bold text-on-scrim/80">
                       {featured.aggregatedFreshnessLevel
                         ? FRESHNESS_LEVEL_LABELS[featured.aggregatedFreshnessLevel].toUpperCase()
                         : ''}

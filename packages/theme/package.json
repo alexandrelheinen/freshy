@@ -1,0 +1,50 @@
+{
+  "name": "@freshy/theme",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    "./css": "./generated/themes.css",
+    "./tokens": {
+      "types": "./generated/index.ts",
+      "import": "./generated/index.ts",
+      "default": "./generated/index.ts"
+    },
+    "./tokens/default": {
+      "types": "./generated/default.tokens.ts",
+      "import": "./generated/default.tokens.ts",
+      "default": "./generated/default.tokens.ts"
+    },
+    "./roles": {
+      "types": "./src/roles.ts",
+      "import": "./src/roles.ts",
+      "default": "./src/roles.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "tokens": [
+        "generated/index.ts"
+      ],
+      "tokens/default": [
+        "generated/default.tokens.ts"
+      ],
+      "roles": [
+        "src/roles.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "tsx compiler/compile-themes.ts",
+    "validate": "tsx compiler/validate-themes.ts",
+    "test": "pnpm build && tsx --test compiler/compile-themes.test.ts compiler/contrast.test.ts compiler/parity.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "yaml": "^2.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

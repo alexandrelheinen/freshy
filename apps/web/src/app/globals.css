@@ -1,52 +1,24 @@
+@import '@freshy/theme/css';
 @import 'mapbox-gl/dist/mapbox-gl.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --app-bottom-nav-content-height: 5rem;
-  --app-mobile-action-bar-height: 5.25rem;
-  --app-bottom-nav-height: calc(
-    var(--app-bottom-nav-content-height) + env(safe-area-inset-bottom, 0px)
-  );
-  --app-mobile-nav-with-action-height: calc(
-    var(--app-bottom-nav-height) + var(--app-mobile-action-bar-height)
-  );
-}
-
 body {
   min-height: 100dvh;
 }
 
-@layer utilities {
-  .pb-mobile-nav {
-    padding-bottom: var(--app-bottom-nav-height);
-  }
-
-  .pb-mobile-nav-action {
-    padding-bottom: var(--app-mobile-nav-with-action-height);
-  }
-
-  .bottom-above-mobile-nav {
-    bottom: var(--app-bottom-nav-height);
-  }
-
-  .inset-pb-mobile-nav {
-    padding-bottom: var(--app-bottom-nav-height);
-  }
-}
-
 .glass {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  background: var(--color-glass-surface);
+  backdrop-filter: blur(var(--effect-glass-blur));
+  -webkit-backdrop-filter: blur(var(--effect-glass-blur));
 }
 
 .glass-panel {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  background: var(--color-glass-surface);
+  backdrop-filter: blur(var(--effect-glass-blur));
+  -webkit-backdrop-filter: blur(var(--effect-glass-blur));
 }
 
 .hide-scrollbar::-webkit-scrollbar {
@@ -98,11 +70,11 @@ body {
   height: 4px;
   width: 24px;
   border-radius: 2px;
-  background-color: #e0e3e5;
+  background-color: var(--color-surface-container-highest);
 }
 
 .status-bar-segment.active {
-  background-color: #0c6780;
+  background-color: var(--color-primary);
 }
 
 .slider-thumb::-webkit-slider-thumb {
@@ -110,9 +82,9 @@ body {
   appearance: none;
   width: 20px;
   height: 20px;
-  background: #0c6780;
+  background: var(--color-primary);
   cursor: pointer;
   border-radius: 50%;
-  border: 2px solid white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--color-marker-border);
+  box-shadow: var(--shadow-floating);
 }

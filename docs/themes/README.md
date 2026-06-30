@@ -4,20 +4,20 @@ Technical specifications for modular theming: file-driven tokens, multi-theme su
 
 ## Documents
 
-| Document | Purpose |
-| -------- | ------- |
-| [modularity-spec.md](modularity-spec.md) | Target architecture: `@freshy/theme`, YAML token files, CSS variables, enforcement rules |
+| Document                                 | Purpose                                                                                                   |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| [modularity-spec.md](modularity-spec.md) | Target architecture: `@freshy/theme`, YAML token files, CSS variables, enforcement rules                  |
 | [dark-theme-spec.md](dark-theme-spec.md) | Next implementation step: ship dark mode as the first alternate theme on top of the modularity foundation |
-| [testing-spec.md](testing-spec.md) | Automated test catalog for compile, contrast, parity, and literal-color gate |
+| [testing-spec.md](testing-spec.md)       | Automated test catalog for compile, contrast, parity, and literal-color gate                              |
 
 ## Related references
 
-| Document | Role |
-| -------- | ---- |
-| [stitch/freshy/DESIGN.md](../stitch/freshy/DESIGN.md) | Visual design reference (light theme today) |
-| [quality-standards.md](../quality-standards.md) | CSS and Tailwind rules for contributors |
-| [architecture.md](../architecture.md) | Monorepo layout |
-| [roadmap.md](../roadmap.md) | Product phases; theme work is tracked under Phase 6 (PWA polish) and Phase 8 backlog |
+| Document                                              | Role                                                                                 |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| [stitch/freshy/DESIGN.md](../stitch/freshy/DESIGN.md) | Visual design reference (light theme today)                                          |
+| [quality-standards.md](../quality-standards.md)       | CSS and Tailwind rules for contributors                                              |
+| [architecture.md](../architecture.md)                 | Monorepo layout                                                                      |
+| [roadmap.md](../roadmap.md)                           | Product phases; theme work is tracked under Phase 6 (PWA polish) and Phase 8 backlog |
 
 ## Current state (June 2026)
 

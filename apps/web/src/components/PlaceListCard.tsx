@@ -32,7 +32,7 @@ export function PlaceListCard({
 
   return (
     <Link href={ROUTES.place(place.slug)} className="group block">
-      <article className="overflow-hidden rounded-xl border border-outline-variant/10 bg-surface-container-lowest shadow-[0_4px_20px_rgba(12,103,128,0.04)]">
+      <article className="overflow-hidden rounded-xl border border-outline-variant/10 bg-surface-container-lowest shadow-card">
         <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-primary-container/40 to-secondary-container/30">
           <img
             src={getPlacePhotoUrl(place.photoUrl, place.category as PlaceCategory)}
@@ -58,7 +58,7 @@ export function PlaceListCard({
             <div
               className={`absolute bottom-3 left-3 flex items-center gap-1 rounded-full px-3 py-1 font-label-caps text-label-caps shadow-md ${
                 isGreen
-                  ? 'bg-emerald-600 text-white'
+                  ? 'bg-success text-on-success'
                   : bar.segments >= 3
                     ? 'bg-primary text-on-primary'
                     : 'bg-primary/70 text-on-primary backdrop-blur-md'
@@ -95,7 +95,7 @@ export function PlaceListCard({
               <span
                 className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase ${
                   isGreen
-                    ? 'bg-emerald-100 text-emerald-800'
+                    ? 'bg-success-container text-on-success-container'
                     : 'bg-secondary-fixed text-on-secondary-fixed-variant'
                 }`}
               >
@@ -107,7 +107,7 @@ export function PlaceListCard({
             <FreshnessBar segments={bar.segments} tone={bar.tone} />
             <span
               className={`text-[10px] font-bold uppercase ${
-                isGreen ? 'text-emerald-700' : 'text-primary'
+                isGreen ? 'text-success' : 'text-primary'
               }`}
             >
               {freshnessPowerLabel(place.aggregatedFreshnessLevel)}

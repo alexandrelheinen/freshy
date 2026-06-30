@@ -9,7 +9,9 @@
     "pnpm": ">=9.0.0"
   },
   "scripts": {
-    "build": "turbo run build",
+    "theme:build": "pnpm --filter @freshy/theme build && prettier --write packages/theme/generated/**/*.ts",
+    "theme:validate": "pnpm --filter @freshy/theme validate",
+    "build": "pnpm theme:build && turbo run build",
     "dev": "turbo run dev --parallel",
     "lint": "eslint apps packages --max-warnings 0",
     "typecheck": "turbo run typecheck",

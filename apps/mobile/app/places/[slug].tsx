@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
+import { themeColors } from '../../src/theme';
 
 export default function PlaceDetailScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
@@ -26,24 +27,24 @@ export default function PlaceDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f7f9fb' },
+  container: { flex: 1, backgroundColor: themeColors.background },
   hero: {
     height: 220,
-    backgroundColor: '#87ceeb',
+    backgroundColor: themeColors.primaryContainer,
     justifyContent: 'flex-end',
     padding: 20,
   },
-  heroTitle: { color: '#fff', fontSize: 28, fontWeight: '700' },
-  slug: { color: 'rgba(255,255,255,0.8)', marginTop: 4 },
+  heroTitle: { color: themeColors.onScrim, fontSize: 28, fontWeight: '700' },
+  slug: { color: themeColors.onPrimaryContainer, marginTop: 4 },
   metrics: { flexDirection: 'row', gap: 12, padding: 20, marginTop: -24 },
   metric: {
     flex: 1,
-    backgroundColor: 'rgba(255,255,255,0.9)',
+    backgroundColor: themeColors.markerLabelBg,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
   },
-  metricLabel: { fontSize: 10, fontWeight: '700', color: '#4f616a' },
-  metricValue: { fontSize: 24, fontWeight: '700', color: '#0c6780', marginTop: 4 },
-  description: { paddingHorizontal: 20, color: '#3f484c', lineHeight: 22 },
+  metricLabel: { fontSize: 10, fontWeight: '700', color: themeColors.secondary },
+  metricValue: { fontSize: 24, fontWeight: '700', color: themeColors.primary, marginTop: 4 },
+  description: { paddingHorizontal: 20, color: themeColors.onSurfaceVariant, lineHeight: 22 },
 });

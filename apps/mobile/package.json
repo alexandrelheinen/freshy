@@ -10,10 +10,11 @@
     "build:ios": "eas build --platform ios --non-interactive",
     "lint": "eslint app src --config ../../eslint.config.mjs --max-warnings 0",
     "typecheck": "tsc --noEmit",
-    "test": "bash ../../scripts/run-ts-tests.sh src"
+    "test": "pnpm --filter @freshy/theme build && bash ../../scripts/run-ts-tests.sh src"
   },
   "dependencies": {
     "@freshy/ui": "workspace:*",
+    "@freshy/theme": "workspace:*",
     "expo": "~52.0.23",
     "expo-router": "~4.0.15",
     "expo-status-bar": "~2.0.1",

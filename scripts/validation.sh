@@ -27,6 +27,11 @@ if [ "${SKIP_INSTALL}" != "1" ]; then
   pnpm install
 fi
 
+step "Theme build + validate"
+pnpm theme:build
+pnpm theme:validate
+pnpm prettier --write packages/theme/generated/**/*.ts
+
 step "Format check"
 pnpm format:check
 

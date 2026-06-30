@@ -1,29 +1,42 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { freshyColors, freshySpacing, freshyTypography } from './tailwind.preset';
+import { getDefaultThemeTokens } from '@freshy/theme/tokens';
+import { freshyColors, freshyShadows, freshySpacing, freshyTypography } from './tailwind.preset';
 
 describe('@freshy/config tailwind preset', () => {
-  it('exports design system colors from DESIGN.md', () => {
-    assert.equal(freshyColors.primary, '#0c6780');
-    assert.equal(freshyColors['primary-container'], '#87ceeb');
-    assert.equal(freshyColors.background, '#f7f9fb');
+  it('maps colors to CSS variables', () => {
+    assert.equal(freshyColors.primary, 'var(--color-primary)');
+    assert.equal(freshyColors['primary-container'], 'var(--color-primary-container)');
+    assert.equal(freshyColors.background, 'var(--color-background)');
+    assert.ok(!Object.values(freshyColors).some((value) => value.includes('#')));
   });
 
-  it('exports spacing scale from DESIGN.md', () => {
-    assert.equal(freshySpacing.base, '4px');
-    assert.equal(freshySpacing.lg, '24px');
-    assert.equal(freshySpacing['margin-mobile'], '20px');
+  it('maps shadows to CSS variables', () => {
+    assert.equal(freshyShadows.card, 'var(--shadow-card)');
+    assert.equal(freshyShadows.nav, 'var(--shadow-nav)');
   });
 
-  it('exports typography scale from DESIGN.md', () => {
-    assert.equal(freshyTypography['display-lg'].fontSize, '36px');
-    assert.equal(freshyTypography['display-lg'].lineHeight, '44px');
-    assert.equal(freshyTypography['headline-lg'].fontSize, '28px');
-    assert.equal(freshyTypography['headline-lg-mobile'].fontSize, '24px');
-    assert.equal(freshyTypography['title-md'].fontSize, '18px');
-    assert.equal(freshyTypography['body-lg'].fontSize, '16px');
-    assert.equal(freshyTypography['body-sm'].fontSize, '14px');
-    assert.equal(freshyTypography['label-caps'].fontSize, '12px');
-    assert.equal(freshyTypography['label-caps'].letterSpacing, '0.05em');
+  it('reads spacing and typography from default theme tokens', () => {
+    const tokens = getDefaultThemeTokens();
+    assert.equal(freshySpacing.base, tokens.spacing.base);
+    assert.equal(freshySpacing.lg, tokens.spacing.lg);
+    assert.equal(freshySpacing['margin-mobile'], tokens.spacing['margin-mobile']);
+    assert.equal(freshyTypography['display-lg'].fontSize, tokens.typography['display-lg'].fontSize);
+    assert.equal(
+      freshyTypography['headline-lg'].fontSize,
+      tokens.typography['headline-lg'].fontSize,
+    );
+    assert.equal(
+      freshyTypography['headline-lg-mobile'].fontSize,
+      tokens.typography['headline-lg-mobile'].fontSize,
+    );
+    assert.equal(freshyTypography['title-md'].fontSize, tokens.typography['title-md'].fontSize);
+    assert.equal(freshyTypography['body-lg'].fontSize, tokens.typography['body-lg'].fontSize);
+    assert.equal(freshyTypography['body-sm'].fontSize, tokens.typography['body-sm'].fontSize);
+    assert.equal(freshyTypography['label-caps'].fontSize, tokens.typography['label-caps'].fontSize);
+    assert.equal(
+      freshyTypography['label-caps'].letterSpacing,
+      tokens.typography['label-caps'].letterSpacing,
+    );
   });
 });

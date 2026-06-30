@@ -1,0 +1,31 @@
+display-lg:
+  fontSize: '36px'
+  lineHeight: '44px'
+  fontWeight: '700'
+  letterSpacing: '-0.02em'
+headline-lg:
+  fontSize: '28px'
+  lineHeight: '34px'
+  fontWeight: '600'
+  letterSpacing: '-0.01em'
+headline-lg-mobile:
+  fontSize: '24px'
+  lineHeight: '30px'
+  fontWeight: '600'
+title-md:
+  fontSize: '18px'
+  lineHeight: '24px'
+  fontWeight: '600'
+body-lg:
+  fontSize: '16px'
+  lineHeight: '24px'
+  fontWeight: '400'
+body-sm:
+  fontSize: '14px'
+  lineHeight: '20px'
+  fontWeight: '400'
+label-caps:
+  fontSize: '12px'
+  lineHeight: '16px'
+  fontWeight: '700'
+  letterSpacing: '0.05em'

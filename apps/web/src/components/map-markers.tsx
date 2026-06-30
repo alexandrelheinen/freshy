@@ -23,7 +23,7 @@ export function markerPinStyle(strength: PlaceDto['aggregatedFreshnessLevel']): 
   opacity: string;
 } {
   const tone = freshnessTone(freshnessId(strength));
-  if (tone === 'green') return { bgClass: 'bg-emerald-600', opacity: '' };
+  if (tone === 'green') return { bgClass: 'bg-success', opacity: '' };
   const segments = freshnessBarSegments(freshnessId(strength));
   if (segments >= 3) return { bgClass: 'bg-primary', opacity: '' };
   if (segments === 2) return { bgClass: 'bg-primary', opacity: 'opacity-80' };
@@ -38,15 +38,15 @@ export function desktopMarkerStyle(strength: PlaceDto['aggregatedFreshnessLevel'
   const tone = freshnessTone(freshnessId(strength));
   if (tone === 'green') {
     return {
-      badgeClass: 'bg-emerald-600 text-white',
-      pinClass: 'bg-emerald-600',
-      textClass: 'text-emerald-700',
+      badgeClass: 'bg-success text-on-success',
+      pinClass: 'bg-success',
+      textClass: 'text-on-success-container',
     };
   }
   const segments = freshnessBarSegments(freshnessId(strength));
   if (segments >= 3) {
     return {
-      badgeClass: 'bg-primary text-white',
+      badgeClass: 'bg-primary text-on-primary',
       pinClass: 'bg-primary',
       textClass: 'text-primary',
     };
@@ -123,13 +123,13 @@ export function PlaceMapMarker({
           </div>
         ) : null}
         <div
-          className={`flex items-center justify-center rounded-full border-2 border-white shadow-xl ${
+          className={`flex items-center justify-center rounded-full border-2 border-marker-border shadow-xl ${
             isSelected ? 'marker-pulse h-10 w-10' : 'h-8 w-8'
           } ${desktop.pinClass}`}
         >
           <MaterialIcon
             name={icon}
-            className={isSelected ? 'text-white' : desktop.textClass}
+            className={isSelected ? 'text-on-primary' : desktop.textClass}
             filled={isSelected}
             size={isSelected ? 20 : 18}
           />
@@ -147,12 +147,12 @@ export function PlaceMapMarker({
       style={{ animationDelay: `${(place.id.charCodeAt(0) % 5) * 0.4}s` }}
     >
       <div
-        className={`rounded-full p-2 text-white shadow-xl ${bgClass} ${isSelected ? 'ring-2 ring-white ring-offset-2 ring-offset-primary/30' : ''}`}
+        className={`rounded-full p-2 text-on-primary shadow-xl ${bgClass} ${isSelected ? 'ring-2 ring-marker-ring ring-offset-2 ring-offset-primary/30' : ''}`}
       >
         <MaterialIcon name={icon} size={20} />
       </div>
       {isSelected ? (
-        <div className="mt-1 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-bold text-primary shadow-sm backdrop-blur-sm">
+        <div className="mt-1 rounded-full bg-marker-label-bg px-2 py-0.5 text-[10px] font-bold text-primary shadow-sm backdrop-blur-sm">
           {place.name.length > 16 ? `${place.name.slice(0, 14)}…` : place.name}
         </div>
       ) : null}
@@ -165,8 +165,8 @@ export function UserLocationMarker({ variant = 'mobile' }: { variant?: 'mobile' 
 
   return (
     <div className="flex flex-col items-center">
-      <div className="marker-pulse flex h-8 w-8 items-center justify-center rounded-full border-4 border-white bg-primary shadow-lg">
-        <div className="h-3 w-3 rounded-full bg-white" />
+      <div className="marker-pulse flex h-8 w-8 items-center justify-center rounded-full border-4 border-marker-border bg-primary shadow-lg">
+        <div className="h-3 w-3 rounded-full bg-marker-border" />
       </div>
     </div>
   );
