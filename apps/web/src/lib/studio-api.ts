@@ -23,7 +23,7 @@ export interface StudioStatsDto {
   totalVerified: number;
   pendingValidation: number;
   activeConflicts: number;
-  averageTemperatureC: number | null;
+  averageFreshnessScore: number | null;
 }
 
 export interface UpdateStudioPlacePayload {
@@ -33,7 +33,6 @@ export interface UpdateStudioPlacePayload {
   address?: string | null;
   latitude?: number;
   longitude?: number;
-  aggregatedTemperatureC?: number | null;
   aggregatedFreshnessLevel?:
     | 'NONE'
     | 'GOOD_VENTILATION'

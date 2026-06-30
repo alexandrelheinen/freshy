@@ -8,6 +8,7 @@ import {
   FRESHNESS_LEVELS,
   FRESHNESS_LEVEL_LABELS,
   freshnessBarSegments,
+  freshnessLevelScore,
   freshnessTone,
   type FreshnessLevelConfig,
 } from './freshness-levels';
@@ -40,6 +41,8 @@ describe('freshness-levels', () => {
     assert.equal(freshnessBarSegments('VERY_COLD_AC'), 3);
     assert.equal(freshnessBarSegments('NATURALLY_FRESH'), 3);
     assert.equal(freshnessTone('NATURALLY_FRESH'), 'green');
+    assert.equal(freshnessLevelScore('VERY_COLD_AC'), 3);
+    assert.equal(freshnessLevelScore(null), null);
     assert.equal(FRESHNESS_LEVEL_LABELS.NATURALLY_FRESH, 'Naturally Fresh');
   });
 });

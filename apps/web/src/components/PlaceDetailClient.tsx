@@ -145,23 +145,7 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
         <div className="px-margin-mobile md:px-10">
           <h2 className="mt-6 font-display-lg text-display-lg text-on-surface">{place.name}</h2>
 
-          <section className="relative z-10 mt-4 grid grid-cols-2 gap-4">
-            <GlassCard className="flex flex-col items-center p-4 text-center shadow-[0_20px_20px_rgba(12,103,128,0.04)]">
-              <MaterialIcon name="thermostat" className="mb-2 text-primary" size={32} />
-              <span className="font-label-caps text-label-caps uppercase tracking-widest text-secondary">
-                Interior
-              </span>
-              <div className="mt-1 flex items-baseline">
-                <span className="font-headline-lg text-primary">
-                  {place.aggregatedTemperatureC != null
-                    ? Math.round(place.aggregatedTemperatureC)
-                    : '—'}
-                </span>
-                {place.aggregatedTemperatureC != null ? (
-                  <span className="ml-1 font-title-md text-primary">°C</span>
-                ) : null}
-              </div>
-            </GlassCard>
+          <section className="relative z-10 mt-4">
             <GlassCard className="flex flex-col items-center p-4 text-center shadow-[0_20px_20px_rgba(12,103,128,0.04)]">
               <MaterialIcon name="ac_unit" className="mb-2 text-primary" size={32} />
               <span className="font-label-caps text-label-caps uppercase tracking-widest text-secondary">

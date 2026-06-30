@@ -56,11 +56,13 @@ function ExplorePreviewCard({
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />
-          <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-primary px-3 py-1.5 text-lg font-bold text-white shadow-lg">
-            {place.aggregatedTemperatureC != null
-              ? `${Math.round(place.aggregatedTemperatureC)}°C`
-              : '—'}
-            <span className="h-4 w-px bg-white/30" />
+          <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-primary px-3 py-1.5 text-sm font-bold text-white shadow-lg">
+            {place.aggregatedFreshnessLevel ? (
+              <>
+                {FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]}
+                <span className="h-4 w-px bg-white/30" />
+              </>
+            ) : null}
             <MaterialIcon name="ac_unit" size={16} />
           </div>
           <div className="absolute bottom-4 left-4 flex gap-2">
@@ -83,16 +85,7 @@ function ExplorePreviewCard({
               ) : null}
             </div>
           </div>
-          <div className="my-6 grid grid-cols-3 gap-4">
-            <div className="flex flex-col items-center rounded-xl bg-surface-container-low p-3 text-center">
-              <MaterialIcon name="thermometer" className="mb-1 text-primary" />
-              <span className="text-[10px] font-bold uppercase text-outline-variant">Current</span>
-              <span className="font-bold text-on-surface">
-                {place.aggregatedTemperatureC != null
-                  ? `${place.aggregatedTemperatureC.toFixed(1)}°C`
-                  : '—'}
-              </span>
-            </div>
+          <div className="my-6 grid grid-cols-2 gap-4">
             <div className="flex flex-col items-center rounded-xl bg-surface-container-low p-3 text-center">
               <MaterialIcon name="air" className="mb-1 text-primary" />
               <span className="text-[10px] font-bold uppercase text-outline-variant">
@@ -174,11 +167,6 @@ function ExplorePreviewCard({
                 {place.distanceKm != null ? formatDistanceWithWalk(place.distanceKm) : 'Nearby'}
               </p>
             </div>
-            {place.aggregatedTemperatureC != null ? (
-              <div className="flex items-center gap-1 rounded-lg bg-primary-fixed px-2 py-1 text-lg font-bold text-on-primary-fixed shadow-sm">
-                {Math.round(place.aggregatedTemperatureC)}°C
-              </div>
-            ) : null}
           </div>
           <div className="mt-2 flex items-center gap-4">
             <div className="flex flex-1 flex-col gap-1">
@@ -232,11 +220,6 @@ function NearbyListItem({
         <div className="flex-1">
           <div className="flex items-start justify-between">
             <h3 className="text-sm font-semibold text-on-surface">{place.name}</h3>
-            {place.aggregatedTemperatureC != null ? (
-              <span className="text-xs font-bold text-primary">
-                {Math.round(place.aggregatedTemperatureC)}°C
-              </span>
-            ) : null}
           </div>
           {place.description ? (
             <p className="mt-1 line-clamp-1 text-xs text-on-surface-variant">{place.description}</p>

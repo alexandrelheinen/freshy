@@ -54,7 +54,6 @@ erDiagram
         float longitude
         string address
         string photoUrl
-        float aggregatedTemperatureC
         enum aggregatedFreshnessLevel
         string[] tags
         boolean isOpen
@@ -67,7 +66,6 @@ erDiagram
         string userId FK
         string placeId FK
         int acStrength
-        float temperatureC
         string comment
         datetime createdAt
     }
@@ -113,7 +111,6 @@ Cooling venues on the map.
 | `latitude` / `longitude`   | `FLOAT`          | WGS84 coordinates                                                             |
 | `address`                  | `TEXT`           | Optional street address                                                       |
 | `photoUrl`                 | `TEXT`           | Optional, R2 URL in production                                                |
-| `aggregatedTemperatureC`   | `FLOAT`          | Crowdsourced average (seed uses static values)                                |
 | `aggregatedFreshnessLevel` | `FreshnessLevel` | Cooling quality tier (see [place-classification.md](place-classification.md)) |
 | `tags`                     | `TEXT[]`         | Tag IDs from `packages/config/place-tags.yaml` (default `[]`)                 |
 | `createdById`              | `TEXT`           | Optional FK to `User` who submitted the place                                 |
@@ -126,12 +123,11 @@ Cooling venues on the map.
 
 User-submitted climate reviews for a place. Displayed on place detail and profile when present; write API ships in Phase 5.
 
-| Column               | Type    | Notes                           |
-| -------------------- | ------- | ------------------------------- |
-| `userId` / `placeId` | `TEXT`  | Foreign keys, cascade on delete |
-| `acStrength`         | `INT`   | 1–3 scale at API layer          |
-| `temperatureC`       | `FLOAT` | Optional felt temperature       |
-| `comment`            | `TEXT`  | Optional text                   |
+| Column               | Type   | Notes                           |
+| -------------------- | ------ | ------------------------------- |
+| `userId` / `placeId` | `TEXT` | Foreign keys, cascade on delete |
+| `acStrength`         | `INT`  | 1–3 scale at API layer          |
+| `comment`            | `TEXT` | Optional text                   |
 
 ### `SavedPlace`
 

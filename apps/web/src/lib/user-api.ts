@@ -104,7 +104,6 @@ export interface CreatePlacePayload {
   description?: string;
   latitude: number;
   longitude: number;
-  aggregatedTemperatureC: number;
   aggregatedFreshnessLevel:
     | 'NONE'
     | 'GOOD_VENTILATION'

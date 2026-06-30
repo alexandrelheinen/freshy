@@ -219,9 +219,6 @@ export function CoolingClient() {
                       {featured.aggregatedFreshnessLevel
                         ? FRESHNESS_LEVEL_LABELS[featured.aggregatedFreshnessLevel].toUpperCase()
                         : ''}
-                      {featured.aggregatedTemperatureC != null
-                        ? ` · ${Math.round(featured.aggregatedTemperatureC)}°C`
-                        : ''}
                     </span>
                   </div>
                 </div>

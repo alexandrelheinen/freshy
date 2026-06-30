@@ -75,11 +75,6 @@ export function PlaceListCard({
         <div className="p-4">
           <div className="mb-1 flex items-start justify-between">
             <h3 className="font-title-md text-on-surface">{place.name}</h3>
-            {place.aggregatedTemperatureC != null ? (
-              <span className="font-headline-lg text-primary">
-                {Math.round(place.aggregatedTemperatureC)}°C
-              </span>
-            ) : null}
           </div>
           {place.distanceKm != null ? (
             <div className="mb-3 flex items-center gap-2 text-outline">
