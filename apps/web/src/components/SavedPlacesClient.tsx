@@ -8,7 +8,38 @@ import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceListClient } from './PlaceListClient';
 import { fetchMySavedPlaces, unsavePlaceForUser } from '../lib/user-api';
 
-export function SavedPlacesClient() {
+const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
+
+function SavedPlacesSignedOutView({ showSignIn }: { showSignIn: boolean }) {
+  return (
+    <div className="min-h-screen pb-mobile-nav" data-page="saved">
+      <AppMobileHeader title="Saved Places" backHref={ROUTES.explore} showBrand={false} />
+      <AppTopNav active="saved" />
+      <main className="mx-auto mt-20 max-w-md px-margin-mobile pt-8 text-center md:px-10">
+        <h2 className="font-headline-lg-mobile text-primary">Saved Places</h2>
+        <p className="mt-2 text-on-surface-variant">Sign in to see your favourite cooling spots.</p>
+        {showSignIn ? (
+          <SignInButton mode="modal">
+            <button
+              type="button"
+              className="mt-8 rounded-xl bg-primary px-8 py-3 font-semibold text-on-primary shadow-lg"
+            >
+              Sign in
+            </button>
+          </SignInButton>
+        ) : null}
+        <p className="mt-6">
+          <Link href={ROUTES.explore} className="text-primary underline">
+            Back to explore
+          </Link>
+        </p>
+      </main>
+      <AppBottomNav active="saved" />
+    </div>
+  );
+}
+
+function SavedPlacesWithClerk() {
   const { isLoaded, isSignedIn, getToken } = useAuth();
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -38,32 +69,7 @@ export function SavedPlacesClient() {
   }
 
   if (!isSignedIn) {
-    return (
-      <div className="min-h-screen pb-mobile-nav" data-page="saved">
-        <AppMobileHeader title="Saved Places" backHref={ROUTES.explore} showBrand={false} />
-        <AppTopNav active="saved" />
-        <main className="mx-auto mt-20 max-w-md px-margin-mobile pt-8 text-center md:px-10">
-          <h2 className="font-headline-lg-mobile text-primary">Saved Places</h2>
-          <p className="mt-2 text-on-surface-variant">
-            Sign in to see your favourite cooling spots.
-          </p>
-          <SignInButton mode="modal">
-            <button
-              type="button"
-              className="mt-8 rounded-xl bg-primary px-8 py-3 font-semibold text-on-primary shadow-lg"
-            >
-              Sign in
-            </button>
-          </SignInButton>
-          <p className="mt-6">
-            <Link href={ROUTES.explore} className="text-primary underline">
-              Back to explore
-            </Link>
-          </p>
-        </main>
-        <AppBottomNav active="saved" />
-      </div>
-    );
+    return <SavedPlacesSignedOutView showSignIn />;
   }
 
   return (
@@ -81,4 +87,12 @@ export function SavedPlacesClient() {
       />
     </div>
   );
+}
+
+export function SavedPlacesClient() {
+  if (!clerkEnabled) {
+    return <SavedPlacesSignedOutView showSignIn={false} />;
+  }
+
+  return <SavedPlacesWithClerk />;
 }

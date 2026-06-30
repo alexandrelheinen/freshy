@@ -36,7 +36,10 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
 
   if (denied || !location) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center px-6 pb-mobile-nav text-center">
+      <div
+        className="flex min-h-screen flex-col items-center justify-center px-6 pb-mobile-nav text-center"
+        data-page="place-list"
+      >
         <p className="text-on-surface-variant">
           Enable location to browse {title.toLowerCase()} within 3 km of you.
         </p>
