@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Meu Perfil | Freshy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Config Verbatim -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-primary": "#89d0ed",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed-dim": "#b6c9d4",
+                    "on-tertiary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f7f9fb",
+                    "secondary-fixed": "#d2e6f0",
+                    "primary-fixed-dim": "#89d0ed",
+                    "primary-container": "#87ceeb",
+                    "on-surface": "#191c1e",
+                    "on-tertiary-fixed": "#002020",
+                    "on-secondary-fixed-variant": "#374952",
+                    "surface-dim": "#d8dadc",
+                    "surface-container-low": "#f2f4f6",
+                    "secondary-container": "#cfe3ee",
+                    "on-surface-variant": "#3f484c",
+                    "on-primary-fixed-variant": "#004d62",
+                    "on-tertiary-fixed-variant": "#2c4c4c",
+                    "surface-container-high": "#e6e8ea",
+                    "tertiary": "#446464",
+                    "error-container": "#ffdad6",
+                    "outline-variant": "#bfc8cd",
+                    "on-secondary-container": "#53656f",
+                    "on-primary-fixed": "#001f29",
+                    "inverse-surface": "#2d3133",
+                    "surface-container": "#eceef0",
+                    "on-primary-container": "#005870",
+                    "on-error": "#ffffff",
+                    "on-tertiary-container": "#375757",
+                    "tertiary-fixed": "#c6e9e9",
+                    "secondary": "#4f616a",
+                    "primary": "#0c6780",
+                    "surface-container-highest": "#e0e3e5",
+                    "surface-variant": "#e0e3e5",
+                    "surface-tint": "#0c6780",
+                    "on-background": "#191c1e",
+                    "on-secondary-fixed": "#0b1e26",
+                    "tertiary-fixed-dim": "#abcdcd",
+                    "tertiary-container": "#a9cbcb",
+                    "outline": "#6f787d",
+                    "on-error-container": "#93000a",
+                    "inverse-on-surface": "#eff1f3",
+                    "error": "#ba1a1a",
+                    "background": "#f7f9fb",
+                    "surface": "#f7f9fb",
+                    "primary-fixed": "#baeaff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "32px",
+                    "xs": "8px",
+                    "md": "16px",
+                    "margin-mobile": "20px",
+                    "base": "4px",
+                    "lg": "24px",
+                    "sm": "12px",
+                    "gutter-mobile": "12px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Inter"],
+                    "title-md": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "display-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["24px", {"lineHeight": "30px", "fontWeight": "600"}],
+                    "title-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-margin-mobile h-16 bg-surface/80 dark:bg-surface-container/80 backdrop-blur-md shadow-sm">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim">ac_unit</span>
+<h1 class="font-display-lg text-primary dark:text-primary-fixed-dim tracking-tight">Freshy</h1>
+</div>
+<div class="flex items-center gap-6">
+<!-- Desktop Nav Links -->
+<nav class="hidden md:flex items-center gap-8 mr-8">
+<a class="font-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Explore</a>
+<a class="font-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Saved</a>
+<a class="font-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Cooling</a>
+</nav>
+<div class="w-10 h-10 rounded-full overflow-hidden ring-2 ring-primary-container active:scale-95 transition-transform cursor-pointer">
+<img class="w-full h-full object-cover" data-alt="A professional high-quality studio headshot of a friendly individual with soft natural lighting, set against a clean, minimalist light-blue background to match the Freshy brand's cooling aesthetic. The person has a warm expression, representing a satisfied user of a modern urban wellness application. The overall style is bright, crisp, and high-key." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAguG2OxZjBnGStxMvBxtJCseSM8aOfat2w6V7zs9TSPM_yiIJ8KOCoAdINxFqMFKy6kUkoUbml8DjGrSOUUkg64MFDKIMHAjAzXQzSr9GpLraNt6eVX9TWt6Dc4ConJV5_z4qUTfKtN6WX6NUIsjs34SuzKyH1G8lLmh27Ix3nE4DuURIRsGpF1IfGuM9KWNmpLEuzk7k0pNl2ZTLVuxutjrKBOxug08wALV5v_CTqyxIrKusexfYMupdZYLExgC4k3CdvOZvb0fn"/>
+</div>
+</div>
+</header>
+<div class="flex pt-16 min-h-screen">
+<!-- Sidebar Navigation (Desktop) -->
+<aside class="hidden md:flex w-64 flex-col fixed left-0 top-16 h-[calc(100vh-64px)] bg-surface-container-low p-6 gap-2">
+<a class="flex items-center gap-3 p-3 rounded-xl text-secondary hover:bg-primary/10 transition-colors" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-caps">Explore</span>
+</a>
+<a class="flex items-center gap-3 p-3 rounded-xl text-secondary hover:bg-primary/10 transition-colors" href="#">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="font-label-caps">Saved</span>
+</a>
+<a class="flex items-center gap-3 p-3 rounded-xl text-secondary hover:bg-primary/10 transition-colors" href="#">
+<span class="material-symbols-outlined">cyclone</span>
+<span class="font-label-caps">Cooling</span>
+</a>
+<div class="mt-auto">
+<a class="flex items-center gap-3 p-3 rounded-xl bg-primary-container text-on-primary-container" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-caps">Profile</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 p-6 md:p-12 max-w-7xl mx-auto w-full">
+<!-- Profile Header Section -->
+<section class="flex flex-col md:flex-row items-center md:items-end gap-8 mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+<div class="relative group">
+<div class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden shadow-xl ring-4 ring-white">
+<img class="w-full h-full object-cover" data-alt="A close-up profile picture of a young traveler looking relaxed and refreshed, wearing light summer clothing suitable for a hot urban environment. The background is a soft-focus architectural view with cool blue sky reflections, maintaining a clean and modern minimalist vibe. Bright, airy lighting highlights the cooling and vital personality of the brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRhsL9Wbpw2d8pYVGgruZhO9VEgTq_XYmlMfKyY2jXUGC64_4BzIpjQXmJ9ScyCKc-VYz6cCYFBOg7HH4t1gQh_zqpb8ENPUX5ijBZQXZUUapNy_lwn2ixhReMcQH7jJSyIth2bKqKclc9kPjxxullte1o8En3Pm1_xnG3HuUFx4bHZ-eZiET4KdU30x_iQ1fUA13M_h6Ni9WL4GC5JW8G5vVC5bQDfqP_l2fUqqxbR9PHTWQ8hhvieuGNP1rSs6-2PSGW7WrXAkT8"/>
+</div>
+<button class="absolute bottom-1 right-1 bg-primary text-white p-2 rounded-full shadow-lg hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+</div>
+<div class="flex-1 text-center md:text-left">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-1">Mariana Alencar</h2>
+<p class="font-body-lg text-on-surface-variant mb-4">São Paulo, Brasil • Membro desde Jan 2024</p>
+<div class="flex flex-wrap justify-center md:justify-start gap-3">
+<span class="inline-flex items-center gap-2 px-4 py-1.5 bg-primary-fixed text-on-primary-fixed rounded-full font-label-caps">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">stars</span>
+                            1,240 Pontos
+                        </span>
+<span class="inline-flex items-center gap-2 px-4 py-1.5 bg-secondary-container text-on-secondary-container rounded-full font-label-caps">
+                            Nível: Explorador Gélido
+                        </span>
+</div>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-2.5 rounded-full border border-outline text-primary font-label-caps hover:bg-primary/5 transition-colors">Editar Perfil</button>
+<button class="px-6 py-2.5 rounded-full bg-primary text-on-primary font-label-caps shadow-md hover:opacity-90 transition-opacity">Sair</button>
+</div>
+</section>
+<!-- Stats Bento Grid -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<div class="glass-card p-6 rounded-2xl shadow-sm flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary mb-2 text-3xl">reviews</span>
+<span class="text-3xl font-bold text-on-surface">24</span>
+<span class="font-label-caps text-on-surface-variant">Avaliações</span>
+</div>
+<div class="glass-card p-6 rounded-2xl shadow-sm flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary mb-2 text-3xl">favorite</span>
+<span class="text-3xl font-bold text-on-surface">12</span>
+<span class="font-label-caps text-on-surface-variant">Favoritos</span>
+</div>
+<div class="glass-card p-6 rounded-2xl shadow-sm flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary mb-2 text-3xl">thermostat</span>
+<span class="text-3xl font-bold text-on-surface">18°C</span>
+<span class="font-label-caps text-on-surface-variant">Temp. Média</span>
+</div>
+<div class="glass-card p-6 rounded-2xl shadow-sm flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-primary mb-2 text-3xl">distance</span>
+<span class="text-3xl font-bold text-on-surface">42km</span>
+<span class="font-label-caps text-on-surface-variant">Caminhadas</span>
+</div>
+</section>
+<!-- Content Tabs / Filter -->
+<div class="flex items-center gap-8 border-b border-outline-variant mb-8 overflow-x-auto pb-px">
+<button class="pb-4 px-2 border-b-2 border-primary text-primary font-label-caps whitespace-nowrap">Lugares Salvos</button>
+<button class="pb-4 px-2 border-b-2 border-transparent text-on-surface-variant hover:text-primary transition-colors font-label-caps whitespace-nowrap">Minhas Avaliações</button>
+<button class="pb-4 px-2 border-b-2 border-transparent text-on-surface-variant hover:text-primary transition-colors font-label-caps whitespace-nowrap">Conquistas</button>
+</div>
+<!-- Saved Places Gallery Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+<!-- Card 1 -->
+<div class="group bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
+<div class="relative h-48 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A stunning interior of a modern, high-end cafe with large glass windows, lush indoor plants, and minimalist furniture. The lighting is bright and cool-toned, creating a sense of thermal relief. The aesthetic is clean and crisp, reflecting a premium urban oasis for escaping the summer heat. Soft morning light filters through the space." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVrd4J_FcJyHcztnFyzYnjM0rA7shSuFxkV_N9R9-LBmMLV9eU-VMExSzK7ZT8z11LTWqBbDJnInN4QLi12awoHsAMussesXec2dWvwe5AWWw-8iEo4LL8ZjE6K49XWzvZ9WvfXNyVQwhfHZP1Q7OvPS9ZPNws9PvdU_9XE1Imc2SyCMU4hVgQaoGWcpcY3dV3zjBsf1y7wRsYU9sv9Etbk1p0n6XC7jBIYWUsMVr3CRoNsq0y8vwqG-qZsibJDrALUgEp0Gbi7hlr"/>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">ac_unit</span>
+<span class="font-label-caps text-primary">19°C</span>
+</div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-title-md text-title-md text-on-surface">Café Ártico Central</h3>
+<span class="bg-secondary-container px-2 py-0.5 rounded text-[10px] font-bold text-on-secondary-container uppercase">Frigid</span>
+</div>
+<p class="font-body-sm text-on-surface-variant mb-4">Avenida Paulista • 2.4km de distância</p>
+<div class="flex items-center gap-2">
+<div class="flex gap-0.5">
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-outline-variant text-[18px]">star</span>
+</div>
+<span class="font-label-caps text-on-surface-variant text-[12px]">(4.2)</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
+<div class="relative h-48 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="The interior of a sleek, modern library with high ceilings and rows of books. The space is illuminated with cool, white LED lighting that gives it a refreshing, sterile yet welcoming atmosphere. Large windows look out onto a sun-drenched city, emphasizing the cool indoor sanctuary. Minimalist furniture in shades of blue and grey completes the look." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRpfA8mYiz7-mwvHMyaCpuFyO96O9l11Ny5s8uEI7MkUqiSymHLMJgrX4HmmeYeNUHUK0sZk1Tn1D4zZE2xLnVYF6SvabpdTiQS3VMMn-0idSy6sghJt4IKBy_Zr9EFJS80PgJ5qtXZDEiBc88-ly1iQ_6drqKc8t0wuyKZuP8epPvCL--Eoh1MZLuAvritda5YIudZKHn-EiO3r7B2zqVDe9mxGZXTMZWlr-KZRmP6KPiMGXq6uy8euob8SinPsqdtCn2SGvPvqPH"/>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">ac_unit</span>
+<span class="font-label-caps text-primary">21°C</span>
+</div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-title-md text-title-md text-on-surface">Biblioteca do Gelo</h3>
+<span class="bg-primary-container/30 px-2 py-0.5 rounded text-[10px] font-bold text-on-primary-container uppercase">Comfortable</span>
+</div>
+<p class="font-body-sm text-on-surface-variant mb-4">Vila Madalena • 1.1km de distância</p>
+<div class="flex items-center gap-2">
+<div class="flex gap-0.5">
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="font-label-caps text-on-surface-variant text-[12px]">(5.0)</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
+<div class="relative h-48 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A sophisticated, modern indoor garden lounge within a commercial building, featuring hanging vines and a central fountain that suggests a cool microclimate. The environment is bright and airy, with frosted glass panels and soft blue accent lighting. The photography is sharp and clean, emphasizing the refreshing nature of the indoor retreat." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlh7vSjtOiNBfFCO3dS9Ao_OufQzti4y-PeiKu8W_TrfOawg8HzZDgpi0CMfkDT7T_eKZfp0iGhMJpMcUC30RGpk9VFpVN_R_hWWjSeO_XIUarY0_ljEt-dJ6YI6Z6ehTivuiCZnGus3YDZf0B0yMy8c2NFPwuKIhZj1vA1raE8nEPvTRmInDpH7-uiQuq5N6LCRu6ieRAP9cwTIOLVa5yGUsmWSivPIWFDat2_YVL-d7OiA2o5LUgHZIPJO3xkRI8l2sVVFvHEMZW"/>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">ac_unit</span>
+<span class="font-label-caps text-primary">20°C</span>
+</div>
+</div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-title-md text-title-md text-on-surface">Oasis Corporativo</h3>
+<span class="bg-primary-container/30 px-2 py-0.5 rounded text-[10px] font-bold text-on-primary-container uppercase">Comfortable</span>
+</div>
+<p class="font-body-sm text-on-surface-variant mb-4">Itaim Bibi • 3.8km de distância</p>
+<div class="flex items-center gap-2">
+<div class="flex gap-0.5">
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-outline-variant text-[18px]">star_half</span>
+</div>
+<span class="font-label-caps text-on-surface-variant text-[12px]">(4.5)</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Recent Activity / Reviews Asymmetric Layout -->
+<section class="mb-12">
+<h3 class="font-headline-lg text-headline-lg mb-8">Atividades Recentes</h3>
+<div class="space-y-6">
+<div class="glass-card p-6 rounded-3xl flex flex-col md:flex-row gap-6 hover:translate-x-2 transition-transform cursor-pointer">
+<div class="w-full md:w-48 h-32 rounded-2xl overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A detailed view of a cold glass of artisan iced tea sitting on a marble table in a brightly lit, modern juice bar. The background is a soft blue and white blur, highlighting the fresh and vital atmosphere. The image feels crisp and cold, conveying immediate relief from heat. High-key lighting, minimalist composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiGKyt_ceB-gOQZ7Kx3aG9pmK5f0JUlP8-HedFT2ZEIpfF9F4nWKvczU_JCO3rgWaycE3Xac6T3TYAXbS2XGCcp5t2iTqbBGN3ObYVOmmAsI44sK09nOd_pCLuXnkI_EpaE7wBWkrBzgILSRloQuZNjM7T7XNPaXuy4ZpcamJzn5b9fzZV85WuHClMZt7zcB1h9_9AqMqTPrFzg2hSa6Y0xCq2PdNDH6_vq2iq0nfpTsZTtPDloRstgHR-ugUOfGl9yaaed-DvxMc9"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="font-title-md text-title-md">Juice Bar Glacial</h4>
+<p class="font-body-sm text-on-surface-variant">Postado há 2 dias</p>
+</div>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-title-md text-title-md">5.0</span>
+</div>
+</div>
+<p class="font-body-lg text-on-surface mb-4 italic">"O ar condicionado aqui é impecável, ideal para trabalhar por horas sem sentir o calor da rua. Recomendo o chá de hortelã gelado!"</p>
+<div class="flex gap-2">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Wi-Fi Rápido</span>
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Silencioso</span>
+</div>
+</div>
+</div>
+<div class="glass-card p-6 rounded-3xl flex flex-col md:flex-row gap-6 hover:translate-x-2 transition-transform cursor-pointer">
+<div class="w-full md:w-48 h-32 rounded-2xl overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A modern urban museum lobby with polished white floors and large abstract installations. The space is vast and airy, dominated by shades of white and sky blue. The lighting is bright and ethereal, suggesting a temperature-controlled sanctuary from the scorching city streets. Professional architectural photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBInUDSClfjR-lf4wDFB63Mf35mwq9jjlf1bg4BLlGEPQjZR9F0GzEHN68_hKmRagfRsb4CcNE2BrJoBrRhjEuJPppTVk11WAHApE6x6JYivx0uz-FYYmcyoW_pHLEe2BdDzq-wnqTG5v4AWCR44UL5OCjP3qQ-IQPujOU5EKYq4AnJm_CVv4TrkVW93cpu2nKUgmeUzjX79h_FEp1Gp7pqIQk-4L8Bcz7Zynevb26Hlpo9pFS6uHPZiqGR11vO6nQiLK4l9kMUXTFe"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="font-title-md text-title-md">Museu de Arte Moderna</h4>
+<p class="font-body-sm text-on-surface-variant">Postado há 1 semana</p>
+</div>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-title-md text-title-md">4.8</span>
+</div>
+</div>
+<p class="font-body-lg text-on-surface mb-4 italic">"Ambiente muito fresco e as exposições são ótimas. Perfeito para uma tarde quente de domingo."</p>
+<div class="flex gap-2">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Acessível</span>
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Cultura</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- Mobile Bottom Navigation (Hidden on Desktop) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-surface/90 backdrop-blur-lg border-t border-outline-variant/20 shadow-[0_-4px_20px_rgba(0,0,0,0.04)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-secondary hover:opacity-80 transition-opacity active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">map</span>
+<span class="font-label-caps">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary hover:opacity-80 transition-opacity active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="font-label-caps">Saved</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary hover:opacity-80 transition-opacity active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">cyclone</span>
+<span class="font-label-caps">Cooling</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-caps">Profile</span>
+</a>
+</nav>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('.glass-card, .group').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                // Subtle lift or light effect could be added here
+            });
+        });
+        
+        // Simple tab switching logic for demonstration
+        const tabs = document.querySelectorAll('.font-label-caps.whitespace-nowrap');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => {
+                    t.classList.remove('border-primary', 'text-primary');
+                    t.classList.add('border-transparent', 'text-on-surface-variant');
+                });
+                tab.classList.add('border-primary', 'text-primary');
+                tab.classList.remove('border-transparent', 'text-on-surface-variant');
+            });
+        });
+    </script>
+</body></html>
