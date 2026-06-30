@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AcStrength, PlaceCategory, type PrismaClient } from '@freshy/db';
+import { AcStrength, PlaceCategory, type Place, type PrismaClient } from '@freshy/db';
 
 export const createPlaceSchema = z.object({
   name: z.string().trim().min(2).max(120),
@@ -37,7 +37,7 @@ export async function createUserPlace(
   prisma: PrismaClient,
   userId: string,
   input: CreatePlaceInput,
-) {
+): Promise<Place> {
   const baseSlug = slugifyPlaceName(input.name);
   const slug = await uniquePlaceSlug(prisma, baseSlug);
 
