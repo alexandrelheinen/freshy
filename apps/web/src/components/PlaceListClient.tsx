@@ -5,7 +5,6 @@ import { MaterialIcon, PLACE_CATEGORY_LABELS, type PlaceCategory } from '@freshy
 import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceListCard } from './PlaceListCard';
 import type { PlaceDto } from '../lib/api';
-import { fetchPlaces } from '../lib/api';
 
 export function PlaceListClient({
   title,

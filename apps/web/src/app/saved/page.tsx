@@ -1,5 +1,5 @@
-import { SavedPlacesClient } from '../../components/SavedPlacesClient';
+import { SavedPageClient } from '../../components/SavedPageClient';
 
 export default function SavedPage() {
-  return <SavedPlacesClient />;
+  return <SavedPageClient />;
 }
