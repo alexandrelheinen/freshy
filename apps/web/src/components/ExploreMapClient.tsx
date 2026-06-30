@@ -26,12 +26,12 @@ import {
   formatDistanceWithWalk,
 } from '../lib/api';
 import { mapStyleUrl, type MapStyleId } from '../lib/map-styles';
+import { locationStatusMessage } from '../lib/location-messages';
 import { useUserLocation } from '../lib/use-user-location';
 import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceMapMarker, UserLocationMarker, freshnessLabel } from './map-markers';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
-const INITIAL_MAP_VIEW = { latitude: 20, longitude: 0, zoom: 2 };
 
 function chipIcon(category?: PlaceCategory): MaterialIconName | null {
   if (!category) return null;
@@ -248,12 +248,26 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
   const [selectedSlug, setSelectedSlug] = useState<string | null>(initialPlaces[0]?.slug ?? null);
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<PlaceCategory | undefined>();
-  const { location: userLocation, denied: locationDenied, requestLocation } = useUserLocation();
+  const {
+    location: userLocation,
+    denied: locationDenied,
+    locationError,
+    requestLocation,
+    mapCenter,
+    mapZoom,
+    setMapCenter,
+    searchRadiusKm,
+    zoomForSearchRadius,
+  } = useUserLocation();
   const [viewState, setViewState] = useState<{
     latitude: number;
     longitude: number;
     zoom: number;
-  }>(INITIAL_MAP_VIEW);
+  }>(() => ({
+    latitude: mapCenter.lat,
+    longitude: mapCenter.lng,
+    zoom: mapZoom,
+  }));
   const [mapStyleId, setMapStyleId] = useState<MapStyleId>('streets');
 
   const selected = useMemo(
@@ -266,7 +280,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       const params = new URLSearchParams();
       params.set('lat', String(opts.lat));
       params.set('lng', String(opts.lng));
-      params.set('radius', '3');
+      params.set('radius', String(searchRadiusKm));
       if (opts.category) params.set('category', opts.category);
       if (opts.q) params.set('q', opts.q);
 
@@ -279,35 +293,48 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         setSelectedSlug(json.data[0].slug);
       }
     },
-    [selectedSlug],
+    [selectedSlug, searchRadiusKm],
   );
 
   useEffect(() => {
+    void loadPlaces({
+      lat: mapCenter.lat,
+      lng: mapCenter.lng,
+      category: activeCategory,
+      q: query || undefined,
+    });
+    // Initial load for the stored or pilot map center.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     if (!userLocation) return;
-    setViewState((v) => ({
-      ...v,
+    const zoom = zoomForSearchRadius(userLocation.lat);
+    setViewState({
       latitude: userLocation.lat,
       longitude: userLocation.lng,
-      zoom: Math.max(v.zoom, 13),
-    }));
+      zoom,
+    });
+    setMapCenter(userLocation, zoom);
     void loadPlaces({
       lat: userLocation.lat,
       lng: userLocation.lng,
       category: activeCategory,
       q: query || undefined,
     });
-  }, [userLocation, activeCategory, loadPlaces, query]);
+  }, [userLocation, activeCategory, loadPlaces, query, setMapCenter, zoomForSearchRadius]);
 
   const zoomIn = () => setViewState((v) => ({ ...v, zoom: Math.min(v.zoom + 1, 18) }));
   const zoomOut = () => setViewState((v) => ({ ...v, zoom: Math.max(v.zoom - 1, 2) }));
   const recenter = () => {
     if (userLocation) {
-      setViewState((v) => ({
-        ...v,
+      const zoom = zoomForSearchRadius(userLocation.lat);
+      setViewState({
         latitude: userLocation.lat,
         longitude: userLocation.lng,
-        zoom: Math.max(v.zoom, 13),
-      }));
+        zoom,
+      });
+      setMapCenter(userLocation, zoom);
       void loadPlaces({
         lat: userLocation.lat,
         lng: userLocation.lng,
@@ -321,7 +348,8 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
   const toggleMapStyle = () => setMapStyleId((id) => (id === 'streets' ? 'satellite' : 'streets'));
 
   const handleMapMoveEnd = useCallback(
-    (latitude: number, longitude: number) => {
+    (latitude: number, longitude: number, zoom: number) => {
+      setMapCenter({ lat: latitude, lng: longitude }, zoom);
       void loadPlaces({
         lat: latitude,
         lng: longitude,
@@ -329,7 +357,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         q: query || undefined,
       });
     },
-    [activeCategory, loadPlaces, query],
+    [activeCategory, loadPlaces, query, setMapCenter],
   );
 
   const mapContent = MAPBOX_TOKEN ? (
@@ -337,7 +365,9 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       mapboxAccessToken={MAPBOX_TOKEN}
       {...viewState}
       onMove={(evt) => setViewState(evt.viewState)}
-      onMoveEnd={(evt) => handleMapMoveEnd(evt.viewState.latitude, evt.viewState.longitude)}
+      onMoveEnd={(evt) =>
+        handleMapMoveEnd(evt.viewState.latitude, evt.viewState.longitude, evt.viewState.zoom)
+      }
       style={{ width: '100%', height: '100%' }}
       mapStyle={mapStyleUrl(mapStyleId)}
     >
@@ -430,6 +460,16 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     </div>
   );
 
+  const exploreLocationMessage =
+    locationDenied || locationError
+      ? locationStatusMessage({
+          permissionDenied: locationDenied,
+          locationError,
+          searchRadiusKm,
+          usingGps: userLocation != null,
+        })
+      : null;
+
   return (
     <div className="relative min-h-screen pb-mobile-nav md:pb-0" data-page="explore">
       <AppMobileHeader />
@@ -438,11 +478,11 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       <main className="relative h-screen w-full overflow-hidden pt-16">
         <div className="absolute inset-0">{mapContent}</div>
 
-        {locationDenied ? (
+        {exploreLocationMessage ? (
           <div className="absolute bottom-28 left-4 right-4 z-30 mx-auto max-w-md rounded-xl border border-outline-variant/30 bg-surface/95 p-4 text-center shadow-lg backdrop-blur md:bottom-8 md:left-10 md:right-auto">
-            <p className="font-body-sm text-on-surface-variant">
-              Enable location to find cooling spots within 3 km of your map center. You can also pan
-              the map to search another area.
+            <p className="font-body-sm text-on-surface-variant">{exploreLocationMessage}</p>
+            <p className="mt-2 font-body-sm text-on-surface-variant">
+              You can also pan the map to search another area.
             </p>
             <button
               type="button"
@@ -580,7 +620,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
                 />
               </button>
               <span className="min-w-[40px] text-center text-sm font-bold text-on-surface">
-                {Math.round((viewState.zoom / 13) * 100)}%
+                {Math.round((viewState.zoom / zoomForSearchRadius(viewState.latitude)) * 100)}%
               </span>
               <button type="button" onClick={zoomIn} aria-label="Zoom in">
                 <MaterialIcon name="add" className="text-on-surface-variant hover:text-primary" />

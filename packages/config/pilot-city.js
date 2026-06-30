@@ -4,5 +4,5 @@ export const PILOT_CITY = {
   postalCode: '92110',
   latitude: 48.9042,
   longitude: 2.3064,
-  defaultRadiusKm: 2,
+  defaultRadiusKm: 3,
 };
