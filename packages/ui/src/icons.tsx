@@ -33,6 +33,7 @@ export type MaterialIconName =
   | 'remove'
   | 'restaurant'
   | 'reviews'
+  | 'satellite_alt'
   | 'search'
   | 'share'
   | 'shopping_bag'
