@@ -14,12 +14,40 @@ export const TYPOGRAPHY_SCALE = [
   'label-caps',
 ] as const;
 
+export type PlaceCategory =
+  | 'CAFE'
+  | 'RESTAURANT'
+  | 'LIBRARY'
+  | 'MALL'
+  | 'MUSEUM'
+  | 'COWORKING'
+  | 'PUBLIC_SPACE';
+
 export const ROUTES = {
   explore: '/explore',
+  saved: '/saved',
   cooling: '/cooling',
+  categoryList: (category: PlaceCategory) => `/cooling/${category.toLowerCase()}`,
   place: (slug: string) => `/places/${slug}`,
   profile: '/profile',
 } as const;
+
+export const PLACE_CATEGORY_ICONS: Record<PlaceCategory, string> = {
+  CAFE: 'local_cafe',
+  RESTAURANT: 'restaurant',
+  LIBRARY: 'menu_book',
+  MALL: 'shopping_bag',
+  MUSEUM: 'museum',
+  COWORKING: 'laptop_mac',
+  PUBLIC_SPACE: 'park',
+};
+
+export const NAV_ICONS: Record<'explore' | 'saved' | 'cooling' | 'profile', string> = {
+  explore: 'map',
+  saved: 'bookmark',
+  cooling: 'cyclone',
+  profile: 'person',
+};
 
 export const PLACE_CATEGORY_LABELS: Record<
   'CAFE' | 'RESTAURANT' | 'LIBRARY' | 'MALL' | 'MUSEUM' | 'COWORKING' | 'PUBLIC_SPACE',
@@ -42,7 +70,24 @@ export const AC_STRENGTH_LABELS: Record<'LIGHTLY_COOLED' | 'COMFORTABLE' | 'FRIG
 
 export const NAV_ITEMS = [
   { id: 'explore' as const, label: 'Explore', href: ROUTES.explore },
-  { id: 'saved' as const, label: 'Saved', href: ROUTES.explore },
+  { id: 'saved' as const, label: 'Saved', href: ROUTES.saved },
   { id: 'cooling' as const, label: 'Cooling', href: ROUTES.cooling },
   { id: 'profile' as const, label: 'Profile', href: ROUTES.profile },
+];
+
+export const EXPLORE_FILTER_CHIPS: Array<{ label: string; category?: PlaceCategory }> = [
+  { label: 'Cafes', category: 'CAFE' },
+  { label: 'Restaurants', category: 'RESTAURANT' },
+  { label: 'Public Spaces', category: 'PUBLIC_SPACE' },
+  { label: 'Malls', category: 'MALL' },
+];
+
+export const ALL_PLACE_CATEGORIES: PlaceCategory[] = [
+  'CAFE',
+  'RESTAURANT',
+  'LIBRARY',
+  'MALL',
+  'MUSEUM',
+  'COWORKING',
+  'PUBLIC_SPACE',
 ];
