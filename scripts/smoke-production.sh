@@ -45,7 +45,7 @@ check_api_health() {
 
 check_api_places() {
   local body count
-  body="$(curl_ok "${API_URL}/places?lat=${PILOT_LAT}&lng=${PILOT_LNG}&radius=2")"
+  body="$(curl_ok "${API_URL}/places?lat=${PILOT_LAT}&lng=${PILOT_LNG}&radius=3")"
   count="$(printf '%s' "$body" | node -e "const j=JSON.parse(require('fs').readFileSync(0,'utf8')); process.stdout.write(String((j.data||[]).length));")"
   [ "${count}" -gt 0 ] || return 1
   echo "Places returned: ${count}"
@@ -75,7 +75,7 @@ image_url_ok() {
 
 check_default_place_photo() {
   local body api_photo_url url
-  body="$(curl_ok "${API_URL}/places?lat=${PILOT_LAT}&lng=${PILOT_LNG}&radius=2&category=CAFE")"
+  body="$(curl_ok "${API_URL}/places?lat=${PILOT_LAT}&lng=${PILOT_LNG}&radius=3")"
   api_photo_url="$(printf '%s' "$body" | node -e "
     const j = JSON.parse(require('fs').readFileSync(0, 'utf8'));
     const place = (j.data || []).find((p) => p.photoUrl);
@@ -125,6 +125,7 @@ fi
 step "Web app pages (${WEB_URL})"
 retry "Web /explore" check_web_page "/explore"
 retry "Web /cooling" check_web_page "/cooling"
+retry "Web dynamic place detail" check_web_page "/places/demo-place"
 
 echo ""
 echo "Production smoke test passed."

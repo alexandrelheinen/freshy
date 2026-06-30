@@ -1,4 +1,5 @@
 import type { Express, Request, Response } from 'express';
+import multer from 'multer';
 import type { PrismaClient } from '@freshy/db';
 import { requireAuth } from './auth';
 import {
@@ -12,6 +13,14 @@ import {
 } from './users';
 import { createPlaceSchema, createUserPlace } from './create-place';
 import { withResolvedPlacePhoto } from './places';
+import { parseCreatePlaceFields, resolvePlaceCoordinates } from './place-submission';
+import { uploadPlacePhoto } from './place-photo-upload';
+import { isR2Configured } from './storage/r2';
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
+});
 
 function paramId(value: string | string[]): string {
   return Array.isArray(value) ? value[0]! : value;
@@ -33,6 +42,44 @@ async function withDbUser(
     res.status(503).json({ error: 'Could not sync user' });
     return null;
   }
+}
+
+async function handleCreatePlace(
+  prisma: PrismaClient,
+  userId: string,
+  body: Record<string, unknown>,
+  photo?: Express.Multer.File,
+): Promise<{ status: number; payload: unknown }> {
+  if (photo && !isR2Configured()) {
+    return { status: 503, payload: { error: 'Photo upload is not configured on the server.' } };
+  }
+
+  const parsed = parseCreatePlaceFields(body);
+  if (!parsed.success) {
+    return { status: 400, payload: { error: 'Invalid body', details: parsed.error.flatten() } };
+  }
+
+  const coords = await resolvePlaceCoordinates(parsed.data);
+  if ('error' in coords) {
+    return { status: 400, payload: { error: coords.error } };
+  }
+
+  const place = await createUserPlace(prisma, userId, {
+    ...parsed.data,
+    latitude: coords.latitude,
+    longitude: coords.longitude,
+  });
+
+  if (photo) {
+    const photoUrl = await uploadPlacePhoto(place.slug, photo.buffer, photo.mimetype);
+    const updated = await prisma.place.update({
+      where: { id: place.id },
+      data: { photoUrl },
+    });
+    return { status: 201, payload: { data: withResolvedPlacePhoto(updated) } };
+  }
+
+  return { status: 201, payload: { data: withResolvedPlacePhoto(place) } };
 }
 
 export function registerUserRoutes(app: Express, prisma: PrismaClient): void {
@@ -58,24 +105,58 @@ export function registerUserRoutes(app: Express, prisma: PrismaClient): void {
     }
   });
 
-  app.post('/users/me/places', requireAuth, async (req, res) => {
-    const user = await withDbUser(prisma, req, res);
-    if (!user) return;
-    const parsed = createPlaceSchema.safeParse(req.body);
-    if (!parsed.success) {
-      res.status(400).json({ error: 'Invalid body', details: parsed.error.flatten() });
-      return;
-    }
-    try {
-      const place = await createUserPlace(prisma, user.id, {
-        ...parsed.data,
-        status: 'DRAFT',
-      });
-      res.status(201).json({ data: withResolvedPlacePhoto(place) });
-    } catch {
-      res.status(503).json({ error: 'Database unavailable' });
-    }
-  });
+  app.post(
+    '/users/me/places',
+    requireAuth,
+    (req, res, next) => {
+      if (req.is('multipart/form-data')) {
+        upload.single('photo')(req, res, next);
+        return;
+      }
+      next();
+    },
+    async (req, res) => {
+      const user = await withDbUser(prisma, req, res);
+      if (!user) return;
+
+      try {
+        if (!req.is('multipart/form-data')) {
+          const parsed = createPlaceSchema.safeParse(req.body);
+          if (!parsed.success) {
+            res.status(400).json({ error: 'Invalid body', details: parsed.error.flatten() });
+            return;
+          }
+          const coords = await resolvePlaceCoordinates(parsed.data);
+          if ('error' in coords) {
+            res.status(400).json({ error: coords.error });
+            return;
+          }
+          const place = await createUserPlace(prisma, user.id, {
+            ...parsed.data,
+            status: 'DRAFT',
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+          });
+          res.status(201).json({ data: withResolvedPlacePhoto(place) });
+          return;
+        }
+
+        const result = await handleCreatePlace(
+          prisma,
+          user.id,
+          req.body as Record<string, unknown>,
+          req.file,
+        );
+        res.status(result.status).json(result.payload);
+      } catch (err) {
+        if (err instanceof Error && err.message !== 'R2_NOT_CONFIGURED') {
+          res.status(400).json({ error: err.message });
+          return;
+        }
+        res.status(503).json({ error: 'Database unavailable' });
+      }
+    },
+  );
 
   app.get('/users/me/saved', requireAuth, async (req, res) => {
     const user = await withDbUser(prisma, req, res);

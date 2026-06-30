@@ -8,11 +8,12 @@ export const createPlaceSchema = z.object({
   category: z.nativeEnum(PlaceCategory),
   address: z.string().trim().min(3).max(240),
   description: z.string().trim().max(1000).optional(),
-  latitude: z.number().min(-90).max(90),
-  longitude: z.number().min(-180).max(180),
+  latitude: z.number().min(-90).max(90).optional(),
+  longitude: z.number().min(-180).max(180).optional(),
   aggregatedFreshnessLevel: z.enum(FRESHNESS_LEVEL_IDS as [string, ...string[]]),
   tags: z.array(z.enum(PLACE_TAG_IDS as [string, ...string[]])).default([]),
   status: z.enum(['DRAFT', 'PUBLISHED']).default('PUBLISHED'),
+  photoUrl: z.string().url().optional(),
 });
 
 export type CreatePlaceInput = z.infer<typeof createPlaceSchema>;
@@ -37,7 +38,7 @@ export async function uniquePlaceSlug(prisma: PrismaClient, base: string): Promi
 export async function createUserPlace(
   prisma: PrismaClient,
   userId: string,
-  input: CreatePlaceInput,
+  input: CreatePlaceInput & { latitude: number; longitude: number },
 ): Promise<Place> {
   const baseSlug = slugifyPlaceName(input.name);
   const slug = await uniquePlaceSlug(prisma, baseSlug);
@@ -51,6 +52,7 @@ export async function createUserPlace(
       latitude: input.latitude,
       longitude: input.longitude,
       address: input.address,
+      photoUrl: input.photoUrl ?? null,
       aggregatedFreshnessLevel: input.aggregatedFreshnessLevel as FreshnessLevel,
       tags: input.tags,
       status: input.status,

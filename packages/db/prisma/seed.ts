@@ -157,6 +157,11 @@ async function main() {
     },
   });
 
+  if (process.env.SEED_DEMO !== 'true') {
+    console.log(`Seeded demo user ${demoUser.username}. Skipped demo places (set SEED_DEMO=true).`);
+    return;
+  }
+
   let index = 0;
   const places: Array<{
     slug: string;

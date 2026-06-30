@@ -2,6 +2,7 @@
 
 | Script                              | Usage                                                          |
 | ----------------------------------- | -------------------------------------------------------------- |
+| `migrate-deploy.sh`                 | Production Prisma migrate deploy (direct URL, retries)         |
 | `validation.sh`                     | Full CI pipeline locally; run before every PR                  |
 | `build.sh`                          | Compile all packages                                           |
 | `setup-local-db.sh`                 | Start Docker PostGIS + create `.env`                           |
@@ -15,12 +16,12 @@
 
 | Workflow                                                                      | Trigger                            | Command / action                          |
 | ----------------------------------------------------------------------------- | ---------------------------------- | ----------------------------------------- |
-| [migrate-database.yml](../.github/workflows/migrate-database.yml)             | Prisma schema or migrations change | `pnpm --filter @freshy/db migrate:deploy` |
+| [migrate-database.yml](../.github/workflows/migrate-database.yml)             | Prisma schema or migrations change | `pnpm migrate:deploy:production`          |
 | [sync-place-defaults.yml](../.github/workflows/sync-place-defaults.yml)       | Default place images change        | `pnpm upload:place-defaults`              |
 | [production-screenshots.yml](../.github/workflows/production-screenshots.yml) | Web or UI change                   | Playwright against live Pages + R2 upload |
 | [smoke-production.yml](../.github/workflows/smoke-production.yml)             | Every push to `main`               | `bash scripts/smoke-production.sh`        |
 
-**Secrets:** `DATABASE_URL` (Neon, for migrations); `R2_*` (for asset and screenshot uploads).
+**Secrets:** `DATABASE_URL` (Neon pooled, API runtime); `DIRECT_DATABASE_URL` (Neon direct, migrations); `R2_*` (for asset and screenshot uploads).
 
 ```bash
 # Production smoke test (same as CD on main)
