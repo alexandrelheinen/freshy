@@ -2,6 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   acStrengthLevel,
+  directionsUrl,
   formatDistance,
   formatDistanceWithWalk,
   formatRelativeTime,
@@ -26,5 +27,23 @@ describe('@freshy/web api helpers', () => {
   it('maps AC strength to bar level', () => {
     assert.equal(acStrengthLevel('FRIGID'), 3);
     assert.equal(acStrengthLevel('LIGHTLY_COOLED'), 1);
+  });
+
+  it('builds directions URL from address when available', () => {
+    const url = directionsUrl({
+      latitude: 48.9042,
+      longitude: 2.3064,
+      address: 'Rue Martre, 92110 Clichy',
+    });
+    assert.match(url, /destination=Rue%20Martre/);
+    assert.doesNotMatch(url, /48\.9042/);
+  });
+
+  it('builds directions URL from coordinates when address is missing', () => {
+    const url = directionsUrl({ latitude: 48.9042, longitude: 2.3064, address: null });
+    assert.equal(
+      url,
+      'https://www.google.com/maps/dir/?api=1&destination=48.9042,2.3064',
+    );
   });
 });

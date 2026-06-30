@@ -46,7 +46,7 @@ export function SavePlaceButton({ placeId }: { placeId: string }) {
 
   if (!isSignedIn) {
     return (
-      <div className="mt-3">
+      <div className="mt-0">
         <SignInButton mode="modal">
           <button
             type="button"
@@ -60,7 +60,7 @@ export function SavePlaceButton({ placeId }: { placeId: string }) {
   }
 
   return (
-    <div className="mt-3">
+    <div className="mt-0">
       <button
         type="button"
         disabled={loading || busy}

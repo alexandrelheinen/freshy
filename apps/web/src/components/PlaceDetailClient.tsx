@@ -24,7 +24,7 @@ const SavePlaceButton = dynamic(
   () => import('./SavePlaceButton').then((m) => ({ default: m.SavePlaceButton })),
   { ssr: false },
 );
-import { acStrengthLevel, formatRelativeTime, staticMapUrl, type PlaceDetailDto } from '../lib/api';
+import { acStrengthLevel, directionsUrl, formatRelativeTime, staticMapUrl, type PlaceDetailDto } from '../lib/api';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
@@ -136,84 +136,94 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
       <AppTopNav active="explore" />
 
       <main className="mx-auto max-w-3xl pt-16 md:max-w-4xl md:pt-24">
-        <section className="relative h-72 w-full overflow-hidden bg-gradient-to-br from-primary-container to-secondary-container md:h-80 md:rounded-2xl">
+        <section className="relative h-64 w-full overflow-hidden bg-gradient-to-br from-primary-container to-secondary-container md:h-72 md:rounded-2xl">
           <img
             src={getPlacePhotoUrl(place.photoUrl, place.category as PlaceCategory)}
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
-          <div className="absolute bottom-6 left-margin-mobile md:left-10">
-            <span className="inline-block rounded-full bg-primary-container px-3 py-1 font-label-caps text-label-caps text-on-primary-container">
+          <div className="absolute right-4 top-4 md:right-6 md:top-6">
+            <span className="inline-block rounded-full bg-primary-container px-3 py-1 font-label-caps text-label-caps text-on-primary-container shadow-sm">
               {place.isOpen !== false ? 'OPEN NOW' : 'CLOSED'}
             </span>
-            <h2 className="mt-2 font-display-lg text-display-lg text-white drop-shadow-md">
-              {place.name}
-            </h2>
           </div>
         </section>
 
-        <section className="relative z-10 -mt-8 grid grid-cols-2 gap-4 px-margin-mobile md:px-10">
-          <GlassCard className="flex flex-col items-center p-4 text-center shadow-[0_20px_20px_rgba(12,103,128,0.04)]">
-            <MaterialIcon name="thermostat" className="mb-2 text-primary" size={36} />
-            <span className="font-label-caps text-label-caps uppercase tracking-widest text-secondary">
-              Interior
-            </span>
-            <div className="mt-1 flex items-baseline">
-              <span className="font-display-lg text-display-lg text-primary">
-                {place.aggregatedTemperatureC != null
-                  ? Math.round(place.aggregatedTemperatureC)
-                  : '—'}
-              </span>
-              {place.aggregatedTemperatureC != null ? (
-                <span className="ml-1 font-title-md text-primary">°C</span>
-              ) : null}
-            </div>
-          </GlassCard>
-          <GlassCard className="flex flex-col items-center p-4 text-center shadow-[0_20px_20px_rgba(12,103,128,0.04)]">
-            <MaterialIcon name="ac_unit" className="mb-2 text-primary" size={36} />
-            <span className="font-label-caps text-label-caps uppercase tracking-widest text-secondary">
-              AC Strength
-            </span>
-            <div className="mt-2">
-              <AcStrengthSnowflakes level={strengthLevel} />
-            </div>
-            <span className="mt-1 font-body-sm font-semibold text-primary">
-              {place.aggregatedAcStrength
-                ? AC_STRENGTH_LABELS[place.aggregatedAcStrength]
-                : 'Unknown'}
-            </span>
-          </GlassCard>
-        </section>
+        <div className="px-margin-mobile md:px-10">
+          <h2 className="mt-6 font-display-lg text-display-lg text-on-surface">{place.name}</h2>
 
-        <section className="mt-6 px-margin-mobile md:px-10">
-          <div className="mb-6 flex flex-wrap gap-2">
-            {amenities.map((amenity) => (
-              <span
-                key={amenity}
-                className="flex items-center gap-1 rounded-full bg-secondary-container px-3 py-1 font-label-caps text-label-caps text-on-secondary-container"
-              >
-                <MaterialIcon name={AMENITY_ICONS[amenity] as MaterialIconName} size={14} />
-                {AMENITY_LABELS[amenity]}
+          <section className="relative z-10 mt-4 grid grid-cols-2 gap-4">
+            <GlassCard className="flex flex-col items-center p-4 text-center shadow-[0_20px_20px_rgba(12,103,128,0.04)]">
+              <MaterialIcon name="thermostat" className="mb-2 text-primary" size={32} />
+              <span className="font-label-caps text-label-caps uppercase tracking-widest text-secondary">
+                Interior
               </span>
-            ))}
-          </div>
-          {place.address ? (
-            <p className="mb-4 flex items-center gap-1 text-sm text-on-surface-variant">
-              <MaterialIcon name="location_on" size={16} />
-              {place.address}
-            </p>
-          ) : null}
-          <p className="font-body-lg leading-relaxed text-on-surface-variant">
-            {place.description}
-          </p>
-          <PlaceActions
-            name={place.name}
-            latitude={place.latitude}
-            longitude={place.longitude}
-          />
-          <SavePlaceButton placeId={place.id} />
-        </section>
+              <div className="mt-1 flex items-baseline">
+                <span className="font-headline-lg text-primary">
+                  {place.aggregatedTemperatureC != null
+                    ? Math.round(place.aggregatedTemperatureC)
+                    : '—'}
+                </span>
+                {place.aggregatedTemperatureC != null ? (
+                  <span className="ml-1 font-title-md text-primary">°C</span>
+                ) : null}
+              </div>
+            </GlassCard>
+            <GlassCard className="flex flex-col items-center p-4 text-center shadow-[0_20px_20px_rgba(12,103,128,0.04)]">
+              <MaterialIcon name="ac_unit" className="mb-2 text-primary" size={32} />
+              <span className="font-label-caps text-label-caps uppercase tracking-widest text-secondary">
+                AC Strength
+              </span>
+              <div className="mt-2 scale-90">
+                <AcStrengthSnowflakes level={strengthLevel} />
+              </div>
+              <span className="mt-1 font-body-sm font-semibold text-primary">
+                {place.aggregatedAcStrength
+                  ? AC_STRENGTH_LABELS[place.aggregatedAcStrength]
+                  : 'Unknown'}
+              </span>
+            </GlassCard>
+          </section>
+
+          <section className="mt-8">
+            {amenities.length > 0 ? (
+              <div className="mb-6 flex flex-wrap gap-2">
+                {amenities.map((amenity) => (
+                  <span
+                    key={amenity}
+                    className="flex items-center gap-1 rounded-full bg-secondary-container px-3 py-1 font-label-caps text-label-caps text-on-secondary-container"
+                  >
+                    <MaterialIcon name={AMENITY_ICONS[amenity] as MaterialIconName} size={14} />
+                    {AMENITY_LABELS[amenity]}
+                  </span>
+                ))}
+              </div>
+            ) : null}
+
+            {place.description ? (
+              <p className="mb-6 font-body-lg leading-relaxed text-on-surface-variant">
+                {place.description}
+              </p>
+            ) : null}
+
+            {place.address ? (
+              <p className="mb-6 flex items-start gap-2 font-body-sm text-on-surface-variant">
+                <MaterialIcon name="location_on" size={18} className="mt-0.5 shrink-0 text-outline" />
+                <span>{place.address}</span>
+              </p>
+            ) : null}
+
+            <div className="space-y-3">
+              <PlaceActions
+                latitude={place.latitude}
+                longitude={place.longitude}
+                address={place.address}
+              />
+              <SavePlaceButton placeId={place.id} />
+            </div>
+          </section>
+        </div>
 
         <section className="mt-8 px-margin-mobile md:px-10">
           <div className="mb-4 flex items-center justify-between">
@@ -266,11 +276,20 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
           ) : null}
         </section>
 
-        <section className="mt-8 px-margin-mobile pb-8 md:px-10">
+        <section className="mt-10 px-margin-mobile pb-8 md:px-10">
           <h3 className="mb-4 font-headline-lg-mobile text-headline-lg-mobile text-on-surface md:font-headline-lg md:text-headline-lg">
             Location
           </h3>
-          <div className="relative h-48 w-full overflow-hidden rounded-2xl shadow-md">
+          <a
+            href={directionsUrl({
+              latitude: place.latitude,
+              longitude: place.longitude,
+              address: place.address,
+            })}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="relative block h-48 w-full overflow-hidden rounded-2xl shadow-md transition-opacity hover:opacity-95"
+          >
             {mapPreview ? (
               <img src={mapPreview} alt="" className="h-full w-full object-cover" />
             ) : (
@@ -278,11 +297,9 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
             )}
             <div className="glass absolute bottom-3 left-3 flex items-center gap-2 rounded-lg px-3 py-1.5">
               <MaterialIcon name="near_me" className="text-primary" size={16} />
-              <span className="font-body-sm font-medium text-on-surface">
-                {place.address ?? 'View on map'}
-              </span>
+              <span className="font-body-sm font-medium text-on-surface">Open in Google Maps</span>
             </div>
-          </div>
+          </a>
         </section>
       </main>
 
