@@ -133,10 +133,10 @@ Set under **Settings → Environment variables** (Production **and** Preview):
 
 ### Build & start commands
 
-| Field             | Value                                               |
-| ----------------- | --------------------------------------------------- |
-| **Build Command** | `corepack enable && pnpm install && pnpm build:api` |
-| **Start Command** | `node packages/api/dist/server.js`                  |
+| Field             | Value                                                                         |
+| ----------------- | ----------------------------------------------------------------------------- |
+| **Build Command** | `corepack enable && pnpm install && pnpm build:api:render`                    |
+| **Start Command** | `pnpm --filter @freshy/db migrate:deploy && node packages/api/dist/server.js` |
 
 Blueprint: [infrastructure/render/render.yaml](../infrastructure/render/render.yaml)
 

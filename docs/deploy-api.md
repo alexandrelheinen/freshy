@@ -66,13 +66,13 @@ Render deploys from GitHub. Skip if the repo is already there.
 4. **Build Command**: copy **only** the line below (do not include the word “Command” or any table header):
 
 ```
-corepack enable && pnpm install && pnpm build:api
+corepack enable && pnpm install && pnpm build:api:render
 ```
 
 5. **Start Command**: copy **only** this line:
 
 ```
-node packages/api/dist/server.js
+pnpm --filter @freshy/db migrate:deploy && node packages/api/dist/server.js
 ```
 
 Or click **Apply Blueprint** if you imported [`infrastructure/render/render.yaml`](../infrastructure/render/render.yaml).
@@ -118,7 +118,7 @@ https://freshy-api.onrender.com/places
 
 Expected: JSON with `"data": [ ... 50 places ... ]`.
 
-**If you see `503 Database unavailable`:** check `DATABASE_URL` on Render (typo, expired password, or Neon project paused; open Neon dashboard dashboard to wake it).
+**If you see `503 Database unavailable`:** the API can reach Postgres but the schema may be stale. Ensure the Render build command includes `pnpm build:api:render` (runs `prisma migrate deploy`). Also check `DATABASE_URL` on Render (typo, expired password, or Neon project paused).
 
 **Free tier cold start:** first request after idle may take ~30 seconds. Wait and refresh.
 

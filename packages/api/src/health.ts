@@ -6,11 +6,12 @@ export type HealthSnapshot = {
   db: 'ok' | 'unavailable';
 };
 
+/** Probe that Place queries work (schema migrated), not just TCP to Postgres. */
 export async function checkDatabaseHealth(
-  queryRaw: (sql: string) => Promise<unknown>,
+  probe: () => Promise<unknown>,
 ): Promise<'ok' | 'unavailable'> {
   try {
-    await queryRaw('SELECT 1');
+    await probe();
     return 'ok';
   } catch {
     return 'unavailable';
