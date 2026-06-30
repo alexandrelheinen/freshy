@@ -67,7 +67,10 @@ export function registerUserRoutes(app: Express, prisma: PrismaClient): void {
       return;
     }
     try {
-      const place = await createUserPlace(prisma, user.id, parsed.data);
+      const place = await createUserPlace(prisma, user.id, {
+        ...parsed.data,
+        status: 'DRAFT',
+      });
       res.status(201).json({ data: withResolvedPlacePhoto(place) });
     } catch {
       res.status(503).json({ error: 'Database unavailable' });

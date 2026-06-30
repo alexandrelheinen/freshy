@@ -63,6 +63,7 @@ export async function categoryCounts(
 ): Promise<Array<{ category: PlaceCategory; count: number }>> {
   const groups = await prisma.place.groupBy({
     by: ['category'],
+    where: { status: 'PUBLISHED' },
     _count: { category: true },
     orderBy: { category: 'asc' },
   });
@@ -71,7 +72,7 @@ export async function categoryCounts(
 
 export async function featuredPlace(prisma: PrismaClient): Promise<Place | null> {
   const place = await prisma.place.findFirst({
-    where: { aggregatedAcStrength: 'FRIGID' },
+    where: { aggregatedAcStrength: 'FRIGID', status: 'PUBLISHED' },
     orderBy: { aggregatedTemperatureC: 'asc' },
   });
   return place ? withResolvedPlacePhoto(place) : null;
