@@ -1,8 +1,8 @@
 # Freshy
 
-[![CI](https://github.com/alexandrelheinen/freshy/actions/workflows/ci.yml/badge.svg)](https://github.com/alexandrelheinen/freshy/actions/workflows/ci.yml)
+[![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/alexandrelheinen/freshy/actions/workflows/ci.yml)
 [![Cloudflare](https://img.shields.io/website?url=https%3A%2F%2Ffreshy-25e.pages.dev%2Fexplore&label=Cloudflare&logo=cloudflare&logoColor=white&color=F38020)](https://freshy-25e.pages.dev/explore)
-[![API (Render)](https://img.shields.io/website?url=https%3A%2F%2Ffreshy-api.onrender.com%2Fhealth&label=API%20(Render)&logo=render&color=46E3B7)](https://freshy-api.onrender.com/health)
+[![API | Render](https://img.shields.io/website?url=https%3A%2F%2Ffreshy-api.onrender.com%2Fhealth&label=API%20%7C%20Render&logo=render&color=46E3B7)](https://freshy-api.onrender.com/health)
 [![Neon](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ffreshy-api.onrender.com%2Fhealth&query=%24.db&label=Neon&color=00E599&logo=postgresql)](https://console.neon.tech)
 
 **Freshy** is a mobile-first cooling map: find air-conditioned refuges in hot cities.
