@@ -72,7 +72,7 @@ corepack enable && pnpm install && pnpm build:api:render
 5. **Start Command**: copy **only** this line:
 
 ```
-pnpm --filter @freshy/db migrate:deploy && node packages/api/dist/server.js
+pnpm migrate:deploy:production && node packages/api/dist/server.js
 ```
 
 Or click **Apply Blueprint** if you imported [`infrastructure/render/render.yaml`](../infrastructure/render/render.yaml).
@@ -81,10 +81,11 @@ Or click **Apply Blueprint** if you imported [`infrastructure/render/render.yaml
 
 On the service → **Environment**:
 
-| Key            | Value                                                                                                                      |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `DATABASE_URL` | Your **Neon direct** connection URI (from Neon → Connect → URI). Use the **non-pooler** host for reliability on free tier. |
-| `NODE_VERSION` | `20`                                                                                                                       |
+| Key                   | Value                                                                                                                       |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`        | Neon **pooled** connection URI (from Neon → Connect). Fine for the running API.                                             |
+| `DIRECT_DATABASE_URL` | Neon **direct** (non-pooler) URI for `prisma migrate deploy` on start. Required on Render if `DATABASE_URL` uses `-pooler`. |
+| `NODE_VERSION`        | `20`                                                                                                                        |
 
 Click **Save Changes**. Render will deploy (first build ~3–5 minutes).
 
@@ -118,7 +119,9 @@ https://freshy-api.onrender.com/places
 
 Expected: JSON with `"data": [ ... 50 places ... ]`.
 
-**If you see `503 Database unavailable`:** the API can reach Postgres but the schema may be stale. Ensure the Render build command includes `pnpm build:api:render` (runs `prisma migrate deploy`). Also check `DATABASE_URL` on Render (typo, expired password, or Neon project paused).
+**If you see `503 Database unavailable`:** the API can reach Postgres but the schema may be stale. Ensure the Render **start command** runs `pnpm migrate:deploy:production` before `node packages/api/dist/server.js`. Also check `DATABASE_URL` on Render (typo, expired password, or Neon project paused).
+
+**If Render build fails with Prisma `P1002` (advisory lock timeout):** set `DIRECT_DATABASE_URL` to Neon’s **non-pooler** URI (host without `-pooler`). Migrations run at **start**, not during the compile step, so web-only commits should still build.
 
 **Free tier cold start:** first request after idle may take ~30 seconds. Wait and refresh.
 
@@ -183,14 +186,15 @@ The map needs a Mapbox token or the map area may stay blank even when places loa
 
 ## Troubleshooting
 
-| Symptom                                                    | Cause                                      | Fix                                            |
-| ---------------------------------------------------------- | ------------------------------------------ | ---------------------------------------------- |
-| `/explore` empty, no errors                                | Wrong or missing `NEXT_PUBLIC_API_URL`     | Step 7–8                                       |
-| Browser network tab shows failed fetch to `localhost:4000` | Env var not set at build time              | Set on Pages, **redeploy**                     |
-| `api.freshy-25e.pages.dev` → “nothing here”                | Pages site, not API                        | Deploy API on Render (Step 3)                  |
-| API `/places` returns `[]`                                 | Empty DB or wrong `DATABASE_URL` on Render | Re-run seed; fix env on Render                 |
-| API `/places` returns `503`                                | DB connection failed                       | Check Neon URL; wake Neon project              |
-| First API request very slow                                | Render free tier sleep                     | Normal; upgrade or use a keep-alive ping later |
+| Symptom                                                    | Cause                                      | Fix                                                                  |
+| ---------------------------------------------------------- | ------------------------------------------ | -------------------------------------------------------------------- |
+| `/explore` empty, no errors                                | Wrong or missing `NEXT_PUBLIC_API_URL`     | Step 7–8                                                             |
+| Browser network tab shows failed fetch to `localhost:4000` | Env var not set at build time              | Set on Pages, **redeploy**                                           |
+| `api.freshy-25e.pages.dev` → “nothing here”                | Pages site, not API                        | Deploy API on Render (Step 3)                                        |
+| API `/places` returns `[]`                                 | Empty DB or wrong `DATABASE_URL` on Render | Re-run seed; fix env on Render                                       |
+| API `/places` returns `503`                                | DB connection failed                       | Check Neon URL; wake Neon project                                    |
+| Render build fails `P1002` advisory lock                   | Migrations during build on Neon pooler     | Use this repo’s start-time migrate script; set `DIRECT_DATABASE_URL` |
+| First API request very slow                                | Render free tier sleep                     | Normal; upgrade or use a keep-alive ping later                       |
 
 ---
 
