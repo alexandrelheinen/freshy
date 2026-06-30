@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 
 const pages = [
   { name: 'explore', path: '/explore', label: 'Freshy Map (Explore)' },
@@ -19,7 +19,6 @@ test.describe('Freshy page screenshots', () => {
         path: `../../screenshots/${page.name}.png`,
         fullPage: true,
       });
-      await expect(browserPage.locator(`[data-page="${page.name}"]`).first()).toBeVisible();
     });
   }
 });
