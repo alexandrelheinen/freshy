@@ -26,7 +26,6 @@ export type MaterialIconName =
   | 'museum'
   | 'my_location'
   | 'near_me'
-  | 'nest_eco_leaf'
   | 'notifications'
   | 'park'
   | 'person'

@@ -15,12 +15,16 @@
 
 ### Screens in scope (from Stitch)
 
-| Screen                                              | Role                                                                                        |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| **Mapa Freshy** (`mapa_freshy`)                     | Home / Explore — interactive map, search, category chips, nearby place preview card         |
-| **Categorias de Lugares** (`categorias_de_lugares`) | Cooling tab — browse by category (cafés, restaurants, libraries, malls, museums, coworking) |
-| **Detalhes do Local** (`detalhes_do_local`)         | Place detail — temperature, AC strength, amenities, directions, climate reviews             |
-| **Meu Perfil** (`meu_perfil`)                       | Profile — saved places, user reviews, gamification (“Pontos de Alívio”)                     |
+| Screen                                              | Route                           | Role                                                                                        |
+| --------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------- |
+| **Mapa Freshy** (`mapa_freshy`)                     | `/explore`                      | Home / Explore — interactive map, search, category chips, nearby place preview card         |
+| **Categorias de Lugares** (`categorias_de_lugares`) | `/cooling`                      | Cooling tab — browse by category (cafés, restaurants, libraries, malls, museums, coworking) |
+| **Lista de Lugares** (`lista_de_lugares`)           | `/cooling/[category]`, `/saved` | Filterable place list by category or saved bookmarks                                        |
+| **Detalhes do Local** (`detalhes_do_local`)         | `/places/[slug]`                | Place detail — temperature, AC strength, amenities, directions, climate reviews             |
+| **Meu Perfil** (`meu_perfil`)                       | `/profile`                      | Profile — saved places, user reviews, relief points, link to add a place                    |
+| **Adicionar Local** (`adicionar_novo_local`)        | `/profile/places/new`           | Submit a new cooling spot (authenticated)                                                   |
+
+**Deferred:** Freshy Studio (`freshy_studio_*`) — admin auth and moderation DB, separate workstream.
 
 ### Key product concepts
 
@@ -56,52 +60,52 @@ UI copy in source is **English** until i18n lands; Stitch mockups may show other
 
 ### Application layer
 
-| Concern                   | Technology                                     | Notes                                                 |
-| ------------------------- | ---------------------------------------------- | ----------------------------------------------------- |
-| **Framework**             | [Next.js 15](https://nextjs.org/) (App Router) | SSR/SSG for SEO, API routes, PWA support              |
-| **UI**                    | React 19 + Tailwind CSS 4                      | Direct port from Stitch HTML; tokens from `DESIGN.md` |
-| **Component primitives**  | Radix UI or shadcn/ui                          | Accessible dialogs, sheets, tabs                      |
-| **Maps**                  | [Mapbox GL JS](https://www.mapbox.com/)        | Custom cool-toned map style; strong marker clustering |
-| **State / data fetching** | TanStack Query + Zustand                       | Server state + light client state (map filters)       |
-| **Forms & validation**    | React Hook Form + Zod                          | Review submission, profile edits                      |
+| Concern                   | Technology                                     | Notes                                                    |
+| ------------------------- | ---------------------------------------------- | -------------------------------------------------------- |
+| **Framework**             | [Next.js 15](https://nextjs.org/) (App Router) | SSR/SSG for SEO, API routes, PWA support                 |
+| **UI**                    | React 19 + Tailwind CSS 4                      | Direct port from Stitch HTML; tokens from `DESIGN.md`    |
+| **Component primitives**  | Radix UI or shadcn/ui                          | Accessible dialogs, sheets, tabs                         |
+| **Maps**                  | [Mapbox GL JS](https://www.mapbox.com/)        | Custom cool-toned map style; strong marker clustering    |
+| **State / data fetching** | TanStack Query + Zustand                       | Server state + light client state (map filters)          |
+| **Forms & validation**    | React Hook Form + Zod                          | Review submission, profile edits                         |
 | **i18n**                  | next-intl                                      | English in source; locale files (e.g. pt-BR) when needed |
 
 **Alternative considered:** Expo/React Native for a store app — defer until post-MVP; PWA covers mobile web first.
 
 ### Backend & data
 
-| Concern             | Technology                                                                | Notes                                                    |
-| ------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------- |
-| **API**             | Express on **Render** (production today); **Cloudflare Workers** + Hyperdrive (planned) | Render ships first; migrate to Workers when ready |
-| **ORM**             | Prisma                                                                    | Migrations, type-safe queries                            |
-| **Database**        | PostgreSQL 16 + **PostGIS**                                               | `ST_DWithin`, spatial indexes for “near me”              |
-| **Auth**            | [Clerk](https://clerk.com/) (live)                                        | JWT verification in `packages/api`; sign-in on web PWA  |
-| **File storage**    | **Cloudflare R2**                                                         | Place photos, avatars, CI screenshots                    |
-| **Search**          | PostgreSQL full-text + PostGIS filters                                    | Upgrade to Meilisearch if search latency matters         |
-| **Background jobs** | Cloudflare Queues or BullMQ + Redis                                       | Score aggregation, image processing, notifications       |
+| Concern             | Technology                                                                              | Notes                                                  |
+| ------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| **API**             | Express on **Render** (production today); **Cloudflare Workers** + Hyperdrive (planned) | Render ships first; migrate to Workers when ready      |
+| **ORM**             | Prisma                                                                                  | Migrations, type-safe queries                          |
+| **Database**        | PostgreSQL 16 + **PostGIS**                                                             | `ST_DWithin`, spatial indexes for “near me”            |
+| **Auth**            | [Clerk](https://clerk.com/) (live)                                                      | JWT verification in `packages/api`; sign-in on web PWA |
+| **File storage**    | **Cloudflare R2**                                                                       | Place photos, avatars, CI screenshots                  |
+| **Search**          | PostgreSQL full-text + PostGIS filters                                                  | Upgrade to Meilisearch if search latency matters       |
+| **Background jobs** | Cloudflare Queues or BullMQ + Redis                                                     | Score aggregation, image processing, notifications     |
 
 ### External services
 
-| Service                                  | Purpose                                            |
-| ---------------------------------------- | -------------------------------------------------- |
-| **Mapbox** (or Google Maps Platform)     | Base map tiles, geocoding, turn-by-turn deep links |
-| **OpenWeather / Tomorrow.io** (optional) | Outdoor heat context (“heat wave alert”)           |
-| **Resend / SendGrid**                    | Transactional email (welcome, review reminders)    |
-| **Sentry**                               | Error monitoring                                   |
+| Service                                     | Purpose                                            |
+| ------------------------------------------- | -------------------------------------------------- |
+| **Mapbox** (or Google Maps Platform)        | Base map tiles, geocoding, turn-by-turn deep links |
+| **OpenWeather / Tomorrow.io** (optional)    | Outdoor heat context (“heat wave alert”)           |
+| **Resend / SendGrid**                       | Transactional email (welcome, review reminders)    |
+| **Sentry**                                  | Error monitoring                                   |
 | **PostHog** or **Cloudflare Web Analytics** | Product analytics (privacy-friendly)               |
 
 ### DevOps & infrastructure
 
-| Concern           | Technology                                             |
-| ----------------- | ------------------------------------------------------ |
-| **Hosting (web)** | **Cloudflare Pages** (OpenNext adapter for Next.js 15) |
-| **Hosting (API)** | **Render** (Express today); **Cloudflare Workers** + Hyperdrive (target) |
-| **Hosting (DB)**  | Neon or Supabase (managed Postgres + PostGIS)          |
-| **Object storage**| **Cloudflare R2**                                      |
-| **CDN / edge**    | Cloudflare CDN (Pages + R2)                            |
-| **CI/CD**         | GitHub Actions — lint, typecheck, test, R2 screenshots |
-| **Secrets**       | Cloudflare dashboard + GitHub encrypted secrets        |
-| **IaC (later)**   | Wrangler + Terraform/Pulumi when multi-env grows       |
+| Concern            | Technology                                                               |
+| ------------------ | ------------------------------------------------------------------------ |
+| **Hosting (web)**  | **Cloudflare Pages** (OpenNext adapter for Next.js 15)                   |
+| **Hosting (API)**  | **Render** (Express today); **Cloudflare Workers** + Hyperdrive (target) |
+| **Hosting (DB)**   | Neon or Supabase (managed Postgres + PostGIS)                            |
+| **Object storage** | **Cloudflare R2**                                                        |
+| **CDN / edge**     | Cloudflare CDN (Pages + R2)                                              |
+| **CI/CD**          | GitHub Actions — lint, typecheck, test, R2 screenshots                   |
+| **Secrets**        | Cloudflare dashboard + GitHub encrypted secrets                          |
+| **IaC (later)**    | Wrangler + Terraform/Pulumi when multi-env grows                         |
 
 ### Monorepo layout (proposed)
 
@@ -174,7 +178,7 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 - [x] Initialize monorepo (pnpm workspaces + Turborepo)
 - [x] Scaffold Next.js app with TypeScript, Tailwind, ESLint, Prettier
 - [x] Port design tokens from `docs/stitch/freshy/DESIGN.md` into `tailwind.config.ts`
-- [x] Add shared UI shell: `TopAppBar`, `BottomNavBar`, glass card primitives
+- [x] Add shared UI shell: `AppNav` (mobile header, top nav, bottom nav), glass card primitives
 - [x] Set up Prisma + PostgreSQL (local Docker Compose with PostGIS image)
 - [x] Configure GitHub Actions: install, lint, typecheck
 - [x] Deploy web app to Cloudflare Pages (preview + production). Live: [freshy-25e.pages.dev](https://freshy-25e.pages.dev/explore)
@@ -224,7 +228,7 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 - [x] Route: `/cooling` (Categories screen)
 - [x] Category grid with live counts from DB
 - [x] “Today’s Highlight” — featured place (coldest FRIGID venue)
-- [ ] Category drill-down list view
+- [x] Category drill-down list view (`/cooling/[category]`, `/saved`)
 - [x] Wire bottom nav: Explore ↔ Cooling ↔ Profile
 
 **Exit criteria:** Cooling tab matches `categorias_de_lugares` screen.
@@ -237,11 +241,13 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 
 - [x] Integrate **Clerk** (Google + email)
 - [x] Route: `/profile` (avatar, username, stats: reviews count, saved count)
+- [x] Route: `/saved` (full saved-places list with search and filters)
+- [x] Route: `/profile/places/new` (user-submitted places, draft or publish)
 - [x] Saved places: toggle bookmark on detail page; horizontal carousel on profile
-- [x] API: `POST/DELETE /users/me/saved/:placeId`, `GET /users/me`
+- [x] API: `POST/DELETE /users/me/saved/:placeId`, `GET /users/me`, `GET /users/me/reviews`, `POST /users/me/places`
 - [x] Deploy API on **Render** with Clerk JWT verification
 
-**Exit criteria:** Logged-in user saves places and sees them on profile. **Met** (Full v0 minimal live). Reviews empty until Phase 5.
+**Exit criteria:** Logged-in user saves places, sees them on profile, and can submit a new place. **Met**. Review write flow ships in Phase 5.
 
 ---
 
@@ -250,9 +256,9 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 **Goal:** Crowdsourced cooling data — the product’s core loop.
 
 - [ ] Review form on place detail: AC strength (1–5), optional temperature, comment
-- [ ] List climate reviews on place page; pagination
+- [x] List climate reviews on place page (read from API when seeded)
 - [ ] Recompute `aggregatedCoolnessScore` and `aggregatedTemperatureC` on new review (background job)
-- [ ] User review history on profile
+- [x] User review history on profile (read from `GET /users/me/reviews`)
 - [ ] Relief Points: +N points per review; display badge on profile
 - [ ] Basic moderation: report review, rate-limit new users
 - [ ] API: `POST /places/:id/reviews`, `GET /places/:id/reviews`
@@ -380,8 +386,8 @@ A single strong full-stack developer can execute Phases 0–5; Phase 7 benefits 
 
 ## 8. Immediate Next Steps
 
-1. **Phase 5 kickoff** — climate review form, score aggregation, relief points
-2. **Category drill-down** — finish Phase 3 list view from cooling tab
+1. **Phase 5 kickoff** — climate review submission form, score aggregation, relief points on write
+2. **Add place polish** — photo upload to R2, geocoding for address
 3. **Custom domain** — Pages + API hostname (optional)
 4. **Workers migration** — replace Render with Cloudflare Workers + Hyperdrive when ready
 5. **PWA polish** — service worker, install prompt (Phase 6)

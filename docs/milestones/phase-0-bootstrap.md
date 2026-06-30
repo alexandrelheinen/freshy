@@ -23,12 +23,12 @@
 
 ### 0.1 Required software
 
-| Tool        | Minimum version | Install                                                        | Verify                                         |
-| ----------- | --------------- | -------------------------------------------------------------- | ---------------------------------------------- |
-| **Node.js** | 20+             | [nodejs.org](https://nodejs.org/)                              | `node -v` → `v20.x` or higher                  |
-| **pnpm**    | 9+              | `npm install -g pnpm`                                          | `pnpm -v` → `9.x` or higher                    |
-| **Git**     | recent          | [git-scm.com](https://git-scm.com/)                            | `git --version`                                |
-| **Docker**  | recent          | [docker.com](https://www.docker.com/products/docker-desktop/)  | `docker --version` and Docker Desktop **running** |
+| Tool        | Minimum version | Install                                                       | Verify                                            |
+| ----------- | --------------- | ------------------------------------------------------------- | ------------------------------------------------- |
+| **Node.js** | 20+             | [nodejs.org](https://nodejs.org/)                             | `node -v` → `v20.x` or higher                     |
+| **pnpm**    | 9+              | `npm install -g pnpm`                                         | `pnpm -v` → `9.x` or higher                       |
+| **Git**     | recent          | [git-scm.com](https://git-scm.com/)                           | `git --version`                                   |
+| **Docker**  | recent          | [docker.com](https://www.docker.com/products/docker-desktop/) | `docker --version` and Docker Desktop **running** |
 
 - [ ] Node 20+ installed
 - [ ] pnpm 9+ installed
@@ -93,12 +93,12 @@ pnpm dev
 
 Open in the browser:
 
-| URL                                             | Expected screen                          |
-| ----------------------------------------------- | ---------------------------------------- |
-| http://localhost:3000/explore                   | Map placeholder, bottom nav              |
-| http://localhost:3000/cooling                   | Categories                               |
-| http://localhost:3000/places/ice-coffee-central | Place detail                             |
-| http://localhost:3000/profile                   | Profile                                  |
+| URL                                             | Expected screen             |
+| ----------------------------------------------- | --------------------------- |
+| http://localhost:3000/explore                   | Map placeholder, bottom nav |
+| http://localhost:3000/cooling                   | Categories                  |
+| http://localhost:3000/places/ice-coffee-central | Place detail                |
+| http://localhost:3000/profile                   | Profile                     |
 
 - [ ] All 4 URLs open without an error page
 - [ ] Bottom nav (Explore, Saved, Cooling, Profile) visible
@@ -133,17 +133,17 @@ Phase 1 will seed ~50 places in **one city only**. Choose now to avoid redoing s
 
 Suggestions that work well:
 
-| City          | Center (lat, lng)    | Why                              |
-| ------------- | -------------------- | -------------------------------- |
-| **São Paulo** | `-23.5505, -46.6333` | Hot climate, many cafés          |
-| **Porto**     | `41.1579, -8.6291`   | Compact city, good for testing   |
-| **Lisbon**    | `38.7223, -9.1393`   | Tourism + summer heat            |
+| City          | Center (lat, lng)    | Why                            |
+| ------------- | -------------------- | ------------------------------ |
+| **São Paulo** | `-23.5505, -46.6333` | Hot climate, many cafés        |
+| **Porto**     | `41.1579, -8.6291`   | Compact city, good for testing |
+| **Lisbon**    | `38.7223, -9.1393`   | Tourism + summer heat          |
 
 ### 2.2 Fill in and check off
 
-- [ ] **Chosen city:** ************\_************
-- [ ] **Center latitude:** ************\_************
-- [ ] **Center longitude:** ************\_************
+- [ ] **Chosen city:** ****\*\*\*\*****\_****\*\*\*\*****
+- [ ] **Center latitude:** ****\*\*\*\*****\_****\*\*\*\*****
+- [ ] **Center longitude:** ****\*\*\*\*****\_****\*\*\*\*****
 - [ ] **Initial search radius:** **\_\_\_** km (suggestion: `2`)
 
 ### 2.3 Record the decision
@@ -327,14 +327,14 @@ DATABASE_URL="your_supabase_url" pnpm db:migrate
 
 ### 5.2 Configure Pages project
 
-| Field                 | Value                                                                                      |
-| --------------------- | ------------------------------------------------------------------------------------------ |
-| **Project name**      | `freshy` (or your choice)                                                                  |
-| **Production branch** | `main`                                                                                     |
-| **Framework preset**  | Next.js                                                                                    |
-| **Build command**     | `cd ../.. && pnpm install && pnpm --filter @freshy/web build`                              |
+| Field                 | Value                                                                                               |
+| --------------------- | --------------------------------------------------------------------------------------------------- |
+| **Project name**      | `freshy` (or your choice)                                                                           |
+| **Production branch** | `main`                                                                                              |
+| **Framework preset**  | Next.js                                                                                             |
+| **Build command**     | `cd ../.. && pnpm install && pnpm --filter @freshy/web build`                                       |
 | **Build output**      | `out` (static export; do not deploy `.next` — webpack cache exceeds Cloudflare’s 25 MiB file limit) |
-| **Root directory**    | `apps/web`                                                                                 |
+| **Root directory**    | `apps/web`                                                                                          |
 
 If monorepo build fails, try empty **Root directory** and:
 
@@ -349,10 +349,10 @@ pnpm install && pnpm --filter @freshy/web build
 
 In **Settings → Environment variables**:
 
-| Name                       | Value                                                       | Environments        |
-| -------------------------- | ----------------------------------------------------------- | ------------------- |
-| `NEXT_PUBLIC_API_URL`      | `http://localhost:4000` for now (update when API is live)   | Production, Preview |
-| `NEXT_PUBLIC_MAPBOX_TOKEN` | your `pk.xxx` from section 3                                | Production, Preview |
+| Name                       | Value                                                     | Environments        |
+| -------------------------- | --------------------------------------------------------- | ------------------- |
+| `NEXT_PUBLIC_API_URL`      | `http://localhost:4000` for now (update when API is live) | Production, Preview |
+| `NEXT_PUBLIC_MAPBOX_TOKEN` | your `pk.xxx` from section 3                              | Production, Preview |
 
 - [ ] `NEXT_PUBLIC_API_URL` set on Cloudflare Pages
 - [ ] `NEXT_PUBLIC_MAPBOX_TOKEN` set on Cloudflare Pages
@@ -371,12 +371,14 @@ In **Settings → Environment variables**:
 - `Cannot find module @freshy/ui` → install must run from **monorepo root**
 - Build failed → copy log and open an issue; validate locally with `pnpm build`
 
-### 5.5 Test all 4 screens in production
+### 5.5 Test core screens in production
 
 Replace `YOUR-DOMAIN` with Cloudflare URL (e.g. `freshy.pages.dev`):
 
 - [ ] `https://YOUR-DOMAIN/explore` — OK
 - [ ] `https://YOUR-DOMAIN/cooling` — OK
+- [ ] `https://YOUR-DOMAIN/cooling/cafe` — OK
+- [ ] `https://YOUR-DOMAIN/saved` — OK
 - [ ] `https://YOUR-DOMAIN/places/ice-coffee-central` — OK
 - [ ] `https://YOUR-DOMAIN/profile` — OK
 
@@ -419,13 +421,13 @@ Full guide: [infrastructure/cloudflare/README.md](../../infrastructure/cloudflar
 3. Enable public access for `ci/` prefix (custom domain or `*.r2.dev`)
 4. GitHub → **Settings → Secrets and variables → Actions → New repository secret**
 
-| Secret                 | Value                              |
-| ---------------------- | ---------------------------------- |
-| `R2_ACCOUNT_ID`        | Cloudflare account ID              |
-| `R2_ACCESS_KEY_ID`     | R2 token access key                |
-| `R2_SECRET_ACCESS_KEY` | R2 token secret key                |
-| `R2_BUCKET_NAME`       | `freshy-assets`                    |
-| `R2_PUBLIC_URL`        | Public base URL (no trailing slash)|
+| Secret                 | Value                               |
+| ---------------------- | ----------------------------------- |
+| `R2_ACCOUNT_ID`        | Cloudflare account ID               |
+| `R2_ACCESS_KEY_ID`     | R2 token access key                 |
+| `R2_SECRET_ACCESS_KEY` | R2 token secret key                 |
+| `R2_BUCKET_NAME`       | `freshy-assets`                     |
+| `R2_PUBLIC_URL`        | Public base URL (no trailing slash) |
 
 - [ ] (Recommended) R2 secrets configured on GitHub
 - [ ] (Recommended) Test PR received screenshot comment
@@ -452,12 +454,12 @@ R2_PUBLIC_URL=https://assets.your-domain.com
 
 No coding — decide and record.
 
-| Question           | Default suggestion                                                                 | Your decision              |
-| ------------------ | ---------------------------------------------------------------------------------- | -------------------------- |
-| Place categories   | Keep Prisma enums: café, restaurant, library, mall, museum, coworking, public space | [ ] OK / [ ] change: \_\_\_ |
-| AC strength scale  | 3 levels: Lightly Cooled → Comfortable → Frigid                                    | [ ] OK / [ ] change        |
-| UI language (i18n) | English in source; pt-BR via locale files when i18n ships                          | [ ] OK                     |
-| User auth (Phase 4)| Clerk (fastest) **or** Supabase (DB bundled)                                       | [ ] Clerk / [ ] Supabase   |
+| Question            | Default suggestion                                                                  | Your decision               |
+| ------------------- | ----------------------------------------------------------------------------------- | --------------------------- |
+| Place categories    | Keep Prisma enums: café, restaurant, library, mall, museum, coworking, public space | [ ] OK / [ ] change: \_\_\_ |
+| AC strength scale   | 3 levels: Lightly Cooled → Comfortable → Frigid                                     | [ ] OK / [ ] change         |
+| UI language (i18n)  | English in source; pt-BR via locale files when i18n ships                           | [ ] OK                      |
+| User auth (Phase 4) | Clerk (fastest) **or** Supabase (DB bundled)                                        | [ ] Clerk / [ ] Supabase    |
 
 - [ ] Decisions recorded (same notes as pilot city)
 
@@ -467,19 +469,22 @@ No coding — decide and record.
 
 Side by side: **deployed app** vs **Stitch reference** (mockups may use other locales).
 
-| App screen                   | Stitch reference                                                     | OK? |
-| ---------------------------- | -------------------------------------------------------------------- | --- |
-| `/explore`                   | [mapa_freshy/screen.png](../stitch/mapa_freshy/screen.png)           | [ ] |
-| `/cooling`                   | [categorias/screen.png](../stitch/categorias_de_lugares/screen.png)  | [ ] |
-| `/places/ice-coffee-central` | [detalhes/screen.png](../stitch/detalhes_do_local/screen.png)        | [ ] |
-| `/profile`                   | [perfil/screen.png](../stitch/meu_perfil/screen.png)                 | [ ] |
+| App screen                   | Stitch reference                                                             | OK? |
+| ---------------------------- | ---------------------------------------------------------------------------- | --- |
+| `/explore`                   | [mapa_freshy/screen.png](../stitch/mapa_freshy/screen.png)                   | [ ] |
+| `/cooling`                   | [categorias/screen.png](../stitch/categorias_de_lugares/screen.png)          | [ ] |
+| `/cooling/cafe`              | [lista_de_lugares/screen.png](../stitch/lista_de_lugares/screen.png)         | [ ] |
+| `/saved`                     | [lista_de_lugares/screen.png](../stitch/lista_de_lugares/screen.png)         | [ ] |
+| `/places/ice-coffee-central` | [detalhes/screen.png](../stitch/detalhes_do_local/screen.png)                | [ ] |
+| `/profile`                   | [perfil/screen.png](../stitch/meu_perfil/screen.png)                         | [ ] |
+| `/profile/places/new`        | [adicionar_novo_local/screen.png](../stitch/adicionar_novo_local/screen.png) | [ ] |
 
-Note gaps for Phase 1 or a polish PR:
+Note remaining gaps for follow-up PRs:
 
 ```
-- Emoji icons instead of Material Symbols
-- BottomNavBar not linked yet (visual only)
-- Layout/spacing differences vs Stitch
+- Add place photo upload (UI only today)
+- Studio admin screens (deferred)
+- Custom Mapbox style tuning
 ```
 
 - [ ] Comparison done
@@ -511,7 +516,7 @@ Check **all** before requesting Phase 1 code:
 | 2   | Pilot city + lat/lng + radius recorded?                               | [ ]   |
 | 3   | Mapbox token in `.env` **and** Cloudflare Pages?                      | [ ]   |
 | 4   | Remote DB (Neon/Supabase) with PostGIS + `pnpm db:migrate` OK?        | [ ]   |
-| 5   | Cloudflare Pages opens all 4 screens on desktop **and** mobile?       | [ ]   |
+| 5   | Cloudflare Pages opens core Stitch screens on desktop **and** mobile? | [ ]   |
 
 ### If all yes
 

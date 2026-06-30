@@ -4,7 +4,7 @@
 
 ## Screenshots
 
-<!-- CI will post page previews automatically (Explore, Cooling, Place Detail, Profile). -->
+<!-- CI will post page previews automatically (Explore, Cooling, Place List, Place Detail, Saved, Profile). -->
 
 ## Checklist
 

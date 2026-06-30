@@ -211,7 +211,6 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
             name={place.name}
             latitude={place.latitude}
             longitude={place.longitude}
-            slug={place.slug}
           />
           <SavePlaceButton placeId={place.id} />
         </section>
