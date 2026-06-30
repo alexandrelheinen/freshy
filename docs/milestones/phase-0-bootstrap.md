@@ -141,9 +141,9 @@ Suggestions that work well:
 
 ### 2.2 Fill in and check off
 
-- [ ] **Chosen city:** ****\*\*\*\*****\_****\*\*\*\*****
-- [ ] **Center latitude:** ****\*\*\*\*****\_****\*\*\*\*****
-- [ ] **Center longitude:** ****\*\*\*\*****\_****\*\*\*\*****
+- [ ] **Chosen city:** \***\*\*\*\*\*\*\***\_\***\*\*\*\*\*\*\***
+- [ ] **Center latitude:** \***\*\*\*\*\*\*\***\_\***\*\*\*\*\*\*\***
+- [ ] **Center longitude:** \***\*\*\*\*\*\*\***\_\***\*\*\*\*\*\*\***
 - [ ] **Initial search radius:** **\_\_\_** km (suggestion: `2`)
 
 ### 2.3 Record the decision

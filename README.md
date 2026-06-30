@@ -11,14 +11,14 @@
 
 ## What runs where (production today)
 
-| Layer | Provider | URL / dashboard |
-| ----- | -------- | ---------------- |
-| **Web** | Cloudflare Pages | https://freshy-25e.pages.dev |
-| **API** | Render (Node/Express) | https://freshy-api.onrender.com |
-| **Database** | Neon (Postgres 16 + PostGIS) | https://console.neon.tech |
-| **Auth** | Clerk | https://dashboard.clerk.com |
-| **Maps** | Mapbox | https://account.mapbox.com |
-| **Code & CI** | GitHub | https://github.com/alexandrelheinen/freshy |
+| Layer         | Provider                     | URL / dashboard                            |
+| ------------- | ---------------------------- | ------------------------------------------ |
+| **Web**       | Cloudflare Pages             | https://freshy-25e.pages.dev               |
+| **API**       | Render (Node/Express)        | https://freshy-api.onrender.com            |
+| **Database**  | Neon (Postgres 16 + PostGIS) | https://console.neon.tech                  |
+| **Auth**      | Clerk                        | https://dashboard.clerk.com                |
+| **Maps**      | Mapbox                       | https://account.mapbox.com                 |
+| **Code & CI** | GitHub                       | https://github.com/alexandrelheinen/freshy |
 
 Planned later: Cloudflare **Workers** + **Hyperdrive** for the API (replacing Render). See [docs/infrastructure.md](docs/infrastructure.md).
 
@@ -77,17 +77,17 @@ Monorepo layout: [docs/architecture.md](docs/architecture.md).
 
 ## Documentation index
 
-| Doc | When to read it |
-| --- | ---------------- |
-| **[docs/platforms.md](docs/platforms.md)** | **All platforms, env vars, dashboards, recovery checklist** |
-| [docs/deploy-api.md](docs/deploy-api.md) | Connect Pages → Render → Neon; Clerk setup |
-| [docs/database.md](docs/database.md) | Schema, migrations, seed commands |
-| [docs/setup-guide.md](docs/setup-guide.md) | Long-form first-time setup (local + cloud) |
-| [docs/infrastructure.md](docs/infrastructure.md) | Cloudflare vs external providers (current + target) |
-| [docs/architecture.md](docs/architecture.md) | Repo layout, local dev ports, CI |
-| [docs/roadmap.md](docs/roadmap.md) | Product phases and backlog |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | Dev cycle, TDD, PR rules |
-| [.cursor/rules/contributing-and-writing.mdc](.cursor/rules/contributing-and-writing.mdc) | Cursor agent writing and code standards |
+| Doc                                                                                      | When to read it                                             |
+| ---------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| **[docs/platforms.md](docs/platforms.md)**                                               | **All platforms, env vars, dashboards, recovery checklist** |
+| [docs/deploy-api.md](docs/deploy-api.md)                                                 | Connect Pages → Render → Neon; Clerk setup                  |
+| [docs/database.md](docs/database.md)                                                     | Schema, migrations, seed commands                           |
+| [docs/setup-guide.md](docs/setup-guide.md)                                               | Long-form first-time setup (local + cloud)                  |
+| [docs/infrastructure.md](docs/infrastructure.md)                                         | Cloudflare vs external providers (current + target)         |
+| [docs/architecture.md](docs/architecture.md)                                             | Repo layout, local dev ports, CI                            |
+| [docs/roadmap.md](docs/roadmap.md)                                                       | Product phases and backlog                                  |
+| [CONTRIBUTING.md](CONTRIBUTING.md)                                                       | Dev cycle, TDD, PR rules                                    |
+| [.cursor/rules/contributing-and-writing.mdc](.cursor/rules/contributing-and-writing.mdc) | Cursor agent writing and code standards                     |
 
 ---
 
@@ -106,25 +106,25 @@ pnpm dev                         # web :3000 + api :4000
 
 Copy [`.env.example`](.env.example) → `.env` and add Mapbox + Clerk keys for full local auth.
 
-| Service  | URL |
-| -------- | --- |
+| Service  | URL                   |
+| -------- | --------------------- |
 | Web      | http://localhost:3000 |
 | API      | http://localhost:4000 |
-| Postgres | localhost:5432 |
+| Postgres | localhost:5432        |
 
 ---
 
 ## Scripts
 
-| Command | Description |
-| ------- | ----------- |
-| `pnpm dev` | Web + API in parallel |
-| `pnpm build:api` | Build API for Render (`db:generate` + config/db/api compile) |
-| `pnpm smoke:api` | Build API and verify compiled server starts (`/health`) |
-| `pnpm smoke:web` | Build web without prebuilt config dist (Cloudflare parity) |
-| `pnpm start:api` | Run production API entry locally |
-| `bash scripts/validation.sh` | Full validation before PR |
-| `bash scripts/setup-local-db.sh` | Docker PostGIS |
+| Command                          | Description                                                  |
+| -------------------------------- | ------------------------------------------------------------ |
+| `pnpm dev`                       | Web + API in parallel                                        |
+| `pnpm build:api`                 | Build API for Render (`db:generate` + config/db/api compile) |
+| `pnpm smoke:api`                 | Build API and verify compiled server starts (`/health`)      |
+| `pnpm smoke:web`                 | Build web without prebuilt config dist (Cloudflare parity)   |
+| `pnpm start:api`                 | Run production API entry locally                             |
+| `bash scripts/validation.sh`     | Full validation before PR                                    |
+| `bash scripts/setup-local-db.sh` | Docker PostGIS                                               |
 
 ---
 
@@ -149,11 +149,11 @@ GitHub secrets for R2 + EAS: [infrastructure/cloudflare/README.md](infrastructur
 
 ## Product status (June 2026)
 
-| Version | Status |
-| ------- | ------ |
-| **Public v0** | Live: explore, cooling, place detail, map |
-| **Full v0 minimal** | Live: Clerk sign-in, saved places, profile from API |
-| **Next** | Climate reviews, relief points, custom domain, Workers API |
+| Version             | Status                                                     |
+| ------------------- | ---------------------------------------------------------- |
+| **Public v0**       | Live: explore, cooling, place detail, map                  |
+| **Full v0 minimal** | Live: Clerk sign-in, saved places, profile from API        |
+| **Next**            | Climate reviews, relief points, custom domain, Workers API |
 
 Pilot city: **Clichy, France** (92110), 50 seeded places.
 

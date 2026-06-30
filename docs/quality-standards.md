@@ -21,8 +21,8 @@ See also [CONTRIBUTING.md](../CONTRIBUTING.md) and [development-cycle.md](develo
 | Use workspace imports: `@freshy/ui`, `@freshy/db`, `@freshy/api`, `@freshy/config` | ESLint / review                     |
 | React components: functional only; hooks at top level                              | `eslint-plugin-react-hooks`         |
 | Unused parameters: prefix with `_`                                                 | `@typescript-eslint/no-unused-vars` |
-| User-facing strings in English in source; use i18n catalogs for other locales | Code review                         |
-| Identifiers, comments, logs, and tests in English                             | Code review                         |
+| User-facing strings in English in source; use i18n catalogs for other locales      | Code review                         |
+| Identifiers, comments, logs, and tests in English                                  | Code review                         |
 | Co-locate tests: `foo.ts` → `foo.test.ts` or `src/**/*.test.ts`                    | `pnpm test`                         |
 
 ### Tooling configuration
@@ -179,13 +179,13 @@ See also [CONTRIBUTING.md](../CONTRIBUTING.md) and [development-cycle.md](develo
 
 ### Rules
 
-| Rule                                                        | Enforcement         |
-| ----------------------------------------------------------- | ------------------- |
-| Formatted with Prettier where applicable                    | `pnpm format:check` |
-| English for all documentation and source code in the repo                       | Review              |
-| Stitch exports under `docs/stitch/` may keep design mockup copy               | Review              |
-| Link related docs (architecture, roadmap, contributing)     | Review              |
-| Keep roadmap phase checkboxes in sync with delivered work   | Review              |
+| Rule                                                            | Enforcement         |
+| --------------------------------------------------------------- | ------------------- |
+| Formatted with Prettier where applicable                        | `pnpm format:check` |
+| English for all documentation and source code in the repo       | Review              |
+| Stitch exports under `docs/stitch/` may keep design mockup copy | Review              |
+| Link related docs (architecture, roadmap, contributing)         | Review              |
+| Keep roadmap phase checkboxes in sync with delivered work       | Review              |
 
 ### References
 

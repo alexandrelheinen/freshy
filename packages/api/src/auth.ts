@@ -6,6 +6,8 @@ export interface AuthContext {
 }
 
 declare global {
+  // Express Request augmentation uses the standard namespace pattern.
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
       auth?: AuthContext;

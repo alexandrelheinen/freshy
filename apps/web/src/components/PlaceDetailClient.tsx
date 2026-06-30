@@ -24,7 +24,13 @@ const SavePlaceButton = dynamic(
   () => import('./SavePlaceButton').then((m) => ({ default: m.SavePlaceButton })),
   { ssr: false },
 );
-import { acStrengthLevel, directionsUrl, formatRelativeTime, staticMapUrl, type PlaceDetailDto } from '../lib/api';
+import {
+  acStrengthLevel,
+  directionsUrl,
+  formatRelativeTime,
+  staticMapUrl,
+  type PlaceDetailDto,
+} from '../lib/api';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
@@ -209,7 +215,11 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
 
             {place.address ? (
               <p className="mb-6 flex items-start gap-2 font-body-sm text-on-surface-variant">
-                <MaterialIcon name="location_on" size={18} className="mt-0.5 shrink-0 text-outline" />
+                <MaterialIcon
+                  name="location_on"
+                  size={18}
+                  className="mt-0.5 shrink-0 text-outline"
+                />
                 <span>{place.address}</span>
               </p>
             ) : null}

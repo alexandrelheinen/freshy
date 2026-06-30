@@ -10,13 +10,13 @@ Freshy uses **Cloudflare** for the web app (Pages), **Render** for the API (inte
 
 ## Production today (June 2026)
 
-| Service | Provider | URL |
-| ------- | -------- | --- |
-| Web | Cloudflare Pages | https://freshy-25e.pages.dev |
-| API | Render | https://freshy-api.onrender.com |
-| Database | Neon | PostGIS enabled |
-| Auth | Clerk | JWT → Render API |
-| Maps | Mapbox | Token on Pages |
+| Service  | Provider         | URL                             |
+| -------- | ---------------- | ------------------------------- |
+| Web      | Cloudflare Pages | https://freshy-25e.pages.dev    |
+| API      | Render           | https://freshy-api.onrender.com |
+| Database | Neon             | PostGIS enabled                 |
+| Auth     | Clerk            | JWT → Render API                |
+| Maps     | Mapbox           | Token on Pages                  |
 
 ```mermaid
 flowchart LR
@@ -31,32 +31,32 @@ flowchart LR
 
 ## 1. What runs on Cloudflare
 
-| Service | Cloudflare product | Freshy usage | Phase |
-| ------- | ------------------ | ------------ | ----- |
-| **Web app (PWA)** | **Pages** (+ OpenNext adapter) | Next.js SSR/RSC, PR previews, production | 0 |
-| **REST API** | **Render** (today) → **Workers** (target) | Express on Render; Workers + Hyperdrive planned | 0–1 |
-| **DB connection pooling** | **Hyperdrive** | Pool connections from Workers → external Postgres | 1+ |
-| **Object storage** | **R2** | Place photos, avatars, CI screenshots, release mirrors | 0 |
-| **CDN / edge cache** | **CDN** (built into Pages & R2) | Static assets, public images | 0 |
-| **DNS** | **DNS** | `freshy.app`, R2 custom domains | 0 |
-| **Image transforms** | **Images** (optional) | Thumbnails for place photos | 7 |
-| **Background jobs** | **Queues** (optional) | Review score aggregation, notifications | 5+ |
-| **Edge cache / config** | **KV** (optional) | Category counts, feature flags | 3+ |
-| **Bot protection** | **Turnstile** (optional) | Review submission, place suggestions | 5+ |
-| **Web analytics** | **Web Analytics** | Privacy-friendly page views (LGPD-friendly) | 7 |
-| **Admin access** | **Access** (optional) | Protect `/admin` routes | 7 |
-| **Email forwarding** | **Email Routing** (optional) | `hello@freshy.app` → inbox | 7 |
+| Service                   | Cloudflare product                        | Freshy usage                                           | Phase |
+| ------------------------- | ----------------------------------------- | ------------------------------------------------------ | ----- |
+| **Web app (PWA)**         | **Pages** (+ OpenNext adapter)            | Next.js SSR/RSC, PR previews, production               | 0     |
+| **REST API**              | **Render** (today) → **Workers** (target) | Express on Render; Workers + Hyperdrive planned        | 0–1   |
+| **DB connection pooling** | **Hyperdrive**                            | Pool connections from Workers → external Postgres      | 1+    |
+| **Object storage**        | **R2**                                    | Place photos, avatars, CI screenshots, release mirrors | 0     |
+| **CDN / edge cache**      | **CDN** (built into Pages & R2)           | Static assets, public images                           | 0     |
+| **DNS**                   | **DNS**                                   | `freshy.app`, R2 custom domains                        | 0     |
+| **Image transforms**      | **Images** (optional)                     | Thumbnails for place photos                            | 7     |
+| **Background jobs**       | **Queues** (optional)                     | Review score aggregation, notifications                | 5+    |
+| **Edge cache / config**   | **KV** (optional)                         | Category counts, feature flags                         | 3+    |
+| **Bot protection**        | **Turnstile** (optional)                  | Review submission, place suggestions                   | 5+    |
+| **Web analytics**         | **Web Analytics**                         | Privacy-friendly page views (LGPD-friendly)            | 7     |
+| **Admin access**          | **Access** (optional)                     | Protect `/admin` routes                                | 7     |
+| **Email forwarding**      | **Email Routing** (optional)              | `hello@freshy.app` → inbox                             | 7     |
 
 ### R2 bucket layout
 
-| Prefix | Content | Public read |
-| ------ | ------- | ----------- |
-| `places/` | Venue photos | Yes (via custom domain or `r2.dev`) |
-| `places/defaults/` | Category default place photos | Yes |
-| `avatars/` | User profile images | Yes |
-| `ci/` | PR screenshot previews | Yes (for GitHub PR comments) |
-| `ci/main/latest/` | Production page screenshots (CD) | Yes |
-| `releases/` | Mobile build mirrors (optional) | No |
+| Prefix             | Content                          | Public read                         |
+| ------------------ | -------------------------------- | ----------------------------------- |
+| `places/`          | Venue photos                     | Yes (via custom domain or `r2.dev`) |
+| `places/defaults/` | Category default place photos    | Yes                                 |
+| `avatars/`         | User profile images              | Yes                                 |
+| `ci/`              | PR screenshot previews           | Yes (for GitHub PR comments)        |
+| `ci/main/latest/`  | Production page screenshots (CD) | Yes                                 |
+| `releases/`        | Mobile build mirrors (optional)  | No                                  |
 
 GitHub Actions CD on `main`: migrations (`DATABASE_URL`), R2 place defaults, production screenshots, and smoke tests. See [scripts/README.md](../scripts/README.md).
 
@@ -64,15 +64,15 @@ GitHub Actions CD on `main`: migrations (`DATABASE_URL`), R2 place defaults, pro
 
 Cloudflare **D1** is SQLite-only and does **not** support PostGIS. Map rendering and mobile store builds also require external vendors.
 
-| Concern | Provider | Why not Cloudflare |
-| ------- | -------- | ------------------ |
-| **Primary database** | **Neon** or **Supabase** (PostgreSQL 16 + PostGIS) | PostGIS geo queries (`ST_DWithin`, GIST indexes) |
-| **Maps & geocoding** | **Mapbox GL JS** | No first-party map tile / geocoding product |
-| **Mobile builds** | **Expo EAS** | Apple App Store & Google Play toolchain |
-| **CI pipeline** | **GitHub Actions** | Lint, test, build, screenshot upload to R2 |
-| **End-user auth** | **Clerk** (live) | Sign-in, saved places, profile — `packages/api` verifies JWT |
-| **Error monitoring** | **Sentry** (optional) | Full-stack error grouping & alerts |
-| **Transactional email** | **Resend** or **SendGrid** (optional) | Welcome emails, review reminders |
+| Concern                 | Provider                                           | Why not Cloudflare                                           |
+| ----------------------- | -------------------------------------------------- | ------------------------------------------------------------ |
+| **Primary database**    | **Neon** or **Supabase** (PostgreSQL 16 + PostGIS) | PostGIS geo queries (`ST_DWithin`, GIST indexes)             |
+| **Maps & geocoding**    | **Mapbox GL JS**                                   | No first-party map tile / geocoding product                  |
+| **Mobile builds**       | **Expo EAS**                                       | Apple App Store & Google Play toolchain                      |
+| **CI pipeline**         | **GitHub Actions**                                 | Lint, test, build, screenshot upload to R2                   |
+| **End-user auth**       | **Clerk** (live)                                   | Sign-in, saved places, profile — `packages/api` verifies JWT |
+| **Error monitoring**    | **Sentry** (optional)                              | Full-stack error grouping & alerts                           |
+| **Transactional email** | **Resend** or **SendGrid** (optional)              | Welcome emails, review reminders                             |
 
 ### How services connect (target architecture)
 
@@ -125,27 +125,27 @@ flowchart TB
 
 See root [`.env.example`](../.env.example). Summary:
 
-| Variable | Where set | Purpose |
-| -------- | --------- | ------- |
-| `DATABASE_URL` | Local `.env`, **Render**, Neon | Prisma → Postgres |
-| `CLERK_SECRET_KEY` | **Render** | Verify Clerk JWT on API |
-| `CLERK_AUTHORIZED_PARTIES` | **Render** | Allowed frontend origins |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | **Cloudflare Pages** | Clerk in browser |
-| `R2_*` | Local `.env`, GitHub Actions secrets | Object storage (optional) |
-| `NEXT_PUBLIC_API_URL` | **Cloudflare Pages** | Web → Render API |
-| `NEXT_PUBLIC_MAPBOX_TOKEN` | **Cloudflare Pages** | Map tiles |
-| `EXPO_TOKEN` | GitHub Actions secrets | EAS mobile builds |
+| Variable                            | Where set                            | Purpose                   |
+| ----------------------------------- | ------------------------------------ | ------------------------- |
+| `DATABASE_URL`                      | Local `.env`, **Render**, Neon       | Prisma → Postgres         |
+| `CLERK_SECRET_KEY`                  | **Render**                           | Verify Clerk JWT on API   |
+| `CLERK_AUTHORIZED_PARTIES`          | **Render**                           | Allowed frontend origins  |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | **Cloudflare Pages**                 | Clerk in browser          |
+| `R2_*`                              | Local `.env`, GitHub Actions secrets | Object storage (optional) |
+| `NEXT_PUBLIC_API_URL`               | **Cloudflare Pages**                 | Web → Render API          |
+| `NEXT_PUBLIC_MAPBOX_TOKEN`          | **Cloudflare Pages**                 | Map tiles                 |
+| `EXPO_TOKEN`                        | GitHub Actions secrets               | EAS mobile builds         |
 
 ### GitHub Actions secrets (CI screenshots → R2)
 
-| Secret | Description |
-| ------ | ----------- |
-| `R2_ACCOUNT_ID` | Cloudflare account ID |
-| `R2_ACCESS_KEY_ID` | R2 API token access key |
-| `R2_SECRET_ACCESS_KEY` | R2 API token secret |
-| `R2_BUCKET_NAME` | e.g. `freshy-assets` |
-| `R2_PUBLIC_URL` | Public base URL for objects (custom domain or `*.r2.dev`) |
-| `EXPO_TOKEN` | Expo access token for mobile releases |
+| Secret                 | Description                                               |
+| ---------------------- | --------------------------------------------------------- |
+| `R2_ACCOUNT_ID`        | Cloudflare account ID                                     |
+| `R2_ACCESS_KEY_ID`     | R2 API token access key                                   |
+| `R2_SECRET_ACCESS_KEY` | R2 API token secret                                       |
+| `R2_BUCKET_NAME`       | e.g. `freshy-assets`                                      |
+| `R2_PUBLIC_URL`        | Public base URL for objects (custom domain or `*.r2.dev`) |
+| `EXPO_TOKEN`           | Expo access token for mobile releases                     |
 
 ---
 
@@ -179,13 +179,13 @@ See also [platforms.md](platforms.md) for what deploys where.
 
 ## 5. Deployment targets by phase
 
-| Phase | Cloudflare | External |
-| ----- | ---------- | -------- |
-| **0 — Foundation** | Pages (web LIVE), R2 (optional CI) | Neon, Mapbox, **Render API**, **Clerk** |
-| **1 — Map** | — | Mapbox GL JS, Render `/places` |
-| **4 — Auth** | — | **Clerk LIVE**, saved places API |
-| **5 — Reviews** | Queues (optional) | Review write API |
-| **7 — Launch** | Workers + Hyperdrive (replace Render), Images, Turnstile | Sentry |
+| Phase              | Cloudflare                                               | External                                |
+| ------------------ | -------------------------------------------------------- | --------------------------------------- |
+| **0 — Foundation** | Pages (web LIVE), R2 (optional CI)                       | Neon, Mapbox, **Render API**, **Clerk** |
+| **1 — Map**        | —                                                        | Mapbox GL JS, Render `/places`          |
+| **4 — Auth**       | —                                                        | **Clerk LIVE**, saved places API        |
+| **5 — Reviews**    | Queues (optional)                                        | Review write API                        |
+| **7 — Launch**     | Workers + Hyperdrive (replace Render), Images, Turnstile | Sentry                                  |
 
 ---
 
@@ -202,12 +202,12 @@ Cloudflare services are **optional locally**. Developers use:
 
 ## 7. Migration from Google Cloud
 
-| Before (GCP) | After (Cloudflare) |
-| ------------ | ------------------ |
-| Google Cloud Storage | **R2** |
-| `GCP_PROJECT_ID`, `GCS_BUCKET_NAME`, `GCP_SA_KEY` | `R2_ACCOUNT_ID`, `R2_*` keys |
-| `gcloud storage cp` in CI | AWS CLI / SDK → R2 S3-compatible endpoint |
-| Vercel (planned) | **Cloudflare Pages** |
+| Before (GCP)                                      | After (Cloudflare)                        |
+| ------------------------------------------------- | ----------------------------------------- |
+| Google Cloud Storage                              | **R2**                                    |
+| `GCP_PROJECT_ID`, `GCS_BUCKET_NAME`, `GCP_SA_KEY` | `R2_ACCOUNT_ID`, `R2_*` keys              |
+| `gcloud storage cp` in CI                         | AWS CLI / SDK → R2 S3-compatible endpoint |
+| Vercel (planned)                                  | **Cloudflare Pages**                      |
 
 Remove old GCP secrets from GitHub once R2 is configured.
 

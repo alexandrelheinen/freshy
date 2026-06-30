@@ -8,9 +8,9 @@
 
 ## Why `api.freshy-25e.pages.dev` does not work
 
-| What you have | What it is | Can it run `/places`? |
-| ------------- | ---------- | --------------------- |
-| `freshy-25e.pages.dev` | Cloudflare **Pages**: static Next.js site | No; it only serves HTML/JS |
+| What you have              | What it is                                | Can it run `/places`?                  |
+| -------------------------- | ----------------------------------------- | -------------------------------------- |
+| `freshy-25e.pages.dev`     | Cloudflare **Pages**: static Next.js site | No; it only serves HTML/JS             |
 | `api.freshy-25e.pages.dev` | Another **Pages** site (or empty project) | No; Pages is not a Node/Express server |
 
 The Freshy API is an **Express + Prisma** program in `packages/api`. It must run on a **Node server** (Render, Railway, Fly.io, etc.) until we ship Cloudflare Workers.
@@ -54,14 +54,14 @@ Render deploys from GitHub. Skip if the repo is already there.
 2. Connect the **freshy** repository
 3. Use these settings:
 
-| Field | Value |
-| ----- | ----- |
-| **Name** | `freshy-api` |
-| **Region** | Frankfurt or closest to Neon (`eu-west-2`) |
-| **Branch** | `main` |
-| **Root Directory** | *(leave empty, repo root)* |
-| **Runtime** | **Node** |
-| **Instance type** | Free |
+| Field              | Value                                      |
+| ------------------ | ------------------------------------------ |
+| **Name**           | `freshy-api`                               |
+| **Region**         | Frankfurt or closest to Neon (`eu-west-2`) |
+| **Branch**         | `main`                                     |
+| **Root Directory** | _(leave empty, repo root)_                 |
+| **Runtime**        | **Node**                                   |
+| **Instance type**  | Free                                       |
 
 4. **Build Command**: copy **only** the line below (do not include the word “Command” or any table header):
 
@@ -81,10 +81,10 @@ Or click **Apply Blueprint** if you imported [`infrastructure/render/render.yaml
 
 On the service → **Environment**:
 
-| Key | Value |
-| --- | ----- |
+| Key            | Value                                                                                                                      |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | `DATABASE_URL` | Your **Neon direct** connection URI (from Neon → Connect → URI). Use the **non-pooler** host for reliability on free tier. |
-| `NODE_VERSION` | `20` |
+| `NODE_VERSION` | `20`                                                                                                                       |
 
 Click **Save Changes**. Render will deploy (first build ~3–5 minutes).
 
@@ -107,7 +107,7 @@ https://freshy-api.onrender.com/health
 Expected:
 
 ```json
-{"status":"ok","service":"freshy-api","r2":"not-configured"}
+{ "status": "ok", "service": "freshy-api", "r2": "not-configured" }
 ```
 
 Then:
@@ -133,10 +133,10 @@ Expected: JSON with `"data": [ ... 50 places ... ]`.
 3. **Settings** → **Environment variables**
 4. Add or edit:
 
-| Variable | Value | Environments |
-| -------- | ----- | ------------ |
+| Variable              | Value                             | Environments                   |
+| --------------------- | --------------------------------- | ------------------------------ |
 | `NEXT_PUBLIC_API_URL` | `https://freshy-api.onrender.com` | **Production** and **Preview** |
-| `NODE_VERSION` | `20` | Production + Preview |
+| `NODE_VERSION`        | `20`                              | Production + Preview           |
 
 Use your **actual Render URL**: no trailing slash.
 
@@ -174,23 +174,23 @@ The map needs a Mapbox token or the map area may stay blank even when places loa
 
 ## What you can delete or ignore
 
-| Item | Action |
-| ---- | ------ |
+| Item                                          | Action                                                                  |
+| --------------------------------------------- | ----------------------------------------------------------------------- |
 | Cloudflare Pages project **`api.freshy-25e`** | Not needed; delete or ignore or ignore. The API does not live on Pages. |
-| `NEXT_PUBLIC_API_URL` = `whatever` | Must be your real API URL (e.g. Render) |
+| `NEXT_PUBLIC_API_URL` = `whatever`            | Must be your real API URL (e.g. Render)                                 |
 
 ---
 
 ## Troubleshooting
 
-| Symptom | Cause | Fix |
-| ------- | ----- | --- |
-| `/explore` empty, no errors | Wrong or missing `NEXT_PUBLIC_API_URL` | Step 7–8 |
-| Browser network tab shows failed fetch to `localhost:4000` | Env var not set at build time | Set on Pages, **redeploy** |
-| `api.freshy-25e.pages.dev` → “nothing here” | Pages site, not API | Deploy API on Render (Step 3) |
-| API `/places` returns `[]` | Empty DB or wrong `DATABASE_URL` on Render | Re-run seed; fix env on Render |
-| API `/places` returns `503` | DB connection failed | Check Neon URL; wake Neon project |
-| First API request very slow | Render free tier sleep | Normal; upgrade or use a keep-alive ping later |
+| Symptom                                                    | Cause                                      | Fix                                            |
+| ---------------------------------------------------------- | ------------------------------------------ | ---------------------------------------------- |
+| `/explore` empty, no errors                                | Wrong or missing `NEXT_PUBLIC_API_URL`     | Step 7–8                                       |
+| Browser network tab shows failed fetch to `localhost:4000` | Env var not set at build time              | Set on Pages, **redeploy**                     |
+| `api.freshy-25e.pages.dev` → “nothing here”                | Pages site, not API                        | Deploy API on Render (Step 3)                  |
+| API `/places` returns `[]`                                 | Empty DB or wrong `DATABASE_URL` on Render | Re-run seed; fix env on Render                 |
+| API `/places` returns `503`                                | DB connection failed                       | Check Neon URL; wake Neon project              |
+| First API request very slow                                | Render free tier sleep                     | Normal; upgrade or use a keep-alive ping later |
 
 ---
 
@@ -207,7 +207,7 @@ pnpm --filter @freshy/api dev
 
 In another terminal or browser:
 
-- [http://localhost:4000/places](http://localhost:4000/places) → 50 places  
+- [http://localhost:4000/places](http://localhost:4000/places) → 50 places
 - [http://localhost:3000/explore](http://localhost:3000/explore) → map with data (with `NEXT_PUBLIC_API_URL=http://localhost:4000` in `.env`)
 
 ---
@@ -220,17 +220,17 @@ In another terminal or browser:
 
 ### Cloudflare Pages (web)
 
-| Variable | Value |
-| -------- | ----- |
+| Variable                            | Value                          |
+| ----------------------------------- | ------------------------------ |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | `pk_test_...` or `pk_live_...` |
 
 Redeploy Pages after adding.
 
 ### Render (API)
 
-| Variable | Value |
-| -------- | ----- |
-| `CLERK_SECRET_KEY` | `sk_test_...` or `sk_live_...` |
+| Variable                   | Value                                                |
+| -------------------------- | ---------------------------------------------------- |
+| `CLERK_SECRET_KEY`         | `sk_test_...` or `sk_live_...`                       |
 | `CLERK_AUTHORIZED_PARTIES` | `https://freshy-25e.pages.dev,http://localhost:3000` |
 
 Redeploy API after adding.

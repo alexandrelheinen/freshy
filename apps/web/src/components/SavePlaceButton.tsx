@@ -2,11 +2,7 @@
 
 import { SignInButton, useAuth } from '@clerk/clerk-react';
 import { useEffect, useState } from 'react';
-import {
-  fetchIsPlaceSaved,
-  savePlaceForUser,
-  unsavePlaceForUser,
-} from '../lib/user-api';
+import { fetchIsPlaceSaved, savePlaceForUser, unsavePlaceForUser } from '../lib/user-api';
 
 export function SavePlaceButton({ placeId }: { placeId: string }) {
   const { isLoaded, isSignedIn, getToken } = useAuth();

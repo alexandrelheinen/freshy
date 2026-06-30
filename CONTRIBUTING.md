@@ -4,19 +4,19 @@ Thank you for contributing to **Freshy**, the mobile-first cooling map. This doc
 
 ## Before you start
 
-| Resource                                                     | Purpose                                                               |
-| ------------------------------------------------------------ | --------------------------------------------------------------------- |
+| Resource                                                                                 | Purpose                                                                   |
+| ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | [.cursor/rules/contributing-and-writing.mdc](.cursor/rules/contributing-and-writing.mdc) | Cursor agent: writing, naming, TDD, idiomatic code (summary of this file) |
-| [docs/development-cycle.md](docs/development-cycle.md)       | **Mandatory** step-by-step workflow and test-driven development (TDD) |
-| [docs/quality-standards.md](docs/quality-standards.md)       | Quality rules and external references **per language**                |
-| [docs/roadmap.md](docs/roadmap.md)                           | Product phases: pick work from the current phase                      |
-| [docs/setup-guide.md](docs/setup-guide.md)                   | **Start here**: platform setup for dummies (click-by-click)           |
-| [docs/milestones/](docs/milestones/)                         | Operational checklists per roadmap phase                              |
-| [docs/milestones/phase-0-bootstrap.md](docs/milestones/phase-0-bootstrap.md) | Milestone 0: accounts, deploy, pilot city (before Phase 1)    |
-| [docs/architecture.md](docs/architecture.md)                 | Monorepo layout and data flow                                         |
-| [docs/infrastructure.md](docs/infrastructure.md)             | Cloudflare vs external providers (R2, Pages, Workers, Neon)           |
-| [docs/git-rules.md](docs/git-rules.md)                       | Branching, commits, PR checklist                                      |
-| [docs/stitch/freshy/DESIGN.md](docs/stitch/freshy/DESIGN.md) | Design tokens and UI reference                                        |
+| [docs/development-cycle.md](docs/development-cycle.md)                                   | **Mandatory** step-by-step workflow and test-driven development (TDD)     |
+| [docs/quality-standards.md](docs/quality-standards.md)                                   | Quality rules and external references **per language**                    |
+| [docs/roadmap.md](docs/roadmap.md)                                                       | Product phases: pick work from the current phase                          |
+| [docs/setup-guide.md](docs/setup-guide.md)                                               | **Start here**: platform setup for dummies (click-by-click)               |
+| [docs/milestones/](docs/milestones/)                                                     | Operational checklists per roadmap phase                                  |
+| [docs/milestones/phase-0-bootstrap.md](docs/milestones/phase-0-bootstrap.md)             | Milestone 0: accounts, deploy, pilot city (before Phase 1)                |
+| [docs/architecture.md](docs/architecture.md)                                             | Monorepo layout and data flow                                             |
+| [docs/infrastructure.md](docs/infrastructure.md)                                         | Cloudflare vs external providers (R2, Pages, Workers, Neon)               |
+| [docs/git-rules.md](docs/git-rules.md)                                                   | Branching, commits, PR checklist                                          |
+| [docs/stitch/freshy/DESIGN.md](docs/stitch/freshy/DESIGN.md)                             | Design tokens and UI reference                                            |
 
 ## Core principles
 
@@ -32,11 +32,11 @@ Thank you for contributing to **Freshy**, the mobile-first cooling map. This doc
 
 **English only** for documentation and source code in this repository:
 
-| Area | Rule |
-| ---- | ---- |
-| `docs/`, README, milestones, architecture | English |
-| Code: identifiers, comments, logs, tests | English |
-| Commit messages and PR titles/descriptions | English |
+| Area                                                | Rule    |
+| --------------------------------------------------- | ------- |
+| `docs/`, README, milestones, architecture           | English |
+| Code: identifiers, comments, logs, tests            | English |
+| Commit messages and PR titles/descriptions          | English |
 | Seed data, fixtures, placeholder UI strings in apps | English |
 
 Locale-specific copy (e.g. pt-BR for Brazilian users) belongs in **i18n message catalogs** when [next-intl](docs/roadmap.md) is adopted, not hardcoded in other languages in source files.
@@ -49,11 +49,11 @@ Do not add Portuguese (or other non-English) text to docs or code unless it is i
 
 Do **not** use em dashes (`—`) in product names, titles, labels, or other naming strings. This includes page `<title>` metadata, app names, workflow names, PR comment headings, package descriptions, and shared brand constants.
 
-| Prefer | Avoid |
-| ------ | ----- |
-| `Freshy \| Cooling Map` | `Freshy — Cooling Map` |
+| Prefer                     | Avoid                     |
+| -------------------------- | ------------------------- |
+| `Freshy \| Cooling Map`    | `Freshy — Cooling Map`    |
 | `Release \| Mobile builds` | `Release — Mobile builds` |
-| `Freshy \| Page previews` | `Freshy — Page previews` |
+| `Freshy \| Page previews`  | `Freshy — Page previews`  |
 
 Use a **vertical pipe** (`|`) to separate title parts (brand | subtitle), a **hyphen** (`-`) for compound technical names, or a **comma** when joining short phrases in a description.
 
