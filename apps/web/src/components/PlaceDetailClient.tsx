@@ -5,17 +5,17 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
   AC_STRENGTH_LABELS,
-  AMENITY_ICONS,
-  AMENITY_LABELS,
+  PLACE_TAG_ICONS,
+  PLACE_TAG_LABELS,
   AcStrengthSnowflakes,
-  CATEGORY_DEFAULT_AMENITIES,
   GlassCard,
   MaterialIcon,
   ROUTES,
   getPlacePhotoUrl,
+  filterValidPlaceTags,
   type MaterialIconName,
-  type PlaceAmenity,
   type PlaceCategory,
+  type PlaceTagId,
 } from '@freshy/ui';
 import { AppBottomNav, AppTopNav } from './AppNav';
 import { PlaceActions } from './PlaceActions';
@@ -34,16 +34,6 @@ import {
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
-
-function resolveAmenities(
-  amenities: string[] | undefined,
-  category: PlaceCategory,
-): PlaceAmenity[] {
-  if (amenities && amenities.length > 0) {
-    return amenities.filter((a): a is PlaceAmenity => a in AMENITY_LABELS);
-  }
-  return CATEGORY_DEFAULT_AMENITIES[category] ?? [];
-}
 
 function userInitials(name: string): string {
   return name
@@ -71,8 +61,8 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
     })();
   }, [slug]);
 
-  const amenities = useMemo(
-    () => (place ? resolveAmenities(place.amenities, place.category as PlaceCategory) : []),
+  const tags = useMemo(
+    () => (place ? filterValidPlaceTags(place.tags ?? []) : []),
     [place],
   );
 
@@ -193,15 +183,15 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
           </section>
 
           <section className="mt-8">
-            {amenities.length > 0 ? (
+            {tags.length > 0 ? (
               <div className="mb-6 flex flex-wrap gap-2">
-                {amenities.map((amenity) => (
+                {tags.map((tag) => (
                   <span
-                    key={amenity}
+                    key={tag}
                     className="flex items-center gap-1 rounded-full bg-secondary-container px-3 py-1 font-label-caps text-label-caps text-on-secondary-container"
                   >
-                    <MaterialIcon name={AMENITY_ICONS[amenity] as MaterialIconName} size={14} />
-                    {AMENITY_LABELS[amenity]}
+                    <MaterialIcon name={PLACE_TAG_ICONS[tag] as MaterialIconName} size={14} />
+                    {PLACE_TAG_LABELS[tag]}
                   </span>
                 ))}
               </div>

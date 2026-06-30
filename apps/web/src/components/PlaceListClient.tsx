@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import {
-  CATEGORY_HIGHLIGHT_AMENITY,
+  PLACE_TAG_LABELS,
+  PLACE_TAGS,
   MaterialIcon,
   PLACE_CATEGORY_LABELS,
   type PlaceCategory,
@@ -133,16 +134,14 @@ export function PlaceListClient({
                 </button>
               );
             })}
-            {Object.values(CATEGORY_HIGHLIGHT_AMENITY)
-              .slice(0, 2)
-              .map((label) => (
-                <span
-                  key={label}
-                  className="shrink-0 whitespace-nowrap rounded-full bg-secondary-container px-4 py-2 font-label-caps text-label-caps text-on-secondary-container"
-                >
-                  {label}
-                </span>
-              ))}
+            {PLACE_TAGS.slice(0, 2).map((tag) => (
+              <span
+                key={tag.id}
+                className="shrink-0 whitespace-nowrap rounded-full bg-secondary-container px-4 py-2 font-label-caps text-label-caps text-on-secondary-container"
+              >
+                {tag.label}
+              </span>
+            ))}
           </div>
         </section>
 

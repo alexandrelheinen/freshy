@@ -12,7 +12,7 @@ export interface PlaceDto {
   photoUrl?: string | null;
   aggregatedTemperatureC: number | null;
   aggregatedAcStrength: 'LIGHTLY_COOLED' | 'COMFORTABLE' | 'FRIGID' | null;
-  amenities?: string[];
+  tags?: string[];
   isOpen?: boolean;
   distanceKm?: number;
 }

@@ -56,7 +56,7 @@ model Place {
   photoUrl                String?
   aggregatedTemperatureC  Float?
   aggregatedAcStrength    AcStrength?
-  amenities               String[]      @default([])
+  tags                    String[]      @default([])
   isOpen                  Boolean       @default(true)
   createdById             String?
   status                  PlaceStatus   @default(PUBLISHED)

@@ -5,17 +5,17 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import {
   ALL_PLACE_CATEGORIES,
-  AMENITY_ICONS,
-  AMENITY_LABELS,
+  PLACE_TAG_ICONS,
+  PLACE_TAG_LABELS,
+  PLACE_TAGS,
   AcStrengthBar,
   MaterialIcon,
   PILOT_CITY,
   PLACE_CATEGORY_LABELS,
-  PLACE_AMENITIES,
   ROUTES,
   type MaterialIconName,
-  type PlaceAmenity,
   type PlaceCategory,
+  type PlaceTagId,
 } from '@freshy/ui';
 import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { createUserPlace } from '../lib/user-api';
@@ -37,16 +37,14 @@ export function AddPlaceClient() {
   const [description, setDescription] = useState('');
   const [temperature, setTemperature] = useState(22);
   const [acStrength, setAcStrength] = useState<AcStrengthChoice>('COMFORTABLE');
-  const [amenities, setAmenities] = useState<PlaceAmenity[]>(['FREE_WIFI']);
+  const [tags, setTags] = useState<PlaceTagId[]>(['calm']);
   const [latitude, setLatitude] = useState<number>(PILOT_CITY.latitude);
   const [longitude, setLongitude] = useState<number>(PILOT_CITY.longitude);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  function toggleAmenity(amenity: PlaceAmenity) {
-    setAmenities((prev) =>
-      prev.includes(amenity) ? prev.filter((a) => a !== amenity) : [...prev, amenity],
-    );
+  function toggleTag(tag: PlaceTagId) {
+    setTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
   }
 
   function useMyLocation() {
@@ -77,7 +75,7 @@ export function AddPlaceClient() {
       longitude,
       aggregatedTemperatureC: temperature,
       aggregatedAcStrength: acStrength,
-      amenities,
+      tags,
       status,
     });
     setSubmitting(false);
@@ -251,23 +249,24 @@ export function AddPlaceClient() {
       </section>
 
       <section className="space-y-3">
-        <label className="block font-label-caps text-on-surface-variant">Amenities</label>
+        <label className="block font-label-caps text-on-surface-variant">Tags</label>
         <div className="flex flex-wrap gap-2">
-          {PLACE_AMENITIES.map((amenity) => {
-            const selected = amenities.includes(amenity);
+          {PLACE_TAGS.map((tag) => {
+            const tagId = tag.id as PlaceTagId;
+            const selected = tags.includes(tagId);
             return (
               <button
-                key={amenity}
+                key={tag.id}
                 type="button"
-                onClick={() => toggleAmenity(amenity)}
+                onClick={() => toggleTag(tagId)}
                 className={`flex items-center gap-1 rounded-full border px-4 py-2 font-body-sm transition-all active:scale-95 ${
                   selected
                     ? 'border-primary bg-secondary-container text-on-secondary-container'
                     : 'border-outline-variant bg-surface text-on-surface-variant'
                 }`}
               >
-                <MaterialIcon name={AMENITY_ICONS[amenity] as MaterialIconName} size={18} />
-                {AMENITY_LABELS[amenity]}
+                <MaterialIcon name={PLACE_TAG_ICONS[tagId] as MaterialIconName} size={18} />
+                {PLACE_TAG_LABELS[tagId]}
               </button>
             );
           })}

@@ -11,14 +11,24 @@
       "require": "./dist/place-photos.js",
       "default": "./place-photos.ts"
     },
+    "./place-tags": {
+      "types": "./place-tags.ts",
+      "import": "./place-tags.ts",
+      "require": "./dist/place-tags.js",
+      "default": "./place-tags.ts"
+    },
     "./tailwind": "./tailwind.preset.ts"
   },
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test place-photos.test.ts tailwind.preset.test.ts"
+    "test": "tsx --test place-photos.test.ts place-tags.test.ts tailwind.preset.test.ts"
+  },
+  "dependencies": {
+    "yaml": "^2.8.0"
   },
   "devDependencies": {
+    "@types/node": "^22.10.2",
     "@eslint/js": "^9.17.0",
     "eslint": "^9.17.0",
     "eslint-plugin-react": "^7.37.2",

@@ -106,7 +106,7 @@ export interface CreatePlacePayload {
   longitude: number;
   aggregatedTemperatureC: number;
   aggregatedAcStrength: 'LIGHTLY_COOLED' | 'COMFORTABLE' | 'FRIGID';
-  amenities: string[];
+  tags: string[];
   status: 'DRAFT' | 'PUBLISHED';
 }
 

@@ -5,6 +5,16 @@ import {
   resolvePlacePhotoUrl,
   type PlacePhotoCategory,
 } from '@freshy/config/place-photos';
+export {
+  PLACE_TAGS,
+  PLACE_TAG_IDS,
+  PLACE_TAG_LABELS,
+  PLACE_TAG_ICONS,
+  filterValidPlaceTags,
+  isPlaceTagId,
+  type PlaceTagDefinition,
+  type PlaceTagId,
+} from '@freshy/config/place-tags';
 
 export const BRAND_NAME = 'Freshy';
 export const BRAND_TITLE = 'Freshy | Cooling Map';
@@ -39,63 +49,6 @@ export const ROUTES = {
   addPlace: '/profile/places/new',
   studio: '/studio',
 } as const;
-
-/** Primary amenity chip shown on explore preview cards per category. */
-export const CATEGORY_HIGHLIGHT_AMENITY: Partial<Record<PlaceCategory, string>> = {
-  CAFE: 'FREE WI-FI',
-  RESTAURANT: 'COMFY SEATING',
-  LIBRARY: 'QUIET ZONE',
-  MALL: 'FREE WI-FI',
-  MUSEUM: 'QUIET ZONE',
-  COWORKING: 'FREE WI-FI',
-  PUBLIC_SPACE: 'COMFY SEATING',
-};
-
-export type PlaceAmenity =
-  | 'FREE_WIFI'
-  | 'QUIET_ZONE'
-  | 'POWER_OUTLETS'
-  | 'COMFY_SEATING'
-  | 'FREE_WATER'
-  | 'LAPTOP_SPACE';
-
-export const PLACE_AMENITIES: PlaceAmenity[] = [
-  'FREE_WIFI',
-  'QUIET_ZONE',
-  'POWER_OUTLETS',
-  'COMFY_SEATING',
-  'FREE_WATER',
-  'LAPTOP_SPACE',
-];
-
-export const AMENITY_LABELS: Record<PlaceAmenity, string> = {
-  FREE_WIFI: 'FREE WI-FI',
-  QUIET_ZONE: 'QUIET ZONE',
-  POWER_OUTLETS: 'POWER OUTLETS',
-  COMFY_SEATING: 'COMFY SEATING',
-  FREE_WATER: 'FREE WATER',
-  LAPTOP_SPACE: 'LAPTOP SPACE',
-};
-
-export const AMENITY_ICONS: Record<PlaceAmenity, string> = {
-  FREE_WIFI: 'wifi',
-  QUIET_ZONE: 'volume_off',
-  POWER_OUTLETS: 'electrical_services',
-  COMFY_SEATING: 'event_seat',
-  FREE_WATER: 'water_drop',
-  LAPTOP_SPACE: 'laptop_mac',
-};
-
-/** Default amenities seeded per category when a place has none stored. */
-export const CATEGORY_DEFAULT_AMENITIES: Record<PlaceCategory, PlaceAmenity[]> = {
-  CAFE: ['FREE_WIFI', 'COMFY_SEATING'],
-  RESTAURANT: ['COMFY_SEATING', 'FREE_WATER'],
-  LIBRARY: ['QUIET_ZONE', 'FREE_WIFI', 'POWER_OUTLETS'],
-  MALL: ['FREE_WIFI', 'COMFY_SEATING'],
-  MUSEUM: ['QUIET_ZONE', 'COMFY_SEATING'],
-  COWORKING: ['FREE_WIFI', 'POWER_OUTLETS', 'LAPTOP_SPACE'],
-  PUBLIC_SPACE: ['COMFY_SEATING', 'FREE_WATER'],
-};
 
 export const PLACE_CATEGORY_ICONS: Record<PlaceCategory, string> = {
   CAFE: 'local_cafe',

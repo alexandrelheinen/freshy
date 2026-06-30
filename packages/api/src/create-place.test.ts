@@ -17,7 +17,7 @@ describe('create-place', () => {
       longitude: 2.3,
       aggregatedTemperatureC: 22,
       aggregatedAcStrength: 'COMFORTABLE',
-      amenities: ['FREE_WIFI'],
+      tags: ['calm'],
       status: 'PUBLISHED',
     });
     assert.equal(parsed.success, true);
