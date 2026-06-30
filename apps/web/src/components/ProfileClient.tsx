@@ -104,7 +104,37 @@ function ReviewRow({ review }: { review: UserReviewDto }) {
   );
 }
 
-export function ProfileClient() {
+const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
+
+function ProfileSignedOutView({ showSignIn }: { showSignIn: boolean }) {
+  return (
+    <div className="min-h-screen pb-mobile-nav md:pb-8" data-page="profile">
+      <AppMobileHeader />
+      <AppTopNav active="profile" />
+      <main className="mx-auto mt-20 max-w-4xl px-margin-mobile md:max-w-7xl md:px-10">
+        <section className="flex flex-col items-center py-16 text-center">
+          <h2 className="font-headline-lg-mobile text-on-surface">Sign in to Freshy</h2>
+          <p className="mt-2 max-w-sm text-on-surface-variant">
+            Save your favourite cooling spots and track your relief points.
+          </p>
+          {showSignIn ? (
+            <SignInButton mode="modal">
+              <button
+                type="button"
+                className="mt-8 rounded-xl bg-primary px-8 py-3 font-semibold text-on-primary shadow-lg"
+              >
+                Sign in
+              </button>
+            </SignInButton>
+          ) : null}
+        </section>
+      </main>
+      <AppBottomNav active="profile" />
+    </div>
+  );
+}
+
+function ProfileWithClerk() {
   const { isLoaded, isSignedIn, getToken } = useAuth();
   const [profile, setProfile] = useState<UserProfileDto | null>(null);
   const [savedPlaces, setSavedPlaces] = useState<PlaceDto[]>([]);
@@ -145,30 +175,30 @@ export function ProfileClient() {
     })();
   }, [isLoaded, isSignedIn, getToken]);
 
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen pb-mobile-nav md:pb-8" data-page="profile">
+        <AppMobileHeader />
+        <AppTopNav active="profile" />
+        <main className="mx-auto mt-20 max-w-4xl px-margin-mobile md:max-w-7xl md:px-10">
+          <p className="py-16 text-center text-on-surface-variant">Loading…</p>
+        </main>
+        <AppBottomNav active="profile" />
+      </div>
+    );
+  }
+
+  if (!isSignedIn) {
+    return <ProfileSignedOutView showSignIn />;
+  }
+
   return (
     <div className="min-h-screen pb-mobile-nav md:pb-8" data-page="profile">
       <AppMobileHeader />
       <AppTopNav active="profile" />
 
       <main className="mx-auto mt-20 max-w-4xl px-margin-mobile md:max-w-7xl md:px-10">
-        {!isLoaded ? (
-          <p className="py-16 text-center text-on-surface-variant">Loading…</p>
-        ) : !isSignedIn ? (
-          <section className="flex flex-col items-center py-16 text-center">
-            <h2 className="font-headline-lg-mobile text-on-surface">Sign in to Freshy</h2>
-            <p className="mt-2 max-w-sm text-on-surface-variant">
-              Save your favourite cooling spots and track your relief points.
-            </p>
-            <SignInButton mode="modal">
-              <button
-                type="button"
-                className="mt-8 rounded-xl bg-primary px-8 py-3 font-semibold text-on-primary shadow-lg"
-              >
-                Sign in
-              </button>
-            </SignInButton>
-          </section>
-        ) : loading ? (
+        {loading ? (
           <p className="py-16 text-center text-on-surface-variant">Loading profile…</p>
         ) : profile ? (
           <>
@@ -330,4 +360,12 @@ export function ProfileClient() {
       <AppBottomNav active="profile" />
     </div>
   );
+}
+
+export function ProfileClient() {
+  if (!clerkEnabled) {
+    return <ProfileSignedOutView showSignIn={false} />;
+  }
+
+  return <ProfileWithClerk />;
 }
