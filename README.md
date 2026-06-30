@@ -119,7 +119,8 @@ Copy [`.env.example`](.env.example) → `.env` and add Mapbox + Clerk keys for f
 | Command | Description |
 | ------- | ----------- |
 | `pnpm dev` | Web + API in parallel |
-| `pnpm build:api` | Build API for Render (`db:generate` + compile) |
+| `pnpm build:api` | Build API for Render (`db:generate` + config/db/api compile) |
+| `pnpm smoke:api` | Build API and verify compiled server starts (`/health`) |
 | `pnpm start:api` | Run production API entry locally |
 | `bash scripts/validation.sh` | Full validation before PR |
 | `bash scripts/setup-local-db.sh` | Docker PostGIS |
