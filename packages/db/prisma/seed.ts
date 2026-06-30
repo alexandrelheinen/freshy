@@ -7,6 +7,7 @@ const prisma = new PrismaClient();
 const CATEGORY_TAGS: Record<PlaceCategory, string[]> = {
   [PlaceCategory.CAFE]: ['calm', 'comfortable', 'free_wifi'],
   [PlaceCategory.RESTAURANT]: ['comfortable', 'shaded'],
+  [PlaceCategory.BAR]: ['comfortable', 'calm'],
   [PlaceCategory.LIBRARY]: ['quiet', 'calm', 'free_wifi'],
   [PlaceCategory.MALL]: ['free_wifi', 'comfortable'],
   [PlaceCategory.MUSEUM]: ['quiet', 'comfortable'],
@@ -38,6 +39,16 @@ const VENUE_NAMES: Record<PlaceCategory, string[]> = {
     'Fresh Air Restaurant',
     'Summit Dining',
     'Northwind Kitchen',
+  ],
+  [PlaceCategory.BAR]: [
+    'Polar Pour Bar',
+    'Glacier Lounge',
+    'Chill Tap Room',
+    'Frostbite Tavern',
+    'Arctic Ale House',
+    'Cool Draft Pub',
+    'Icebox Cocktail Club',
+    'Breeze & Spirits',
   ],
   [PlaceCategory.LIBRARY]: [
     'Central Library',

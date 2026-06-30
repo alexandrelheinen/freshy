@@ -1,6 +1,7 @@
 export const PLACE_PHOTO_CATEGORIES = [
   'CAFE',
   'RESTAURANT',
+  'BAR',
   'LIBRARY',
   'MALL',
   'MUSEUM',
