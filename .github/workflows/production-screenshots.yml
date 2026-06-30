@@ -46,11 +46,9 @@ jobs:
         run: bash scripts/capture-production-screenshots.sh
 
       - name: Install AWS CLI for R2 upload
-        if: ${{ secrets.R2_ACCESS_KEY_ID != '' }}
         run: pip install awscli --quiet
 
       - name: Upload to R2
-        if: ${{ secrets.R2_ACCESS_KEY_ID != '' }}
         env:
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}

@@ -36,13 +36,12 @@ jobs:
         run: pnpm db:generate
 
       - name: Apply migrations
-        if: ${{ secrets.DATABASE_URL != '' }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: pnpm --filter @freshy/db migrate:deploy
-
-      - name: Skip (DATABASE_URL not configured)
-        if: ${{ secrets.DATABASE_URL == '' }}
         run: |
-          echo "::warning::DATABASE_URL secret is not configured. Add your Neon connection string to enable automatic migrations on main."
-          echo "Apply manually: DATABASE_URL=... pnpm --filter @freshy/db migrate:deploy"
+          if [ -z "${DATABASE_URL:-}" ]; then
+            echo "::warning::DATABASE_URL secret is not configured. Add your Neon connection string to enable automatic migrations on main."
+            echo "Apply manually: DATABASE_URL=... pnpm --filter @freshy/db migrate:deploy"
+            exit 0
+          fi
+          pnpm --filter @freshy/db migrate:deploy

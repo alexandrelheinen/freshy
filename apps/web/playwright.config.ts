@@ -25,7 +25,7 @@ export default defineConfig({
   webServer: process.env.PLAYWRIGHT_BASE_URL
     ? undefined
     : {
-        command: 'pnpm start',
+        command: 'pnpm serve:static',
         url: 'http://127.0.0.1:3000',
         reuseExistingServer: true,
         timeout: 120000,

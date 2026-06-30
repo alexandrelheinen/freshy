@@ -3,3 +3,5 @@ docs/stitch/**/*.html
 **/dist/
 **/.next/
 **/.turbo/
+**/test-results/
+**/out/
