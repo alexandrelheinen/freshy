@@ -78,7 +78,7 @@ flowchart TB
 | **Branch for production** | `main` |
 | **What you do here** | Push code, merge PRs, configure Actions secrets |
 
-### GitHub Actions secrets (optional, PR screenshots)
+### GitHub Actions secrets (optional, PR screenshots + CD)
 
 | Secret | Used for |
 | ------ | -------- |
@@ -87,9 +87,10 @@ flowchart TB
 | `R2_SECRET_ACCESS_KEY` | R2 API |
 | `R2_BUCKET_NAME` | e.g. `freshy-assets` |
 | `R2_PUBLIC_URL` | Public URL for screenshot links in PR comments |
+| `DATABASE_URL` | Neon URI; automatic `prisma migrate deploy` on `main` |
 | `EXPO_TOKEN` | Mobile EAS builds on release |
 
-**Docs:** [.github/workflows/ci.yml](../.github/workflows/ci.yml), [.github/workflows/smoke-production.yml](../.github/workflows/smoke-production.yml)
+**Docs:** [.github/workflows/ci.yml](../.github/workflows/ci.yml), [CD workflows](../.github/workflows/)
 
 ---
 

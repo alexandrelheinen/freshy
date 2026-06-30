@@ -1,0 +1,67 @@
+name: Production screenshots
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/web/**'
+      - 'packages/ui/**'
+      - 'packages/config/**'
+      - 'scripts/capture-production-screenshots.sh'
+      - 'scripts/upload-production-screenshots.sh'
+      - '.github/workflows/production-screenshots.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: production-screenshots
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    name: Capture and upload page screenshots
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @freshy/web exec playwright install chromium --with-deps
+
+      - name: Capture production screenshots
+        env:
+          WEB_URL: https://freshy-25e.pages.dev
+          SCREENSHOT_MAX_ATTEMPTS: 30
+          SCREENSHOT_SLEEP_SECONDS: 20
+        run: bash scripts/capture-production-screenshots.sh
+
+      - name: Install AWS CLI for R2 upload
+        if: ${{ secrets.R2_ACCESS_KEY_ID != '' }}
+        run: pip install awscli --quiet
+
+      - name: Upload to R2
+        if: ${{ secrets.R2_ACCESS_KEY_ID != '' }}
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+          R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
+        run: bash scripts/upload-production-screenshots.sh screenshots "${{ github.sha }}"
+
+      - name: Upload screenshots artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-screenshots-${{ github.sha }}
+          path: screenshots/
+          retention-days: 30

@@ -1,0 +1,48 @@
+name: Deploy database migrations
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/db/prisma/migrations/**'
+      - 'packages/db/prisma/schema.prisma'
+      - '.github/workflows/migrate-database.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: migrate-database
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    name: Apply Prisma migrations to Neon
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Generate Prisma client
+        run: pnpm db:generate
+
+      - name: Apply migrations
+        if: ${{ secrets.DATABASE_URL != '' }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: pnpm --filter @freshy/db migrate:deploy
+
+      - name: Skip (DATABASE_URL not configured)
+        if: ${{ secrets.DATABASE_URL == '' }}
+        run: |
+          echo "::warning::DATABASE_URL secret is not configured. Add your Neon connection string to enable automatic migrations on main."
+          echo "Apply manually: DATABASE_URL=... pnpm --filter @freshy/db migrate:deploy"

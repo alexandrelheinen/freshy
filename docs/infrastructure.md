@@ -55,9 +55,10 @@ flowchart LR
 | `places/defaults/` | Category default place photos | Yes |
 | `avatars/` | User profile images | Yes |
 | `ci/` | PR screenshot previews | Yes (for GitHub PR comments) |
+| `ci/main/latest/` | Production page screenshots (CD) | Yes |
 | `releases/` | Mobile build mirrors (optional) | No |
 
----
+GitHub Actions CD on `main`: migrations (`DATABASE_URL`), R2 place defaults, production screenshots, and smoke tests. See [scripts/README.md](../scripts/README.md).
 
 ## 2. What must stay elsewhere
 
