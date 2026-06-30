@@ -74,3 +74,52 @@ export async function unsavePlaceForUser(
   const res = await authFetch(`/users/me/saved/${placeId}`, getToken, { method: 'DELETE' });
   return res.ok;
 }
+
+export interface UserReviewDto {
+  id: string;
+  comment: string | null;
+  acStrength: number;
+  createdAt: string;
+  place: {
+    id: string;
+    slug: string;
+    name: string;
+    category: string;
+  };
+}
+
+export async function fetchMyReviews(
+  getToken: () => Promise<string | null>,
+): Promise<UserReviewDto[]> {
+  const res = await authFetch('/users/me/reviews', getToken);
+  if (!res.ok) return [];
+  const json = (await res.json()) as { data: UserReviewDto[] };
+  return json.data;
+}
+
+export interface CreatePlacePayload {
+  name: string;
+  category: string;
+  address: string;
+  description?: string;
+  latitude: number;
+  longitude: number;
+  aggregatedTemperatureC: number;
+  aggregatedAcStrength: 'LIGHTLY_COOLED' | 'COMFORTABLE' | 'FRIGID';
+  amenities: string[];
+  status: 'DRAFT' | 'PUBLISHED';
+}
+
+export async function createUserPlace(
+  getToken: () => Promise<string | null>,
+  payload: CreatePlacePayload,
+): Promise<{ slug: string } | null> {
+  const res = await authFetch('/users/me/places', getToken, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) return null;
+  const json = (await res.json()) as { data: { slug: string } };
+  return json.data;
+}
