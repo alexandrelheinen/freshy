@@ -276,6 +276,8 @@ Phases are ordered by dependency. Each phase ends with something demoable.
 - [ ] Voice search hook (Web Speech API — optional, progressive enhancement)
 - [ ] Sort: nearest, coldest, highest AC rating
 - [ ] PWA manifest, service worker, install prompt, offline shell
+- [ ] Theme modularity (`@freshy/theme`) per [themes/modularity-spec.md](themes/modularity-spec.md)
+- [ ] Dark theme per [themes/dark-theme-spec.md](themes/dark-theme-spec.md) (after modularity Phases A–B)
 - [ ] Push notification groundwork (heat alerts — optional)
 
 **Exit criteria:** Search “biblioteca” → filtered map results. App installable on mobile home screen.
@@ -308,6 +310,8 @@ Not required for first launch; plan when core loop is validated.
 | Real-time AC status    | Venue partners update “AC on/off” live                  |
 | Heat map overlay       | Outdoor temperature layers on map                       |
 | Multi-city expansion   | City selector, localized seed data                      |
+| Accessibility themes   | High-contrast and daltonic themes via `@freshy/theme`   |
+| Playful theme          | Alternate colorful palette for campaigns or user choice |
 | Meilisearch            | If PostgreSQL search becomes slow                       |
 | Venue partner portal   | Businesses claim and verify their listing               |
 | Standalone API service | Extract from Next.js if mobile apps need shared backend |
