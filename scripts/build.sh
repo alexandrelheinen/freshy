@@ -8,9 +8,6 @@ cd "${ROOT_DIR}"
 echo "==> Installing dependencies..."
 pnpm install --frozen-lockfile 2>/dev/null || pnpm install
 
-echo "==> Generating Prisma client..."
-pnpm db:generate
-
 echo "==> Building monorepo (turbo)..."
 pnpm build
 

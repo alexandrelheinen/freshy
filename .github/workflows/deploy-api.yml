@@ -1,22 +1,23 @@
-name: Deploy database migrations
+name: Deploy API Worker
 
 on:
   push:
     branches: [main]
     paths:
-      - 'packages/db/migrations/**'
-      - 'packages/db/src/schema.ts'
-      - 'packages/api/wrangler.toml'
-      - '.github/workflows/migrate-database.yml'
+      - 'packages/api/**'
+      - 'packages/db/**'
+      - 'packages/config/**'
+      - 'packages/theme/**'
+      - '.github/workflows/deploy-api.yml'
   workflow_dispatch:
 
 concurrency:
-  group: migrate-database
-  cancel-in-progress: false
+  group: deploy-api
+  cancel-in-progress: true
 
 jobs:
-  migrate:
-    name: Apply D1 migrations to Cloudflare
+  deploy:
+    name: Deploy freshy-api Worker
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -33,6 +34,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Build API bundle inputs
+        run: pnpm build:api
+
       - name: Apply D1 migrations
         uses: cloudflare/wrangler-action@v3
         with:
@@ -40,3 +44,11 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: packages/api
           command: d1 migrations apply freshy-db --remote
+
+      - name: Deploy Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: packages/api
+          command: deploy

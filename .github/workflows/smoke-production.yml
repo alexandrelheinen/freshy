@@ -18,7 +18,7 @@ jobs:
 
       - name: Run production smoke test
         env:
-          API_URL: https://freshy-api.onrender.com
+          API_URL: https://freshy-api.alexandrelheinen.workers.dev
           WEB_URL: https://freshy-25e.pages.dev
           R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
           SMOKE_MAX_ATTEMPTS: 30
