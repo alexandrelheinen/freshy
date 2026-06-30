@@ -48,6 +48,14 @@ function ExplorePreviewCard({
   const freshness = freshnessBarState(place.aggregatedFreshnessLevel);
 
   if (variant === 'desktop') {
+    const validTags = filterValidPlaceTags(place.tags ?? []);
+    const freshnessLabelClass =
+      freshness.tone === 'green'
+        ? 'text-success'
+        : freshness.tone === 'blue'
+          ? 'text-primary'
+          : 'text-on-surface-variant';
+
     return (
       <div className="glass-panel pointer-events-auto overflow-hidden rounded-2xl border border-glass-border shadow-2xl">
         <div className="relative h-48 overflow-hidden bg-gradient-to-br from-primary-container/40 to-secondary-container/30">
@@ -56,90 +64,60 @@ function ExplorePreviewCard({
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />
-          <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-primary px-3 py-1.5 text-sm font-bold text-on-primary shadow-lg">
-            {place.aggregatedFreshnessLevel ? (
-              <>
-                {FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]}
-                <span className="h-4 w-px bg-glass-highlight" />
-              </>
-            ) : null}
-            <MaterialIcon name="ac_unit" size={16} />
-          </div>
-          <div className="absolute bottom-4 left-4 flex gap-2">
-            {place.aggregatedFreshnessLevel ? (
-              <span className="rounded-full bg-marker-label-bg px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary backdrop-blur">
-                {FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]}
-              </span>
-            ) : null}
-          </div>
         </div>
         <div className="p-6">
-          <div className="mb-2 flex items-start justify-between">
-            <div>
-              <h1 className="font-headline-lg text-on-surface">{place.name}</h1>
-              {place.address ? (
-                <p className="mt-1 flex items-center gap-1 text-on-surface-variant">
-                  <MaterialIcon name="location_on" size={16} />
-                  {place.address}
-                </p>
-              ) : null}
+          <h1 className="font-headline-lg font-bold text-on-surface">{place.name}</h1>
+          {place.address ? (
+            <p className="mt-1 flex items-center gap-1 text-on-surface-variant">
+              <MaterialIcon name="location_on" size={16} />
+              {place.address}
+            </p>
+          ) : null}
+          <p className="mt-2 flex flex-wrap gap-1.5 text-sm text-on-surface-variant">
+            {validTags.length > 0
+              ? validTags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full bg-secondary-container px-2 py-0.5 text-xs font-medium text-on-secondary-container"
+                  >
+                    {PLACE_TAG_LABELS[tag]}
+                  </span>
+                ))
+              : '—'}
+          </p>
+          <div className="mt-6 flex items-center gap-3">
+            {place.aggregatedFreshnessLevel ? (
+              <span className={`text-sm font-bold ${freshnessLabelClass}`}>
+                {FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]}
+              </span>
+            ) : (
+              <span className="text-sm font-bold text-on-surface-variant">—</span>
+            )}
+            <div className="flex flex-1">
+              <FreshnessBar segments={freshness.segments} tone={freshness.tone} />
             </div>
           </div>
-          <div className="my-6 grid grid-cols-2 gap-4">
-            <div className="flex flex-col items-center rounded-xl bg-surface-container-low p-3 text-center">
-              <MaterialIcon name="air" className="mb-1 text-primary" />
-              <span className="text-[10px] font-bold uppercase text-outline-variant">
-                Freshness
-              </span>
-              <span className="font-bold text-on-surface">
-                {place.aggregatedFreshnessLevel
-                  ? FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]
-                  : '—'}
-              </span>
-            </div>
-            <div className="flex flex-col items-center rounded-xl bg-surface-container-low p-3 text-center">
-              <MaterialIcon name="group" className="mb-1 text-primary" />
-              <span className="text-[10px] font-bold uppercase text-outline-variant">Category</span>
-              <span className="text-xs font-bold text-on-surface">
-                {PLACE_CATEGORY_LABELS[place.category as PlaceCategory] ?? place.category}
-              </span>
-            </div>
-          </div>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between text-sm">
-              <span className="font-semibold text-on-surface">Freshness</span>
-              <div className="flex items-center gap-2">
-                <FreshnessBar segments={freshness.segments} tone={freshness.tone} />
-                <span
-                  className={`font-bold ${freshness.tone === 'green' ? 'text-success' : 'text-primary'}`}
-                >
-                  {place.aggregatedFreshnessLevel
-                    ? FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]
-                    : '—'}
-                </span>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <a
-                href={directionsUrl({
-                  latitude: place.latitude,
-                  longitude: place.longitude,
-                  address: place.address,
-                })}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary py-3 font-bold text-on-primary shadow-lg shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98]"
-              >
-                <MaterialIcon name="directions" />
-                Get Directions
-              </a>
-              <Link
-                href={ROUTES.place(place.slug)}
-                className="flex w-14 items-center justify-center rounded-xl bg-secondary-container py-3 font-bold text-on-secondary-container transition-colors hover:bg-secondary-container/80"
-              >
-                <MaterialIcon name="share" />
-              </Link>
-            </div>
+          <div className="mt-6 flex gap-3">
+            <a
+              href={directionsUrl({
+                latitude: place.latitude,
+                longitude: place.longitude,
+                address: place.address,
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary py-3 font-bold text-on-primary shadow-lg shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98]"
+            >
+              <MaterialIcon name="directions" />
+              Get Directions
+            </a>
+            <Link
+              href={ROUTES.place(place.slug)}
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-secondary-container py-3 font-bold text-on-secondary-container transition-colors hover:bg-secondary-container/80"
+            >
+              <MaterialIcon name="menu_book" />
+              Details
+            </Link>
           </div>
         </div>
       </div>
