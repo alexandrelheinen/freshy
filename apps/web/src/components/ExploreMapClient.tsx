@@ -19,6 +19,7 @@ import {
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
 import { acStrengthLevel, directionsUrl, formatDistance, formatDistanceWithWalk } from '../lib/api';
+import { mapStyleUrl, type MapStyleId } from '../lib/map-styles';
 import { CATEGORY_HIGHLIGHT_AMENITY } from '@freshy/ui';
 import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceMapMarker, UserLocationMarker, acStrengthLabel } from './map-markers';
@@ -266,6 +267,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     longitude: DEFAULT_CENTER.longitude,
     zoom: 13,
   });
+  const [mapStyleId, setMapStyleId] = useState<MapStyleId>('streets');
 
   const selected = useMemo(
     () => places.find((p) => p.slug === selectedSlug) ?? places[0],
@@ -328,6 +330,8 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       }));
     }
   };
+  const toggleMapStyle = () =>
+    setMapStyleId((id) => (id === 'streets' ? 'satellite' : 'streets'));
 
   const mapContent = MAPBOX_TOKEN ? (
     <Map
@@ -335,7 +339,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       {...viewState}
       onMove={(evt) => setViewState(evt.viewState)}
       style={{ width: '100%', height: '100%' }}
-      mapStyle="mapbox://styles/mapbox/light-v11"
+      mapStyle={mapStyleUrl(mapStyleId)}
     >
       {userLocation ? (
         <Marker latitude={userLocation.lat} longitude={userLocation.lng} anchor="center">
@@ -480,8 +484,19 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
           </div>
         </div>
 
-        {/* Mobile: recenter FAB */}
-        <div className="absolute bottom-28 right-margin-mobile z-20 md:hidden">
+        {/* Mobile: map style + recenter FABs */}
+        <div className="absolute bottom-28 right-margin-mobile z-20 flex flex-col gap-2 md:hidden">
+          <button
+            type="button"
+            onClick={toggleMapStyle}
+            className="glass flex h-12 w-12 items-center justify-center rounded-full border border-white/50 shadow-lg transition-transform active:scale-95"
+            aria-label={mapStyleId === 'streets' ? 'Switch to satellite view' : 'Switch to map view'}
+          >
+            <MaterialIcon
+              name={mapStyleId === 'streets' ? 'satellite_alt' : 'map'}
+              className="text-primary"
+            />
+          </button>
           <button
             type="button"
             onClick={recenter}
@@ -520,6 +535,21 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
                 className="text-on-surface-variant group-hover:text-primary"
               />
               <span className="text-[10px] font-bold uppercase text-outline-variant">Me</span>
+            </button>
+            <div className="h-6 w-px bg-outline-variant/30" />
+            <button
+              type="button"
+              onClick={toggleMapStyle}
+              className="group flex flex-col items-center gap-1"
+              aria-label={mapStyleId === 'streets' ? 'Switch to satellite view' : 'Switch to map view'}
+            >
+              <MaterialIcon
+                name={mapStyleId === 'streets' ? 'satellite_alt' : 'map'}
+                className="text-on-surface-variant group-hover:text-primary"
+              />
+              <span className="text-[10px] font-bold uppercase text-outline-variant">
+                {mapStyleId === 'streets' ? 'Satellite' : 'Map'}
+              </span>
             </button>
             <div className="h-6 w-px bg-outline-variant/30" />
             <div className="flex items-center gap-6">
