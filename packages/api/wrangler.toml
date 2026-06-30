@@ -1,10 +1,10 @@
 name = "freshy-api"
-main = "src/worker.ts"           # ← new Worker entry point (not server.ts)
+main = "src/worker.ts"
 compatibility_date = "2026-06-30"
 compatibility_flags = ["nodejs_compat"]
 
 [[d1_databases]]
-binding = "DB"
+binding = "FRESHY_DB"
 database_name = "freshy-db"
 database_id = "dc892bf1-22c9-47b8-bf8d-289ffb2421cc"
 migrations_dir = "../db/migrations"

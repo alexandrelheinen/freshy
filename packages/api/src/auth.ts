@@ -1,6 +1,6 @@
 import { createClerkClient, verifyToken } from '@clerk/backend';
 import type { Context, Next } from 'hono';
-import type { Env } from './worker';
+import type { AppEnv, Env } from './env';
 
 export interface AuthContext {
   clerkUserId: string;
@@ -50,69 +50,64 @@ async function resolveAdminRole(
   return typeof role === 'string' ? role : undefined;
 }
 
-/** Hono middleware: requires a valid Clerk Bearer token. Sets c.var.auth. */
-export async function requireAuth(c: Context<{ Bindings: Env }>, next: Next): Promise<void> {
+function authorizedParties(env: Env): string[] | undefined {
+  const parties = env.CLERK_AUTHORIZED_PARTIES?.split(',')
+    .map((s: string) => s.trim())
+    .filter(Boolean);
+  return parties?.length ? parties : undefined;
+}
+
+/** Hono middleware: requires a valid Clerk Bearer token. Sets clerkUserId on context. */
+export async function requireAuth(c: Context<AppEnv>, next: Next): Promise<Response | void> {
   const env = c.env;
   if (!isClerkConfigured(env)) {
-    c.res = c.json({ error: 'Auth not configured' }, 503);
-    return;
+    return c.json({ error: 'Auth not configured' }, 503);
   }
 
   const header = c.req.header('Authorization');
   if (!header?.startsWith('Bearer ')) {
-    c.res = c.json({ error: 'Unauthorized' }, 401);
-    return;
+    return c.json({ error: 'Unauthorized' }, 401);
   }
 
   const token = header.slice('Bearer '.length);
   try {
-    const authorizedParties = env.CLERK_AUTHORIZED_PARTIES?.split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
     const payload = await verifyToken(token, {
       secretKey: env.CLERK_SECRET_KEY!,
-      ...(authorizedParties?.length ? { authorizedParties } : {}),
+      ...(authorizedParties(env) ? { authorizedParties: authorizedParties(env) } : {}),
     });
     const clerkUserId = payload.sub;
     if (!clerkUserId) {
-      c.res = c.json({ error: 'Unauthorized' }, 401);
-      return;
+      return c.json({ error: 'Unauthorized' }, 401);
     }
     c.set('clerkUserId', clerkUserId);
     c.set('clerkRole', extractRoleFromClaims(payload as Record<string, unknown>));
     await next();
   } catch {
-    c.res = c.json({ error: 'Unauthorized' }, 401);
+    return c.json({ error: 'Unauthorized' }, 401);
   }
 }
 
 /** Hono middleware: requires a valid Clerk Bearer token with admin role. */
-export async function requireAdmin(c: Context<{ Bindings: Env }>, next: Next): Promise<void> {
+export async function requireAdmin(c: Context<AppEnv>, next: Next): Promise<Response | void> {
   const env = c.env;
   if (!isClerkConfigured(env)) {
-    c.res = c.json({ error: 'Auth not configured' }, 503);
-    return;
+    return c.json({ error: 'Auth not configured' }, 503);
   }
 
   const header = c.req.header('Authorization');
   if (!header?.startsWith('Bearer ')) {
-    c.res = c.json({ error: 'Not found' }, 404);
-    return;
+    return c.json({ error: 'Not found' }, 404);
   }
 
   const token = header.slice('Bearer '.length);
   try {
-    const authorizedParties = env.CLERK_AUTHORIZED_PARTIES?.split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
     const payload = await verifyToken(token, {
       secretKey: env.CLERK_SECRET_KEY!,
-      ...(authorizedParties?.length ? { authorizedParties } : {}),
+      ...(authorizedParties(env) ? { authorizedParties: authorizedParties(env) } : {}),
     });
     const clerkUserId = payload.sub;
     if (!clerkUserId) {
-      c.res = c.json({ error: 'Not found' }, 404);
-      return;
+      return c.json({ error: 'Not found' }, 404);
     }
 
     const role = await resolveAdminRole(
@@ -121,15 +116,14 @@ export async function requireAdmin(c: Context<{ Bindings: Env }>, next: Next): P
       env.CLERK_SECRET_KEY!,
     );
     if (!isAdminRole(role)) {
-      c.res = c.json({ error: 'Not found' }, 404);
-      return;
+      return c.json({ error: 'Not found' }, 404);
     }
 
     c.set('clerkUserId', clerkUserId);
     c.set('clerkRole', role);
     await next();
   } catch {
-    c.res = c.json({ error: 'Not found' }, 404);
+    return c.json({ error: 'Not found' }, 404);
   }
 }
 

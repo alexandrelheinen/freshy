@@ -6,8 +6,9 @@ export type ResolvedCoordinates = { latitude: number; longitude: number } | { er
 
 export async function resolvePlaceCoordinates(
   input: Pick<CreatePlaceInput, 'address' | 'latitude' | 'longitude'>,
+  mapboxToken?: string,
 ): Promise<ResolvedCoordinates> {
-  const geocoded = await geocodeAddress(input.address);
+  const geocoded = await geocodeAddress(input.address, mapboxToken);
   if (geocoded) {
     return { latitude: geocoded.latitude, longitude: geocoded.longitude };
   }

@@ -70,10 +70,6 @@ export async function createUserPlace(
     updatedAt: now,
   });
 
-  const rows = await db
-    .select()
-    .from(placesTable)
-    .where(eq(placesTable.id, id))
-    .limit(1);
+  const rows = await db.select().from(placesTable).where(eq(placesTable.id, id)).limit(1);
   return rows[0]!;
 }

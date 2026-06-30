@@ -1,6 +1,8 @@
-import type { Express, Request, Response } from 'express';
-import multer from 'multer';
-import type { PrismaClient } from '@freshy/db';
+import type { Hono } from 'hono';
+import type { Context } from 'hono';
+import { eq } from 'drizzle-orm';
+import { places as placesTable } from '@freshy/db';
+import type { AppEnv } from './env';
 import { requireAuth } from './auth';
 import {
   getUserProfile,
@@ -15,196 +17,199 @@ import { createPlaceSchema, createUserPlace } from './create-place';
 import { withResolvedPlacePhoto } from './places';
 import { parseCreatePlaceFields, resolvePlaceCoordinates } from './place-submission';
 import { uploadPlacePhoto } from './place-photo-upload';
-import { isR2Configured } from './storage/r2';
+import { isR2Configured, r2ContextFromEnv } from './storage/r2';
+import { photoFromFormData, requireParam } from './route-utils';
 
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 },
-});
-
-function paramId(value: string | string[]): string {
-  return Array.isArray(value) ? value[0]! : value;
+function formValue(formData: FormData, key: string): string | undefined {
+  const value = formData.get(key);
+  return typeof value === 'string' ? value : undefined;
 }
 
-async function withDbUser(
-  prisma: PrismaClient,
-  req: Request,
-  res: Response,
-): Promise<{ id: string } | null> {
-  if (!req.auth?.clerkUserId) {
-    res.status(401).json({ error: 'Unauthorized' });
-    return null;
+async function withDbUser(c: Context<AppEnv>) {
+  const clerkUserId = c.get('clerkUserId');
+  if (!clerkUserId) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+  const secretKey = c.env.CLERK_SECRET_KEY;
+  if (!secretKey) {
+    return c.json({ error: 'Auth not configured' }, 503);
   }
   try {
-    const user = await syncUserFromClerk(prisma, req.auth.clerkUserId);
+    const user = await syncUserFromClerk(c.get('db'), clerkUserId, secretKey);
     return user;
   } catch {
-    res.status(503).json({ error: 'Could not sync user' });
-    return null;
+    return c.json({ error: 'Could not sync user' }, 503);
   }
 }
 
 async function handleCreatePlace(
-  prisma: PrismaClient,
+  c: Context<AppEnv>,
   userId: string,
   body: Record<string, unknown>,
-  photo?: Express.Multer.File,
-): Promise<{ status: number; payload: unknown }> {
-  if (photo && !isR2Configured()) {
-    return { status: 503, payload: { error: 'Photo upload is not configured on the server.' } };
+  photo?: File,
+) {
+  const r2 = r2ContextFromEnv(c.env);
+  if (photo && !isR2Configured(r2)) {
+    return c.json({ error: 'Photo upload is not configured on the server.' }, 503);
   }
 
   const parsed = parseCreatePlaceFields(body);
   if (!parsed.success) {
-    return { status: 400, payload: { error: 'Invalid body', details: parsed.error.flatten() } };
+    return c.json({ error: 'Invalid body', details: parsed.error.flatten() }, 400);
   }
 
-  const coords = await resolvePlaceCoordinates(parsed.data);
+  const coords = await resolvePlaceCoordinates(parsed.data, c.env.MAPBOX_ACCESS_TOKEN);
   if ('error' in coords) {
-    return { status: 400, payload: { error: coords.error } };
+    return c.json({ error: coords.error }, 400);
   }
 
-  const place = await createUserPlace(prisma, userId, {
+  const place = await createUserPlace(c.get('db'), userId, {
     ...parsed.data,
     latitude: coords.latitude,
     longitude: coords.longitude,
   });
 
   if (photo) {
-    const photoUrl = await uploadPlacePhoto(place.slug, photo.buffer, photo.mimetype);
-    const updated = await prisma.place.update({
-      where: { id: place.id },
-      data: { photoUrl },
-    });
-    return { status: 201, payload: { data: withResolvedPlacePhoto(updated) } };
+    const buffer = await photo.arrayBuffer();
+    const photoUrl = await uploadPlacePhoto(place.slug, buffer, photo.type, r2!);
+    const now = new Date().toISOString();
+    await c
+      .get('db')
+      .update(placesTable)
+      .set({ photoUrl, updatedAt: now })
+      .where(eq(placesTable.id, place.id));
+    const updated = { ...place, photoUrl };
+    return c.json({ data: withResolvedPlacePhoto(updated) }, 201);
   }
 
-  return { status: 201, payload: { data: withResolvedPlacePhoto(place) } };
+  return c.json({ data: withResolvedPlacePhoto(place) }, 201);
 }
 
-export function registerUserRoutes(app: Express, prisma: PrismaClient): void {
-  app.get('/users/me', requireAuth, async (req, res) => {
-    const user = await withDbUser(prisma, req, res);
-    if (!user) return;
+export function registerUserRoutes(app: Hono<AppEnv>): void {
+  app.get('/users/me', requireAuth, async (c) => {
+    const user = await withDbUser(c);
+    if (user instanceof Response) return user;
     try {
-      const data = await getUserProfile(prisma, user.id);
-      res.json({ data });
+      const data = await getUserProfile(c.get('db'), user.id);
+      return c.json({ data });
     } catch {
-      res.status(503).json({ error: 'Database unavailable' });
+      return c.json({ error: 'Database unavailable' }, 503);
     }
   });
 
-  app.get('/users/me/reviews', requireAuth, async (req, res) => {
-    const user = await withDbUser(prisma, req, res);
-    if (!user) return;
+  app.get('/users/me/reviews', requireAuth, async (c) => {
+    const user = await withDbUser(c);
+    if (user instanceof Response) return user;
     try {
-      const data = await listUserReviews(prisma, user.id);
-      res.json({ data });
+      const data = await listUserReviews(c.get('db'), user.id);
+      return c.json({ data });
     } catch {
-      res.status(503).json({ error: 'Database unavailable' });
+      return c.json({ error: 'Database unavailable' }, 503);
     }
   });
 
-  app.post(
-    '/users/me/places',
-    requireAuth,
-    (req, res, next) => {
-      if (req.is('multipart/form-data')) {
-        upload.single('photo')(req, res, next);
-        return;
-      }
-      next();
-    },
-    async (req, res) => {
-      const user = await withDbUser(prisma, req, res);
-      if (!user) return;
+  app.post('/users/me/places', requireAuth, async (c) => {
+    const user = await withDbUser(c);
+    if (user instanceof Response) return user;
 
-      try {
-        if (!req.is('multipart/form-data')) {
-          const parsed = createPlaceSchema.safeParse(req.body);
-          if (!parsed.success) {
-            res.status(400).json({ error: 'Invalid body', details: parsed.error.flatten() });
-            return;
-          }
-          const coords = await resolvePlaceCoordinates(parsed.data);
-          if ('error' in coords) {
-            res.status(400).json({ error: coords.error });
-            return;
-          }
-          const place = await createUserPlace(prisma, user.id, {
-            ...parsed.data,
-            status: 'DRAFT',
-            latitude: coords.latitude,
-            longitude: coords.longitude,
-          });
-          res.status(201).json({ data: withResolvedPlacePhoto(place) });
-          return;
+    try {
+      const contentType = c.req.header('content-type') ?? '';
+      if (!contentType.includes('multipart/form-data')) {
+        const body = await c.req.json<Record<string, unknown>>();
+        const parsed = createPlaceSchema.safeParse(body);
+        if (!parsed.success) {
+          return c.json({ error: 'Invalid body', details: parsed.error.flatten() }, 400);
         }
-
-        const result = await handleCreatePlace(
-          prisma,
-          user.id,
-          req.body as Record<string, unknown>,
-          req.file,
-        );
-        res.status(result.status).json(result.payload);
-      } catch (err) {
-        if (err instanceof Error && err.message !== 'R2_NOT_CONFIGURED') {
-          res.status(400).json({ error: err.message });
-          return;
+        const coords = await resolvePlaceCoordinates(parsed.data, c.env.MAPBOX_ACCESS_TOKEN);
+        if ('error' in coords) {
+          return c.json({ error: coords.error }, 400);
         }
-        res.status(503).json({ error: 'Database unavailable' });
+        const place = await createUserPlace(c.get('db'), user.id, {
+          ...parsed.data,
+          status: 'DRAFT',
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+        });
+        return c.json({ data: withResolvedPlacePhoto(place) }, 201);
       }
-    },
-  );
 
-  app.get('/users/me/saved', requireAuth, async (req, res) => {
-    const user = await withDbUser(prisma, req, res);
-    if (!user) return;
-    try {
-      const data = await listSavedPlaces(prisma, user.id);
-      res.json({ data });
-    } catch {
-      res.status(503).json({ error: 'Database unavailable' });
-    }
-  });
-
-  app.get('/users/me/saved/:placeId', requireAuth, async (req, res) => {
-    const user = await withDbUser(prisma, req, res);
-    if (!user) return;
-    try {
-      const saved = await isPlaceSaved(prisma, user.id, paramId(req.params.placeId));
-      res.json({ data: { saved } });
-    } catch {
-      res.status(503).json({ error: 'Database unavailable' });
-    }
-  });
-
-  app.post('/users/me/saved/:placeId', requireAuth, async (req, res) => {
-    const user = await withDbUser(prisma, req, res);
-    if (!user) return;
-    try {
-      const placeId = paramId(req.params.placeId);
-      const place = await prisma.place.findUnique({ where: { id: placeId } });
-      if (!place) {
-        res.status(404).json({ error: 'Place not found' });
-        return;
+      const formData = await c.req.formData();
+      const body: Record<string, unknown> = {
+        name: formValue(formData, 'name'),
+        category: formValue(formData, 'category'),
+        address: formValue(formData, 'address'),
+        description: formValue(formData, 'description'),
+        latitude: formValue(formData, 'latitude'),
+        longitude: formValue(formData, 'longitude'),
+        aggregatedFreshnessLevel: formValue(formData, 'aggregatedFreshnessLevel'),
+        tags: formValue(formData, 'tags'),
+      };
+      const photo = photoFromFormData(formData);
+      return handleCreatePlace(c, user.id, body, photo);
+    } catch (err) {
+      if (err instanceof Error && err.message !== 'R2_NOT_CONFIGURED') {
+        return c.json({ error: err.message }, 400);
       }
-      await savePlace(prisma, user.id, place.id);
-      res.status(201).json({ data: { saved: true } });
-    } catch {
-      res.status(503).json({ error: 'Database unavailable' });
+      return c.json({ error: 'Database unavailable' }, 503);
     }
   });
 
-  app.delete('/users/me/saved/:placeId', requireAuth, async (req, res) => {
-    const user = await withDbUser(prisma, req, res);
-    if (!user) return;
+  app.get('/users/me/saved', requireAuth, async (c) => {
+    const user = await withDbUser(c);
+    if (user instanceof Response) return user;
     try {
-      await unsavePlace(prisma, user.id, paramId(req.params.placeId));
-      res.json({ data: { saved: false } });
+      const data = await listSavedPlaces(c.get('db'), user.id);
+      return c.json({ data });
     } catch {
-      res.status(503).json({ error: 'Database unavailable' });
+      return c.json({ error: 'Database unavailable' }, 503);
+    }
+  });
+
+  app.get('/users/me/saved/:placeId', requireAuth, async (c) => {
+    const user = await withDbUser(c);
+    if (user instanceof Response) return user;
+    const placeId = requireParam(c, 'placeId');
+    if (placeId instanceof Response) return placeId;
+    try {
+      const saved = await isPlaceSaved(c.get('db'), user.id, placeId);
+      return c.json({ data: { saved } });
+    } catch {
+      return c.json({ error: 'Database unavailable' }, 503);
+    }
+  });
+
+  app.post('/users/me/saved/:placeId', requireAuth, async (c) => {
+    const user = await withDbUser(c);
+    if (user instanceof Response) return user;
+    const placeId = requireParam(c, 'placeId');
+    if (placeId instanceof Response) return placeId;
+    try {
+      const placeRows = await c
+        .get('db')
+        .select({ id: placesTable.id })
+        .from(placesTable)
+        .where(eq(placesTable.id, placeId))
+        .limit(1);
+      if (!placeRows[0]) {
+        return c.json({ error: 'Place not found' }, 404);
+      }
+      await savePlace(c.get('db'), user.id, placeRows[0].id);
+      return c.json({ data: { saved: true } }, 201);
+    } catch {
+      return c.json({ error: 'Database unavailable' }, 503);
+    }
+  });
+
+  app.delete('/users/me/saved/:placeId', requireAuth, async (c) => {
+    const user = await withDbUser(c);
+    if (user instanceof Response) return user;
+    const placeId = requireParam(c, 'placeId');
+    if (placeId instanceof Response) return placeId;
+    try {
+      await unsavePlace(c.get('db'), user.id, placeId);
+      return c.json({ data: { saved: false } });
+    } catch {
+      return c.json({ error: 'Database unavailable' }, 503);
     }
   });
 }

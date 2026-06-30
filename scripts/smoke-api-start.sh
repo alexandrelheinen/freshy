@@ -1,23 +1,25 @@
 #!/usr/bin/env bash
-# Verify the production API entry starts after build:api (Render parity).
+# Verify the production API Worker starts after build:api (Cloudflare Workers parity).
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${ROOT_DIR}"
 
 PORT="${API_SMOKE_PORT:-4099}"
-DATABASE_URL="${DATABASE_URL:-postgresql://smoke:smoke@127.0.0.1:5432/smoke}"
 
 step() { echo "==> $1"; }
 
-step "Build API (Render build:api)"
+step "Build API (Worker bundle inputs)"
 pnpm build:api
 
-step "Start compiled API and probe /health"
-export PORT
-export DATABASE_URL
+step "Apply local D1 migrations"
+rm -rf packages/api/.wrangler/state/v3/d1
+pnpm --filter @freshy/db migrate:local
 
-node packages/api/dist/server.js &
+step "Start Worker via wrangler dev and probe /health"
+cd packages/api
+
+pnpm exec wrangler dev --port "${PORT}" --local --ip 127.0.0.1 &
 API_PID=$!
 
 cleanup() {
@@ -26,18 +28,18 @@ cleanup() {
 }
 trap cleanup EXIT
 
-for _ in $(seq 1 40); do
+for _ in $(seq 1 60); do
   if curl -sf "http://127.0.0.1:${PORT}/health" | grep -q '"status":"ok"'; then
-    echo "API /health responded OK on port ${PORT}"
+    echo "Worker /health responded OK on port ${PORT}"
     exit 0
   fi
   if ! kill -0 "${API_PID}" 2>/dev/null; then
-    echo "ERROR: API process exited before /health responded" >&2
+    echo "ERROR: wrangler dev exited before /health responded" >&2
     wait "${API_PID}" || true
     exit 1
   fi
   sleep 0.25
 done
 
-echo "ERROR: API did not respond on /health within timeout" >&2
+echo "ERROR: Worker did not respond on /health within timeout" >&2
 exit 1

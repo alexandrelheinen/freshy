@@ -9,20 +9,22 @@
     "lint": "eslint src --config ../../eslint.config.mjs --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "test": "bash ../../scripts/run-ts-tests.sh src",
-    "generate": "drizzle-kit generate",
-    "migrate:local": "wrangler d1 migrations apply freshy-db --local",
-    "migrate:remote": "wrangler d1 migrations apply freshy-db --remote"
+    "generate": "drizzle-kit generate --config drizzle.config.ts",
+    "migrate:local": "wrangler d1 migrations apply freshy-db --local --config ../api/wrangler.toml",
+    "migrate:remote": "wrangler d1 migrations apply freshy-db --remote --config ../api/wrangler.toml"
   },
   "dependencies": {
     "@freshy/config": "workspace:*",
     "drizzle-orm": "^0.44.2"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250628.0",
     "@freshy/config": "workspace:*",
     "@types/node": "^22.10.2",
     "drizzle-kit": "^0.31.1",
     "eslint": "^9.17.0",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "wrangler": "^4.106.0"
   }
 }

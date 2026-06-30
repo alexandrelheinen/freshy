@@ -7,7 +7,7 @@ describe('health', () => {
     const snapshot = buildHealthSnapshot('ok', true, false);
     assert.deepEqual(snapshot, {
       status: 'ok',
-      service: 'freshy-api',
+      service: 'freshy-api-worker',
       r2: 'configured',
       auth: 'not-configured',
       db: 'ok',
