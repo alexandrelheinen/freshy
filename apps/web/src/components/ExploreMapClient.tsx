@@ -330,8 +330,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       }));
     }
   };
-  const toggleMapStyle = () =>
-    setMapStyleId((id) => (id === 'streets' ? 'satellite' : 'streets'));
+  const toggleMapStyle = () => setMapStyleId((id) => (id === 'streets' ? 'satellite' : 'streets'));
 
   const mapContent = MAPBOX_TOKEN ? (
     <Map
@@ -484,35 +483,37 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
           </div>
         </div>
 
-        {/* Mobile: map style + recenter FABs */}
-        <div className="absolute bottom-28 right-margin-mobile z-20 flex flex-col gap-2 md:hidden">
-          <button
-            type="button"
-            onClick={toggleMapStyle}
-            className="glass flex h-12 w-12 items-center justify-center rounded-full border border-white/50 shadow-lg transition-transform active:scale-95"
-            aria-label={mapStyleId === 'streets' ? 'Switch to satellite view' : 'Switch to map view'}
-          >
-            <MaterialIcon
-              name={mapStyleId === 'streets' ? 'satellite_alt' : 'map'}
-              className="text-primary"
-            />
-          </button>
-          <button
-            type="button"
-            onClick={recenter}
-            className="glass flex h-12 w-12 items-center justify-center rounded-full border border-white/50 shadow-lg transition-transform active:scale-95"
-            aria-label="My location"
-          >
-            <MaterialIcon name="my_location" className="text-primary" />
-          </button>
-        </div>
-
-        {/* Mobile: bottom preview card */}
-        {selected ? (
-          <div className="absolute bottom-28 left-0 z-20 w-full px-margin-mobile md:hidden">
-            <ExplorePreviewCard place={selected} variant="mobile" />
+        {/* Mobile: bottom overlay stack (FABs above preview card, both above bottom nav) */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex flex-col items-end gap-3 px-margin-mobile pb-32 md:hidden">
+          <div className="pointer-events-auto flex flex-col gap-2">
+            <button
+              type="button"
+              onClick={toggleMapStyle}
+              className="glass flex h-12 w-12 items-center justify-center rounded-full border border-white/50 shadow-lg transition-transform active:scale-95"
+              aria-label={
+                mapStyleId === 'streets' ? 'Switch to satellite view' : 'Switch to map view'
+              }
+            >
+              <MaterialIcon
+                name={mapStyleId === 'streets' ? 'satellite_alt' : 'map'}
+                className="text-primary"
+              />
+            </button>
+            <button
+              type="button"
+              onClick={recenter}
+              className="glass flex h-12 w-12 items-center justify-center rounded-full border border-white/50 shadow-lg transition-transform active:scale-95"
+              aria-label="My location"
+            >
+              <MaterialIcon name="my_location" className="text-primary" />
+            </button>
           </div>
-        ) : null}
+          {selected ? (
+            <div className="pointer-events-auto w-full">
+              <ExplorePreviewCard place={selected} variant="mobile" />
+            </div>
+          ) : null}
+        </div>
 
         {/* Desktop: right detail card */}
         {selected ? (
@@ -521,8 +522,8 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
           </div>
         ) : null}
 
-        {/* Desktop: map controls */}
-        <div className="absolute bottom-8 left-1/2 z-40 hidden -translate-x-1/2 md:flex">
+        {/* Desktop: map controls (left of detail card on md-lg; centered on xl+) */}
+        <div className="absolute bottom-8 left-[27.5rem] z-40 hidden md:flex xl:left-1/2 xl:-translate-x-1/2">
           <div className="glass-panel flex items-center gap-4 rounded-full border border-white/40 px-6 py-3 shadow-xl">
             <button
               type="button"
@@ -541,7 +542,9 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
               type="button"
               onClick={toggleMapStyle}
               className="group flex flex-col items-center gap-1"
-              aria-label={mapStyleId === 'streets' ? 'Switch to satellite view' : 'Switch to map view'}
+              aria-label={
+                mapStyleId === 'streets' ? 'Switch to satellite view' : 'Switch to map view'
+              }
             >
               <MaterialIcon
                 name={mapStyleId === 'streets' ? 'satellite_alt' : 'map'}
