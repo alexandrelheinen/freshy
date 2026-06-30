@@ -41,6 +41,8 @@ export function AddPlaceClient() {
   const [error, setError] = useState<string | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoUrl, setPhotoUrl] = useState('');
+  const [photoPreviewIsObjectUrl, setPhotoPreviewIsObjectUrl] = useState(false);
 
   useEffect(() => {
     if (userLocation) {
@@ -51,11 +53,30 @@ export function AddPlaceClient() {
 
   useEffect(() => {
     return () => {
-      if (photoPreview) {
+      if (photoPreview && photoPreviewIsObjectUrl) {
         URL.revokeObjectURL(photoPreview);
       }
     };
-  }, [photoPreview]);
+  }, [photoPreview, photoPreviewIsObjectUrl]);
+
+  function clearPhotoSelection() {
+    if (photoPreview && photoPreviewIsObjectUrl) {
+      URL.revokeObjectURL(photoPreview);
+    }
+    setPhotoPreview(null);
+    setPhotoFile(null);
+    setPhotoUrl('');
+    setPhotoPreviewIsObjectUrl(false);
+  }
+
+  function setPreviewFromUrl(url: string) {
+    if (photoPreview && photoPreviewIsObjectUrl) {
+      URL.revokeObjectURL(photoPreview);
+    }
+    setPhotoFile(null);
+    setPhotoPreview(url || null);
+    setPhotoPreviewIsObjectUrl(false);
+  }
 
   function handlePhotoChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -70,12 +91,38 @@ export function AddPlaceClient() {
       return;
     }
 
-    setPhotoPreview((prev) => {
-      if (prev) URL.revokeObjectURL(prev);
-      return URL.createObjectURL(file);
-    });
+    if (photoPreview && photoPreviewIsObjectUrl) {
+      URL.revokeObjectURL(photoPreview);
+    }
+    setPhotoUrl('');
+    setPhotoPreview(URL.createObjectURL(file));
+    setPhotoPreviewIsObjectUrl(true);
     setPhotoFile(file);
     setError(null);
+  }
+
+  function handlePhotoUrlChange(value: string) {
+    setPhotoUrl(value);
+    const trimmed = value.trim();
+    if (!trimmed) {
+      if (photoPreview && photoPreviewIsObjectUrl) {
+        URL.revokeObjectURL(photoPreview);
+      }
+      setPhotoPreview(null);
+      setPhotoPreviewIsObjectUrl(false);
+      return;
+    }
+    try {
+      const parsed = new URL(trimmed);
+      if (!['http:', 'https:'].includes(parsed.protocol)) {
+        setError('Image URL must start with http:// or https://');
+        return;
+      }
+      setPreviewFromUrl(trimmed);
+      setError(null);
+    } catch {
+      setError('Enter a valid image URL.');
+    }
   }
 
   function toggleTag(tag: PlaceTagId) {
@@ -115,7 +162,7 @@ export function AddPlaceClient() {
           tags,
           status: 'DRAFT',
         },
-        { photo: photoFile },
+        { photo: photoFile, photoUrl: photoUrl.trim() || undefined },
       );
       if (result.ok) {
         sessionStorage.setItem(PLACE_SUBMITTED_KEY, result.slug);
@@ -156,8 +203,8 @@ export function AddPlaceClient() {
 
   const formFields = (
     <>
-      <section>
-        <label className="relative flex aspect-video w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-outline-variant bg-surface-container-high transition-all active:scale-[0.98] hover:border-primary/40">
+      <section className="space-y-3">
+        <label className="relative flex aspect-video w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-outline-variant bg-surface-container-high transition-all hover:border-primary/40 active:scale-[0.98]">
           {photoPreview ? (
             <img
               src={photoPreview}
@@ -167,8 +214,10 @@ export function AddPlaceClient() {
           ) : (
             <>
               <MaterialIcon name="add_a_photo" className="mb-2 text-4xl text-on-surface-variant" />
-              <p className="font-body-sm font-semibold text-on-surface-variant">Add place photos</p>
-              <p className="text-[10px] uppercase tracking-wider opacity-60">PNG, JPG up to 10MB</p>
+              <p className="font-body-sm font-semibold text-on-surface-variant">Add place photo</p>
+              <p className="text-[10px] uppercase tracking-wider opacity-60">
+                Upload or paste a URL below
+              </p>
             </>
           )}
           <input
@@ -179,6 +228,24 @@ export function AddPlaceClient() {
             onChange={handlePhotoChange}
           />
         </label>
+        <div>
+          <label className="mb-2 block font-label-caps text-on-surface-variant">Image URL</label>
+          <input
+            className="h-12 w-full rounded-lg border border-outline-variant bg-surface px-4 font-body-sm outline-none transition-all focus:border-primary focus:ring-1 focus:ring-primary"
+            placeholder="https://example.com/photo.jpg"
+            value={photoUrl}
+            onChange={(e) => handlePhotoUrlChange(e.target.value)}
+          />
+        </div>
+        {photoPreview ? (
+          <button
+            type="button"
+            onClick={clearPhotoSelection}
+            className="font-label-caps text-secondary hover:text-primary"
+          >
+            Remove photo
+          </button>
+        ) : null}
       </section>
 
       <section className="space-y-4">
