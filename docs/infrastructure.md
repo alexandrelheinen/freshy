@@ -55,7 +55,10 @@ flowchart LR
 | `places/defaults/` | Category default place photos | Yes |
 | `avatars/` | User profile images | Yes |
 | `ci/` | PR screenshot previews | Yes (for GitHub PR comments) |
+| `places/defaults/` | Category default place photos | Yes |
 | `releases/` | Mobile build mirrors (optional) | No |
+
+**CD:** when default images change on `main`, GitHub Actions runs `pnpm upload:place-defaults` (see `.github/workflows/sync-place-defaults.yml`). Uses the same `R2_*` repository secrets as PR screenshots.
 
 ---
 

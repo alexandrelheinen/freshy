@@ -111,6 +111,12 @@ Repository → **Settings → Secrets and variables → Actions**:
 
 After configuring, open a test PR — the bot should post screenshots hosted on R2.
 
+### Default place photos (CD)
+
+Pushes to `main` that change `apps/web/public/place-defaults/` trigger [`.github/workflows/sync-place-defaults.yml`](../../.github/workflows/sync-place-defaults.yml), which runs `pnpm upload:place-defaults` using the same `R2_*` secrets above. You can also run the workflow manually from the **Actions** tab.
+
+Set `NEXT_PUBLIC_R2_PUBLIC_URL` on Cloudflare Pages (same value as `R2_PUBLIC_URL`) so the web app loads defaults from the bucket.
+
 ---
 
 ## 7. Cloudflare Pages (web app)

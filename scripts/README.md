@@ -8,6 +8,8 @@
 | `post-pr-screenshots.sh` | Upload screenshots to Cloudflare R2 and build PR comment markdown |
 | `upload-place-defaults.ts` | Upload bundled default place photos to R2 (`places/defaults/`) |
 
+**CI:** pushes to `main` that change `apps/web/public/place-defaults/` run [`.github/workflows/sync-place-defaults.yml`](../.github/workflows/sync-place-defaults.yml) automatically (requires `R2_*` GitHub secrets).
+
 ```bash
 # Upload default place images to R2 (requires .env R2_* vars)
 pnpm upload:place-defaults
