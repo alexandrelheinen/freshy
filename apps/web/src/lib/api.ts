@@ -9,6 +9,7 @@ export interface PlaceDto {
   latitude: number;
   longitude: number;
   address: string | null;
+  photoUrl?: string | null;
   aggregatedTemperatureC: number | null;
   aggregatedAcStrength: 'LIGHTLY_COOLED' | 'COMFORTABLE' | 'FRIGID' | null;
   isOpen?: boolean;

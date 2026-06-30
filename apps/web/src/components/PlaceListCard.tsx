@@ -6,6 +6,7 @@ import {
   MaterialIcon,
   PLACE_CATEGORY_LABELS,
   ROUTES,
+  getPlacePhotoUrl,
   type PlaceCategory,
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
@@ -29,7 +30,11 @@ export function PlaceListCard({
     <Link href={ROUTES.place(place.slug)} className="group block">
       <article className="overflow-hidden rounded-xl border border-outline-variant/10 bg-surface-container-lowest shadow-[0_4px_20px_rgba(12,103,128,0.04)]">
         <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-primary-container/40 to-secondary-container/30">
-          <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-105" />
+          <img
+            src={getPlacePhotoUrl(place.photoUrl, place.category as PlaceCategory)}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
           {showBookmark ? (
             <div className="absolute right-3 top-3">
               <button
@@ -90,10 +95,7 @@ export function PlaceListCard({
           </div>
           <div className="flex items-center gap-1">
             {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className={`status-bar-segment ${i <= level ? 'active' : ''}`}
-              />
+              <div key={i} className={`status-bar-segment ${i <= level ? 'active' : ''}`} />
             ))}
             <span className="ml-2 text-[10px] font-bold uppercase text-primary">
               {acStrengthPowerLabel(place.aggregatedAcStrength)}

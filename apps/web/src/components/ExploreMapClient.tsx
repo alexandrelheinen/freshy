@@ -9,6 +9,7 @@ import {
   EXPLORE_FILTER_CHIPS,
   GlassCard,
   MaterialIcon,
+  getPlacePhotoUrl,
   PILOT_CITY,
   PLACE_CATEGORY_ICONS,
   PLACE_CATEGORY_LABELS,
@@ -42,6 +43,11 @@ function ExplorePreviewCard({
     return (
       <div className="glass-panel pointer-events-auto overflow-hidden rounded-2xl border border-white/50 shadow-2xl">
         <div className="relative h-48 overflow-hidden bg-gradient-to-br from-primary-container/40 to-secondary-container/30">
+          <img
+            src={getPlacePhotoUrl(place.photoUrl, place.category as PlaceCategory)}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
           <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-primary px-3 py-1.5 text-lg font-bold text-white shadow-lg">
             {place.aggregatedTemperatureC != null
               ? `${Math.round(place.aggregatedTemperatureC)}°C`
@@ -83,9 +89,7 @@ function ExplorePreviewCard({
               <MaterialIcon name="air" className="mb-1 text-primary" />
               <span className="text-[10px] font-bold uppercase text-outline-variant">Strength</span>
               <span className="font-bold text-on-surface">
-                {place.aggregatedAcStrength
-                  ? AC_STRENGTH_LABELS[place.aggregatedAcStrength]
-                  : '—'}
+                {place.aggregatedAcStrength ? AC_STRENGTH_LABELS[place.aggregatedAcStrength] : '—'}
               </span>
             </div>
             <div className="flex flex-col items-center rounded-xl bg-surface-container-low p-3 text-center">
@@ -141,11 +145,19 @@ function ExplorePreviewCard({
   return (
     <Link href={ROUTES.place(place.slug)}>
       <GlassCard className="flex items-center gap-4 rounded-2xl border border-white/60 p-4 shadow-2xl transition hover:shadow-md">
-        <div className="h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-primary-container/50 to-secondary-container/40" />
+        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-primary-container/50 to-secondary-container/40">
+          <img
+            src={getPlacePhotoUrl(place.photoUrl, place.category as PlaceCategory)}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        </div>
         <div className="flex-1">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <h2 className="font-headline-lg-mobile leading-tight text-on-surface">{place.name}</h2>
+              <h2 className="font-headline-lg-mobile leading-tight text-on-surface">
+                {place.name}
+              </h2>
               <p className="flex items-center gap-1 font-body-sm text-secondary">
                 <MaterialIcon name="location_on" size={14} />
                 {formatDistance(place.distanceKm)}
@@ -195,7 +207,13 @@ function NearbyListItem({
       }`}
     >
       <div className="flex gap-3">
-        <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-primary-container/40 to-secondary-container/30" />
+        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-primary-container/40 to-secondary-container/30">
+          <img
+            src={getPlacePhotoUrl(place.photoUrl, place.category as PlaceCategory)}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        </div>
         <div className="flex-1">
           <div className="flex items-start justify-between">
             <h3 className="text-sm font-semibold text-on-surface">{place.name}</h3>
@@ -216,7 +234,9 @@ function NearbyListItem({
               </span>
             ) : null}
             {place.distanceKm != null ? (
-              <span className="text-[10px] text-outline">• {formatDistance(place.distanceKm)} away</span>
+              <span className="text-[10px] text-outline">
+                • {formatDistance(place.distanceKm)} away
+              </span>
             ) : null}
           </div>
         </div>
@@ -227,9 +247,7 @@ function NearbyListItem({
 
 export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] }) {
   const [places, setPlaces] = useState(initialPlaces);
-  const [selectedSlug, setSelectedSlug] = useState<string | null>(
-    initialPlaces[0]?.slug ?? null,
-  );
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(initialPlaces[0]?.slug ?? null);
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<PlaceCategory | undefined>();
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
@@ -488,7 +506,10 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
             <div className="h-6 w-px bg-outline-variant/30" />
             <div className="flex items-center gap-6">
               <button type="button" onClick={zoomOut} aria-label="Zoom out">
-                <MaterialIcon name="remove" className="text-on-surface-variant hover:text-primary" />
+                <MaterialIcon
+                  name="remove"
+                  className="text-on-surface-variant hover:text-primary"
+                />
               </button>
               <span className="min-w-[40px] text-center text-sm font-bold text-on-surface">
                 {Math.round((viewState.zoom / 13) * 100)}%
