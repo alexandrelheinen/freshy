@@ -80,11 +80,19 @@ export const PLACE_CATEGORY_LABELS: Record<
   PUBLIC_SPACE: 'Public Spaces',
 };
 
-export const AC_STRENGTH_LABELS: Record<'LIGHTLY_COOLED' | 'COMFORTABLE' | 'FRIGID', string> = {
-  LIGHTLY_COOLED: 'Lightly Cooled',
-  COMFORTABLE: 'Comfortable',
-  FRIGID: 'Frigid',
-};
+export {
+  FRESHNESS_LEVELS,
+  FRESHNESS_LEVEL_IDS,
+  FRESHNESS_LEVEL_LABELS,
+  FRESHNESS_LEVEL_SHORT_LABELS,
+  FRESHNESS_LEVEL_DESCRIPTIONS,
+  freshnessBarSegments,
+  freshnessTone,
+  isFreshnessLevelId,
+  type FreshnessLevelDefinition,
+  type FreshnessLevelId,
+  type FreshnessTone,
+} from '@freshy/config/freshness-levels';
 
 export const NAV_ITEMS = [
   { id: 'explore' as const, label: 'Explore', href: ROUTES.explore },

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
-  AC_STRENGTH_LABELS,
+  FRESHNESS_LEVEL_LABELS,
   DEFAULT_PLACE_PHOTO_PATHS,
   GlassCard,
   MaterialIcon,
@@ -215,8 +215,8 @@ export function CoolingClient() {
                       ))}
                     </div>
                     <span className="text-[10px] font-bold text-white/80">
-                      {featured.aggregatedAcStrength
-                        ? AC_STRENGTH_LABELS[featured.aggregatedAcStrength].toUpperCase()
+                      {featured.aggregatedFreshnessLevel
+                        ? FRESHNESS_LEVEL_LABELS[featured.aggregatedFreshnessLevel].toUpperCase()
                         : ''}
                       {featured.aggregatedTemperatureC != null
                         ? ` · ${Math.round(featured.aggregatedTemperatureC)}°C`

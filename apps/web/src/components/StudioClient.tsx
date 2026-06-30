@@ -4,8 +4,9 @@ import { useAuth, useUser } from '@clerk/clerk-react';
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  AC_STRENGTH_LABELS,
-  AcStrengthBar,
+  FRESHNESS_LEVEL_LABELS,
+  FRESHNESS_LEVELS,
+  FreshnessBar,
   ALL_PLACE_CATEGORIES,
   BRAND_ICON,
   BRAND_NAME,
@@ -27,6 +28,7 @@ import {
   type StudioPlaceStatus,
   type StudioStatsDto,
 } from '../lib/studio-api';
+import { freshnessBarState } from '../lib/api';
 
 type StudioView = 'all' | 'verified' | 'pending' | 'duplicate';
 
@@ -61,10 +63,8 @@ function statusBadge(status: StudioPlaceStatus) {
   );
 }
 
-function acLevel(strength: StudioPlaceDto['aggregatedAcStrength']): 1 | 2 | 3 {
-  if (strength === 'FRIGID') return 3;
-  if (strength === 'COMFORTABLE') return 2;
-  return 1;
+function freshnessBarForPlace(strength: StudioPlaceDto['aggregatedFreshnessLevel']) {
+  return freshnessBarState(strength);
 }
 
 export function StudioClient() {
@@ -156,9 +156,9 @@ export function StudioClient() {
       address: String(form.get('address') ?? '').trim() || null,
       category: String(form.get('category') ?? editing.category),
       aggregatedTemperatureC: Number(form.get('temperature')),
-      aggregatedAcStrength: String(
-        form.get('acStrength'),
-      ) as StudioPlaceDto['aggregatedAcStrength'],
+      aggregatedFreshnessLevel: String(
+        form.get('freshnessLevel'),
+      ) as StudioPlaceDto['aggregatedFreshnessLevel'],
       status: String(form.get('status')) as 'DRAFT' | 'PUBLISHED',
       description: String(form.get('description') ?? '').trim() || null,
     });
@@ -345,10 +345,13 @@ export function StudioClient() {
                       </td>
                       <td className="px-4 py-5">
                         <div className="mx-auto flex w-24 flex-col items-center gap-1">
-                          <AcStrengthBar level={acLevel(place.aggregatedAcStrength)} />
+                          <FreshnessBar
+                            segments={freshnessBarForPlace(place.aggregatedFreshnessLevel).segments}
+                            tone={freshnessBarForPlace(place.aggregatedFreshnessLevel).tone}
+                          />
                           <span className="text-[10px] font-bold text-primary">
-                            {place.aggregatedAcStrength
-                              ? AC_STRENGTH_LABELS[place.aggregatedAcStrength]
+                            {place.aggregatedFreshnessLevel
+                              ? FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]
                               : 'Unknown'}
                           </span>
                         </div>
@@ -489,15 +492,17 @@ export function StudioClient() {
                 />
               </label>
               <label className="block">
-                <span className="font-label-caps text-secondary">AC strength</span>
+                <span className="font-label-caps text-secondary">Freshness level</span>
                 <select
-                  name="acStrength"
-                  defaultValue={editing.aggregatedAcStrength ?? 'COMFORTABLE'}
+                  name="freshnessLevel"
+                  defaultValue={editing.aggregatedFreshnessLevel ?? 'MODEST_AC'}
                   className="mt-1 w-full rounded-xl border border-outline-variant/30 bg-surface px-3 py-2"
                 >
-                  <option value="LIGHTLY_COOLED">Lightly Cooled</option>
-                  <option value="COMFORTABLE">Comfortable</option>
-                  <option value="FRIGID">Frigid</option>
+                  {FRESHNESS_LEVELS.map((level) => (
+                    <option key={level.id} value={level.id}>
+                      {level.label}
+                    </option>
+                  ))}
                 </select>
               </label>
               <label className="block">

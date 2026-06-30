@@ -17,12 +17,18 @@
       "require": "./dist/place-tags.js",
       "default": "./place-tags.ts"
     },
+    "./freshness-levels": {
+      "types": "./freshness-levels.ts",
+      "import": "./freshness-levels.ts",
+      "require": "./dist/freshness-levels.js",
+      "default": "./freshness-levels.ts"
+    },
     "./tailwind": "./tailwind.preset.ts"
   },
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test place-photos.test.ts place-tags.test.ts tailwind.preset.test.ts"
+    "test": "tsx --test place-photos.test.ts place-tags.test.ts freshness-levels.test.ts tailwind.preset.test.ts"
   },
   "dependencies": {
     "yaml": "^2.8.0"

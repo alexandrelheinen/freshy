@@ -105,7 +105,12 @@ export interface CreatePlacePayload {
   latitude: number;
   longitude: number;
   aggregatedTemperatureC: number;
-  aggregatedAcStrength: 'LIGHTLY_COOLED' | 'COMFORTABLE' | 'FRIGID';
+  aggregatedFreshnessLevel:
+    | 'NONE'
+    | 'GOOD_VENTILATION'
+    | 'MODEST_AC'
+    | 'VERY_COLD_AC'
+    | 'NATURALLY_FRESH';
   tags: string[];
   status: 'DRAFT' | 'PUBLISHED';
 }

@@ -4,10 +4,10 @@ import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
-  AC_STRENGTH_LABELS,
+  FRESHNESS_LEVEL_LABELS,
   PLACE_TAG_ICONS,
   PLACE_TAG_LABELS,
-  AcStrengthSnowflakes,
+  FreshnessSnowflakes,
   GlassCard,
   MaterialIcon,
   ROUTES,
@@ -15,7 +15,6 @@ import {
   filterValidPlaceTags,
   type MaterialIconName,
   type PlaceCategory,
-  type PlaceTagId,
 } from '@freshy/ui';
 import { AppBottomNav, AppTopNav } from './AppNav';
 import { PlaceActions } from './PlaceActions';
@@ -25,9 +24,9 @@ const SavePlaceButton = dynamic(
   { ssr: false },
 );
 import {
-  acStrengthLevel,
   directionsUrl,
   formatRelativeTime,
+  freshnessBarState,
   staticMapUrl,
   type PlaceDetailDto,
 } from '../lib/api';
@@ -61,10 +60,7 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
     })();
   }, [slug]);
 
-  const tags = useMemo(
-    () => (place ? filterValidPlaceTags(place.tags ?? []) : []),
-    [place],
-  );
+  const tags = useMemo(() => (place ? filterValidPlaceTags(place.tags ?? []) : []), [place]);
 
   const mapPreview = place
     ? staticMapUrl(place.latitude, place.longitude, MAPBOX_TOKEN || undefined)
@@ -96,7 +92,7 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
     );
   }
 
-  const strengthLevel = acStrengthLevel(place.aggregatedAcStrength);
+  const freshness = freshnessBarState(place.aggregatedFreshnessLevel);
   const reviewScore =
     place.reviews.length > 0
       ? (
@@ -169,14 +165,14 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
             <GlassCard className="flex flex-col items-center p-4 text-center shadow-[0_20px_20px_rgba(12,103,128,0.04)]">
               <MaterialIcon name="ac_unit" className="mb-2 text-primary" size={32} />
               <span className="font-label-caps text-label-caps uppercase tracking-widest text-secondary">
-                AC Strength
+                Freshness
               </span>
               <div className="mt-2 scale-90">
-                <AcStrengthSnowflakes level={strengthLevel} />
+                <FreshnessSnowflakes segments={freshness.segments} tone={freshness.tone} />
               </div>
               <span className="mt-1 font-body-sm font-semibold text-primary">
-                {place.aggregatedAcStrength
-                  ? AC_STRENGTH_LABELS[place.aggregatedAcStrength]
+                {place.aggregatedFreshnessLevel
+                  ? FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]
                   : 'Unknown'}
               </span>
             </GlassCard>

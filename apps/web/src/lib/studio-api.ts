@@ -34,7 +34,13 @@ export interface UpdateStudioPlacePayload {
   latitude?: number;
   longitude?: number;
   aggregatedTemperatureC?: number | null;
-  aggregatedAcStrength?: 'LIGHTLY_COOLED' | 'COMFORTABLE' | 'FRIGID' | null;
+  aggregatedFreshnessLevel?:
+    | 'NONE'
+    | 'GOOD_VENTILATION'
+    | 'MODEST_AC'
+    | 'VERY_COLD_AC'
+    | 'NATURALLY_FRESH'
+    | null;
   tags?: string[];
   isOpen?: boolean;
   status?: 'DRAFT' | 'PUBLISHED';

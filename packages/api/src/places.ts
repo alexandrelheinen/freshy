@@ -72,7 +72,7 @@ export async function categoryCounts(
 
 export async function featuredPlace(prisma: PrismaClient): Promise<Place | null> {
   const place = await prisma.place.findFirst({
-    where: { aggregatedAcStrength: 'FRIGID', status: 'PUBLISHED' },
+    where: { aggregatedFreshnessLevel: 'VERY_COLD_AC', status: 'PUBLISHED' },
     orderBy: { aggregatedTemperatureC: 'asc' },
   });
   return place ? withResolvedPlacePhoto(place) : null;

@@ -4,8 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import Map, { Marker } from 'react-map-gl';
 import Link from 'next/link';
 import {
-  AcStrengthBar,
-  AC_STRENGTH_LABELS,
+  FRESHNESS_LEVEL_LABELS,
+  FreshnessBar,
   EXPLORE_FILTER_CHIPS,
   GlassCard,
   MaterialIcon,
@@ -20,10 +20,15 @@ import {
   type PlaceCategory,
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
-import { acStrengthLevel, directionsUrl, formatDistance, formatDistanceWithWalk } from '../lib/api';
+import {
+  freshnessBarState,
+  directionsUrl,
+  formatDistance,
+  formatDistanceWithWalk,
+} from '../lib/api';
 import { mapStyleUrl, type MapStyleId } from '../lib/map-styles';
 import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
-import { PlaceMapMarker, UserLocationMarker, acStrengthLabel } from './map-markers';
+import { PlaceMapMarker, UserLocationMarker, freshnessLabel } from './map-markers';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
 const DEFAULT_CENTER = { latitude: PILOT_CITY.latitude, longitude: PILOT_CITY.longitude };
@@ -40,7 +45,7 @@ function ExplorePreviewCard({
   place: PlaceDto;
   variant?: 'mobile' | 'desktop';
 }) {
-  const strengthLevel = acStrengthLevel(place.aggregatedAcStrength);
+  const freshness = freshnessBarState(place.aggregatedFreshnessLevel);
 
   if (variant === 'desktop') {
     return (
@@ -59,9 +64,9 @@ function ExplorePreviewCard({
             <MaterialIcon name="ac_unit" size={16} />
           </div>
           <div className="absolute bottom-4 left-4 flex gap-2">
-            {place.aggregatedAcStrength ? (
+            {place.aggregatedFreshnessLevel ? (
               <span className="rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary backdrop-blur">
-                AC: {AC_STRENGTH_LABELS[place.aggregatedAcStrength]}
+                {FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]}
               </span>
             ) : null}
           </div>
@@ -90,9 +95,13 @@ function ExplorePreviewCard({
             </div>
             <div className="flex flex-col items-center rounded-xl bg-surface-container-low p-3 text-center">
               <MaterialIcon name="air" className="mb-1 text-primary" />
-              <span className="text-[10px] font-bold uppercase text-outline-variant">Strength</span>
+              <span className="text-[10px] font-bold uppercase text-outline-variant">
+                Freshness
+              </span>
               <span className="font-bold text-on-surface">
-                {place.aggregatedAcStrength ? AC_STRENGTH_LABELS[place.aggregatedAcStrength] : '—'}
+                {place.aggregatedFreshnessLevel
+                  ? FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]
+                  : '—'}
               </span>
             </div>
             <div className="flex flex-col items-center rounded-xl bg-surface-container-low p-3 text-center">
@@ -105,20 +114,15 @@ function ExplorePreviewCard({
           </div>
           <div className="space-y-4">
             <div className="flex items-center justify-between text-sm">
-              <span className="font-semibold text-on-surface">Coolness Score</span>
-              <div className="flex items-center gap-1">
-                {[1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className={`h-2 w-8 rounded-full ${i <= strengthLevel ? 'bg-primary' : 'bg-surface-container-highest'}`}
-                  />
-                ))}
-                <span className="ml-2 font-bold text-primary">
-                  {place.aggregatedAcStrength === 'FRIGID'
-                    ? 'Icy'
-                    : place.aggregatedAcStrength === 'COMFORTABLE'
-                      ? 'Cool'
-                      : 'Mild'}
+              <span className="font-semibold text-on-surface">Freshness</span>
+              <div className="flex items-center gap-2">
+                <FreshnessBar segments={freshness.segments} tone={freshness.tone} />
+                <span
+                  className={`font-bold ${freshness.tone === 'green' ? 'text-emerald-700' : 'text-primary'}`}
+                >
+                  {place.aggregatedFreshnessLevel
+                    ? FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]
+                    : '—'}
                 </span>
               </div>
             </div>
@@ -179,9 +183,9 @@ function ExplorePreviewCard({
           <div className="mt-2 flex items-center gap-4">
             <div className="flex flex-1 flex-col gap-1">
               <span className="text-[10px] font-bold uppercase text-primary">
-                {acStrengthLabel(place.aggregatedAcStrength)} STRENGTH
+                {freshnessLabel(place.aggregatedFreshnessLevel)} FRESHNESS
               </span>
-              <AcStrengthBar level={strengthLevel} />
+              <FreshnessBar segments={freshness.segments} tone={freshness.tone} />
             </div>
             <div className="rounded bg-secondary-container px-2 py-1 text-[9px] font-bold uppercase text-on-secondary-container">
               {filterValidPlaceTags(place.tags ?? [])
@@ -238,10 +242,10 @@ function NearbyListItem({
             <p className="mt-1 line-clamp-1 text-xs text-on-surface-variant">{place.description}</p>
           ) : null}
           <div className="mt-2 flex items-center gap-2">
-            {place.aggregatedAcStrength ? (
+            {place.aggregatedFreshnessLevel ? (
               <span className="flex items-center text-[10px] font-bold text-primary">
                 <MaterialIcon name="ac_unit" size={14} className="mr-1" />
-                {AC_STRENGTH_LABELS[place.aggregatedAcStrength]}
+                {FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]}
               </span>
             ) : null}
             {place.distanceKm != null ? (

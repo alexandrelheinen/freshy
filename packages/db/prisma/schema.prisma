@@ -17,10 +17,12 @@ enum PlaceCategory {
   PUBLIC_SPACE
 }
 
-enum AcStrength {
-  LIGHTLY_COOLED
-  COMFORTABLE
-  FRIGID
+enum FreshnessLevel {
+  NONE
+  GOOD_VENTILATION
+  MODEST_AC
+  VERY_COLD_AC
+  NATURALLY_FRESH
 }
 
 enum PlaceStatus {
@@ -55,7 +57,7 @@ model Place {
   address                 String?
   photoUrl                String?
   aggregatedTemperatureC  Float?
-  aggregatedAcStrength    AcStrength?
+  aggregatedFreshnessLevel FreshnessLevel?
   tags                    String[]      @default([])
   isOpen                  Boolean       @default(true)
   createdById             String?

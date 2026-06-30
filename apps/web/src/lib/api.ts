@@ -11,7 +11,13 @@ export interface PlaceDto {
   address: string | null;
   photoUrl?: string | null;
   aggregatedTemperatureC: number | null;
-  aggregatedAcStrength: 'LIGHTLY_COOLED' | 'COMFORTABLE' | 'FRIGID' | null;
+  aggregatedFreshnessLevel:
+    | 'NONE'
+    | 'GOOD_VENTILATION'
+    | 'MODEST_AC'
+    | 'VERY_COLD_AC'
+    | 'NATURALLY_FRESH'
+    | null;
   tags?: string[];
   isOpen?: boolean;
   distanceKm?: number;
@@ -89,9 +95,28 @@ export function staticMapUrl(lat: number, lng: number, token?: string): string |
   return `https://api.mapbox.com/styles/v1/mapbox/light-v11/static/pin-l+0c6780(${lng},${lat})/${lng},${lat},14,0/600x300@2x?access_token=${token}`;
 }
 
-export function acStrengthLevel(strength: PlaceDto['aggregatedAcStrength']): 1 | 2 | 3 {
-  if (strength === 'FRIGID') return 3;
-  if (strength === 'COMFORTABLE') return 2;
+import {
+  freshnessBarSegments,
+  freshnessTone,
+  type FreshnessLevelId,
+} from '@freshy/config/freshness-levels';
+
+export function freshnessBarState(level: PlaceDto['aggregatedFreshnessLevel']): {
+  segments: number;
+  tone: 'neutral' | 'blue' | 'green';
+} {
+  const id = level as FreshnessLevelId | null | undefined;
+  return {
+    segments: freshnessBarSegments(id),
+    tone: freshnessTone(id),
+  };
+}
+
+/** @deprecated Use freshnessBarState */
+export function acStrengthLevel(strength: PlaceDto['aggregatedFreshnessLevel']): 1 | 2 | 3 {
+  const segments = freshnessBarSegments(strength as FreshnessLevelId | null | undefined);
+  if (segments >= 3) return 3;
+  if (segments === 2) return 2;
   return 1;
 }
 

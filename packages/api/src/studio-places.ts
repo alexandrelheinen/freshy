@@ -1,7 +1,8 @@
 import { z } from 'zod';
+import { FRESHNESS_LEVEL_IDS } from '@freshy/config/freshness-levels';
 import { PLACE_TAG_IDS } from '@freshy/config/place-tags';
 import {
-  AcStrength,
+  FreshnessLevel,
   PlaceCategory,
   type Place,
   type Prisma,
@@ -30,7 +31,10 @@ export const updateStudioPlaceSchema = z
     latitude: z.number().min(-90).max(90).optional(),
     longitude: z.number().min(-180).max(180).optional(),
     aggregatedTemperatureC: z.number().min(16).max(30).nullable().optional(),
-    aggregatedAcStrength: z.nativeEnum(AcStrength).nullable().optional(),
+    aggregatedFreshnessLevel: z
+      .enum(FRESHNESS_LEVEL_IDS as [string, ...string[]])
+      .nullable()
+      .optional(),
     tags: z.array(z.enum(PLACE_TAG_IDS as [string, ...string[]])).optional(),
     isOpen: z.boolean().optional(),
     status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
@@ -192,9 +196,15 @@ export async function updateStudioPlace(
   placeId: string,
   input: UpdateStudioPlaceInput,
 ): Promise<Place> {
+  const { aggregatedFreshnessLevel, ...rest } = input;
   const place = await prisma.place.update({
     where: { id: placeId },
-    data: input,
+    data: {
+      ...rest,
+      ...(aggregatedFreshnessLevel !== undefined
+        ? { aggregatedFreshnessLevel: aggregatedFreshnessLevel as FreshnessLevel | null }
+        : {}),
+    },
   });
   return withResolvedPlacePhoto(place);
 }
