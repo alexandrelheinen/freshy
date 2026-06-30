@@ -1,5 +1,9 @@
 import { defineConfig } from '@playwright/test';
 
+/** Clichy pilot center — matches seeded places used in CI screenshots. */
+const PILOT_LAT = 48.9042;
+const PILOT_LNG = 2.3064;
+
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: false,
@@ -9,6 +13,8 @@ export default defineConfig({
   use: {
     baseURL: process.env.PLAYWRIGHT_BASE_URL ?? 'http://127.0.0.1:3000',
     trace: 'off',
+    geolocation: { latitude: PILOT_LAT, longitude: PILOT_LNG },
+    permissions: ['geolocation'],
   },
   projects: [
     {

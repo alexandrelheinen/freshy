@@ -80,6 +80,10 @@ jobs:
         run: pnpm db:generate
 
       - name: Build web app
+        env:
+          NEXT_PUBLIC_API_URL: https://freshy-api.onrender.com
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_MAPBOX_TOKEN: ${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }}
         run: pnpm --filter @freshy/web build
 
       - name: Install Playwright browsers
