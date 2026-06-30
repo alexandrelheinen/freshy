@@ -1,7 +1,14 @@
 import { z } from 'zod';
-import { eq, and, or, like, sql } from 'drizzle-orm';
+import { eq, and, or, like, sql, desc } from 'drizzle-orm';
 import type { Place } from '@freshy/db';
-import { PLACE_CATEGORIES, type PlaceCategory, places as placesTable, filterPlacesByRadius } from '@freshy/db';
+import {
+  PLACE_CATEGORIES,
+  type PlaceCategory,
+  places as placesTable,
+  reviews as reviewsTable,
+  users as usersTable,
+  filterPlacesByRadius,
+} from '@freshy/db';
 import { PILOT_CITY } from '@freshy/config/pilot-city';
 import type { PlacePhotoCategory } from '@freshy/config/place-photos';
 import type { Db } from '@freshy/db';
@@ -103,4 +110,50 @@ export async function featuredPlace(db: Db): Promise<Place | null> {
     .limit(1);
   const place = rows[0] ?? null;
   return place ? withResolvedPlacePhoto(place) : null;
+}
+
+export interface PlaceReviewSummary {
+  id: string;
+  acStrength: number;
+  comment: string | null;
+  createdAt: string;
+  user: { displayName: string; username: string };
+}
+
+export interface PlaceDetail extends Place {
+  reviews: PlaceReviewSummary[];
+}
+
+export async function getPlaceBySlugWithReviews(db: Db, slug: string): Promise<PlaceDetail | null> {
+  const placeRows = await db.select().from(placesTable).where(eq(placesTable.slug, slug)).limit(1);
+  const place = placeRows[0];
+  if (!place || place.status !== 'PUBLISHED') {
+    return null;
+  }
+
+  const reviewRows = await db
+    .select({
+      id: reviewsTable.id,
+      acStrength: reviewsTable.acStrength,
+      comment: reviewsTable.comment,
+      createdAt: reviewsTable.createdAt,
+      displayName: usersTable.displayName,
+      username: usersTable.username,
+    })
+    .from(reviewsTable)
+    .innerJoin(usersTable, eq(reviewsTable.userId, usersTable.id))
+    .where(eq(reviewsTable.placeId, place.id))
+    .orderBy(desc(reviewsTable.createdAt))
+    .limit(10);
+
+  return {
+    ...withResolvedPlacePhoto(place),
+    reviews: reviewRows.map((row) => ({
+      id: row.id,
+      acStrength: row.acStrength,
+      comment: row.comment,
+      createdAt: row.createdAt,
+      user: { displayName: row.displayName, username: row.username },
+    })),
+  };
 }

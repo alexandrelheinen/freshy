@@ -1,9 +1,11 @@
-import type { Express } from 'express';
-import multer from 'multer';
-import type { PrismaClient } from '@freshy/db';
+import type { Hono } from 'hono';
+import { eq } from 'drizzle-orm';
+import { places as placesTable } from '@freshy/db';
+import type { AppEnv } from './env';
 import { requireAdmin } from './auth';
 import { uploadPlacePhoto } from './place-photo-upload';
-import { isR2Configured } from './storage/r2';
+import { isR2Configured, r2ContextFromEnv } from './storage/r2';
+import { photoFromFormData, requireParam } from './route-utils';
 import {
   approveStudioPlace,
   deleteStudioPlace,
@@ -18,151 +20,163 @@ import {
   updateStudioPlaceSchema,
 } from './studio-places';
 
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 },
-});
-
-function paramId(value: string | string[]): string {
-  return Array.isArray(value) ? value[0]! : value;
-}
-
-export function registerStudioRoutes(app: Express, prisma: PrismaClient): void {
-  app.get('/studio/stats', requireAdmin, async (_req, res) => {
+export function registerStudioRoutes(app: Hono<AppEnv>): void {
+  app.get('/studio/stats', requireAdmin, async (c) => {
     try {
-      const data = await getStudioStats(prisma);
-      res.json({ data });
+      const data = await getStudioStats(c.get('db'));
+      return c.json({ data });
     } catch {
-      res.status(503).json({ error: 'Database unavailable' });
+      return c.json({ error: 'Database unavailable' }, 503);
     }
   });
 
-  app.get('/studio/places', requireAdmin, async (req, res) => {
-    const parsed = studioPlacesQuerySchema.safeParse(req.query);
+  app.get('/studio/places', requireAdmin, async (c) => {
+    const parsed = studioPlacesQuerySchema.safeParse({
+      status: c.req.query('status'),
+      q: c.req.query('q'),
+      page: c.req.query('page'),
+      limit: c.req.query('limit'),
+    });
     if (!parsed.success) {
-      res.status(400).json({ error: 'Invalid query', details: parsed.error.flatten() });
-      return;
+      return c.json({ error: 'Invalid query', details: parsed.error.flatten() }, 400);
     }
     try {
-      const data = await listStudioPlaces(prisma, parsed.data);
-      res.json({ data });
+      const data = await listStudioPlaces(c.get('db'), parsed.data);
+      return c.json({ data });
     } catch {
-      res.status(503).json({ error: 'Database unavailable' });
+      return c.json({ error: 'Database unavailable' }, 503);
     }
   });
 
-  app.get('/studio/places/:placeId', requireAdmin, async (req, res) => {
+  app.get('/studio/places/:placeId', requireAdmin, async (c) => {
+    const placeId = requireParam(c, 'placeId');
+    if (placeId instanceof Response) return placeId;
     try {
-      const data = await getStudioPlace(prisma, paramId(req.params.placeId));
+      const data = await getStudioPlace(c.get('db'), placeId);
       if (!data) {
-        res.status(404).json({ error: 'Not found' });
-        return;
+        return c.json({ error: 'Not found' }, 404);
       }
-      res.json({ data });
+      return c.json({ data });
     } catch {
-      res.status(503).json({ error: 'Database unavailable' });
+      return c.json({ error: 'Database unavailable' }, 503);
     }
   });
 
-  app.patch(
-    '/studio/places/:placeId',
-    requireAdmin,
-    (req, res, next) => {
-      if (req.is('multipart/form-data')) {
-        upload.single('photo')(req, res, next);
-        return;
-      }
-      next();
-    },
-    async (req, res) => {
-      const isMultipart = req.is('multipart/form-data');
-      const parsed = isMultipart
-        ? parseUpdateStudioPlaceFields(req.body as Record<string, unknown>)
-        : updateStudioPlaceSchema.safeParse(req.body);
-      if (!parsed.success) {
-        res.status(400).json({ error: 'Invalid body', details: parsed.error.flatten() });
-        return;
-      }
-      try {
-        const existing = await prisma.place.findUnique({
-          where: { id: paramId(req.params.placeId) },
-        });
-        if (!existing) {
-          res.status(404).json({ error: 'Not found' });
-          return;
-        }
+  app.patch('/studio/places/:placeId', requireAdmin, async (c) => {
+    const placeId = requireParam(c, 'placeId');
+    if (placeId instanceof Response) return placeId;
 
-        const photo = req.file;
-        if (photo && !isR2Configured()) {
-          res.status(503).json({ error: 'Photo upload is not configured on the server.' });
-          return;
-        }
+    const contentType = c.req.header('content-type') ?? '';
+    const isMultipart = contentType.includes('multipart/form-data');
 
-        let updateInput = parsed.data;
-        if (photo) {
-          const uploadedPhotoUrl = await uploadPlacePhoto(
-            existing.slug,
-            photo.buffer,
-            photo.mimetype,
-          );
-          updateInput = { ...updateInput, photoUrl: uploadedPhotoUrl };
-        }
+    let parsed:
+      | ReturnType<typeof parseUpdateStudioPlaceFields>
+      | ReturnType<typeof updateStudioPlaceSchema.safeParse>;
+    let photo: File | undefined;
 
-        const data = await updateStudioPlace(prisma, existing.id, updateInput);
-        res.json({ data });
-      } catch {
-        res.status(503).json({ error: 'Database unavailable' });
-      }
-    },
-  );
-
-  app.post('/studio/places/:placeId/approve', requireAdmin, async (req, res) => {
-    try {
-      const existing = await prisma.place.findUnique({
-        where: { id: paramId(req.params.placeId) },
+    if (isMultipart) {
+      const formData = await c.req.formData();
+      const body: Record<string, unknown> = {};
+      formData.forEach((value, key) => {
+        body[key] = typeof value === 'string' ? value : undefined;
       });
-      if (!existing) {
-        res.status(404).json({ error: 'Not found' });
-        return;
-      }
-      const data = await approveStudioPlace(prisma, existing.id);
-      res.json({ data });
-    } catch {
-      res.status(503).json({ error: 'Database unavailable' });
+      parsed = parseUpdateStudioPlaceFields(body);
+      photo = photoFromFormData(formData);
+    } else {
+      parsed = updateStudioPlaceSchema.safeParse(await c.req.json());
     }
-  });
 
-  app.delete('/studio/places/:placeId', requireAdmin, async (req, res) => {
-    try {
-      const existing = await prisma.place.findUnique({
-        where: { id: paramId(req.params.placeId) },
-      });
-      if (!existing) {
-        res.status(404).json({ error: 'Not found' });
-        return;
-      }
-      await deleteStudioPlace(prisma, existing.id);
-      res.json({ data: { deleted: true } });
-    } catch {
-      res.status(503).json({ error: 'Database unavailable' });
-    }
-  });
-
-  app.post('/studio/places/merge', requireAdmin, async (req, res) => {
-    const parsed = mergePlacesSchema.safeParse(req.body);
     if (!parsed.success) {
-      res.status(400).json({ error: 'Invalid body', details: parsed.error.flatten() });
-      return;
+      return c.json({ error: 'Invalid body', details: parsed.error.flatten() }, 400);
+    }
+
+    try {
+      const existingRows = await c
+        .get('db')
+        .select()
+        .from(placesTable)
+        .where(eq(placesTable.id, placeId))
+        .limit(1);
+      const existing = existingRows[0];
+      if (!existing) {
+        return c.json({ error: 'Not found' }, 404);
+      }
+
+      let updateInput = parsed.data;
+      const r2 = r2ContextFromEnv(c.env);
+      if (photo && !isR2Configured(r2)) {
+        return c.json({ error: 'Photo upload is not configured on the server.' }, 503);
+      }
+      if (photo) {
+        const uploadedPhotoUrl = await uploadPlacePhoto(
+          existing.slug,
+          await photo.arrayBuffer(),
+          photo.type,
+          r2!,
+        );
+        updateInput = { ...updateInput, photoUrl: uploadedPhotoUrl };
+      }
+
+      const data = await updateStudioPlace(c.get('db'), existing.id, updateInput);
+      return c.json({ data });
+    } catch {
+      return c.json({ error: 'Database unavailable' }, 503);
+    }
+  });
+
+  app.post('/studio/places/:placeId/approve', requireAdmin, async (c) => {
+    const placeId = requireParam(c, 'placeId');
+    if (placeId instanceof Response) return placeId;
+    try {
+      const existingRows = await c
+        .get('db')
+        .select({ id: placesTable.id })
+        .from(placesTable)
+        .where(eq(placesTable.id, placeId))
+        .limit(1);
+      if (!existingRows[0]) {
+        return c.json({ error: 'Not found' }, 404);
+      }
+      const data = await approveStudioPlace(c.get('db'), existingRows[0].id);
+      return c.json({ data });
+    } catch {
+      return c.json({ error: 'Database unavailable' }, 503);
+    }
+  });
+
+  app.delete('/studio/places/:placeId', requireAdmin, async (c) => {
+    const placeId = requireParam(c, 'placeId');
+    if (placeId instanceof Response) return placeId;
+    try {
+      const existingRows = await c
+        .get('db')
+        .select({ id: placesTable.id })
+        .from(placesTable)
+        .where(eq(placesTable.id, placeId))
+        .limit(1);
+      if (!existingRows[0]) {
+        return c.json({ error: 'Not found' }, 404);
+      }
+      await deleteStudioPlace(c.get('db'), existingRows[0].id);
+      return c.json({ data: { deleted: true } });
+    } catch {
+      return c.json({ error: 'Database unavailable' }, 503);
+    }
+  });
+
+  app.post('/studio/places/merge', requireAdmin, async (c) => {
+    const parsed = mergePlacesSchema.safeParse(await c.req.json());
+    if (!parsed.success) {
+      return c.json({ error: 'Invalid body', details: parsed.error.flatten() }, 400);
     }
     try {
-      const data = await mergeStudioPlaces(prisma, parsed.data);
-      res.json({ data });
+      const data = await mergeStudioPlaces(c.get('db'), parsed.data);
+      return c.json({ data });
     } catch (error) {
       if (error instanceof Error && error.message === 'Place not found') {
-        res.status(404).json({ error: 'Not found' });
-        return;
+        return c.json({ error: 'Not found' }, 404);
       }
-      res.status(503).json({ error: 'Database unavailable' });
+      return c.json({ error: 'Database unavailable' }, 503);
     }
   });
 }

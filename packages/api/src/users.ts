@@ -65,11 +65,7 @@ export async function syncUserFromClerk(
   const usernameBase = slugifyUsername(clerkUser.username ?? email.split('@')[0] ?? 'freshy_user');
   const username = await uniqueUsername(db, usernameBase);
 
-  const byEmail = await db
-    .select()
-    .from(usersTable)
-    .where(eq(usersTable.email, email))
-    .limit(1);
+  const byEmail = await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
 
   if (byEmail[0]) {
     const now = new Date().toISOString();
@@ -120,11 +116,7 @@ export interface UserProfile {
 }
 
 export async function getUserProfile(db: Db, userId: string): Promise<UserProfile> {
-  const user = await db
-    .select()
-    .from(usersTable)
-    .where(eq(usersTable.id, userId))
-    .limit(1);
+  const user = await db.select().from(usersTable).where(eq(usersTable.id, userId)).limit(1);
   if (!user[0]) throw new Error('User not found');
 
   const [reviewCount, savedCount] = await Promise.all([
@@ -161,18 +153,10 @@ export async function listSavedPlaces(db: Db, userId: string): Promise<Place[]> 
 }
 
 export async function isPlaceSaved(db: Db, userId: string, placeId: string): Promise<boolean> {
-  const row = await db
-    .select({ id: savedPlacesTable.id })
-    .from(savedPlacesTable)
-    .where(eq(savedPlacesTable.userId, userId))
-    .limit(1);
-  // Find with both userId AND placeId
   const found = await db
     .select({ id: savedPlacesTable.id })
     .from(savedPlacesTable)
-    .where(
-      sql`${savedPlacesTable.userId} = ${userId} AND ${savedPlacesTable.placeId} = ${placeId}`,
-    )
+    .where(sql`${savedPlacesTable.userId} = ${userId} AND ${savedPlacesTable.placeId} = ${placeId}`)
     .limit(1);
   return found.length > 0;
 }
@@ -181,9 +165,7 @@ export async function savePlace(db: Db, userId: string, placeId: string): Promis
   const existing = await db
     .select({ id: savedPlacesTable.id })
     .from(savedPlacesTable)
-    .where(
-      sql`${savedPlacesTable.userId} = ${userId} AND ${savedPlacesTable.placeId} = ${placeId}`,
-    )
+    .where(sql`${savedPlacesTable.userId} = ${userId} AND ${savedPlacesTable.placeId} = ${placeId}`)
     .limit(1);
   if (existing.length === 0) {
     await db.insert(savedPlacesTable).values({

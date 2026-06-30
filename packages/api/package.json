@@ -2,35 +2,28 @@
   "name": "@freshy/api",
   "version": "0.1.0",
   "private": true,
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/app.js",
+  "types": "./dist/app.d.ts",
   "scripts": {
     "build": "tsc",
-    "dev": "tsx watch src/server.ts",
-    "start": "node dist/server.js",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
     "lint": "eslint src --config ../../eslint.config.mjs --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "test": "bash ../../scripts/run-ts-tests.sh src"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.726.1",
-    "@aws-sdk/s3-request-presigner": "^3.726.1",
     "@clerk/backend": "^3.8.5",
     "@freshy/config": "workspace:*",
     "@freshy/db": "workspace:*",
-    "cors": "^2.8.5",
-    "express": "^4.21.2",
+    "drizzle-orm": "^0.44.2",
     "hono": "^4.12.27",
-    "multer": "^1.4.5-lts.1",
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.0",
-    "@types/multer": "^1.4.12",
+    "@cloudflare/workers-types": "^4.20250628.0",
     "@types/node": "^22.10.2",
     "eslint": "^9.17.0",
-    "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "wrangler": "^4.106.0"
   }

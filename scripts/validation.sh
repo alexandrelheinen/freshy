@@ -35,9 +35,6 @@ pnpm prettier --write packages/theme/generated/**/*.ts
 step "Format check"
 pnpm format:check
 
-step "Generate Prisma client"
-pnpm db:generate
-
 step "Lint (all packages)"
 pnpm lint
 
@@ -47,26 +44,17 @@ pnpm typecheck
 step "Unit tests"
 pnpm test
 
-if [ "${SKIP_DB}" != "1" ] && command -v docker >/dev/null 2>&1; then
-  step "Local database (Docker)"
-  bash "${ROOT_DIR}/scripts/setup-local-db.sh"
-  if [ -f "${ROOT_DIR}/.env" ]; then
-    set -a
-    # shellcheck disable=SC1091
-    source "${ROOT_DIR}/.env"
-    set +a
-  fi
-  step "Database migrate + seed"
-  pnpm --filter @freshy/db migrate:deploy 2>/dev/null || pnpm --filter @freshy/db exec prisma db push --skip-generate
-  pnpm db:seed || echo "WARN: seed skipped (DB may be empty)"
+if [ "${SKIP_DB}" != "1" ]; then
+  step "Local D1 migrations"
+  pnpm --filter @freshy/db migrate:local || echo "WARN: local D1 migrate skipped"
 else
-  echo "Skipping database setup (SKIP_DB=1 or Docker unavailable)."
+  echo "Skipping D1 migrations (SKIP_DB=1)."
 fi
 
 step "Build all packages"
 pnpm build
 
-step "API deploy smoke (Render parity)"
+step "API deploy smoke (Cloudflare Worker parity)"
 pnpm smoke:api
 
 step "Web deploy smoke (Cloudflare Pages parity)"

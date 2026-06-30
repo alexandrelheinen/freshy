@@ -5,13 +5,16 @@ export interface GeocodedLocation {
   longitude: number;
 }
 
-function mapboxAccessToken(): string | undefined {
-  return process.env.MAPBOX_ACCESS_TOKEN ?? process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+function resolveMapboxToken(explicit?: string): string | undefined {
+  return explicit ?? process.env.MAPBOX_ACCESS_TOKEN ?? process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 }
 
 /** Forward-geocode a street address via Mapbox. Returns null when token is missing or no match. */
-export async function geocodeAddress(address: string): Promise<GeocodedLocation | null> {
-  const token = mapboxAccessToken();
+export async function geocodeAddress(
+  address: string,
+  mapboxToken?: string,
+): Promise<GeocodedLocation | null> {
+  const token = resolveMapboxToken(mapboxToken);
   const trimmed = address.trim();
   if (!token || trimmed.length < 3) return null;
 
@@ -31,6 +34,6 @@ export async function geocodeAddress(address: string): Promise<GeocodedLocation 
   return { longitude: center[0]!, latitude: center[1]! };
 }
 
-export function isGeocodingConfigured(): boolean {
-  return Boolean(mapboxAccessToken());
+export function isGeocodingConfigured(mapboxToken?: string): boolean {
+  return Boolean(resolveMapboxToken(mapboxToken));
 }
