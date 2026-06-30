@@ -6,6 +6,7 @@
     "dev": "next dev --port 3000",
     "build": "next build",
     "start": "next start --port 3000",
+    "serve:static": "serve out -l 3000",
     "lint": "eslint src e2e --config ../../eslint.config.mjs --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "test": "bash ../../scripts/run-ts-tests.sh src",
@@ -23,6 +24,7 @@
   "devDependencies": {
     "@freshy/config": "workspace:*",
     "@playwright/test": "^1.49.1",
+    "serve": "^14.2.4",
     "@types/mapbox-gl": "^3.4.1",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",

@@ -19,7 +19,7 @@ test.describe('Freshy page screenshots', () => {
         path: `../../screenshots/${page.name}.png`,
         fullPage: true,
       });
-      await expect(browserPage.locator(`[data-page="${page.name}"]`)).toBeVisible();
+      await expect(browserPage.locator(`[data-page="${page.name}"]`).first()).toBeVisible();
     });
   }
 });
