@@ -74,6 +74,18 @@ export function formatDistance(km: number | undefined): string {
   return `${km.toFixed(1)}km`;
 }
 
+/** Approximate walk time at 5 km/h (Stitch explore card format). */
+export function formatWalkTime(km: number | undefined): string {
+  if (km == null) return '';
+  const minutes = Math.max(1, Math.round((km / 5) * 60));
+  return `${minutes} min${minutes === 1 ? '' : 's'} walk`;
+}
+
+export function formatDistanceWithWalk(km: number | undefined): string {
+  if (km == null) return '';
+  return `${formatDistance(km)} • ${formatWalkTime(km)}`;
+}
+
 export function acStrengthLevel(strength: PlaceDto['aggregatedAcStrength']): 1 | 2 | 3 {
   if (strength === 'FRIGID') return 3;
   if (strength === 'COMFORTABLE') return 2;

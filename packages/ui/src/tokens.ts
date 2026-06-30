@@ -35,7 +35,19 @@ export const ROUTES = {
   categoryList: (category: PlaceCategory) => `/cooling/${category.toLowerCase()}`,
   place: (slug: string) => `/places/${slug}`,
   profile: '/profile',
+  addPlace: '/profile/places/new',
 } as const;
+
+/** Primary amenity chip shown on explore preview cards per category. */
+export const CATEGORY_HIGHLIGHT_AMENITY: Partial<Record<PlaceCategory, string>> = {
+  CAFE: 'FREE WI-FI',
+  RESTAURANT: 'COMFY SEATING',
+  LIBRARY: 'QUIET ZONE',
+  MALL: 'FREE WI-FI',
+  MUSEUM: 'QUIET ZONE',
+  COWORKING: 'FREE WI-FI',
+  PUBLIC_SPACE: 'COMFY SEATING',
+};
 
 export const PLACE_CATEGORY_ICONS: Record<PlaceCategory, string> = {
   CAFE: 'local_cafe',

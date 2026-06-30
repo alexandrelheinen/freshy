@@ -18,7 +18,13 @@ import {
   type PlaceCategory,
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
-import { acStrengthLevel, directionsUrl, formatDistance } from '../lib/api';
+import {
+  acStrengthLevel,
+  directionsUrl,
+  formatDistance,
+  formatDistanceWithWalk,
+} from '../lib/api';
+import { CATEGORY_HIGHLIGHT_AMENITY } from '@freshy/ui';
 import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceMapMarker, UserLocationMarker, acStrengthLabel } from './map-markers';
 
@@ -160,8 +166,7 @@ function ExplorePreviewCard({
               </h2>
               <p className="flex items-center gap-1 font-body-sm text-secondary">
                 <MaterialIcon name="location_on" size={14} />
-                {formatDistance(place.distanceKm)}
-                {place.distanceKm != null ? ' away' : ''}
+                {place.distanceKm != null ? formatDistanceWithWalk(place.distanceKm) : 'Nearby'}
               </p>
             </div>
             {place.aggregatedTemperatureC != null ? (
@@ -178,7 +183,9 @@ function ExplorePreviewCard({
               <AcStrengthBar level={strengthLevel} />
             </div>
             <div className="rounded bg-secondary-container px-2 py-1 text-[9px] font-bold uppercase text-on-secondary-container">
-              {PLACE_CATEGORY_LABELS[place.category as PlaceCategory] ?? place.category}
+              {CATEGORY_HIGHLIGHT_AMENITY[place.category as PlaceCategory] ??
+                PLACE_CATEGORY_LABELS[place.category as PlaceCategory] ??
+                place.category}
             </div>
           </div>
         </div>
@@ -472,6 +479,18 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
               ) : null}
             </div>
           </div>
+        </div>
+
+        {/* Mobile: recenter FAB */}
+        <div className="absolute bottom-28 right-margin-mobile z-20 md:hidden">
+          <button
+            type="button"
+            onClick={recenter}
+            className="glass flex h-12 w-12 items-center justify-center rounded-full border border-white/50 shadow-lg transition-transform active:scale-95"
+            aria-label="My location"
+          >
+            <MaterialIcon name="my_location" className="text-primary" />
+          </button>
         </div>
 
         {/* Mobile: bottom preview card */}
