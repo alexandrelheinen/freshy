@@ -10,7 +10,7 @@
     "build:ios": "eas build --platform ios --non-interactive",
     "lint": "eslint app src --config ../../eslint.config.mjs --max-warnings 0",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test src/**/*.test.ts"
+    "test": "tsx --test \"src/**/*.test.ts\""
   },
   "dependencies": {
     "@freshy/ui": "workspace:*",
