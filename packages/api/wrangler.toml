@@ -1,0 +1,20 @@
+name = "freshy-api"
+main = "src/worker.ts"           # ← new Worker entry point (not server.ts)
+compatibility_date = "2026-06-30"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "freshy-db"
+database_id = "dc892bf1-22c9-47b8-bf8d-289ffb2421cc"
+migrations_dir = "../db/migrations"
+
+[[r2_buckets]]
+binding = "FRESHY_ASSETS"
+bucket_name = "freshy-assets"
+
+[vars]
+R2_PUBLIC_URL = "https://pub-e2a3816cb1244efeb75186f5725a97f7.r2.dev"
+
+[env.production]
+routes = [{ pattern = "freshy-api.alexandrelheinen.workers.dev", custom_domain = true }]
