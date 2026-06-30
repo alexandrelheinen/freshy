@@ -20,6 +20,7 @@ export function PlaceListClient({
   places: initialPlaces,
   loadPlaces,
   showBookmark = false,
+  onUnsave,
   navActive = 'cooling',
   searchPlaceholder = 'Search places…',
   emptyMessage = 'No places found.',
@@ -30,6 +31,7 @@ export function PlaceListClient({
   places?: PlaceDto[];
   loadPlaces?: () => Promise<PlaceDto[]>;
   showBookmark?: boolean;
+  onUnsave?: (placeId: string) => Promise<void>;
   navActive?: 'explore' | 'saved' | 'cooling' | 'profile';
   searchPlaceholder?: string;
   emptyMessage?: string;
