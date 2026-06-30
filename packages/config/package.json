@@ -26,11 +26,12 @@
     "./tailwind": "./tailwind.preset.ts"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "pnpm --filter @freshy/theme build && tsc",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test place-photos.test.ts place-tags.test.ts freshness-levels.test.ts tailwind.preset.test.ts"
+    "test": "pnpm --filter @freshy/theme build && tsx --test place-photos.test.ts place-tags.test.ts freshness-levels.test.ts tailwind.preset.test.ts"
   },
   "dependencies": {
+    "@freshy/theme": "workspace:*",
     "yaml": "^2.8.0"
   },
   "devDependencies": {

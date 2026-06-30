@@ -34,58 +34,58 @@ flowchart TB
   STITCH -.->|not ported| WEB
 ```
 
-| Layer | Location | Notes |
-| ----- | -------- | ----- |
-| Design reference | `docs/stitch/freshy/DESIGN.md` | YAML mirrors preset values; prose describes glass, functional colors |
-| Web runtime | `packages/config/tailwind.preset.ts` | 48 Material Design 3-style color roles, spacing, typography, radius |
-| Tailwind consumer | `apps/web/tailwind.config.ts` | Imports `@freshy/config/tailwind` preset |
-| Domain constants | `packages/ui/src/tokens.ts` | Brand, routes, nav/category/amenity **icon names**; no colors |
-| Icons | `packages/ui/src/icons.tsx` | `MaterialIcon` + `MaterialIconName` union (~65 glyphs) |
-| Global CSS | `apps/web/src/app/globals.css` | `.glass`, marker animations, status bar, slider thumb with raw hex/rgba |
-| Mobile | `apps/mobile/app/**/*.tsx` | Hardcoded hex in every screen (~6 files) |
+| Layer             | Location                             | Notes                                                                   |
+| ----------------- | ------------------------------------ | ----------------------------------------------------------------------- |
+| Design reference  | `docs/stitch/freshy/DESIGN.md`       | YAML mirrors preset values; prose describes glass, functional colors    |
+| Web runtime       | `packages/config/tailwind.preset.ts` | 48 Material Design 3-style color roles, spacing, typography, radius     |
+| Tailwind consumer | `apps/web/tailwind.config.ts`        | Imports `@freshy/config/tailwind` preset                                |
+| Domain constants  | `packages/ui/src/tokens.ts`          | Brand, routes, nav/category/amenity **icon names**; no colors           |
+| Icons             | `packages/ui/src/icons.tsx`          | `MaterialIcon` + `MaterialIconName` union (~65 glyphs)                  |
+| Global CSS        | `apps/web/src/app/globals.css`       | `.glass`, marker animations, status bar, slider thumb with raw hex/rgba |
+| Mobile            | `apps/mobile/app/**/*.tsx`           | Hardcoded hex in every screen (~6 files)                                |
 
 ### 1.2 What changed since Phase 0
 
 Phase 0 delivered a **shared Tailwind preset** (`@freshy/config/tailwind`) and semantic utility usage across web components. Recent work (Studio, icon name updates) did **not** alter the token architecture.
 
-| Area | Status |
-| ---- | ------ |
-| Centralized preset | Done |
-| Semantic Tailwind classes on web | Mostly done (~14 component files) |
-| `packages/theme` package | Not started |
-| CSS custom properties | Not started |
-| Dark mode in app | Not started (exists only in Stitch mocks) |
-| Mobile token sharing | Not started |
-| Lint ban on raw hex in apps | Not started |
-| Tailwind v4 | Documented in roadmap; **runtime is v3.4.17** |
+| Area                             | Status                                        |
+| -------------------------------- | --------------------------------------------- |
+| Centralized preset               | Done                                          |
+| Semantic Tailwind classes on web | Mostly done (~14 component files)             |
+| `packages/theme` package         | Not started                                   |
+| CSS custom properties            | Not started                                   |
+| Dark mode in app                 | Not started (exists only in Stitch mocks)     |
+| Mobile token sharing             | Not started                                   |
+| Lint ban on raw hex in apps      | Not started                                   |
+| Tailwind v4                      | Documented in roadmap; **runtime is v3.4.17** |
 
 ### 1.3 Applicability of the prior study
 
 The earlier modularity proposal remains **valid and recommended** with these adjustments for the current repo:
 
-| Prior proposal | Still applies? | Adjustment |
-| -------------- | -------------- | ------------ |
-| `packages/theme` with YAML per theme | Yes | Keep; do not put theme values back into `tailwind.preset.ts` long term |
-| CSS variables + `data-theme` | Yes | Use Tailwind v3 `theme.extend` mapping to `var(--color-*)`; defer Tailwind v4 `@theme` until a dedicated migration |
-| Move icon maps to theme config | Yes | `NAV_ICONS`, `PLACE_CATEGORY_ICONS`, etc. move to generated theme exports; domain labels stay in `tokens.ts` |
-| `effects.yaml` for glass/shadows | Yes | Required before dark theme; white-centric leaks block alternate themes |
-| ESLint/CI hex ban | Yes | Add in Phase B of rollout |
-| Stitch as second source of truth | Revise | `DESIGN.md` becomes **documentation**; authoritative values live under `packages/theme/themes/` |
-| Immediate multi-theme picker UI | Defer | Ship infrastructure + dark first; profile toggle in a follow-up |
+| Prior proposal                       | Still applies? | Adjustment                                                                                                         |
+| ------------------------------------ | -------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `packages/theme` with YAML per theme | Yes            | Keep; do not put theme values back into `tailwind.preset.ts` long term                                             |
+| CSS variables + `data-theme`         | Yes            | Use Tailwind v3 `theme.extend` mapping to `var(--color-*)`; defer Tailwind v4 `@theme` until a dedicated migration |
+| Move icon maps to theme config       | Yes            | `NAV_ICONS`, `PLACE_CATEGORY_ICONS`, etc. move to generated theme exports; domain labels stay in `tokens.ts`       |
+| `effects.yaml` for glass/shadows     | Yes            | Required before dark theme; white-centric leaks block alternate themes                                             |
+| ESLint/CI hex ban                    | Yes            | Add in Phase B of rollout                                                                                          |
+| Stitch as second source of truth     | Revise         | `DESIGN.md` becomes **documentation**; authoritative values live under `packages/theme/themes/`                    |
+| Immediate multi-theme picker UI      | Defer          | Ship infrastructure + dark first; profile toggle in a follow-up                                                    |
 
 ### 1.4 Remaining leaks (must close before multi-theme)
 
 These violate the rule **no literal colors in application code**:
 
-| File / area | Issue |
-| ----------- | ----- |
-| `apps/web/src/app/globals.css` | `#e0e3e5`, `#0c6780`, `rgba(255,255,255,0.8)` |
-| `apps/web/src/app/layout.tsx` | `themeColor: '#0c6780'` |
-| `packages/ui/src/index.tsx` (`GlassCard`) | `border-white/40`, `bg-white/80` |
-| `PlaceListCard.tsx`, `PlaceDetailClient.tsx` | `shadow-[0_4px_20px_rgba(12,103,128,0.04)]` |
-| `AppNav.tsx` | `shadow-[0_-4px_20px_rgba(0,0,0,0.04)]` |
+| File / area                                                    | Issue                                                                |
+| -------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `apps/web/src/app/globals.css`                                 | `#e0e3e5`, `#0c6780`, `rgba(255,255,255,0.8)`                        |
+| `apps/web/src/app/layout.tsx`                                  | `themeColor: '#0c6780'`                                              |
+| `packages/ui/src/index.tsx` (`GlassCard`)                      | `border-white/40`, `bg-white/80`                                     |
+| `PlaceListCard.tsx`, `PlaceDetailClient.tsx`                   | `shadow-[0_4px_20px_rgba(12,103,128,0.04)]`                          |
+| `AppNav.tsx`                                                   | `shadow-[0_-4px_20px_rgba(0,0,0,0.04)]`                              |
 | `map-markers.tsx`, `ExploreMapClient.tsx`, `CoolingClient.tsx` | `text-white`, `border-white`, `bg-white/*` instead of semantic roles |
-| `apps/mobile/**` | All `StyleSheet` hex literals |
+| `apps/mobile/**`                                               | All `StyleSheet` hex literals                                        |
 
 Functional colors (`success`, `warning`) appear in `DESIGN.md` prose but are **missing** from `freshyColors`.
 
@@ -145,7 +145,7 @@ packages/theme/
 │   ├── high-contrast/
 │   ├── daltonic/
 │   └── playful/
-├── build/
+├── compiler/
 │   ├── compile-themes.ts            # YAML → CSS + TS
 │   └── compile-themes.test.ts
 ├── generated/                       # Committed build output
@@ -159,12 +159,12 @@ packages/theme/
 
 ### 3.1 Exports
 
-| Import path | Consumer | Contents |
-| ----------- | -------- | -------- |
-| `@freshy/theme/css` | `apps/web` layout | Aggregated CSS variable blocks per theme |
-| `@freshy/theme/tokens` | Mobile, tests, metadata | `getThemeTokens(themeId)` typed objects |
-| `@freshy/theme/registry` | Theme provider | `THEME_IDS`, labels, `colorScheme` metadata |
-| `@freshy/config/tailwind` | Tailwind preset | Maps utilities → `var(--color-*)` (reads role names, not hex) |
+| Import path               | Consumer                | Contents                                                      |
+| ------------------------- | ----------------------- | ------------------------------------------------------------- |
+| `@freshy/theme/css`       | `apps/web` layout       | Aggregated CSS variable blocks per theme                      |
+| `@freshy/theme/tokens`    | Mobile, tests, metadata | `getThemeTokens(themeId)` typed objects                       |
+| `@freshy/theme/registry`  | Theme provider          | `THEME_IDS`, labels, `colorScheme` metadata                   |
+| `@freshy/config/tailwind` | Tailwind preset         | Maps utilities → `var(--color-*)` (reads role names, not hex) |
 
 `packages/config/tailwind.preset.ts` becomes a **thin adapter**: it wires Tailwind `theme.extend` to CSS variable names defined by `@freshy/theme/roles`, not to hex literals.
 
@@ -176,16 +176,16 @@ packages/theme/
 
 Retain existing Material Design 3-style names from `freshyColors` (48 roles). Add missing functional and composite roles:
 
-| Group | Roles | Notes |
-| ----- | ----- | ----- |
-| Brand | `primary`, `on-primary`, `primary-container`, `on-primary-container`, `primary-fixed`, `primary-fixed-dim`, `on-primary-fixed`, `on-primary-fixed-variant`, `inverse-primary`, `surface-tint` | Unchanged from preset |
-| Neutrals | `surface`, `surface-dim`, `surface-bright`, `surface-container-*`, `surface-variant`, `background`, `on-background`, `on-surface`, `on-surface-variant`, `outline`, `outline-variant`, `inverse-surface`, `inverse-on-surface` | Unchanged |
-| Secondary / tertiary | Full `secondary*`, `tertiary*` families including `*-fixed` variants | Unchanged |
-| Error | `error`, `on-error`, `error-container`, `on-error-container` | Unchanged |
-| Functional | `success`, `on-success`, `success-container`, `on-success-container`, `warning`, `on-warning`, `warning-container`, `on-warning-container` | New; values from DESIGN.md prose |
-| Glass | `glass-surface`, `glass-border`, `glass-highlight` | Replace `white/80`, `white/40` |
-| Scrim | `scrim-strong`, `scrim-weak` | Replace `black/70`, `inverse-surface/40` |
-| Map chrome | `marker-fill`, `marker-border`, `marker-label-bg`, `marker-label-text`, `marker-ring` | Replace raw white on map markers |
+| Group                | Roles                                                                                                                                                                                                                          | Notes                                    |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------- |
+| Brand                | `primary`, `on-primary`, `primary-container`, `on-primary-container`, `primary-fixed`, `primary-fixed-dim`, `on-primary-fixed`, `on-primary-fixed-variant`, `inverse-primary`, `surface-tint`                                  | Unchanged from preset                    |
+| Neutrals             | `surface`, `surface-dim`, `surface-bright`, `surface-container-*`, `surface-variant`, `background`, `on-background`, `on-surface`, `on-surface-variant`, `outline`, `outline-variant`, `inverse-surface`, `inverse-on-surface` | Unchanged                                |
+| Secondary / tertiary | Full `secondary*`, `tertiary*` families including `*-fixed` variants                                                                                                                                                           | Unchanged                                |
+| Error                | `error`, `on-error`, `error-container`, `on-error-container`                                                                                                                                                                   | Unchanged                                |
+| Functional           | `success`, `on-success`, `success-container`, `on-success-container`, `warning`, `on-warning`, `warning-container`, `on-warning-container`                                                                                     | New; values from DESIGN.md prose         |
+| Glass                | `glass-surface`, `glass-border`, `glass-highlight`                                                                                                                                                                             | Replace `white/80`, `white/40`           |
+| Scrim                | `scrim-strong`, `scrim-weak`                                                                                                                                                                                                   | Replace `black/70`, `inverse-surface/40` |
+| Map chrome           | `marker-fill`, `marker-border`, `marker-label-bg`, `marker-label-text`, `marker-ring`                                                                                                                                          | Replace raw white on map markers         |
 
 **Rule:** components reference role names. Values live only in `themes/<id>/colors.yaml`.
 
@@ -204,7 +204,7 @@ shadow:
   floating: '0 2px 4px rgba(0, 0, 0, 0.1)'
 
 border-emphasis:
-  subtle: '0.1'    # opacity multiplier for outline-variant borders
+  subtle: '0.1' # opacity multiplier for outline-variant borders
   default: '0.2'
   strong: '0.3'
 ```
@@ -256,7 +256,7 @@ amenity:
 
 ### 5.1 Compile step
 
-Script: `packages/theme/build/compile-themes.ts`
+Script: `packages/theme/compiler/compile-themes.ts`
 
 **Input:** `themes/<id>/*.yaml` + `roles/*.yaml` (for defaults and validation).
 
@@ -282,8 +282,8 @@ Script: `packages/theme/build/compile-themes.ts`
 2. **`generated/<id>.tokens.ts`** — plain objects for React Native and non-CSS consumers:
 
 ```typescript
-export const colors = { primary: '#0c6780', /* … */ } as const;
-export const effects = { glass: { surfaceBg: 'rgba(...)' }, /* … */ } as const;
+export const colors = { primary: '#0c6780' /* … */ } as const;
+export const effects = { glass: { surfaceBg: 'rgba(...)' } /* … */ } as const;
 ```
 
 3. **`generated/index.ts`** — registry:
@@ -295,14 +295,14 @@ export type ThemeId = (typeof THEME_IDS)[number];
 
 ### 5.2 Integration points
 
-| Consumer | Change |
-| -------- | ------ |
-| `apps/web/src/app/layout.tsx` | Import `@freshy/theme/css`; set `data-theme` on `<html>`; `themeColor` from `getThemeTokens(activeTheme).colors.primary` |
-| `apps/web/tailwind.config.ts` | Unchanged import path; preset internals switch to CSS vars |
-| `packages/config/tailwind.preset.ts` | `colors: { primary: 'var(--color-primary)', … }` |
-| `apps/web/src/app/globals.css` | Replace literals with `var(--effect-*)`, `var(--color-*)` |
-| `packages/ui/src/index.tsx` | `GlassCard` uses `bg-glass-surface border-glass-border backdrop-blur-glass` utilities |
-| `apps/mobile/**` | Import `@freshy/theme/tokens`; replace hex in `StyleSheet` |
+| Consumer                             | Change                                                                                                                   |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| `apps/web/src/app/layout.tsx`        | Import `@freshy/theme/css`; set `data-theme` on `<html>`; `themeColor` from `getThemeTokens(activeTheme).colors.primary` |
+| `apps/web/tailwind.config.ts`        | Unchanged import path; preset internals switch to CSS vars                                                               |
+| `packages/config/tailwind.preset.ts` | `colors: { primary: 'var(--color-primary)', … }`                                                                         |
+| `apps/web/src/app/globals.css`       | Replace literals with `var(--effect-*)`, `var(--color-*)`                                                                |
+| `packages/ui/src/index.tsx`          | `GlassCard` uses `bg-glass-surface border-glass-border backdrop-blur-glass` utilities                                    |
+| `apps/mobile/**`                     | Import `@freshy/theme/tokens`; replace hex in `StyleSheet`                                                               |
 
 ### 5.3 Root scripts
 
@@ -351,11 +351,11 @@ Prefer **CSS variable swap** over duplicating every utility with `dark:` prefixe
 
 ### 7.1 Forbidden in `apps/` and `packages/ui` (except `packages/theme`)
 
-| Pattern | Example |
-| ------- | ------- |
-| Hex colors | `#0c6780`, `#fff` |
-| rgb/rgba/hsl literals | `rgba(12, 103, 128, 0.04)` |
-| Tailwind arbitrary colors | `bg-[#0c6780]`, `shadow-[0_4px_20px_rgba(...)]` |
+| Pattern                       | Example                                           |
+| ----------------------------- | ------------------------------------------------- |
+| Hex colors                    | `#0c6780`, `#fff`                                 |
+| rgb/rgba/hsl literals         | `rgba(12, 103, 128, 0.04)`                        |
+| Tailwind arbitrary colors     | `bg-[#0c6780]`, `shadow-[0_4px_20px_rgba(...)]`   |
 | Raw white/black for UI chrome | `text-white`, `bg-white/80` on non-media overlays |
 
 **Allowed:** semantic utilities (`text-on-primary`, `bg-glass-surface`), `currentColor`, transparent, and `inherit`.
@@ -371,11 +371,11 @@ Prefer **CSS variable swap** over duplicating every utility with `dark:` prefixe
 
 ## 8. Relationship to DESIGN.md
 
-| Before | After modularity |
-| ------ | ---------------- |
-| `DESIGN.md` YAML is authoritative | `themes/default/*.yaml` is authoritative |
-| `DESIGN.md` duplicated in preset TS | Preset reads CSS var names; values from build |
-| Drift between doc and code | `DESIGN.md` updated when default theme changes, or generated summary appended in CI |
+| Before                              | After modularity                                                                    |
+| ----------------------------------- | ----------------------------------------------------------------------------------- |
+| `DESIGN.md` YAML is authoritative   | `themes/default/*.yaml` is authoritative                                            |
+| `DESIGN.md` duplicated in preset TS | Preset reads CSS var names; values from build                                       |
+| Drift between doc and code          | `DESIGN.md` updated when default theme changes, or generated summary appended in CI |
 
 `docs/stitch/freshy/DESIGN.md` remains the **design narrative** (brand personality, component patterns). Token **values** are edited in `packages/theme/themes/default/`.
 
@@ -385,13 +385,13 @@ Prefer **CSS variable swap** over duplicating every utility with `dark:` prefixe
 
 Work is ordered. Do not ship alternate themes before Phase B is complete.
 
-| Phase | Deliverable | Exit criteria |
-| ----- | ----------- | ------------- |
-| **A — Foundation** | `@freshy/theme` package, `default` theme YAML, compile script, CSS vars wired into Tailwind | Web looks identical to today; `validation.sh` passes |
-| **B — Leak cleanup** | Tokenize glass, shadows, scrims, map chrome; mobile import; hex grep in CI | Zero forbidden literals in apps/ui |
-| **C — Theme runtime** | `ThemeProvider`, `data-theme`, registry with `default` + `dark` | Dark spec acceptance tests pass |
-| **D — More themes** | `high-contrast`, `daltonic`, `playful` folders + design fill | Each theme passes schema + contrast |
-| **E — Third-party** | Clerk `appearance`, Mapbox style id per theme in `theme.meta.yaml` | Studio and map respect active theme |
+| Phase                 | Deliverable                                                                                 | Exit criteria                                        |
+| --------------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| **A — Foundation**    | `@freshy/theme` package, `default` theme YAML, compile script, CSS vars wired into Tailwind | Web looks identical to today; `validation.sh` passes |
+| **B — Leak cleanup**  | Tokenize glass, shadows, scrims, map chrome; mobile import; hex grep in CI                  | Zero forbidden literals in apps/ui                   |
+| **C — Theme runtime** | `ThemeProvider`, `data-theme`, registry with `default` + `dark`                             | Dark spec acceptance tests pass                      |
+| **D — More themes**   | `high-contrast`, `daltonic`, `playful` folders + design fill                                | Each theme passes schema + contrast                  |
+| **E — Third-party**   | Clerk `appearance`, Mapbox style id per theme in `theme.meta.yaml`                          | Studio and map respect active theme                  |
 
 [dark-theme-spec.md](dark-theme-spec.md) covers Phase C scoped to the `dark` theme only.
 
@@ -401,28 +401,28 @@ Work is ordered. Do not ship alternate themes before Phase B is complete.
 
 Full test catalog: **[testing-spec.md](testing-spec.md)**.
 
-| Test | Location | Asserts |
-| ---- | -------- | ------- |
-| Schema / compile | `packages/theme/build/compile-themes.test.ts` | All themes compile; CSS vars and tokens generated |
-| Default parity | `packages/theme/build/parity.test.ts` | Compiled `default` matches legacy hex |
-| Contrast | `packages/theme/build/contrast.test.ts` | WCAG AA for `on-*` pairs |
-| Preset vars | `packages/config/tailwind.preset.test.ts` | Colors map to `var(--color-*)`; no hex in preset |
-| Literal-color gate | `packages/theme/build/check-no-literal-colors.ts` | No hex/rgba/white utilities in apps/ui |
-| Mobile parity | `apps/mobile/src/theme.test.ts` | Mobile colors match web default tokens |
-| ThemeProvider | `packages/ui/src/theme/ThemeProvider.test.tsx` | Phase C only |
-| E2E (optional) | Playwright | Theme CSS loaded on explore |
+| Test               | Location                                             | Asserts                                           |
+| ------------------ | ---------------------------------------------------- | ------------------------------------------------- |
+| Schema / compile   | `packages/theme/compiler/compile-themes.test.ts`     | All themes compile; CSS vars and tokens generated |
+| Default parity     | `packages/theme/compiler/parity.test.ts`             | Compiled `default` matches legacy hex             |
+| Contrast           | `packages/theme/compiler/contrast.test.ts`           | WCAG AA for `on-*` pairs                          |
+| Preset vars        | `packages/config/tailwind.preset.test.ts`            | Colors map to `var(--color-*)`; no hex in preset  |
+| Literal-color gate | `packages/theme/compiler/check-no-literal-colors.ts` | No hex/rgba/white utilities in apps/ui            |
+| Mobile parity      | `apps/mobile/src/theme.test.ts`                      | Mobile colors match web default tokens            |
+| ThemeProvider      | `packages/ui/src/theme/ThemeProvider.test.tsx`       | Phase C only                                      |
+| E2E (optional)     | Playwright                                           | Theme CSS loaded on explore                       |
 
 ---
 
 ## 11. Open decisions
 
-| Decision | Recommendation | Rationale |
-| -------- | -------------- | --------- |
-| YAML vs JSON source | YAML source, JSON Schema validation | Matches `DESIGN.md`; human-editable theme folders |
-| Commit `generated/` | Yes | Deterministic CI without extra build-order coupling |
-| Theme package vs `config/theme` | New `@freshy/theme` package | Clear boundary; config stays lint/tailwind tooling |
-| `dark:` utilities vs CSS vars only | CSS vars primary; `dark:` only where var swap is insufficient | One class per element; easier mobile parity |
-| Tailwind v3 vs v4 | Implement on v3 now | Matches `apps/web/package.json`; migrate preset when v4 lands |
+| Decision                           | Recommendation                                                | Rationale                                                     |
+| ---------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------- |
+| YAML vs JSON source                | YAML source, JSON Schema validation                           | Matches `DESIGN.md`; human-editable theme folders             |
+| Commit `generated/`                | Yes                                                           | Deterministic CI without extra build-order coupling           |
+| Theme package vs `config/theme`    | New `@freshy/theme` package                                   | Clear boundary; config stays lint/tailwind tooling            |
+| `dark:` utilities vs CSS vars only | CSS vars primary; `dark:` only where var swap is insufficient | One class per element; easier mobile parity                   |
+| Tailwind v3 vs v4                  | Implement on v3 now                                           | Matches `apps/web/package.json`; migrate preset when v4 lands |
 
 ---
 

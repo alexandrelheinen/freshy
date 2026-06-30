@@ -49,25 +49,25 @@ function ExplorePreviewCard({
 
   if (variant === 'desktop') {
     return (
-      <div className="glass-panel pointer-events-auto overflow-hidden rounded-2xl border border-white/50 shadow-2xl">
+      <div className="glass-panel pointer-events-auto overflow-hidden rounded-2xl border border-glass-border shadow-2xl">
         <div className="relative h-48 overflow-hidden bg-gradient-to-br from-primary-container/40 to-secondary-container/30">
           <img
             src={getPlacePhotoUrl(place.photoUrl, place.category as PlaceCategory)}
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />
-          <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-primary px-3 py-1.5 text-sm font-bold text-white shadow-lg">
+          <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-primary px-3 py-1.5 text-sm font-bold text-on-primary shadow-lg">
             {place.aggregatedFreshnessLevel ? (
               <>
                 {FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]}
-                <span className="h-4 w-px bg-white/30" />
+                <span className="h-4 w-px bg-glass-highlight" />
               </>
             ) : null}
             <MaterialIcon name="ac_unit" size={16} />
           </div>
           <div className="absolute bottom-4 left-4 flex gap-2">
             {place.aggregatedFreshnessLevel ? (
-              <span className="rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary backdrop-blur">
+              <span className="rounded-full bg-marker-label-bg px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary backdrop-blur">
                 {FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]}
               </span>
             ) : null}
@@ -111,7 +111,7 @@ function ExplorePreviewCard({
               <div className="flex items-center gap-2">
                 <FreshnessBar segments={freshness.segments} tone={freshness.tone} />
                 <span
-                  className={`font-bold ${freshness.tone === 'green' ? 'text-emerald-700' : 'text-primary'}`}
+                  className={`font-bold ${freshness.tone === 'green' ? 'text-success' : 'text-primary'}`}
                 >
                   {place.aggregatedFreshnessLevel
                     ? FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]
@@ -128,7 +128,7 @@ function ExplorePreviewCard({
                 })}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary py-3 font-bold text-white shadow-lg shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98]"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary py-3 font-bold text-on-primary shadow-lg shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98]"
               >
                 <MaterialIcon name="directions" />
                 Get Directions
@@ -148,7 +148,7 @@ function ExplorePreviewCard({
 
   return (
     <Link href={ROUTES.place(place.slug)}>
-      <GlassCard className="flex items-center gap-4 rounded-2xl border border-white/60 p-4 shadow-2xl transition hover:shadow-md">
+      <GlassCard className="flex items-center gap-4 rounded-2xl border border-glass-border p-4 shadow-2xl transition hover:shadow-md">
         <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-primary-container/50 to-secondary-container/40">
           <img
             src={getPlacePhotoUrl(place.photoUrl, place.category as PlaceCategory)}
@@ -417,7 +417,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         onClick={() => setActiveCategory(undefined)}
         className={`shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-xs font-bold shadow-sm transition-colors ${
           activeCategory == null
-            ? 'bg-primary text-white'
+            ? 'bg-primary text-on-primary'
             : 'bg-surface-container-high text-on-surface-variant hover:bg-secondary-container'
         }`}
       >
@@ -433,8 +433,8 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
             onClick={() => setActiveCategory(chip.category)}
             className={`flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-4 py-2 text-xs font-bold shadow-sm transition-colors md:py-2 ${
               isActive
-                ? 'bg-primary text-white'
-                : 'glass border border-white/40 text-secondary hover:bg-white md:bg-surface-container-high md:text-on-surface-variant md:hover:bg-secondary-container'
+                ? 'bg-primary text-on-primary'
+                : 'glass border border-glass-border text-secondary hover:bg-glass-surface md:bg-surface-container-high md:text-on-surface-variant md:hover:bg-secondary-container'
             }`}
           >
             {icon ? <MaterialIcon name={icon} size={16} /> : null}
@@ -496,7 +496,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
 
         {/* Mobile: floating search + chips */}
         <div className="absolute left-0 top-20 z-20 w-full px-margin-mobile md:hidden">
-          <div className="glass flex items-center rounded-xl border border-white/50 px-4 py-3 shadow-md">
+          <div className="glass flex items-center rounded-xl border border-glass-border px-4 py-3 shadow-md">
             <MaterialIcon name="search" className="text-outline" />
             <input
               className="ml-2 w-full border-none bg-transparent font-body-lg focus:ring-0"
@@ -511,11 +511,11 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
 
         {/* Desktop: left sidebar */}
         <div className="pointer-events-none absolute left-10 top-8 z-30 hidden max-h-[calc(100vh-120px)] w-96 flex-col gap-4 md:flex">
-          <div className="glass-panel pointer-events-auto rounded-xl border border-white/40 p-4 shadow-xl">
+          <div className="glass-panel pointer-events-auto rounded-xl border border-glass-border p-4 shadow-xl">
             {searchBar('mb-4')}
             {filterChips}
           </div>
-          <div className="glass-panel pointer-events-auto flex flex-1 flex-col overflow-hidden rounded-xl border border-white/40 shadow-xl">
+          <div className="glass-panel pointer-events-auto flex flex-1 flex-col overflow-hidden rounded-xl border border-glass-border shadow-xl">
             <div className="flex items-center justify-between border-b border-outline-variant/20 p-4">
               <h2 className="font-title-md text-on-surface">Nearby Cool Spots</h2>
               <span className="rounded bg-primary-container px-2 py-0.5 text-xs font-bold text-primary">
@@ -546,7 +546,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
             <button
               type="button"
               onClick={toggleMapStyle}
-              className="glass flex h-12 w-12 items-center justify-center rounded-full border border-white/50 shadow-lg transition-transform active:scale-95"
+              className="glass flex h-12 w-12 items-center justify-center rounded-full border border-glass-border shadow-lg transition-transform active:scale-95"
               aria-label={
                 mapStyleId === 'streets' ? 'Switch to satellite view' : 'Switch to map view'
               }
@@ -559,7 +559,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
             <button
               type="button"
               onClick={recenter}
-              className="glass flex h-12 w-12 items-center justify-center rounded-full border border-white/50 shadow-lg transition-transform active:scale-95"
+              className="glass flex h-12 w-12 items-center justify-center rounded-full border border-glass-border shadow-lg transition-transform active:scale-95"
               aria-label="My location"
             >
               <MaterialIcon name="my_location" className="text-primary" />
@@ -581,7 +581,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
 
         {/* Desktop: map controls (left of detail card on md-lg; centered on xl+) */}
         <div className="absolute bottom-8 left-[27.5rem] z-40 hidden md:flex xl:left-1/2 xl:-translate-x-1/2">
-          <div className="glass-panel flex items-center gap-4 rounded-full border border-white/40 px-6 py-3 shadow-xl">
+          <div className="glass-panel flex items-center gap-4 rounded-full border border-glass-border px-6 py-3 shadow-xl">
             <button
               type="button"
               onClick={recenter}

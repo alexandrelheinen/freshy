@@ -146,7 +146,7 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
           <h2 className="mt-6 font-display-lg text-display-lg text-on-surface">{place.name}</h2>
 
           <section className="relative z-10 mt-4">
-            <GlassCard className="flex flex-col items-center p-4 text-center shadow-[0_20px_20px_rgba(12,103,128,0.04)]">
+            <GlassCard className="flex flex-col items-center p-4 text-center shadow-card-elevated">
               <MaterialIcon name="ac_unit" className="mb-2 text-primary" size={32} />
               <span className="font-label-caps text-label-caps uppercase tracking-widest text-secondary">
                 Freshness

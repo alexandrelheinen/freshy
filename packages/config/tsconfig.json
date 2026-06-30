@@ -8,5 +8,5 @@
     "noEmit": false
   },
   "include": ["place-photos.ts", "place-tags.ts", "freshness-levels.ts"],
-  "exclude": ["**/*.test.ts"]
+  "exclude": ["**/*.test.ts", "tailwind.preset.ts"]
 }

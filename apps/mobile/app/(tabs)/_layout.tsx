@@ -1,9 +1,16 @@
 import { Tabs } from 'expo-router';
 import { Text } from 'react-native';
+import { themeColors } from '../../src/theme';
 
 function TabLabel({ label, focused }: { label: string; focused: boolean }) {
   return (
-    <Text style={{ fontSize: 10, fontWeight: '700', color: focused ? '#0c6780' : '#4f616a' }}>
+    <Text
+      style={{
+        fontSize: 10,
+        fontWeight: '700',
+        color: focused ? themeColors.primary : themeColors.secondary,
+      }}
+    >
       {label}
     </Text>
   );
@@ -14,8 +21,8 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#0c6780',
-        tabBarInactiveTintColor: '#4f616a',
+        tabBarActiveTintColor: themeColors.primary,
+        tabBarInactiveTintColor: themeColors.secondary,
       }}
     >
       <Tabs.Screen

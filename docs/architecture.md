@@ -18,7 +18,7 @@ freshy/
 │   ├── db/                  # @freshy/db — Prisma + PostgreSQL
 │   ├── ui/                  # @freshy/ui — Shared React components
 │   ├── config/              # @freshy/config — ESLint + Tailwind preset
-│   └── theme/               # @freshy/theme — YAML themes, CSS vars (planned; see docs/themes/)
+│   └── theme/               # @freshy/theme — YAML themes, CSS variables, token compiler
 ├── infrastructure/
 │   ├── docker/              # Local PostGIS via Docker Compose
 │   ├── cloudflare/          # R2, Pages, Workers wrangler template

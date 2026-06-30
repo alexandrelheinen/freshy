@@ -84,21 +84,21 @@ See also [CONTRIBUTING.md](../CONTRIBUTING.md) and [development-cycle.md](develo
 
 ### Rules
 
-| Rule                                                                                       | Enforcement          |
-| ------------------------------------------------------------------------------------------ | -------------------- |
+| Rule                                                                                                                         | Enforcement                |
+| ---------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
 | Use semantic design tokens — no ad-hoc hex colors in components (see [themes/modularity-spec.md](themes/modularity-spec.md)) | Code review + CI (planned) |
-| Import shared preset: `@freshy/config/tailwind`                                            | `tailwind.config.ts` |
-| Prefer Tailwind utility classes over custom CSS                                            | Code review          |
-| Glassmorphism: use `.glass` utility or `GlassCard` from `@freshy/ui` (token-backed when `@freshy/theme` lands) | UI package           |
-| Mobile-first layouts; respect `margin-mobile` (20px) spacing token                         | Design system        |
-| `data-page` attribute on top-level page containers for Playwright screenshots              | E2E tests            |
+| Import shared preset: `@freshy/config/tailwind`                                                                              | `tailwind.config.ts`       |
+| Prefer Tailwind utility classes over custom CSS                                                                              | Code review                |
+| Glassmorphism: use `.glass` utility or `GlassCard` from `@freshy/ui` (token-backed when `@freshy/theme` lands)               | UI package                 |
+| Mobile-first layouts; respect `margin-mobile` (20px) spacing token                                                           | Design system              |
+| `data-page` attribute on top-level page containers for Playwright screenshots                                                | E2E tests                  |
 
 ### Tooling
 
-| Tool           | Config                                             |
-| -------------- | -------------------------------------------------- |
-| Tailwind CSS 4 | `apps/web/tailwind.config.ts`, `postcss.config.js` |
-| Design tokens  | `packages/config/tailwind.preset.ts` (today); `@freshy/theme` (target) |
+| Tool           | Config                                                                                                         |
+| -------------- | -------------------------------------------------------------------------------------------------------------- |
+| Tailwind CSS 4 | `apps/web/tailwind.config.ts`, `postcss.config.js`                                                             |
+| Design tokens  | `packages/config/tailwind.preset.ts` (today); `@freshy/theme` (target)                                         |
 | Theme specs    | [themes/modularity-spec.md](themes/modularity-spec.md), [themes/dark-theme-spec.md](themes/dark-theme-spec.md) |
 
 ### References

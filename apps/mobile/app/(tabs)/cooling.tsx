@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { themeColors } from '../../src/theme';
 
 const categories = [
   'Cafés',
@@ -31,14 +32,14 @@ export default function CoolingScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f7f9fb' },
+  container: { flex: 1, backgroundColor: themeColors.background },
   content: { paddingTop: 60, paddingHorizontal: 20, paddingBottom: 40 },
-  title: { fontSize: 24, fontWeight: '600', color: '#191c1e' },
-  subtitle: { color: '#3f484c', marginTop: 8, marginBottom: 24 },
+  title: { fontSize: 24, fontWeight: '600', color: themeColors.onSurface },
+  subtitle: { color: themeColors.onSurfaceVariant, marginTop: 8, marginBottom: 24 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
   card: {
     width: '47%',
-    backgroundColor: 'rgba(255,255,255,0.8)',
+    backgroundColor: themeColors.glassSurface,
     borderRadius: 12,
     padding: 16,
     minHeight: 100,

@@ -1,5 +1,6 @@
 /** Re-export design token names for consumers that cannot import Tailwind preset directly. */
 export { PILOT_CITY } from '@freshy/config/pilot-city';
+import { getDefaultThemeTokens } from '@freshy/theme/tokens';
 import {
   defaultPlacePhotoLocalPath,
   resolvePlacePhotoUrl,
@@ -16,9 +17,11 @@ export {
   type PlaceTagId,
 } from '@freshy/config/place-tags';
 
+const defaultThemeIcons = getDefaultThemeTokens().icons;
+
 export const BRAND_NAME = 'Freshy';
 export const BRAND_TITLE = 'Freshy | Cooling Map';
-export const BRAND_ICON = 'nest_farsight_cool';
+export const BRAND_ICON = defaultThemeIcons.brand;
 
 export const TYPOGRAPHY_SCALE = [
   'display-lg',
@@ -52,21 +55,21 @@ export const ROUTES = {
 } as const;
 
 export const PLACE_CATEGORY_ICONS: Record<PlaceCategory, string> = {
-  CAFE: 'local_cafe',
-  RESTAURANT: 'restaurant',
-  BAR: 'local_bar',
-  LIBRARY: 'menu_book',
-  MALL: 'shopping_bag',
-  MUSEUM: 'museum',
-  COWORKING: 'laptop_mac',
-  PUBLIC_SPACE: 'nature',
+  CAFE: defaultThemeIcons.category.cafe,
+  RESTAURANT: defaultThemeIcons.category.restaurant,
+  BAR: defaultThemeIcons.category.bar,
+  LIBRARY: defaultThemeIcons.category.library,
+  MALL: defaultThemeIcons.category.mall,
+  MUSEUM: defaultThemeIcons.category.museum,
+  COWORKING: defaultThemeIcons.category.coworking,
+  PUBLIC_SPACE: defaultThemeIcons.category.public_space,
 };
 
 export const NAV_ICONS: Record<'explore' | 'saved' | 'cooling' | 'profile', string> = {
-  explore: 'explore',
-  saved: 'bookmark_heart',
-  cooling: 'climate_mini_split',
-  profile: 'digital_wellbeing',
+  explore: defaultThemeIcons.nav.explore,
+  saved: defaultThemeIcons.nav.saved,
+  cooling: defaultThemeIcons.nav.cooling,
+  profile: defaultThemeIcons.nav.profile,
 };
 
 export const PLACE_CATEGORY_LABELS: Record<
