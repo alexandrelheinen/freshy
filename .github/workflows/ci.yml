@@ -50,6 +50,9 @@ jobs:
       - name: API deploy smoke (Render parity)
         run: pnpm smoke:api
 
+      - name: Web deploy smoke (Cloudflare Pages parity)
+        run: pnpm smoke:web
+
   screenshots:
     name: Page screenshots
     runs-on: ubuntu-latest
@@ -95,7 +98,6 @@ jobs:
           retention-days: 14
 
       - name: Install AWS CLI for R2 upload
-        if: ${{ secrets.R2_ACCESS_KEY_ID != '' }}
         run: pip install awscli --quiet
 
       - name: Generate PR comment markdown
@@ -137,6 +139,7 @@ jobs:
             | Tests | ${{ needs.quality.result == 'success' && '✅' || '❌' }} |
             | Build | ${{ needs.quality.result == 'success' && '✅' || '❌' }} |
             | API deploy smoke | ${{ needs.quality.result == 'success' && '✅' || '❌' }} |
+            | Web deploy smoke | ${{ needs.quality.result == 'success' && '✅' || '❌' }} |
             | Screenshots | ${{ needs.screenshots.result == 'success' && '✅' || needs.screenshots.result == 'skipped' && '⏭️' || '❌' }} |
 
             **Languages:** TypeScript (web, api, mobile, db, ui)
