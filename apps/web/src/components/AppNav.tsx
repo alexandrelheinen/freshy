@@ -37,6 +37,8 @@ function ThemePlaceholder() {
     </button>
   );
 }
+
+function ProfileAvatarLink({ className = '' }: { className?: string }) {
   return (
     <Link
       href={ROUTES.profile}
@@ -146,9 +148,11 @@ export function AppTopNav({ active = 'explore' }: { active?: NavActiveId }) {
   return (
     <header className="fixed top-0 z-50 hidden h-16 w-full items-center justify-between bg-surface px-10 shadow-sm md:flex">
       <div className="flex items-center gap-10">
-        <Link href={ROUTES.explore} className="flex items-center gap-2">
-          <MaterialIcon name={BRAND_ICON} className="text-primary" size={32} />
-          <span className="font-display-lg text-primary">Freshy</span>
+        <Link href={ROUTES.explore} className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center">
+            <MaterialIcon name={BRAND_ICON} className="text-primary" size={40} />
+          </div>
+          <span className="font-display-lg text-3xl text-primary">Freshy</span>
         </Link>
 
         <nav className="flex items-center gap-8">
@@ -166,13 +170,7 @@ export function AppTopNav({ active = 'explore' }: { active?: NavActiveId }) {
       </div>
 
       <div className="flex items-center gap-4">
-        <button
-          type="button"
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-container-high transition-colors hover:bg-primary/10"
-          aria-label="Notifications"
-        >
-          <MaterialIcon name="notifications" className="text-on-surface-variant" />
-        </button>
+        <ThemePlaceholder />
         <ProfileAvatarLink />
       </div>
     </header>
