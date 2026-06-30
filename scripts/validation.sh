@@ -61,6 +61,9 @@ fi
 step "Build all packages"
 pnpm build
 
+step "API deploy smoke (Render parity)"
+pnpm smoke:api
+
 if [ "${SKIP_SCREENSHOTS}" != "1" ]; then
   step "Playwright screenshots (6 app pages)"
   mkdir -p "${ROOT_DIR}/screenshots"
