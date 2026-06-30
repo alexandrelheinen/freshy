@@ -65,9 +65,7 @@ export function PlaceListClient({
       );
     }
     if (activeFilter === 'cold') {
-      list = list.filter(
-        (p) => p.aggregatedTemperatureC != null && p.aggregatedTemperatureC <= 22,
-      );
+      list = list.filter((p) => p.aggregatedTemperatureC != null && p.aggregatedTemperatureC <= 22);
     }
     if (activeFilter === 'nearby') {
       list = list.filter((p) => p.distanceKm != null && p.distanceKm <= 1);
@@ -164,6 +162,13 @@ export function PlaceListClient({
                   place={place}
                   showBookmark={showBookmark}
                   bookmarkFilled={showBookmark}
+                  onBookmarkClick={
+                    onUnsave
+                      ? () => {
+                          void onUnsave(place.id);
+                        }
+                      : undefined
+                  }
                 />
               </div>
             ))}

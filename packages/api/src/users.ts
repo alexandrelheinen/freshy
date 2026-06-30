@@ -23,10 +23,7 @@ async function uniqueUsername(prisma: PrismaClient, base: string): Promise<strin
 }
 
 /** Find or create a Freshy user row for a Clerk account. */
-export async function syncUserFromClerk(
-  prisma: PrismaClient,
-  clerkUserId: string,
-): Promise<User> {
+export async function syncUserFromClerk(prisma: PrismaClient, clerkUserId: string): Promise<User> {
   const existing = await prisma.user.findUnique({ where: { clerkId: clerkUserId } });
   if (existing) {
     return existing;
@@ -34,8 +31,9 @@ export async function syncUserFromClerk(
 
   const clerk = getClerkClient();
   const clerkUser = await clerk.users.getUser(clerkUserId);
-  const email = clerkUser.emailAddresses.find((e) => e.id === clerkUser.primaryEmailAddressId)
-    ?.emailAddress;
+  const email = clerkUser.emailAddresses.find(
+    (e) => e.id === clerkUser.primaryEmailAddressId,
+  )?.emailAddress;
 
   if (!email) {
     throw new Error('Clerk user has no primary email');

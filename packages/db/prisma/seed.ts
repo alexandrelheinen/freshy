@@ -92,12 +92,12 @@ const STREETS = [
   'Rue Martre',
   'Rue de Paris',
   'Bd Jean Jaurès',
-  'Rue de l\'Ancienne Mairie',
+  "Rue de l'Ancienne Mairie",
   'Rue Villeneuve',
   'Rue Claude Monet',
   'Rue Buffon',
   'Avenue Anatole France',
-  'Rue de l\'Église',
+  "Rue de l'Église",
   'Place de la République',
 ];
 
@@ -112,7 +112,7 @@ function slugify(name: string): string {
 function offsetCoordinate(index: number, axis: 'lat' | 'lng'): number {
   const base = axis === 'lat' ? PILOT_CITY.latitude : PILOT_CITY.longitude;
   const kmSpread = 1.8;
-  const angle = (index * 137.508) * (Math.PI / 180);
+  const angle = index * 137.508 * (Math.PI / 180);
   const distanceKm = ((index % 17) + 1) * (kmSpread / 17);
   const delta =
     axis === 'lat'
@@ -157,7 +157,11 @@ async function main() {
       const slug = slugify(name);
       const ac = pickAcStrength(index);
       const temp =
-        ac === AcStrength.FRIGID ? 18 + (index % 3) : ac === AcStrength.COMFORTABLE ? 21 + (index % 3) : 24 + (index % 2);
+        ac === AcStrength.FRIGID
+          ? 18 + (index % 3)
+          : ac === AcStrength.COMFORTABLE
+            ? 21 + (index % 3)
+            : 24 + (index % 2);
 
       places.push({
         slug,
@@ -183,7 +187,9 @@ async function main() {
     });
   }
 
-  console.log(`Seeded user ${demoUser.username} and ${places.length} places in ${PILOT_CITY.name}.`);
+  console.log(
+    `Seeded user ${demoUser.username} and ${places.length} places in ${PILOT_CITY.name}.`,
+  );
 }
 
 main()

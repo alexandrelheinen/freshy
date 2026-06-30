@@ -37,13 +37,7 @@ function categoryCount(
   return categories.find((c) => c.category === cat)?.count ?? 0;
 }
 
-function CategoryMobileCard({
-  category,
-  count,
-}: {
-  category: PlaceCategory;
-  count: number;
-}) {
+function CategoryMobileCard({ category, count }: { category: PlaceCategory; count: number }) {
   const label = PLACE_CATEGORY_LABELS[category];
   const icon = PLACE_CATEGORY_ICONS[category] as MaterialIconName;
 
@@ -54,9 +48,7 @@ function CategoryMobileCard({
           <MaterialIcon name={icon} className="text-primary" size={32} />
         </div>
         <span className="font-title-md text-on-surface">{label}</span>
-        <span className="mt-2 font-label-caps text-label-caps text-secondary">
-          {count} PLACES
-        </span>
+        <span className="mt-2 font-label-caps text-label-caps text-secondary">{count} PLACES</span>
       </GlassCard>
     </Link>
   );
@@ -92,9 +84,7 @@ function CategoryDesktopCard({
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur-md">
               <MaterialIcon name={icon} className="text-white" size={22} />
             </div>
-            {colSpan === 2 ? (
-              <span className="font-title-md text-title-md">{label}</span>
-            ) : null}
+            {colSpan === 2 ? <span className="font-title-md text-title-md">{label}</span> : null}
           </div>
           {colSpan !== 2 ? <p className="font-title-md text-title-md">{label}</p> : null}
           <p className="font-body-sm text-white/80">
@@ -181,7 +171,10 @@ export function CoolingClient() {
         <section className="hidden space-y-4 md:block">
           <div className="flex items-baseline justify-between">
             <h2 className="font-headline-lg text-headline-lg">Place Categories</h2>
-            <Link href={ROUTES.explore} className="text-body-sm font-semibold text-primary hover:underline">
+            <Link
+              href={ROUTES.explore}
+              className="text-body-sm font-semibold text-primary hover:underline"
+            >
               View interactive map
             </Link>
           </div>

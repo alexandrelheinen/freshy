@@ -15,6 +15,8 @@ export function SavedPlacesClient() {
   const loadSaved = useCallback(async () => {
     if (!isSignedIn) return [];
     return fetchMySavedPlaces(getToken);
+    // reloadKey intentionally triggers a fresh fetch after unsave
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- reloadKey forces refetch
   }, [isSignedIn, getToken, reloadKey]);
 
   const handleUnsave = useCallback(

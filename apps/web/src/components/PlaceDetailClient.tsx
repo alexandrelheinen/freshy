@@ -17,19 +17,14 @@ import {
   type PlaceAmenity,
   type PlaceCategory,
 } from '@freshy/ui';
-import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
+import { AppBottomNav, AppTopNav } from './AppNav';
 import { PlaceActions } from './PlaceActions';
 
 const SavePlaceButton = dynamic(
   () => import('./SavePlaceButton').then((m) => ({ default: m.SavePlaceButton })),
   { ssr: false },
 );
-import {
-  acStrengthLevel,
-  formatRelativeTime,
-  staticMapUrl,
-  type PlaceDetailDto,
-} from '../lib/api';
+import { acStrengthLevel, formatRelativeTime, staticMapUrl, type PlaceDetailDto } from '../lib/api';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
@@ -71,10 +66,7 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
   }, [slug]);
 
   const amenities = useMemo(
-    () =>
-      place
-        ? resolveAmenities(place.amenities, place.category as PlaceCategory)
-        : [],
+    () => (place ? resolveAmenities(place.amenities, place.category as PlaceCategory) : []),
     [place],
   );
 
@@ -201,10 +193,7 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
                 key={amenity}
                 className="flex items-center gap-1 rounded-full bg-secondary-container px-3 py-1 font-label-caps text-label-caps text-on-secondary-container"
               >
-                <MaterialIcon
-                  name={AMENITY_ICONS[amenity] as MaterialIconName}
-                  size={14}
-                />
+                <MaterialIcon name={AMENITY_ICONS[amenity] as MaterialIconName} size={14} />
                 {AMENITY_LABELS[amenity]}
               </span>
             ))}
@@ -215,7 +204,9 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
               {place.address}
             </p>
           ) : null}
-          <p className="font-body-lg leading-relaxed text-on-surface-variant">{place.description}</p>
+          <p className="font-body-lg leading-relaxed text-on-surface-variant">
+            {place.description}
+          </p>
           <PlaceActions
             name={place.name}
             latitude={place.latitude}

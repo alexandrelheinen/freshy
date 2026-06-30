@@ -23,10 +23,7 @@ export function slugifyPlaceName(name: string): string {
     .replace(/^-|-$/g, '');
 }
 
-export async function uniquePlaceSlug(
-  prisma: PrismaClient,
-  base: string,
-): Promise<string> {
+export async function uniquePlaceSlug(prisma: PrismaClient, base: string): Promise<string> {
   let slug = base || 'place';
   let suffix = 0;
   while (await prisma.place.findUnique({ where: { slug } })) {

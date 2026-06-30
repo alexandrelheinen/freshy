@@ -38,8 +38,8 @@ export function AddPlaceClient() {
   const [temperature, setTemperature] = useState(22);
   const [acStrength, setAcStrength] = useState<AcStrengthChoice>('COMFORTABLE');
   const [amenities, setAmenities] = useState<PlaceAmenity[]>(['FREE_WIFI']);
-  const [latitude, setLatitude] = useState(PILOT_CITY.latitude);
-  const [longitude, setLongitude] = useState(PILOT_CITY.longitude);
+  const [latitude, setLatitude] = useState<number>(PILOT_CITY.latitude);
+  const [longitude, setLongitude] = useState<number>(PILOT_CITY.longitude);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -121,7 +121,12 @@ export function AddPlaceClient() {
           <MaterialIcon name="add_a_photo" className="mb-2 text-4xl text-on-surface-variant" />
           <p className="font-body-sm font-semibold text-on-surface-variant">Add place photos</p>
           <p className="text-[10px] uppercase tracking-wider opacity-60">PNG, JPG up to 10MB</p>
-          <input type="file" accept="image/*" className="absolute inset-0 opacity-0" aria-label="Upload photo" />
+          <input
+            type="file"
+            accept="image/*"
+            className="absolute inset-0 opacity-0"
+            aria-label="Upload photo"
+          />
         </label>
       </section>
 
