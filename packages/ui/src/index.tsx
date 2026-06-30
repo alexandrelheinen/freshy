@@ -104,4 +104,22 @@ export function AcStrengthBar({ level }: { level: 1 | 2 | 3 }) {
   );
 }
 
+/** Five snowflake icons used on place detail (Stitch detalhes_do_local). */
+export function AcStrengthSnowflakes({ level }: { level: 1 | 2 | 3 }) {
+  const filled = level === 3 ? 5 : level === 2 ? 3 : 1;
+  return (
+    <div className="flex gap-1">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <MaterialIcon
+          key={i}
+          name="ac_unit"
+          size={24}
+          filled={i <= filled}
+          className={i <= filled ? 'text-primary' : 'text-outline-variant/50'}
+        />
+      ))}
+    </div>
+  );
+}
+
 export * from './tokens';

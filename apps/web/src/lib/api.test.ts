@@ -12,6 +12,11 @@ describe('@freshy/web api helpers', () => {
     assert.equal(formatDistanceWithWalk(0.25), '250m • 3 mins walk');
   });
 
+  it('formats relative review timestamps', () => {
+    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    assert.equal(formatRelativeTime(yesterday), 'Yesterday');
+  });
+
   it('maps AC strength to bar level', () => {
     assert.equal(acStrengthLevel('FRIGID'), 3);
     assert.equal(acStrengthLevel('LIGHTLY_COOLED'), 1);
