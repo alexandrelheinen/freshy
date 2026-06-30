@@ -40,6 +40,7 @@ check_api_health() {
   body="$(curl_ok "${API_URL}/health")"
   echo "$body" | grep -q '"status":"ok"' || return 1
   echo "$body" | grep -q '"service":"freshy-api"' || return 1
+  echo "$body" | grep -q '"db":"ok"' || return 1
 }
 
 check_api_places() {

@@ -115,16 +115,55 @@ export interface CreatePlacePayload {
   status: 'DRAFT' | 'PUBLISHED';
 }
 
+export type CreatePlaceResult = { ok: true; slug: string } | { ok: false; error: string };
+
+export function createPlaceErrorMessage(status: number, body: unknown): string {
+  if (status === 401) {
+    return 'Your session expired. Sign in again and retry.';
+  }
+  if (status === 503) {
+    const errorText =
+      body && typeof body === 'object' && 'error' in body && typeof body.error === 'string'
+        ? body.error
+        : '';
+    if (errorText === 'Database unavailable') {
+      return 'The server database is unavailable. Migrations may need to run, or Neon may be paused. Try again in a few minutes.';
+    }
+    if (errorText === 'Auth not configured') {
+      return 'Sign-in is not configured on the API. Contact support.';
+    }
+    if (errorText === 'Could not sync user') {
+      return 'Could not sync your account. Try signing out and back in.';
+    }
+    return 'Service temporarily unavailable. Try again in a few minutes.';
+  }
+  if (status === 400) {
+    return 'Check the form: name needs at least 2 characters, address at least 3.';
+  }
+  return 'Could not save place. Check your connection and try again.';
+}
+
 export async function createUserPlace(
   getToken: () => Promise<string | null>,
   payload: CreatePlacePayload,
-): Promise<{ slug: string } | null> {
-  const res = await authFetch('/users/me/places', getToken, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) return null;
-  const json = (await res.json()) as { data: { slug: string } };
-  return json.data;
+): Promise<CreatePlaceResult> {
+  try {
+    const res = await authFetch('/users/me/places', getToken, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const body = (await res.json().catch(() => ({}))) as unknown;
+      return { ok: false, error: createPlaceErrorMessage(res.status, body) };
+    }
+    const json = (await res.json()) as { data: { slug: string } };
+    return { ok: true, slug: json.data.slug };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Network error';
+    if (message === 'Not signed in') {
+      return { ok: false, error: 'Sign in to submit a place.' };
+    }
+    return { ok: false, error: 'Could not reach the API. Check your connection and try again.' };
+  }
 }
