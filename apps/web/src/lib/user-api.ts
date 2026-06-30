@@ -112,10 +112,12 @@ export interface CreatePlacePayload {
     | 'NATURALLY_FRESH';
   tags: string[];
   status: 'DRAFT' | 'PUBLISHED';
+  photoUrl?: string;
 }
 
 export interface CreatePlaceOptions {
   photo?: File | null;
+  photoUrl?: string | null;
 }
 
 export type CreatePlaceResult = { ok: true; slug: string } | { ok: false; error: string };
@@ -158,6 +160,7 @@ export async function createUserPlace(
 ): Promise<CreatePlaceResult> {
   try {
     const photo = options?.photo ?? null;
+    const photoUrl = options?.photoUrl?.trim() || payload.photoUrl?.trim() || null;
     let res: Response;
 
     if (photo) {
@@ -173,10 +176,12 @@ export async function createUserPlace(
       form.append('photo', photo);
       res = await authFetch('/users/me/places', getToken, { method: 'POST', body: form });
     } else {
+      const body: CreatePlacePayload = { ...payload };
+      if (photoUrl) body.photoUrl = photoUrl;
       res = await authFetch('/users/me/places', getToken, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(body),
       });
     }
 
