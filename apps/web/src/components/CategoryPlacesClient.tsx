@@ -2,7 +2,6 @@
 
 import {
   ALL_PLACE_CATEGORIES,
-  PILOT_CITY,
   PLACE_CATEGORY_LABELS,
   ROUTES,
   type PlaceCategory,
@@ -10,6 +9,7 @@ import {
 import { useCallback } from 'react';
 import { PlaceListClient } from './PlaceListClient';
 import { fetchPlaces } from '../lib/api';
+import { useUserLocation } from '../lib/use-user-location';
 
 function parseCategory(raw: string): PlaceCategory | null {
   const upper = raw.toUpperCase().replace(/-/g, '_');
@@ -22,16 +22,34 @@ function parseCategory(raw: string): PlaceCategory | null {
 export function CategoryPlacesClient({ categorySlug }: { categorySlug: string }) {
   const category = parseCategory(categorySlug);
   const title = category ? PLACE_CATEGORY_LABELS[category] : categorySlug.replace(/-/g, ' ');
+  const { location, denied, requestLocation } = useUserLocation();
 
   const loadPlaces = useCallback(async () => {
-    if (!category) return [];
+    if (!category || !location) return [];
     return fetchPlaces({
-      lat: PILOT_CITY.latitude,
-      lng: PILOT_CITY.longitude,
-      radius: 10,
+      lat: location.lat,
+      lng: location.lng,
+      radius: 3,
       category,
     });
-  }, [category]);
+  }, [category, location]);
+
+  if (denied || !location) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center px-6 pb-mobile-nav text-center">
+        <p className="text-on-surface-variant">
+          Enable location to browse {title.toLowerCase()} within 3 km of you.
+        </p>
+        <button
+          type="button"
+          onClick={requestLocation}
+          className="mt-4 rounded-xl bg-primary px-6 py-3 font-label-caps text-on-primary"
+        >
+          Use my location
+        </button>
+      </div>
+    );
+  }
 
   return (
     <PlaceListClient
@@ -41,7 +59,7 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
       loadPlaces={loadPlaces}
       navActive="cooling"
       searchPlaceholder={`Search in ${title}…`}
-      emptyMessage={`No ${title.toLowerCase()} found nearby.`}
+      emptyMessage={`No ${title.toLowerCase()} found within 3 km.`}
     />
   );
 }

@@ -11,7 +11,6 @@ import {
   FRESHNESS_LEVELS,
   FreshnessBar,
   MaterialIcon,
-  PILOT_CITY,
   PLACE_CATEGORY_LABELS,
   ROUTES,
   type MaterialIconName,
@@ -21,6 +20,7 @@ import {
 } from '@freshy/ui';
 import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { createUserPlace } from '../lib/user-api';
+import { useUserLocation } from '../lib/use-user-location';
 
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 const PLACE_SUBMITTED_KEY = 'freshy-place-submitted';
@@ -34,11 +34,20 @@ export function AddPlaceClient() {
   const [description, setDescription] = useState('');
   const [freshnessLevel, setFreshnessLevel] = useState<FreshnessLevelId>('MODEST_AC');
   const [tags, setTags] = useState<PlaceTagId[]>(['calm']);
-  const [latitude, setLatitude] = useState<number>(PILOT_CITY.latitude);
-  const [longitude, setLongitude] = useState<number>(PILOT_CITY.longitude);
+  const { location: userLocation } = useUserLocation();
+  const [latitude, setLatitude] = useState<number | undefined>(undefined);
+  const [longitude, setLongitude] = useState<number | undefined>(undefined);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    if (userLocation) {
+      setLatitude(userLocation.lat);
+      setLongitude(userLocation.lng);
+    }
+  }, [userLocation]);
 
   useEffect(() => {
     return () => {
@@ -65,6 +74,7 @@ export function AddPlaceClient() {
       if (prev) URL.revokeObjectURL(prev);
       return URL.createObjectURL(file);
     });
+    setPhotoFile(file);
     setError(null);
   }
 
@@ -92,17 +102,21 @@ export function AddPlaceClient() {
     }
     setSubmitting(true);
     try {
-      const result = await createUserPlace(getToken, {
-        name: name.trim(),
-        category,
-        address: address.trim(),
-        description: description.trim() || undefined,
-        latitude,
-        longitude,
-        aggregatedFreshnessLevel: freshnessLevel,
-        tags,
-        status: 'DRAFT',
-      });
+      const result = await createUserPlace(
+        getToken,
+        {
+          name: name.trim(),
+          category,
+          address: address.trim(),
+          description: description.trim() || undefined,
+          latitude,
+          longitude,
+          aggregatedFreshnessLevel: freshnessLevel,
+          tags,
+          status: 'DRAFT',
+        },
+        { photo: photoFile },
+      );
       if (result.ok) {
         sessionStorage.setItem(PLACE_SUBMITTED_KEY, result.slug);
         router.push(ROUTES.profile);
@@ -165,11 +179,6 @@ export function AddPlaceClient() {
             onChange={handlePhotoChange}
           />
         </label>
-        {photoPreview ? (
-          <p className="mt-2 text-center font-body-sm text-on-surface-variant">
-            Preview only. Photo upload to the server is not available yet.
-          </p>
-        ) : null}
       </section>
 
       <section className="space-y-4">

@@ -10,7 +10,6 @@ import {
   GlassCard,
   MaterialIcon,
   getPlacePhotoUrl,
-  PILOT_CITY,
   PLACE_CATEGORY_ICONS,
   PLACE_CATEGORY_LABELS,
   PLACE_TAG_LABELS,
@@ -27,11 +26,12 @@ import {
   formatDistanceWithWalk,
 } from '../lib/api';
 import { mapStyleUrl, type MapStyleId } from '../lib/map-styles';
+import { useUserLocation } from '../lib/use-user-location';
 import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceMapMarker, UserLocationMarker, freshnessLabel } from './map-markers';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
-const DEFAULT_CENTER = { latitude: PILOT_CITY.latitude, longitude: PILOT_CITY.longitude };
+const INITIAL_MAP_VIEW = { latitude: 20, longitude: 0, zoom: 2 };
 
 function chipIcon(category?: PlaceCategory): MaterialIconName | null {
   if (!category) return null;
@@ -248,16 +248,12 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
   const [selectedSlug, setSelectedSlug] = useState<string | null>(initialPlaces[0]?.slug ?? null);
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<PlaceCategory | undefined>();
-  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const { location: userLocation, denied: locationDenied, requestLocation } = useUserLocation();
   const [viewState, setViewState] = useState<{
     latitude: number;
     longitude: number;
     zoom: number;
-  }>({
-    latitude: DEFAULT_CENTER.latitude,
-    longitude: DEFAULT_CENTER.longitude,
-    zoom: 13,
-  });
+  }>(INITIAL_MAP_VIEW);
   const [mapStyleId, setMapStyleId] = useState<MapStyleId>('streets');
 
   const selected = useMemo(
@@ -266,12 +262,10 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
   );
 
   const loadPlaces = useCallback(
-    async (opts: { lat?: number; lng?: number; category?: string; q?: string }) => {
+    async (opts: { lat: number; lng: number; category?: string; q?: string }) => {
       const params = new URLSearchParams();
-      const lat = opts.lat ?? userLocation?.lat ?? DEFAULT_CENTER.latitude;
-      const lng = opts.lng ?? userLocation?.lng ?? DEFAULT_CENTER.longitude;
-      params.set('lat', String(lat));
-      params.set('lng', String(lng));
+      params.set('lat', String(opts.lat));
+      params.set('lng', String(opts.lng));
       params.set('radius', '3');
       if (opts.category) params.set('category', opts.category);
       if (opts.q) params.set('q', opts.q);
@@ -285,49 +279,65 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         setSelectedSlug(json.data[0].slug);
       }
     },
-    [selectedSlug, userLocation],
+    [selectedSlug],
   );
 
   useEffect(() => {
-    if (!navigator.geolocation) return;
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        setUserLocation({ lat, lng });
-        setViewState((v) => ({ ...v, latitude: lat, longitude: lng }));
-        void loadPlaces({ lat, lng, category: activeCategory, q: query || undefined });
-      },
-      () => undefined,
-      { enableHighAccuracy: true, timeout: 8000 },
-    );
-  }, [activeCategory, loadPlaces, query]);
-
-  useEffect(() => {
-    const handle = setTimeout(() => {
-      void loadPlaces({ category: activeCategory, q: query || undefined });
-    }, 300);
-    return () => clearTimeout(handle);
-  }, [query, activeCategory, loadPlaces]);
+    if (!userLocation) return;
+    setViewState((v) => ({
+      ...v,
+      latitude: userLocation.lat,
+      longitude: userLocation.lng,
+      zoom: Math.max(v.zoom, 13),
+    }));
+    void loadPlaces({
+      lat: userLocation.lat,
+      lng: userLocation.lng,
+      category: activeCategory,
+      q: query || undefined,
+    });
+  }, [userLocation, activeCategory, loadPlaces, query]);
 
   const zoomIn = () => setViewState((v) => ({ ...v, zoom: Math.min(v.zoom + 1, 18) }));
-  const zoomOut = () => setViewState((v) => ({ ...v, zoom: Math.max(v.zoom - 1, 8) }));
+  const zoomOut = () => setViewState((v) => ({ ...v, zoom: Math.max(v.zoom - 1, 2) }));
   const recenter = () => {
     if (userLocation) {
       setViewState((v) => ({
         ...v,
         latitude: userLocation.lat,
         longitude: userLocation.lng,
+        zoom: Math.max(v.zoom, 13),
       }));
+      void loadPlaces({
+        lat: userLocation.lat,
+        lng: userLocation.lng,
+        category: activeCategory,
+        q: query || undefined,
+      });
+    } else {
+      requestLocation();
     }
   };
   const toggleMapStyle = () => setMapStyleId((id) => (id === 'streets' ? 'satellite' : 'streets'));
+
+  const handleMapMoveEnd = useCallback(
+    (latitude: number, longitude: number) => {
+      void loadPlaces({
+        lat: latitude,
+        lng: longitude,
+        category: activeCategory,
+        q: query || undefined,
+      });
+    },
+    [activeCategory, loadPlaces, query],
+  );
 
   const mapContent = MAPBOX_TOKEN ? (
     <Map
       mapboxAccessToken={MAPBOX_TOKEN}
       {...viewState}
       onMove={(evt) => setViewState(evt.viewState)}
+      onMoveEnd={(evt) => handleMapMoveEnd(evt.viewState.latitude, evt.viewState.longitude)}
       style={{ width: '100%', height: '100%' }}
       mapStyle={mapStyleUrl(mapStyleId)}
     >
@@ -427,6 +437,22 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
 
       <main className="relative h-screen w-full overflow-hidden pt-16">
         <div className="absolute inset-0">{mapContent}</div>
+
+        {locationDenied ? (
+          <div className="absolute bottom-28 left-4 right-4 z-30 mx-auto max-w-md rounded-xl border border-outline-variant/30 bg-surface/95 p-4 text-center shadow-lg backdrop-blur md:bottom-8 md:left-10 md:right-auto">
+            <p className="font-body-sm text-on-surface-variant">
+              Enable location to find cooling spots within 3 km of your map center. You can also pan
+              the map to search another area.
+            </p>
+            <button
+              type="button"
+              onClick={requestLocation}
+              className="mt-3 rounded-lg bg-primary px-4 py-2 font-label-caps text-on-primary"
+            >
+              Use my location
+            </button>
+          </div>
+        ) : null}
 
         {/* Mobile: floating search + chips */}
         <div className="absolute left-0 top-20 z-20 w-full px-margin-mobile md:hidden">
