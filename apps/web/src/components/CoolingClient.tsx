@@ -14,7 +14,7 @@ import {
   type MaterialIconName,
   type PlaceCategory,
 } from '@freshy/ui';
-import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
+import { AppMobileHeader, AppTopNav } from './AppNav';
 import type { CategoryMeta } from '../lib/api';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
@@ -113,8 +113,8 @@ export function CoolingClient() {
   const featured = meta?.featured;
 
   return (
-    <div className="min-h-screen pb-mobile-nav md:pb-8" data-page="cooling">
-      <AppMobileHeader />
+    <div className="min-h-screen pb-8" data-page="cooling">
+      <AppMobileHeader active="cooling" />
       <AppTopNav active="cooling" />
 
       <main className="mx-auto max-w-4xl px-margin-mobile pb-8 pt-24 md:max-w-7xl md:px-10">
@@ -227,8 +227,6 @@ export function CoolingClient() {
           </section>
         ) : null}
       </main>
-
-      <AppBottomNav active="cooling" />
     </div>
   );
 }

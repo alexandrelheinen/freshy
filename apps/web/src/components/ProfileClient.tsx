@@ -14,7 +14,7 @@ import {
   type MaterialIconName,
   type PlaceCategory,
 } from '@freshy/ui';
-import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
+import { AppMobileHeader, AppTopNav } from './AppNav';
 import { type PlaceDto } from '../lib/api';
 import { formatRelativeTime } from '../lib/api';
 import {
@@ -108,8 +108,8 @@ const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 
 function ProfileSignedOutView({ showSignIn }: { showSignIn: boolean }) {
   return (
-    <div className="min-h-screen pb-mobile-nav md:pb-8" data-page="profile">
-      <AppMobileHeader />
+    <div className="min-h-screen pb-8" data-page="profile">
+      <AppMobileHeader active="profile" />
       <AppTopNav active="profile" />
       <main className="mx-auto mt-20 max-w-4xl px-margin-mobile md:max-w-7xl md:px-10">
         <section className="flex flex-col items-center py-16 text-center">
@@ -129,7 +129,6 @@ function ProfileSignedOutView({ showSignIn }: { showSignIn: boolean }) {
           ) : null}
         </section>
       </main>
-      <AppBottomNav active="profile" />
     </div>
   );
 }
@@ -177,13 +176,12 @@ function ProfileWithClerk() {
 
   if (!isLoaded) {
     return (
-      <div className="min-h-screen pb-mobile-nav md:pb-8" data-page="profile">
-        <AppMobileHeader />
+      <div className="min-h-screen pb-8" data-page="profile">
+        <AppMobileHeader active="profile" />
         <AppTopNav active="profile" />
         <main className="mx-auto mt-20 max-w-4xl px-margin-mobile md:max-w-7xl md:px-10">
           <p className="py-16 text-center text-on-surface-variant">Loading…</p>
         </main>
-        <AppBottomNav active="profile" />
       </div>
     );
   }
@@ -193,8 +191,8 @@ function ProfileWithClerk() {
   }
 
   return (
-    <div className="min-h-screen pb-mobile-nav md:pb-8" data-page="profile">
-      <AppMobileHeader />
+    <div className="min-h-screen pb-8" data-page="profile">
+      <AppMobileHeader active="profile" />
       <AppTopNav active="profile" />
 
       <main className="mx-auto mt-20 max-w-4xl px-margin-mobile md:max-w-7xl md:px-10">
@@ -356,8 +354,6 @@ function ProfileWithClerk() {
           </p>
         )}
       </main>
-
-      <AppBottomNav active="profile" />
     </div>
   );
 }

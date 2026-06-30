@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { PLACE_TAGS, MaterialIcon, PLACE_CATEGORY_LABELS, type PlaceCategory } from '@freshy/ui';
-import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
+import { AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceListCard } from './PlaceListCard';
 import type { PlaceDto } from '../lib/api';
 
@@ -79,8 +79,8 @@ export function PlaceListClient({
   ];
 
   return (
-    <div className="min-h-screen pb-mobile-nav md:pb-8" data-page="place-list">
-      <AppMobileHeader title={title} backHref={backHref} showBrand={false} />
+    <div className="min-h-screen pb-8" data-page="place-list">
+      <AppMobileHeader title={title} backHref={backHref} showBrand={false} active={navActive} />
       <AppTopNav active={navActive} />
 
       <main className="mx-auto mt-20 max-w-3xl px-margin-mobile pt-0 md:max-w-6xl md:px-10 md:pt-4">
@@ -172,8 +172,6 @@ export function PlaceListClient({
           </section>
         )}
       </main>
-
-      <AppBottomNav active={navActive} />
     </div>
   );
 }
