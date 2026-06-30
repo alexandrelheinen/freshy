@@ -91,3 +91,20 @@ export const ALL_PLACE_CATEGORIES: PlaceCategory[] = [
   'COWORKING',
   'PUBLIC_SPACE',
 ];
+
+export const DEFAULT_PLACE_PHOTO_PATHS: Record<PlaceCategory, string> = {
+  CAFE: '/place-defaults/default-cafe.png',
+  RESTAURANT: '/place-defaults/default-restaurant.png',
+  LIBRARY: '/place-defaults/default-library.png',
+  MALL: '/place-defaults/default-mall.png',
+  MUSEUM: '/place-defaults/default-museum.png',
+  COWORKING: '/place-defaults/default-coworking.png',
+  PUBLIC_SPACE: '/place-defaults/default-public_space.png',
+};
+
+export function getPlacePhotoUrl(
+  photoUrl: string | null | undefined,
+  category: PlaceCategory,
+): string {
+  return photoUrl ?? DEFAULT_PLACE_PHOTO_PATHS[category];
+}

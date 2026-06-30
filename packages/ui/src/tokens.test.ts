@@ -1,6 +1,15 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { BRAND_NAME, BRAND_TITLE, PILOT_CITY, ROUTES, TYPOGRAPHY_SCALE } from './tokens';
+import {
+  ALL_PLACE_CATEGORIES,
+  BRAND_NAME,
+  BRAND_TITLE,
+  DEFAULT_PLACE_PHOTO_PATHS,
+  getPlacePhotoUrl,
+  PILOT_CITY,
+  ROUTES,
+  TYPOGRAPHY_SCALE,
+} from './tokens';
 
 describe('@freshy/ui tokens', () => {
   it('defines brand name', () => {
@@ -13,6 +22,17 @@ describe('@freshy/ui tokens', () => {
   it('defines route helpers', () => {
     assert.equal(ROUTES.explore, '/explore');
     assert.equal(ROUTES.place('demo'), '/places/demo');
+  });
+
+  it('maps each place category to a default photo path', () => {
+    for (const category of ALL_PLACE_CATEGORIES) {
+      assert.match(DEFAULT_PLACE_PHOTO_PATHS[category], /^\/place-defaults\/default-[a-z_]+\.png$/);
+    }
+    assert.equal(getPlacePhotoUrl(null, 'CAFE'), '/place-defaults/default-cafe.png');
+    assert.equal(
+      getPlacePhotoUrl('https://cdn.example/photo.jpg', 'CAFE'),
+      'https://cdn.example/photo.jpg',
+    );
   });
 
   it('lists typography scale keys aligned with DESIGN.md', () => {

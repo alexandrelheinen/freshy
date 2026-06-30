@@ -9,6 +9,8 @@ import {
   MaterialIcon,
   PLACE_CATEGORY_LABELS,
   ROUTES,
+  getPlacePhotoUrl,
+  type PlaceCategory,
 } from '@freshy/ui';
 import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceActions } from './PlaceActions';
@@ -65,6 +67,12 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
 
       <main className="mx-auto max-w-3xl pt-16 md:max-w-4xl">
         <section className="relative h-72 w-full overflow-hidden bg-gradient-to-br from-primary-container to-secondary-container">
+          <img
+            src={getPlacePhotoUrl(place.photoUrl, place.category as PlaceCategory)}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
           <div className="absolute right-4 top-20 rounded-full bg-primary px-3 py-1.5 text-lg font-bold text-white shadow-lg md:top-24">
             {place.aggregatedTemperatureC != null
               ? `${Math.round(place.aggregatedTemperatureC)}°C`
@@ -106,9 +114,7 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
         </section>
 
         <section className="mt-6 px-margin-mobile md:px-10">
-          {place.address && (
-            <p className="mb-4 text-sm text-on-surface-variant">{place.address}</p>
-          )}
+          {place.address && <p className="mb-4 text-sm text-on-surface-variant">{place.address}</p>}
           <p className="text-on-surface-variant">{place.description}</p>
           <PlaceActions
             name={place.name}
