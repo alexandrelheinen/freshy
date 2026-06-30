@@ -1,8 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { GlassCard, PLACE_CATEGORY_LABELS, AC_STRENGTH_LABELS } from '@freshy/ui';
-import { AppBottomNav } from './AppBottomNav';
+import Link from 'next/link';
+import {
+  GlassCard,
+  MaterialIcon,
+  PLACE_CATEGORY_ICONS,
+  PLACE_CATEGORY_LABELS,
+  ROUTES,
+  type MaterialIconName,
+  type PlaceCategory,
+} from '@freshy/ui';
+import { AC_STRENGTH_LABELS } from '@freshy/ui';
+import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import type { CategoryMeta } from '../lib/api';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
@@ -23,55 +33,84 @@ export function CoolingClient() {
   const featured = meta?.featured;
 
   return (
-    <div className="min-h-screen pb-32" data-page="cooling">
-      <header className="fixed top-0 z-50 flex h-16 w-full items-center justify-between bg-surface/80 px-margin-mobile shadow-sm backdrop-blur-md">
-        <h1 className="text-2xl font-bold text-primary">Freshy</h1>
-      </header>
+    <div className="min-h-screen pb-32 md:pb-8" data-page="cooling">
+      <AppMobileHeader />
+      <AppTopNav active="cooling" />
 
-      <main className="mx-auto max-w-4xl px-margin-mobile pt-24">
-        <section className="mb-8 rounded-xl bg-gradient-to-br from-primary-container/20 to-secondary-container/20 p-6">
-          <h2 className="text-2xl font-semibold">Categories</h2>
-          <p className="mt-2 text-on-surface-variant">Find the perfect refuge from the heat.</p>
+      <main className="mx-auto max-w-4xl px-margin-mobile pb-8 pt-24 md:max-w-5xl md:px-10">
+        <section className="relative mb-8 overflow-hidden rounded-xl p-6">
+          <div className="absolute inset-0 z-0 bg-gradient-to-br from-primary-container/30 to-secondary-container/30 opacity-80" />
+          <div className="relative z-10">
+            <h2 className="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">
+              Categories
+            </h2>
+            <p className="mt-2 max-w-xs font-body-lg text-on-surface-variant">
+              Find the perfect refuge from the heat.
+            </p>
+          </div>
         </section>
 
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-          {categories.map((cat) => (
-            <GlassCard key={cat.category} className="flex flex-col items-center p-6 text-center">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary-container/30 text-2xl">
-                ❄
-              </div>
-              <span className="font-semibold">
-                {PLACE_CATEGORY_LABELS[cat.category as keyof typeof PLACE_CATEGORY_LABELS] ??
-                  cat.category}
-              </span>
-              <span className="mt-2 text-xs font-bold uppercase text-secondary">
-                {cat.count} places
-              </span>
-            </GlassCard>
-          ))}
+          {categories.map((cat) => {
+            const label =
+              PLACE_CATEGORY_LABELS[cat.category as PlaceCategory] ?? cat.category;
+            const icon = (PLACE_CATEGORY_ICONS[cat.category as PlaceCategory] ??
+              'cyclone') as MaterialIconName;
+
+            return (
+              <Link
+                key={cat.category}
+                href={ROUTES.categoryList(cat.category as PlaceCategory)}
+                className="group"
+              >
+                <GlassCard className="flex flex-col items-center p-6 text-center transition-all hover:scale-[1.02] active:scale-95">
+                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary-container/30 transition-colors group-hover:bg-primary-container/50">
+                    <MaterialIcon name={icon} className="text-primary" size={32} />
+                  </div>
+                  <span className="font-title-md text-on-surface">{label}</span>
+                  <span className="mt-2 font-label-caps text-label-caps text-secondary">
+                    {cat.count} PLACES
+                  </span>
+                </GlassCard>
+              </Link>
+            );
+          })}
         </div>
 
-        {featured && (
-          <section className="mt-8">
-            <h3 className="mb-4 text-lg font-semibold">Today&apos;s Highlight</h3>
-            <GlassCard className="h-48 overflow-hidden">
-              <div className="flex h-full flex-col justify-end bg-gradient-to-t from-black/50 to-primary-container/30 p-4">
-                <span className="text-xs font-bold uppercase text-white/90">
-                  Coldest pick nearby
-                </span>
-                <h4 className="text-xl font-semibold text-white">{featured.name}</h4>
-                <p className="text-sm text-white/80">
-                  {featured.aggregatedTemperatureC != null
-                    ? `${Math.round(featured.aggregatedTemperatureC)}°C · `
-                    : ''}
-                  {featured.aggregatedAcStrength
-                    ? AC_STRENGTH_LABELS[featured.aggregatedAcStrength]
-                    : ''}
-                </p>
+        {featured ? (
+          <section className="mt-8 md:mt-10">
+            <h3 className="mb-4 font-title-md text-on-surface">Today&apos;s Highlight</h3>
+            <Link href={ROUTES.place(featured.slug)} className="group block">
+              <div className="relative h-48 overflow-hidden rounded-xl shadow-lg">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary-container/50 to-secondary-container/40 transition-transform duration-500 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute bottom-0 flex flex-col justify-end p-4">
+                  <span className="mb-2 font-label-caps text-label-caps text-white/90">
+                    COLDEST PICK NEARBY
+                  </span>
+                  <h4 className="font-headline-lg-mobile text-headline-lg-mobile text-white">
+                    {featured.name}
+                  </h4>
+                  <div className="mt-2 flex items-center gap-2">
+                    <div className="flex gap-0.5">
+                      {[1, 2, 3].map((i) => (
+                        <div key={i} className="h-1.5 w-4 rounded-full bg-primary" />
+                      ))}
+                    </div>
+                    <span className="text-[10px] font-bold text-white/80">
+                      {featured.aggregatedAcStrength
+                        ? AC_STRENGTH_LABELS[featured.aggregatedAcStrength].toUpperCase()
+                        : ''}
+                      {featured.aggregatedTemperatureC != null
+                        ? ` · ${Math.round(featured.aggregatedTemperatureC)}°C`
+                        : ''}
+                    </span>
+                  </div>
+                </div>
               </div>
-            </GlassCard>
+            </Link>
           </section>
-        )}
+        ) : null}
       </main>
 
       <AppBottomNav active="cooling" />

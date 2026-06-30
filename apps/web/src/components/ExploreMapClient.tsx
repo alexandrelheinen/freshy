@@ -233,7 +233,11 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<PlaceCategory | undefined>();
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [viewState, setViewState] = useState({
+  const [viewState, setViewState] = useState<{
+    latitude: number;
+    longitude: number;
+    zoom: number;
+  }>({
     latitude: DEFAULT_CENTER.latitude,
     longitude: DEFAULT_CENTER.longitude,
     zoom: 13,

@@ -3,8 +3,8 @@
 import { useAuth, SignInButton, UserButton } from '@clerk/clerk-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { AC_STRENGTH_LABELS, GlassCard } from '@freshy/ui';
-import { AppBottomNav } from './AppBottomNav';
+import { AC_STRENGTH_LABELS, GlassCard, MaterialIcon, PLACE_CATEGORY_LABELS, ROUTES } from '@freshy/ui';
+import { AppBottomNav, AppMobileHeader, AppTopNav } from './AppNav';
 import { type PlaceDto } from '../lib/api';
 import { fetchMyProfile, fetchMySavedPlaces, type UserProfileDto } from '../lib/user-api';
 
@@ -36,13 +36,11 @@ export function ProfileClient() {
   }, [isLoaded, isSignedIn, getToken]);
 
   return (
-    <div className="min-h-screen pb-32" data-page="profile">
-      <header className="fixed top-0 z-50 flex h-16 w-full items-center justify-between bg-surface/80 px-margin-mobile shadow-sm backdrop-blur-md">
-        <h1 className="text-2xl font-bold text-primary">Freshy</h1>
-        {isSignedIn ? <UserButton /> : null}
-      </header>
+    <div className="min-h-screen pb-32 md:pb-8" data-page="profile">
+      <AppMobileHeader />
+      <AppTopNav active="profile" />
 
-      <main className="mt-20 px-margin-mobile">
+      <main className="mx-auto mt-20 max-w-4xl px-margin-mobile md:px-10">
         {!isLoaded ? (
           <p className="py-16 text-center text-on-surface-variant">Loading…</p>
         ) : !isSignedIn ? (
@@ -94,7 +92,14 @@ export function ProfileClient() {
             </div>
 
             <section>
-              <h3 className="mb-4 text-lg font-semibold">Saved Places</h3>
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-lg font-semibold">Saved Places</h3>
+                {savedPlaces.length > 0 ? (
+                  <Link href={ROUTES.saved} className="text-sm font-semibold text-primary">
+                    See all
+                  </Link>
+                ) : null}
+              </div>
               {savedPlaces.length === 0 ? (
                 <GlassCard className="p-4 text-on-surface-variant">
                   No saved places yet. Explore the map and tap Save on a place you like.
