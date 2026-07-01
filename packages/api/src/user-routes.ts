@@ -65,6 +65,7 @@ async function handleCreatePlace(
 
   const place = await createUserPlace(c.get('db'), userId, {
     ...parsed.data,
+    status: 'DRAFT',
     latitude: coords.latitude,
     longitude: coords.longitude,
   });
