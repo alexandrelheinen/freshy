@@ -33,6 +33,7 @@ import { circlePolygonGeoJson } from '../lib/map-circle';
 import { locationStatusMessage } from '../lib/location-messages';
 import { useUserLocation } from '../lib/use-user-location';
 import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
+import { API_BASE } from '../lib/api-base';
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceMapMarker, UserLocationMarker, freshnessLabel } from './map-markers';
 
@@ -328,8 +329,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       if (opts.q) params.set('q', opts.q);
       if (opts.verifiedOnly) params.set('verifiedOnly', 'true');
 
-      const base = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
-      const res = await fetch(`${base}/places?${params.toString()}`);
+      const res = await fetch(`${API_BASE}/places?${params.toString()}`);
       if (!res.ok) return;
       const json = (await res.json()) as { data: PlaceDto[] };
       setPlaces(json.data);

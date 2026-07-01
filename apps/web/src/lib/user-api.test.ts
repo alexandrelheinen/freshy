@@ -1,6 +1,19 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { createPlaceErrorMessage } from './user-api';
+import { createPlaceErrorMessage, profileErrorMessage } from './user-api';
+
+describe('user-api profile errors', () => {
+  it('maps auth failures to a sign-in message', () => {
+    assert.match(profileErrorMessage(401, {}), /session expired/i);
+  });
+
+  it('maps database unavailable to an actionable message', () => {
+    assert.match(
+      profileErrorMessage(503, { error: 'Database unavailable' }),
+      /database is unavailable/i,
+    );
+  });
+});
 
 describe('user-api create place errors', () => {
   it('maps auth failures to a sign-in message', () => {

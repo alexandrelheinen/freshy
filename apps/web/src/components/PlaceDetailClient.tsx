@@ -31,7 +31,7 @@ import {
   type PlaceDetailDto,
 } from '../lib/api';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+import { API_BASE } from '../lib/api-base';
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
 
 function userInitials(name: string): string {

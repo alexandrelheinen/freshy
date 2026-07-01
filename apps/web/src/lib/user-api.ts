@@ -1,6 +1,5 @@
 import type { PlaceDto } from './api';
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+import { API_BASE } from './api-base';
 
 export interface UserProfileDto {
   id: string;
@@ -13,38 +12,74 @@ export interface UserProfileDto {
   savedCount: number;
 }
 
+export interface ProfileFetchResult {
+  profile: UserProfileDto | null;
+  error: string | null;
+}
+
 async function authFetch(
   path: string,
   getToken: () => Promise<string | null>,
   init?: RequestInit,
-): Promise<Response> {
-  const token = await getToken();
-  if (!token) {
-    throw new Error('Not signed in');
+): Promise<Response | null> {
+  try {
+    const token = await getToken();
+    if (!token) return null;
+    return await fetch(`${API_BASE}${path}`, {
+      ...init,
+      headers: {
+        ...init?.headers,
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch {
+    return null;
   }
-  return fetch(`${API_BASE}${path}`, {
-    ...init,
-    headers: {
-      ...init?.headers,
-      Authorization: `Bearer ${token}`,
-    },
-  });
+}
+
+export function profileErrorMessage(status: number, body: unknown): string {
+  if (status === 401) {
+    return 'Your session expired. Sign in again and retry.';
+  }
+  if (status === 503) {
+    const errorText =
+      body && typeof body === 'object' && 'error' in body && typeof body.error === 'string'
+        ? body.error
+        : '';
+    if (errorText === 'Database unavailable') {
+      return 'The server database is unavailable. D1 migrations may need to run. Try again in a few minutes.';
+    }
+    if (errorText === 'Auth not configured') {
+      return 'Sign-in is not configured on the API. Contact support.';
+    }
+    if (errorText === 'Could not sync user') {
+      return 'Could not sync your account. Try signing out and back in.';
+    }
+    return 'Service temporarily unavailable. Try again in a few minutes.';
+  }
+  return 'Could not load profile. Check that the API is running and Clerk is configured.';
 }
 
 export async function fetchMyProfile(
   getToken: () => Promise<string | null>,
-): Promise<UserProfileDto | null> {
+): Promise<ProfileFetchResult> {
   const res = await authFetch('/users/me', getToken);
-  if (!res.ok) return null;
+  if (!res) {
+    return { profile: null, error: 'Sign in to view your profile.' };
+  }
+  if (!res.ok) {
+    const body = (await res.json().catch(() => ({}))) as unknown;
+    return { profile: null, error: profileErrorMessage(res.status, body) };
+  }
   const json = (await res.json()) as { data: UserProfileDto };
-  return json.data;
+  return { profile: json.data, error: null };
 }
 
 export async function fetchMySavedPlaces(
   getToken: () => Promise<string | null>,
 ): Promise<PlaceDto[]> {
   const res = await authFetch('/users/me/saved', getToken);
-  if (!res.ok) return [];
+  if (!res?.ok) return [];
   const json = (await res.json()) as { data: PlaceDto[] };
   return json.data;
 }
@@ -54,7 +89,7 @@ export async function fetchIsPlaceSaved(
   placeId: string,
 ): Promise<boolean> {
   const res = await authFetch(`/users/me/saved/${placeId}`, getToken);
-  if (!res.ok) return false;
+  if (!res?.ok) return false;
   const json = (await res.json()) as { data: { saved: boolean } };
   return json.data.saved;
 }
@@ -64,7 +99,7 @@ export async function savePlaceForUser(
   placeId: string,
 ): Promise<boolean> {
   const res = await authFetch(`/users/me/saved/${placeId}`, getToken, { method: 'POST' });
-  return res.ok;
+  return res?.ok ?? false;
 }
 
 export async function unsavePlaceForUser(
@@ -72,7 +107,7 @@ export async function unsavePlaceForUser(
   placeId: string,
 ): Promise<boolean> {
   const res = await authFetch(`/users/me/saved/${placeId}`, getToken, { method: 'DELETE' });
-  return res.ok;
+  return res?.ok ?? false;
 }
 
 export interface UserReviewDto {
@@ -92,7 +127,7 @@ export async function fetchMyReviews(
   getToken: () => Promise<string | null>,
 ): Promise<UserReviewDto[]> {
   const res = await authFetch('/users/me/reviews', getToken);
-  if (!res.ok) return [];
+  if (!res?.ok) return [];
   const json = (await res.json()) as { data: UserReviewDto[] };
   return json.data;
 }
@@ -161,7 +196,7 @@ export async function createUserPlace(
   try {
     const photo = options?.photo ?? null;
     const photoUrl = options?.photoUrl?.trim() || payload.photoUrl?.trim() || null;
-    let res: Response;
+    let res: Response | null;
 
     if (photo) {
       const form = new FormData();
@@ -185,17 +220,17 @@ export async function createUserPlace(
       });
     }
 
+    if (!res) {
+      return { ok: false, error: 'Sign in to submit a place.' };
+    }
+
     if (!res.ok) {
       const body = (await res.json().catch(() => ({}))) as unknown;
       return { ok: false, error: createPlaceErrorMessage(res.status, body) };
     }
     const json = (await res.json()) as { data: { slug: string } };
     return { ok: true, slug: json.data.slug };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : 'Network error';
-    if (message === 'Not signed in') {
-      return { ok: false, error: 'Sign in to submit a place.' };
-    }
+  } catch {
     return { ok: false, error: 'Could not reach the API. Check your connection and try again.' };
   }
 }
