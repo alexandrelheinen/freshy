@@ -354,13 +354,13 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     });
   }, [activeCategory, loadPlaces, query, searchAnchor]);
 
-  const zoomIn = () =>
+  const decreaseSearchRadius = () =>
     setViewState((v) => {
       const next = { ...v, zoom: Math.min(v.zoom + 1, 18) };
       setMapCenter({ lat: next.latitude, lng: next.longitude }, next.zoom);
       return next;
     });
-  const zoomOut = () =>
+  const increaseSearchRadius = () =>
     setViewState((v) => {
       const next = { ...v, zoom: Math.max(v.zoom - 1, 2) };
       setMapCenter({ lat: next.latitude, lng: next.longitude }, next.zoom);
@@ -582,9 +582,28 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         {/* Mobile: bottom overlay stack (FABs above preview card, both above bottom nav) */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex flex-col items-end gap-3 px-margin-mobile pb-4 md:hidden">
           <div className="pointer-events-auto flex items-center gap-2">
-            <span className="glass rounded-full border border-glass-border px-3 py-1.5 text-xs font-bold text-on-surface shadow-lg">
-              {formatSearchRadiusKm(displaySearchRadiusKm)}
-            </span>
+            <div className="glass flex items-center gap-2 rounded-full border border-glass-border px-3 py-1.5 shadow-lg">
+              <MaterialIcon name="near_me" size={16} className="text-primary" />
+              <button
+                type="button"
+                onClick={decreaseSearchRadius}
+                aria-label="Decrease search radius"
+                className="text-on-surface-variant active:text-primary"
+              >
+                <MaterialIcon name="remove" size={18} />
+              </button>
+              <span className="min-w-[48px] text-center text-xs font-bold text-on-surface">
+                {formatSearchRadiusKm(displaySearchRadiusKm)}
+              </span>
+              <button
+                type="button"
+                onClick={increaseSearchRadius}
+                aria-label="Increase search radius"
+                className="text-on-surface-variant active:text-primary"
+              >
+                <MaterialIcon name="add" size={18} />
+              </button>
+            </div>
             <div className="flex flex-col gap-2">
               <button
                 type="button"
@@ -656,19 +675,36 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
               </span>
             </button>
             <div className="h-6 w-px bg-outline-variant/30" />
-            <div className="flex items-center gap-6">
-              <button type="button" onClick={zoomOut} aria-label="Zoom out">
+            <div className="flex items-center gap-4">
+              <div className="group flex flex-col items-center gap-1">
                 <MaterialIcon
-                  name="remove"
-                  className="text-on-surface-variant hover:text-primary"
+                  name="near_me"
+                  className="text-on-surface-variant group-hover:text-primary"
                 />
-              </button>
-              <span className="min-w-[56px] text-center text-sm font-bold text-on-surface">
-                {formatSearchRadiusKm(displaySearchRadiusKm)}
-              </span>
-              <button type="button" onClick={zoomIn} aria-label="Zoom in">
-                <MaterialIcon name="add" className="text-on-surface-variant hover:text-primary" />
-              </button>
+                <span className="text-[10px] font-bold uppercase text-outline-variant">Radius</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={decreaseSearchRadius}
+                  aria-label="Decrease search radius"
+                >
+                  <MaterialIcon
+                    name="remove"
+                    className="text-on-surface-variant hover:text-primary"
+                  />
+                </button>
+                <span className="min-w-[56px] text-center text-sm font-bold text-on-surface">
+                  {formatSearchRadiusKm(displaySearchRadiusKm)}
+                </span>
+                <button
+                  type="button"
+                  onClick={increaseSearchRadius}
+                  aria-label="Increase search radius"
+                >
+                  <MaterialIcon name="add" className="text-on-surface-variant hover:text-primary" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
