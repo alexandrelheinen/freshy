@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from 'next';
-import { BRAND_TITLE } from '@freshy/ui';
+import { BRAND_TITLE, THEME_BOOTSTRAP_SCRIPT } from '@freshy/ui';
 import { getDefaultThemeTokens } from '@freshy/theme/tokens';
 import { FreshyClerkProvider } from '../components/FreshyClerkProvider';
 import { FreshyLocationProvider } from '../components/FreshyLocationProvider';
+import { FreshyThemeProvider } from '../components/FreshyThemeProvider';
 import './globals.css';
 
 const defaultTheme = getDefaultThemeTokens();
@@ -22,8 +23,9 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="default">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -46,9 +48,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="font-sans bg-background text-on-background antialiased">
-        <FreshyClerkProvider>
-          <FreshyLocationProvider>{children}</FreshyLocationProvider>
-        </FreshyClerkProvider>
+        <FreshyThemeProvider>
+          <FreshyClerkProvider>
+            <FreshyLocationProvider>{children}</FreshyLocationProvider>
+          </FreshyClerkProvider>
+        </FreshyThemeProvider>
       </body>
     </html>
   );

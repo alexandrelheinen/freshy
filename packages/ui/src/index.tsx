@@ -82,3 +82,13 @@ export function AcStrengthSnowflakes({ level }: { level: 1 | 2 | 3 }) {
 }
 
 export * from './tokens';
+
+export { ThemeProvider, useTheme, useResolvedThemeId } from './theme/ThemeProvider';
+export {
+  readThemePreference,
+  writeThemePreference,
+  resolveThemeId,
+  themePreferenceLabel,
+  THEME_BOOTSTRAP_SCRIPT,
+  type ThemePreference,
+} from './theme/theme-storage';
