@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseCreatePlaceFields } from './place-submission';
+import { parseCreatePlaceFields, resolvePlaceCoordinates } from './place-submission';
 
 describe('place-submission', () => {
   it('parses multipart-style place fields', () => {
@@ -19,5 +19,14 @@ describe('place-submission', () => {
       assert.equal(parsed.data.tags[0], 'calm');
       assert.equal(parsed.data.status, 'DRAFT');
     }
+  });
+
+  it('prefers explicit coordinates over geocoding the address', async () => {
+    const result = await resolvePlaceCoordinates({
+      address: '1 Rue Example, 92110 Clichy',
+      latitude: 48.9042,
+      longitude: 2.3064,
+    });
+    assert.deepEqual(result, { latitude: 48.9042, longitude: 2.3064 });
   });
 });

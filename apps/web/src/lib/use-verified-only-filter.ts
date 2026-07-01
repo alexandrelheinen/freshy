@@ -11,10 +11,9 @@ export function useVerifiedOnlyFilter(): {
   verifiedOnly: boolean;
   setVerifiedOnly: (value: boolean) => void;
 } {
-  const [verifiedOnly, setVerifiedOnlyState] = useState(false);
+  const [verifiedOnly, setVerifiedOnlyState] = useState(() => readVerifiedOnlyFilter());
 
   useEffect(() => {
-    setVerifiedOnlyState(readVerifiedOnlyFilter());
     const handler = (event: Event) => {
       setVerifiedOnlyState(Boolean((event as CustomEvent<boolean>).detail));
     };
