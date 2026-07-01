@@ -20,6 +20,11 @@ export interface PlaceDto {
   tags?: string[];
   isOpen?: boolean;
   distanceKm?: number;
+  status?: 'DRAFT' | 'PUBLISHED';
+}
+
+export function isPlaceVerified(place: Pick<PlaceDto, 'status'>): boolean {
+  return place.status !== 'DRAFT';
 }
 
 export interface CategoryMeta {
@@ -43,6 +48,7 @@ export async function fetchPlaces(params?: {
   radius?: number;
   category?: string;
   q?: string;
+  verifiedOnly?: boolean;
 }): Promise<PlaceDto[]> {
   const search = new URLSearchParams();
   if (params?.lat != null) search.set('lat', String(params.lat));
@@ -50,6 +56,7 @@ export async function fetchPlaces(params?: {
   if (params?.radius != null) search.set('radius', String(params.radius));
   if (params?.category) search.set('category', params.category);
   if (params?.q) search.set('q', params.q);
+  if (params?.verifiedOnly) search.set('verifiedOnly', 'true');
 
   const res = await fetch(`${API_BASE}/places?${search.toString()}`, {
     next: { revalidate: 30 },

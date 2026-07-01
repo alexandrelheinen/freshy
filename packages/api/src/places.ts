@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { eq, and, or, like, sql, desc } from 'drizzle-orm';
+import { eq, and, or, like, sql, desc, inArray } from 'drizzle-orm';
 import type { Place } from '@freshy/db';
 import {
   PLACE_CATEGORIES,
@@ -20,6 +20,10 @@ export const placesQuerySchema = z.object({
   radius: z.coerce.number().min(0.1).max(50).optional().default(PILOT_CITY.defaultRadiusKm),
   category: z.enum(PLACE_CATEGORIES).optional(),
   q: z.string().trim().optional(),
+  verifiedOnly: z.preprocess(
+    (value) => value === true || value === 'true' || value === '1',
+    z.boolean().optional(),
+  ),
 });
 
 export type PlacesQuery = z.infer<typeof placesQuerySchema>;
@@ -61,12 +65,18 @@ export interface PlaceListItem extends Omit<Place, 'tags'> {
   distanceKm?: number;
 }
 
+function publishedPlaceStatuses(query: PlacesQuery): Array<Place['status']> {
+  if (query.verifiedOnly) return ['PUBLISHED'];
+  return ['PUBLISHED', 'DRAFT'];
+}
+
 export async function listPlaces(db: Db, query: PlacesQuery): Promise<PlaceListItem[]> {
   const lat = query.lat;
   const lng = query.lng;
   const radiusKm = query.radius ?? PILOT_CITY.defaultRadiusKm;
+  const statuses = publishedPlaceStatuses(query);
 
-  const conditions = [eq(placesTable.status, 'PUBLISHED')];
+  const conditions = [inArray(placesTable.status, statuses)];
 
   if (query.category) {
     conditions.push(eq(placesTable.category, query.category));
@@ -80,7 +90,7 @@ export async function listPlaces(db: Db, query: PlacesQuery): Promise<PlaceListI
       .from(placesTable)
       .where(
         and(
-          eq(placesTable.status, 'PUBLISHED'),
+          inArray(placesTable.status, statuses),
           query.category ? eq(placesTable.category, query.category) : sql`1=1`,
           or(
             like(placesTable.name, pattern),
@@ -154,7 +164,7 @@ export interface PlaceDetail extends Omit<Place, 'tags'> {
 export async function getPlaceBySlugWithReviews(db: Db, slug: string): Promise<PlaceDetail | null> {
   const placeRows = await db.select().from(placesTable).where(eq(placesTable.slug, slug)).limit(1);
   const place = placeRows[0];
-  if (!place || place.status !== 'PUBLISHED') {
+  if (!place || (place.status !== 'PUBLISHED' && place.status !== 'DRAFT')) {
     return null;
   }
 

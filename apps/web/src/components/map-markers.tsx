@@ -11,6 +11,7 @@ import {
   type PlaceCategory,
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
+import { isPlaceVerified } from '../lib/api';
 import { truncatePlaceName } from '../lib/truncate-place-name';
 
 function freshnessId(
@@ -89,6 +90,20 @@ export const acStrengthLabel = freshnessLabel;
 /** @deprecated Use freshnessPowerLabel */
 export const acStrengthPowerLabel = freshnessPowerLabel;
 
+function VerifiedBadge() {
+  return (
+    <div className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full border border-surface bg-primary shadow-sm md:h-5 md:w-5">
+      <MaterialIcon name="verified" filled size={10} className="text-on-primary md:hidden" />
+      <MaterialIcon
+        name="verified"
+        filled
+        size={12}
+        className="hidden text-on-primary md:block"
+      />
+    </div>
+  );
+}
+
 function MarkerNameTooltip({ name }: { name: string }) {
   return (
     <div
@@ -114,6 +129,7 @@ export function PlaceMapMarker({
   const icon = categoryIcon(place.category);
   const { bgClass, opacity } = markerPinStyle(place.aggregatedFreshnessLevel);
   const desktop = desktopMarkerStyle(place.aggregatedFreshnessLevel);
+  const verified = isPlaceVerified(place);
 
   if (variant === 'desktop') {
     return (
@@ -126,17 +142,20 @@ export function PlaceMapMarker({
         }`}
       >
         <MarkerNameTooltip name={place.name} />
-        <div
-          className={`flex items-center justify-center rounded-full border-2 border-marker-border shadow-xl ${
-            isSelected ? 'marker-pulse h-10 w-10' : 'h-8 w-8'
-          } ${desktop.pinClass}`}
-        >
-          <MaterialIcon
-            name={icon}
-            className={isSelected ? 'text-on-primary' : desktop.textClass}
-            filled={isSelected}
-            size={isSelected ? 20 : 18}
-          />
+        <div className="relative">
+          <div
+            className={`flex items-center justify-center rounded-full border-2 border-marker-border shadow-xl ${
+              isSelected ? 'marker-pulse h-10 w-10' : 'h-8 w-8'
+            } ${desktop.pinClass}`}
+          >
+            <MaterialIcon
+              name={icon}
+              className={isSelected ? 'text-on-primary' : desktop.textClass}
+              filled={isSelected}
+              size={isSelected ? 20 : 18}
+            />
+          </div>
+          {verified ? <VerifiedBadge /> : null}
         </div>
         {isSelected ? <div className="h-2 w-0.5 bg-primary" /> : null}
       </button>
@@ -152,10 +171,13 @@ export function PlaceMapMarker({
       style={{ animationDelay: `${(place.id.charCodeAt(0) % 5) * 0.4}s` }}
     >
       <MarkerNameTooltip name={place.name} />
-      <div
-        className={`rounded-full p-2 text-on-primary shadow-xl ${bgClass} ${isSelected ? 'ring-2 ring-marker-ring ring-offset-2 ring-offset-primary/30' : ''}`}
-      >
-        <MaterialIcon name={icon} size={20} />
+      <div className="relative">
+        <div
+          className={`rounded-full p-2 text-on-primary shadow-xl ${bgClass} ${isSelected ? 'ring-2 ring-marker-ring ring-offset-2 ring-offset-primary/30' : ''}`}
+        >
+          <MaterialIcon name={icon} size={20} />
+        </div>
+        {verified ? <VerifiedBadge /> : null}
       </div>
     </button>
   );
