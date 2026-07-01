@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import Map, { Marker } from 'react-map-gl';
+import Map, { Layer, Marker, Source } from 'react-map-gl';
 import Link from 'next/link';
 import {
   FRESHNESS_LEVEL_LABELS,
@@ -28,6 +28,7 @@ import {
 } from '../lib/api';
 import { mapStyleUrl, type MapStyleId } from '../lib/map-styles';
 import { cappedSearchRadiusKm, formatSearchRadiusKm } from '../lib/map-zoom';
+import { circlePolygonGeoJson } from '../lib/map-circle';
 import { locationStatusMessage } from '../lib/location-messages';
 import { useUserLocation } from '../lib/use-user-location';
 import { AppMobileHeader, AppTopNav } from './AppNav';
@@ -260,6 +261,11 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     zoom: mapZoom,
   }));
   const [mapStyleId, setMapStyleId] = useState<MapStyleId>('streets');
+  const [searchPulse, setSearchPulse] = useState<{
+    latitude: number;
+    longitude: number;
+    radiusKm: number;
+  } | null>(null);
 
   const activeSearchRadiusKm = useMemo(
     () =>
@@ -321,6 +327,17 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     (anchor: MapSearchAnchor) => {
       setSearchAnchor(anchor);
       setMapCenter({ lat: anchor.latitude, lng: anchor.longitude }, anchor.zoom);
+      const radiusKm = cappedSearchRadiusKm(
+        anchor.latitude,
+        anchor.zoom,
+        MAP_SEARCH.maxRadiusKm,
+        MAP_SEARCH.minRadiusKm,
+      );
+      setSearchPulse({
+        latitude: anchor.latitude,
+        longitude: anchor.longitude,
+        radiusKm,
+      });
       void loadPlaces({
         lat: anchor.latitude,
         lng: anchor.longitude,
@@ -331,6 +348,12 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     },
     [activeCategory, loadPlaces, query, setMapCenter],
   );
+
+  useEffect(() => {
+    if (!searchPulse) return;
+    const timer = window.setTimeout(() => setSearchPulse(null), 1000);
+    return () => window.clearTimeout(timer);
+  }, [searchPulse]);
 
   const skipFilterReload = useRef(true);
 
@@ -397,6 +420,35 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       style={{ width: '100%', height: '100%' }}
       mapStyle={mapStyleUrl(mapStyleId)}
     >
+      {searchPulse ? (
+        <Source
+          id="search-radius-pulse"
+          type="geojson"
+          data={circlePolygonGeoJson(
+            searchPulse.latitude,
+            searchPulse.longitude,
+            searchPulse.radiusKm,
+          )}
+        >
+          <Layer
+            id="search-radius-pulse-fill"
+            type="fill"
+            paint={{
+              'fill-color': '#9ca3af',
+              'fill-opacity': 0.18,
+            }}
+          />
+          <Layer
+            id="search-radius-pulse-outline"
+            type="line"
+            paint={{
+              'line-color': '#9ca3af',
+              'line-opacity': 0.35,
+              'line-width': 2,
+            }}
+          />
+        </Source>
+      ) : null}
       {userLocation ? (
         <Marker latitude={userLocation.lat} longitude={userLocation.lng} anchor="center">
           <UserLocationMarker variant="mobile" />
@@ -504,18 +556,15 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       <main className="relative h-screen w-full overflow-hidden pt-16">
         <div className="absolute inset-0">{mapContent}</div>
 
-        <button
-          type="button"
-          onClick={researchHere}
-          disabled={!needsResearch}
-          className={`absolute left-1/2 top-20 z-40 -translate-x-1/2 rounded-full px-6 py-2.5 font-label-caps shadow-lg transition-all ${
-            needsResearch
-              ? 'bg-primary text-on-primary hover:brightness-110 active:scale-[0.98]'
-              : 'pointer-events-none bg-surface-container-high/60 text-on-surface-variant/50'
-          }`}
-        >
-          Research here
-        </button>
+        {needsResearch ? (
+          <button
+            type="button"
+            onClick={researchHere}
+            className="absolute left-1/2 top-20 z-40 -translate-x-1/2 rounded-full bg-primary px-6 py-2.5 font-label-caps text-on-primary shadow-lg transition-all hover:brightness-110 active:scale-[0.98]"
+          >
+            Research in this area
+          </button>
+        ) : null}
 
         {exploreLocationMessage ? (
           <div className="absolute bottom-28 left-4 right-4 z-30 mx-auto max-w-md rounded-xl border border-outline-variant/30 bg-surface/95 p-4 text-center shadow-lg backdrop-blur md:bottom-8 md:left-10 md:right-auto">
