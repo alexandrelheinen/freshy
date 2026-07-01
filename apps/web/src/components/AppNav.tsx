@@ -9,7 +9,10 @@ import {
   NAV_ICONS,
   NAV_ITEMS,
   ROUTES,
+  themePreferenceLabel,
+  useTheme,
   type MaterialIconName,
+  type ThemePreference,
 } from '@freshy/ui';
 import { isStudioAdmin } from '../lib/studio-api';
 import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
@@ -25,17 +28,62 @@ function ClerkAdminFlag({ children }: { children: (isAdmin: boolean) => ReactNod
 
 const MAIN_NAV_ITEMS = NAV_ITEMS.filter((item) => item.id !== 'profile' && item.id !== 'saved');
 
-function ThemePlaceholder() {
+function ThemeMenu() {
+  const { preference, setTheme } = useTheme();
+  const [open, setOpen] = useState(false);
+
+  const options: ThemePreference[] = ['default', 'dark', 'system'];
+
   return (
-    <button
-      type="button"
-      disabled
-      className="flex h-10 items-center gap-2 rounded-full bg-surface-container-high px-3 text-on-surface-variant/50 transition-colors"
-      aria-label="Theme"
-    >
-      <MaterialIcon name="routine" className="text-on-surface-variant/50" />
-      <span className="hidden font-label-caps sm:inline">Theme</span>
-    </button>
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        className="flex h-10 items-center gap-2 rounded-full bg-surface-container-high px-3 text-on-surface-variant transition-colors hover:text-primary"
+        aria-label="Theme"
+        aria-expanded={open}
+        aria-haspopup="listbox"
+      >
+        <MaterialIcon name="routine" className="text-current" />
+        <span className="hidden font-label-caps sm:inline">{themePreferenceLabel(preference)}</span>
+      </button>
+      {open ? (
+        <>
+          <button
+            type="button"
+            className="fixed inset-0 z-40 cursor-default"
+            aria-label="Close theme menu"
+            onClick={() => setOpen(false)}
+          />
+          <div
+            role="listbox"
+            aria-label="Theme"
+            className="absolute right-0 z-50 mt-2 min-w-36 overflow-hidden rounded-xl border border-outline-variant/20 bg-surface-container-lowest py-1 shadow-lg"
+          >
+            {options.map((option) => (
+              <button
+                key={option}
+                type="button"
+                role="option"
+                aria-selected={preference === option}
+                onClick={() => {
+                  setTheme(option);
+                  setOpen(false);
+                }}
+                className={`flex w-full items-center justify-between px-4 py-2 text-left font-body-sm transition-colors hover:bg-surface-container ${
+                  preference === option ? 'text-primary' : 'text-on-surface'
+                }`}
+              >
+                {themePreferenceLabel(option)}
+                {preference === option ? (
+                  <MaterialIcon name="check_circle" size={18} className="text-primary" filled />
+                ) : null}
+              </button>
+            ))}
+          </div>
+        </>
+      ) : null}
+    </div>
   );
 }
 
@@ -144,6 +192,9 @@ function MobileNavMenu({
         <div className="px-2 py-2">
           <VerifiedOnlyToggle onToggle={onClose} />
         </div>
+        <div className="px-2 py-2">
+          <ThemeMenu />
+        </div>
         <NavLink
           href={ROUTES.profile}
           label="Profile"
@@ -198,7 +249,7 @@ export function AppTopNav({ active = 'explore' }: { active?: NavActiveId }) {
 
       <div className="flex items-center gap-4">
         <VerifiedOnlyToggle />
-        <ThemePlaceholder />
+        <ThemeMenu />
         <ProfileAvatarLink />
       </div>
     </header>

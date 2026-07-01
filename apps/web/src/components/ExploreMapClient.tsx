@@ -16,11 +16,12 @@ import {
   PLACE_TAG_LABELS,
   ROUTES,
   filterValidPlaceTags,
+  useResolvedThemeId,
   type MaterialIconName,
   type PlaceCategory,
 } from '@freshy/ui';
-import { getDefaultThemeTokens } from '@freshy/theme/tokens';
 import type { PlaceDto } from '../lib/api';
+import { getThemeTokens } from '@freshy/theme/tokens';
 import {
   freshnessBarState,
   directionsUrl,
@@ -45,7 +46,11 @@ import {
 } from './map-markers';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
-const SEARCH_PULSE_COLOR = getDefaultThemeTokens().colors['outline-variant'];
+
+function readThemeColor(role: string): string {
+  if (typeof window === 'undefined') return '';
+  return getComputedStyle(document.documentElement).getPropertyValue(`--color-${role}`).trim();
+}
 
 type MapSearchAnchor = { latitude: number; longitude: number; zoom: number };
 
@@ -271,6 +276,11 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     zoomForSearchRadius,
   } = useUserLocation();
   const { verifiedOnly } = useVerifiedOnlyFilter();
+  const resolvedTheme = useResolvedThemeId();
+  const searchPulseColor = useMemo(() => {
+    const color = readThemeColor('outline-variant');
+    return color || getThemeTokens(resolvedTheme).colors['outline-variant'];
+  }, [resolvedTheme]);
   const [viewState, setViewState] = useState<MapSearchAnchor>(() => ({
     latitude: mapCenter.lat,
     longitude: mapCenter.lng,
@@ -460,7 +470,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
             id="search-radius-pulse-fill"
             type="fill"
             paint={{
-              'fill-color': SEARCH_PULSE_COLOR,
+              'fill-color': searchPulseColor,
               'fill-opacity': 0.18,
             }}
           />
@@ -468,7 +478,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
             id="search-radius-pulse-outline"
             type="line"
             paint={{
-              'line-color': SEARCH_PULSE_COLOR,
+              'line-color': searchPulseColor,
               'line-opacity': 0.35,
               'line-width': 2,
             }}
