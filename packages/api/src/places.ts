@@ -65,7 +65,7 @@ export interface PlaceListItem extends Omit<Place, 'tags'> {
   distanceKm?: number;
 }
 
-function publishedPlaceStatuses(query: PlacesQuery): Array<Place['status']> {
+export function publishedPlaceStatuses(query: PlacesQuery): Array<Place['status']> {
   if (query.verifiedOnly) return ['PUBLISHED'];
   return ['PUBLISHED', 'DRAFT'];
 }

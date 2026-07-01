@@ -8,13 +8,13 @@ export async function resolvePlaceCoordinates(
   input: Pick<CreatePlaceInput, 'address' | 'latitude' | 'longitude'>,
   mapboxToken?: string,
 ): Promise<ResolvedCoordinates> {
+  if (input.latitude != null && input.longitude != null) {
+    return { latitude: input.latitude, longitude: input.longitude };
+  }
+
   const geocoded = await geocodeAddress(input.address, mapboxToken);
   if (geocoded) {
     return { latitude: geocoded.latitude, longitude: geocoded.longitude };
-  }
-
-  if (input.latitude != null && input.longitude != null) {
-    return { latitude: input.latitude, longitude: input.longitude };
   }
 
   return {
