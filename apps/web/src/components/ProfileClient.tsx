@@ -2,7 +2,7 @@
 
 import { useAuth, SignInButton } from '@clerk/clerk-react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   FRESHNESS_LEVEL_LABELS,
   FreshnessBar,
@@ -135,6 +135,8 @@ function ProfileSignedOutView({ showSignIn }: { showSignIn: boolean }) {
 
 function ProfileWithClerk() {
   const { isLoaded, isSignedIn, getToken } = useAuth();
+  const getTokenRef = useRef(getToken);
+  getTokenRef.current = getToken;
   const [profile, setProfile] = useState<UserProfileDto | null>(null);
   const [savedPlaces, setSavedPlaces] = useState<PlaceDto[]>([]);
   const [reviews, setReviews] = useState<UserReviewDto[]>([]);
@@ -169,9 +171,9 @@ function ProfileWithClerk() {
       setLoading(true);
       setLoadError(null);
       const [profileResult, saved, myReviews] = await Promise.all([
-        fetchMyProfile(getToken),
-        fetchMySavedPlaces(getToken),
-        fetchMyReviews(getToken),
+        fetchMyProfile(() => getTokenRef.current()),
+        fetchMySavedPlaces(() => getTokenRef.current()),
+        fetchMyReviews(() => getTokenRef.current()),
       ]);
       if (cancelled) return;
       setProfile(profileResult.profile);
