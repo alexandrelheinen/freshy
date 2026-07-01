@@ -94,12 +94,7 @@ function VerifiedBadge() {
   return (
     <div className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full border border-surface bg-primary shadow-sm md:h-5 md:w-5">
       <MaterialIcon name="verified" filled size={10} className="text-on-primary md:hidden" />
-      <MaterialIcon
-        name="verified"
-        filled
-        size={12}
-        className="hidden text-on-primary md:block"
-      />
+      <MaterialIcon name="verified" filled size={12} className="hidden text-on-primary md:block" />
     </div>
   );
 }
