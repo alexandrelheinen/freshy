@@ -1,0 +1,15 @@
+brand: nest_farsight_cool
+nav:
+  explore: explore
+  saved: bookmark_heart
+  cooling: climate_mini_split
+  profile: digital_wellbeing
+category:
+  cafe: local_cafe
+  restaurant: restaurant
+  bar: local_bar
+  library: menu_book
+  mall: shopping_bag
+  museum: museum
+  coworking: laptop_mac
+  public_space: nature
