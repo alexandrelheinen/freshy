@@ -33,7 +33,31 @@ export function withResolvedPlacePhoto<T extends Pick<Place, 'photoUrl' | 'categ
   };
 }
 
-export interface PlaceListItem extends Place {
+/** D1 stores tags as a JSON string; API clients expect a string array. */
+export function parseStoredTags(tags: string | string[] | null | undefined): string[] {
+  if (Array.isArray(tags)) return tags;
+  if (!tags) return [];
+  try {
+    const parsed: unknown = JSON.parse(tags);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((tag): tag is string => typeof tag === 'string');
+  } catch {
+    return [];
+  }
+}
+
+export function serializePlaceForApi<T extends Pick<Place, 'photoUrl' | 'category' | 'tags'>>(
+  place: T,
+): Omit<T, 'tags'> & { tags: string[] } {
+  const resolved = withResolvedPlacePhoto(place);
+  return {
+    ...resolved,
+    tags: parseStoredTags(place.tags),
+  };
+}
+
+export interface PlaceListItem extends Omit<Place, 'tags'> {
+  tags: string[];
   distanceKm?: number;
 }
 
@@ -77,7 +101,7 @@ export async function listPlaces(db: Db, query: PlacesQuery): Promise<PlaceListI
   const withDistance = filterPlacesByRadius(results, lat, lng, radiusKm);
 
   return withDistance.map(({ place, distanceKm }) =>
-    withResolvedPlacePhoto({
+    serializePlaceForApi({
       ...place,
       distanceKm: Math.round(distanceKm * 100) / 100,
     }),
@@ -96,7 +120,9 @@ export async function categoryCounts(
   return rows.map((r) => ({ category: r.category, count: Number(r.count) }));
 }
 
-export async function featuredPlace(db: Db): Promise<Place | null> {
+export async function featuredPlace(
+  db: Db,
+): Promise<(Omit<Place, 'tags'> & { tags: string[] }) | null> {
   const rows = await db
     .select()
     .from(placesTable)
@@ -109,7 +135,7 @@ export async function featuredPlace(db: Db): Promise<Place | null> {
     .orderBy(placesTable.name)
     .limit(1);
   const place = rows[0] ?? null;
-  return place ? withResolvedPlacePhoto(place) : null;
+  return place ? serializePlaceForApi(place) : null;
 }
 
 export interface PlaceReviewSummary {
@@ -120,7 +146,8 @@ export interface PlaceReviewSummary {
   user: { displayName: string; username: string };
 }
 
-export interface PlaceDetail extends Place {
+export interface PlaceDetail extends Omit<Place, 'tags'> {
+  tags: string[];
   reviews: PlaceReviewSummary[];
 }
 
@@ -147,7 +174,7 @@ export async function getPlaceBySlugWithReviews(db: Db, slug: string): Promise<P
     .limit(10);
 
   return {
-    ...withResolvedPlacePhoto(place),
+    ...serializePlaceForApi(place),
     reviews: reviewRows.map((row) => ({
       id: row.id,
       acStrength: row.acStrength,

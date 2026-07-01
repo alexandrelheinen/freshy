@@ -1,21 +1,21 @@
 # Infrastructure
 
-| Path          | Description                                             |
-| ------------- | ------------------------------------------------------- |
-| `docker/`     | Local PostgreSQL + PostGIS (`docker-compose.yml`)       |
-| `cloudflare/` | R2, Pages, Workers: setup guide and `wrangler` template |
-| `render/`     | Render blueprint for production API (`render.yaml`)     |
+| Path          | Description                                          |
+| ------------- | ---------------------------------------------------- |
+| `cloudflare/` | R2, Pages, Workers setup guide and wrangler template |
 
-**All platforms (Neon, Render, Pages, Clerk, …):** [docs/platforms.md](../docs/platforms.md)
+**All platforms (Pages, Worker, D1, R2, Clerk, …):** [docs/platforms.md](../docs/platforms.md)
 
-**Local database:**
+**Local development:**
 
 ```bash
-bash scripts/setup-local-db.sh
+pnpm install
+pnpm --filter @freshy/db migrate:local
+pnpm dev
 ```
 
-**Deploy API + connect Pages:** [docs/deploy-api.md](../docs/deploy-api.md)
+See [docs/local-development.md](../docs/local-development.md).
 
-**Cloudflare (R2, Pages):** [cloudflare/README.md](cloudflare/README.md)
+**Cloudflare setup:** [cloudflare/README.md](cloudflare/README.md)
 
 **Architecture overview:** [docs/infrastructure.md](../docs/infrastructure.md)

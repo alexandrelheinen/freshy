@@ -1,22 +1,34 @@
 # Freshy | Platforms & services reference
 
-> **Purpose:** Single checklist of every external platform Freshy uses, what it does, where to click, and which env vars belong where.  
+> **Purpose:** Single checklist of every platform Freshy uses, what it does, where to click, and which env vars belong where.  
 > **Update this file** when you add or change a provider.
 
 **Production (June 2026):**
 
-| Layer       | Provider         | Live URL                                   |
-| ----------- | ---------------- | ------------------------------------------ |
-| Web app     | Cloudflare Pages | https://freshy-25e.pages.dev               |
-| API         | Render           | https://freshy-api.onrender.com            |
-| Database    | Neon             | _(connection string only, no public URL)_  |
-| Auth        | Clerk            | https://dashboard.clerk.com                |
-| Maps        | Mapbox           | _(token in Pages env)_                     |
-| Source code | GitHub           | https://github.com/alexandrelheinen/freshy |
+| Layer          | Provider          | Live URL                                        |
+| -------------- | ----------------- | ----------------------------------------------- |
+| Web app        | Cloudflare Pages  | https://freshy-25e.pages.dev                    |
+| API            | Cloudflare Worker | https://freshy-api.alexandrelheinen.workers.dev |
+| Database       | Cloudflare D1     | `freshy-db` (no public URL)                     |
+| Object storage | Cloudflare R2     | `freshy-assets`                                 |
+| Auth           | Clerk             | https://dashboard.clerk.com                     |
+| Maps           | Mapbox            | Token on Pages                                  |
+| Source code    | GitHub            | https://github.com/alexandrelheinen/freshy      |
 
 ---
 
-## Platform map
+## Cloudflare resource map
+
+| Resource type     | Dashboard name  | Binding / URL                                   | Config file                                                               |
+| ----------------- | --------------- | ----------------------------------------------- | ------------------------------------------------------------------------- |
+| **Pages project** | `freshy-25e`    | https://freshy-25e.pages.dev                    | Git integration                                                           |
+| **Worker**        | `freshy-api`    | https://freshy-api.alexandrelheinen.workers.dev | [`packages/api/wrangler.toml`](../packages/api/wrangler.toml)             |
+| **D1 database**   | `freshy-db`     | `FRESHY_DB`                                     | `wrangler.toml` + [`packages/db/migrations/`](../packages/db/migrations/) |
+| **R2 bucket**     | `freshy-assets` | `FRESHY_ASSETS`                                 | `wrangler.toml`                                                           |
+
+---
+
+## Platform diagram
 
 ```mermaid
 flowchart TB
@@ -24,24 +36,22 @@ flowchart TB
         Browser[Browser / PWA]
     end
 
-    subgraph prod [Production, live today]
-        Pages["Cloudflare Pages<br/>freshy-25e.pages.dev"]
-        Render["Render Web Service<br/>freshy-api.onrender.com"]
-        Neon[(Neon PostgreSQL + PostGIS)]
+    subgraph cf [Cloudflare production]
+        Pages["Pages<br/>freshy-25e"]
+        Worker["Worker<br/>freshy-api"]
+        D1[(D1<br/>freshy-db)]
+        R2[(R2<br/>freshy-assets)]
+    end
+
+    subgraph external [External]
         Clerk[Clerk Auth]
         Mapbox[Mapbox GL JS]
     end
 
-    subgraph dev [Development]
-        Docker[Docker PostGIS :5432]
-        LocalAPI[Express :4000]
+    subgraph dev [Local development]
         LocalWeb[Next.js :3000]
-    end
-
-    subgraph future [Planned, not production API yet]
-        Workers[Cloudflare Workers]
-        Hyperdrive[Cloudflare Hyperdrive]
-        R2[Cloudflare R2]
+        LocalWorker[wrangler dev :8787]
+        LocalD1[Local D1 SQLite]
     end
 
     subgraph tooling [Tooling]
@@ -50,21 +60,20 @@ flowchart TB
     end
 
     Browser --> Pages
-    Pages -->|NEXT_PUBLIC_API_URL| Render
+    Pages -->|NEXT_PUBLIC_API_URL| Worker
     Pages --> Mapbox
     Pages --> Clerk
-    Render -->|DATABASE_URL| Neon
-    Render -->|CLERK_SECRET_KEY| Clerk
+    Worker -->|FRESHY_DB| D1
+    Worker -->|FRESHY_ASSETS| R2
+    Worker -->|CLERK_SECRET_KEY| Clerk
     Browser -->|Sign in JWT| Clerk
 
-    LocalWeb --> LocalAPI --> Docker
-    GitHub -->|deploy hook| Pages
-    GitHub -->|deploy hook| Render
+    LocalWeb --> LocalWorker --> LocalD1
+    GitHub -->|Pages build| Pages
+    GitHub -->|deploy-api.yml| Worker
+    GitHub -->|d1 migrations| D1
     GitHub -.->|optional| R2
     EAS -.-> Mobile[Expo mobile app]
-
-    Workers -.-> Hyperdrive -.-> Neon
-    Render -.->|replace later| Workers
 ```
 
 ---
@@ -78,108 +87,180 @@ flowchart TB
 | **Branch for production** | `main`                                                              |
 | **What you do here**      | Push code, merge PRs, configure Actions secrets                     |
 
-### GitHub Actions secrets (optional, PR screenshots + CD)
+### GitHub Actions secrets
 
-| Secret                 | Used for                                              |
-| ---------------------- | ----------------------------------------------------- |
-| `R2_ACCOUNT_ID`        | Upload CI screenshots to R2                           |
-| `R2_ACCESS_KEY_ID`     | R2 API                                                |
-| `R2_SECRET_ACCESS_KEY` | R2 API                                                |
-| `R2_BUCKET_NAME`       | e.g. `freshy-assets`                                  |
-| `R2_PUBLIC_URL`        | Public URL for screenshot links in PR comments        |
-| `DATABASE_URL`         | Neon URI; automatic `prisma migrate deploy` on `main` |
-| `EXPO_TOKEN`           | Mobile EAS builds on release                          |
+| Secret                  | Used for                                                  |
+| ----------------------- | --------------------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | Worker deploy + D1 migrations (required for API CD)       |
+| `CLOUDFLARE_ACCOUNT_ID` | Wrangler account ID (required for API CD)                 |
+| `R2_ACCOUNT_ID`         | Upload CI screenshots to R2 (optional)                    |
+| `R2_ACCESS_KEY_ID`      | R2 API (optional)                                         |
+| `R2_SECRET_ACCESS_KEY`  | R2 API (optional)                                         |
+| `R2_BUCKET_NAME`        | `freshy-assets` (optional)                                |
+| `R2_PUBLIC_URL`         | Public URL for screenshot links in PR comments (optional) |
+| `EXPO_TOKEN`            | Mobile EAS builds on release (optional)                   |
 
-**Docs:** [.github/workflows/ci.yml](../.github/workflows/ci.yml), [CD workflows](../.github/workflows/)
+**Docs:** [.github/workflows/ci.yml](../.github/workflows/ci.yml), [deploy-api.yml](../.github/workflows/deploy-api.yml)
 
 ---
 
-## 2. Cloudflare Pages | web app (frontend)
+## 2. Cloudflare Pages | web app
 
 | Item             | Value                                                              |
 | ---------------- | ------------------------------------------------------------------ |
 | **Dashboard**    | https://dash.cloudflare.com → **Workers & Pages** → **freshy-25e** |
 | **Live site**    | https://freshy-25e.pages.dev                                       |
 | **Deploys from** | GitHub `main` (auto on push)                                       |
-| **Build root**   | `apps/web` (monorepo build from repo root; see project settings)   |
+| **Build root**   | Monorepo build from repo root (see project settings)               |
 | **Output**       | Static export (`out/`)                                             |
 
 ### Environment variables (Pages)
 
 Set under **Settings → Environment variables** (Production **and** Preview):
 
-| Variable                            | Example / notes                                          |
-| ----------------------------------- | -------------------------------------------------------- |
-| `NODE_VERSION`                      | `20`                                                     |
-| `NEXT_PUBLIC_API_URL`               | `https://freshy-api.onrender.com`, **no trailing slash** |
-| `NEXT_PUBLIC_MAPBOX_TOKEN`          | Mapbox public token (`pk....`)                           |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk **Publishable key** (`pk_test_...`)                |
+| Variable                            | Example / notes                                                          |
+| ----------------------------------- | ------------------------------------------------------------------------ |
+| `NODE_VERSION`                      | `20`                                                                     |
+| `NEXT_PUBLIC_API_URL`               | `https://freshy-api.alexandrelheinen.workers.dev`, **no trailing slash** |
+| `NEXT_PUBLIC_MAPBOX_TOKEN`          | Mapbox public token (`pk....`)                                           |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key (`pk_test_...`)                                    |
+| `NEXT_PUBLIC_R2_PUBLIC_URL`         | Same base as Worker `R2_PUBLIC_URL` (default place photos)               |
 
 **After changing env vars → redeploy** (Deployments → Retry deployment).
 
-**Docs:** [deploy-api.md](deploy-api.md), [infrastructure/cloudflare/README.md](../infrastructure/cloudflare/README.md)
+**Docs:** [local-development.md](local-development.md), [infrastructure/cloudflare/README.md](../infrastructure/cloudflare/README.md)
 
 ---
 
-## 3. Render | API (backend)
+## 3. Cloudflare Worker | API
 
-| Item             | Value                                                 |
-| ---------------- | ----------------------------------------------------- |
-| **Dashboard**    | https://dashboard.render.com → service **freshy-api** |
-| **Live API**     | https://freshy-api.onrender.com                       |
-| **Health check** | https://freshy-api.onrender.com/health                |
-| **Deploys from** | GitHub `main`                                         |
-| **Runtime**      | Node 20, Express (`packages/api`)                     |
+| Item             | Value                                                              |
+| ---------------- | ------------------------------------------------------------------ |
+| **Dashboard**    | https://dash.cloudflare.com → **Workers & Pages** → **freshy-api** |
+| **Live API**     | https://freshy-api.alexandrelheinen.workers.dev                    |
+| **Health check** | https://freshy-api.alexandrelheinen.workers.dev/health             |
+| **Runtime**      | Hono on Cloudflare Workers (`packages/api`)                        |
+| **Config**       | [`packages/api/wrangler.toml`](../packages/api/wrangler.toml)      |
 
-### Build & start commands
+### Bindings (wrangler.toml)
 
-| Field             | Value                                                                |
-| ----------------- | -------------------------------------------------------------------- |
-| **Build Command** | `corepack enable && pnpm install && pnpm build:api:render`           |
-| **Start Command** | `pnpm migrate:deploy:production && node packages/api/dist/server.js` |
+| Binding         | Resource           | Purpose         |
+| --------------- | ------------------ | --------------- |
+| `FRESHY_DB`     | D1 `freshy-db`     | SQLite database |
+| `FRESHY_ASSETS` | R2 `freshy-assets` | Object storage  |
 
-Blueprint: [infrastructure/render/render.yaml](../infrastructure/render/render.yaml)
+### Vars (wrangler.toml)
 
-### Environment variables (Render)
+| Var             | Purpose                        |
+| --------------- | ------------------------------ |
+| `R2_PUBLIC_URL` | Public base URL for R2 objects |
 
-| Variable                   | Purpose                                              |
-| -------------------------- | ---------------------------------------------------- |
-| `NODE_VERSION`             | `20`                                                 |
-| `DATABASE_URL`             | Neon pooled connection URI (running API)             |
-| `DIRECT_DATABASE_URL`      | Neon direct URI for migrations (non-pooler host)     |
-| `MAPBOX_ACCESS_TOKEN`      | Mapbox token for server-side address geocoding       |
-| `R2_*`                     | Required for user photo uploads to Cloudflare R2     |
-| `CLERK_SECRET_KEY`         | Clerk **Secret key** (`sk_test_...`)                 |
-| `CLERK_AUTHORIZED_PARTIES` | `https://freshy-25e.pages.dev,http://localhost:3000` |
-| `PORT`                     | Set automatically by Render                          |
+### Secrets (Worker dashboard or `wrangler secret put`)
 
-**Docs:** [deploy-api.md](deploy-api.md)
+Set under **Workers & Pages → freshy-api → Settings → Variables and Secrets**:
+
+| Secret                     | Purpose                                                                                     |
+| -------------------------- | ------------------------------------------------------------------------------------------- |
+| `CLERK_SECRET_KEY`         | Verify Clerk JWT on API                                                                     |
+| `CLERK_AUTHORIZED_PARTIES` | Comma-separated frontend origins, e.g. `https://freshy-25e.pages.dev,http://localhost:3000` |
+| `MAPBOX_ACCESS_TOKEN`      | Server-side geocoding on place submit                                                       |
+
+### Deploy commands
+
+```bash
+pnpm build:api
+pnpm --filter @freshy/db migrate:remote
+pnpm --filter @freshy/api deploy
+```
+
+Or push to `main` and let [deploy-api.yml](../.github/workflows/deploy-api.yml) run.
+
+### Manual deploy (when the dashboard has no Deploy button)
+
+Workers deployed via Wrangler or GitHub Actions often **do not show a Deploy button** in the dashboard. Use the CLI from your machine:
+
+```bash
+cd packages/api
+
+# 1. Restore secrets (one-time, or after they were deleted)
+pnpm exec wrangler secret put CLERK_SECRET_KEY
+pnpm exec wrangler secret put CLERK_AUTHORIZED_PARTIES
+pnpm exec wrangler secret put MAPBOX_ACCESS_TOKEN
+
+# 2. Build and deploy
+cd ../..
+pnpm build:api
+pnpm --filter @freshy/db migrate:remote
+pnpm --filter @freshy/api deploy
+```
+
+Dashboard path for secrets: **Workers & Pages → freshy-api → Settings → Variables and Secrets → Add**.
+
+`CLERK_AUTHORIZED_PARTIES` value example:
+
+```text
+https://freshy-25e.pages.dev,http://localhost:3000
+```
+
+**Note:** `GET /` returns 404 by design. Use `/health` or `/places` instead. After deploy, `/` redirects to `/health`.
+
+### Verify health
+
+```bash
+curl -s https://freshy-api.alexandrelheinen.workers.dev/health | jq
+```
+
+Expected: `"status":"ok"`, `"service":"freshy-api-worker"`, `"db":"ok"`, `"auth":"configured"`.
 
 ---
 
-## 4. Neon | PostgreSQL database
+## 4. Cloudflare D1 | database
 
-| Item                | Value                                                  |
-| ------------------- | ------------------------------------------------------ |
-| **Dashboard**       | https://console.neon.tech                              |
-| **Role**            | Production Postgres 16 + PostGIS, shared by Render API |
-| **Pilot city data** | Clichy, France, 50 seeded places, 1 demo user          |
+| Item           | Value                                                                      |
+| -------------- | -------------------------------------------------------------------------- |
+| **Dashboard**  | https://dash.cloudflare.com → **Workers & Pages** → **D1** → **freshy-db** |
+| **Binding**    | `FRESHY_DB`                                                                |
+| **Engine**     | SQLite (D1)                                                                |
+| **ORM**        | Drizzle                                                                    |
+| **Migrations** | [`packages/db/migrations/`](../packages/db/migrations/)                    |
 
 ### What you do here
 
-| Task                   | How                                                          |
-| ---------------------- | ------------------------------------------------------------ |
-| Copy connection string | Project → **Connect** → **URI**                              |
-| Enable PostGIS (once)  | **SQL Editor** → `CREATE EXTENSION IF NOT EXISTS postgis;`   |
-| Run migrations         | `DATABASE_URL="..." pnpm --filter @freshy/db migrate:deploy` |
-| Seed demo data         | `DATABASE_URL="..." pnpm db:seed`                            |
-| Verify data            | `SELECT COUNT(*) FROM "Place";` → expect **50**              |
+| Task                      | How                                          |
+| ------------------------- | -------------------------------------------- |
+| Apply migrations (local)  | `pnpm --filter @freshy/db migrate:local`     |
+| Apply migrations (remote) | `pnpm --filter @freshy/db migrate:remote`    |
+| Query data                | D1 console → **freshy-db** → SQL editor      |
+| Export / import           | `wrangler d1 export` / `wrangler d1 execute` |
 
-**Docs:** [database.md](database.md), [deploy-api.md](deploy-api.md)
+**Docs:** [database.md](database.md)
 
 ---
 
-## 5. Clerk | authentication
+## 5. Cloudflare R2 | object storage
+
+| Item           | Value                                                    |
+| -------------- | -------------------------------------------------------- |
+| **Dashboard**  | https://dash.cloudflare.com → **R2** → **freshy-assets** |
+| **Binding**    | `FRESHY_ASSETS` (Worker native binding)                  |
+| **Public URL** | Set in `R2_PUBLIC_URL` (wrangler.toml vars)              |
+| **Role**       | Place photos, avatars, CI screenshots                    |
+
+### Bucket prefixes
+
+| Prefix             | Content                       |
+| ------------------ | ----------------------------- |
+| `places/`          | Venue photos                  |
+| `places/defaults/` | Category default place photos |
+| `avatars/`         | User profile images           |
+| `ci/`              | PR screenshot previews        |
+| `ci/main/latest/`  | Production page screenshots   |
+
+**Docs:** [infrastructure/cloudflare/README.md](../infrastructure/cloudflare/README.md)
+
+---
+
+## 6. Clerk | authentication
 
 | Item            | Value                                        |
 | --------------- | -------------------------------------------- |
@@ -192,25 +273,21 @@ Blueprint: [infrastructure/render/render.yaml](../infrastructure/render/render.y
 | Key                 | Starts with   | Goes on                                                |
 | ------------------- | ------------- | ------------------------------------------------------ |
 | **Publishable key** | `pk_test_...` | Cloudflare Pages → `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` |
-| **Secret key**      | `sk_test_...` | Render → `CLERK_SECRET_KEY`                            |
-
-Copy from **Quick copy** (Next.js block) or the **Publishable key** row — not “Public key (Never used)”.
+| **Secret key**      | `sk_test_...` | Worker secret → `CLERK_SECRET_KEY`                     |
 
 ### Verify auth
 
-1. https://freshy-api.onrender.com/health → `"auth":"configured"`
+1. `GET /health` → `"auth":"configured"`
 2. https://freshy-25e.pages.dev/profile → Sign in works
 3. Save a place → appears on profile
 
 ### Studio admin
 
-Grant `publicMetadata.role: "admin"` on operator accounts. See **[studio.md](studio.md)** for Clerk steps, `/studio` UI, and `/studio/*` API.
-
-**Docs:** [deploy-api.md#clerk-auth-full-v0--saved-places--profile](deploy-api.md), [studio.md](studio.md)
+Grant `publicMetadata.role: "admin"` on operator accounts. See **[studio.md](studio.md)**.
 
 ---
 
-## 6. Mapbox | map tiles
+## 7. Mapbox | map tiles
 
 | Item          | Value                                     |
 | ------------- | ----------------------------------------- |
@@ -221,59 +298,19 @@ Grant `publicMetadata.role: "admin"` on operator accounts. See **[studio.md](stu
 | Variable                   | Where                                    |
 | -------------------------- | ---------------------------------------- |
 | `NEXT_PUBLIC_MAPBOX_TOKEN` | Cloudflare Pages (public token `pk....`) |
+| `MAPBOX_ACCESS_TOKEN`      | Worker secret (geocoding)                |
 
-Local: same variable in root `.env`.
-
----
-
-## 7. Docker | local database only
-
-| Item            | Value                                                                                   |
-| --------------- | --------------------------------------------------------------------------------------- |
-| **Config**      | [infrastructure/docker/docker-compose.yml](../infrastructure/docker/docker-compose.yml) |
-| **Image**       | `postgis/postgis:16-3.4`                                                                |
-| **Port**        | `localhost:5432`                                                                        |
-| **Credentials** | user `freshy`, password `freshy_dev`, db `freshy`                                       |
-
-```bash
-bash scripts/setup-local-db.sh
-```
-
-Not used in production; production uses **Neon**.
+Local: same variables in root `.env`.
 
 ---
 
-## 8. Cloudflare R2 | object storage (optional)
-
-| Item          | Value                                                          |
-| ------------- | -------------------------------------------------------------- |
-| **Dashboard** | https://dash.cloudflare.com → **R2**                           |
-| **Role**      | Place photos, avatars, **CI PR screenshots** (when configured) |
-| **Status**    | Optional; API reports `"r2":"not-configured"` until set        |
-
-**Docs:** [infrastructure/cloudflare/README.md](../infrastructure/cloudflare/README.md)
-
----
-
-## 9. Expo EAS | mobile builds (future)
+## 8. Expo EAS | mobile builds (future)
 
 | Item          | Value                                               |
 | ------------- | --------------------------------------------------- |
 | **Dashboard** | https://expo.dev                                    |
 | **Role**      | Android/iOS builds triggered by GitHub Release tags |
 | **Status**    | Scaffold in `apps/mobile`; not required for web v0  |
-
----
-
-## 10. Planned migrations (not production yet)
-
-| Service                   | Replaces                     | When                                |
-| ------------------------- | ---------------------------- | ----------------------------------- |
-| **Cloudflare Workers**    | Render API                   | Target production API host          |
-| **Cloudflare Hyperdrive** | Direct Neon URL from Workers | Connection pooling at edge          |
-| **Custom domain**         | `*.pages.dev`                | e.g. `freshy.app` on Cloudflare DNS |
-
-Template: [infrastructure/cloudflare/wrangler.toml.example](../infrastructure/cloudflare/wrangler.toml.example)
 
 ---
 
@@ -284,46 +321,34 @@ sequenceDiagram
     participant Dev as Developer
     participant GH as GitHub main
     participant Pages as Cloudflare Pages
-    participant Render as Render API
-    participant Neon as Neon DB
+    participant GHA as GitHub Actions
+    participant Worker as freshy-api
+    participant D1 as freshy-db
 
     Dev->>GH: Merge PR to main
     GH->>Pages: Auto build + deploy static site
-    GH->>Render: Auto build + deploy Node API
-    Note over Pages: Env NEXT_PUBLIC_API_URL<br/>NEXT_PUBLIC_MAPBOX_TOKEN<br/>NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-    Note over Render: Env DATABASE_URL<br/>CLERK_SECRET_KEY<br/>CLERK_AUTHORIZED_PARTIES
-    Render->>Neon: Prisma queries on /places, /users/me
-    Pages->>Render: Browser fetch /places, /users/me + JWT
-```
-
----
-
-## CI pipeline (pull requests)
-
-```mermaid
-flowchart LR
-    PR[Pull request] --> GHA[GitHub Actions ci.yml]
-    GHA --> Lint[lint + typecheck]
-    GHA --> Test[unit tests]
-    GHA --> Build[build web + api]
-    GHA --> SS[Playwright screenshots]
-    SS --> R2[(R2 optional)]
-    R2 --> Comment[PR comment with previews]
+    GH->>GHA: deploy-api.yml (when api/db changes)
+    GHA->>D1: d1 migrations apply --remote
+    GHA->>Worker: wrangler deploy
+    Note over Pages: NEXT_PUBLIC_API_URL<br/>NEXT_PUBLIC_MAPBOX_TOKEN<br/>NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+    Note over Worker: CLERK_SECRET_KEY<br/>CLERK_AUTHORIZED_PARTIES<br/>FRESHY_DB + FRESHY_ASSETS
+    Worker->>D1: Drizzle queries on /places, /users/me
+    Pages->>Worker: Browser fetch /places, /users/me + JWT
 ```
 
 ---
 
 ## Master checklist | new environment or disaster recovery
 
-Use this when onboarding or rebuilding from scratch:
-
 - [ ] **GitHub**: repo cloned, `pnpm install` works locally
-- [ ] **Neon**: project created, PostGIS enabled, migrate + seed (50 places)
-- [ ] **Render**: `freshy-api` service, build/start commands, `DATABASE_URL` + Clerk env
-- [ ] **Cloudflare Pages**: `freshy-25e`, API URL + Mapbox + Clerk publishable key
-- [ ] **Clerk**: Freshy app, keys copied to Render + Pages
+- [ ] **Cloudflare D1**: `freshy-db` created, migrations applied
+- [ ] **Cloudflare Worker**: `freshy-api` deployed with D1 + R2 bindings
+- [ ] **Worker secrets**: `CLERK_SECRET_KEY`, `CLERK_AUTHORIZED_PARTIES`, `MAPBOX_ACCESS_TOKEN`
+- [ ] **Cloudflare Pages**: `freshy-25e`, API URL + Mapbox + Clerk publishable key + R2 public URL
+- [ ] **Clerk**: Freshy app, keys copied to Worker + Pages
 - [ ] **Mapbox**: public token on Pages
-- [ ] **Verify**: `/health` auth configured, `/explore` shows map, `/profile` sign-in, save place works
+- [ ] **GitHub secrets**: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
+- [ ] **Verify**: `/health` db ok + auth configured, `/explore` shows map, `/profile` sign-in, save place works
 - [ ] **(Optional) R2 + GitHub secrets**: PR screenshot previews
 - [ ] **(Optional) EAS**: mobile releases
 
@@ -331,27 +356,25 @@ Use this when onboarding or rebuilding from scratch:
 
 ## Quick links
 
-| Platform             | URL                                        |
-| -------------------- | ------------------------------------------ |
-| Live web app         | https://freshy-25e.pages.dev               |
-| Live API             | https://freshy-api.onrender.com            |
-| GitHub repo          | https://github.com/alexandrelheinen/freshy |
-| Cloudflare dashboard | https://dash.cloudflare.com                |
-| Render dashboard     | https://dashboard.render.com               |
-| Neon console         | https://console.neon.tech                  |
-| Clerk dashboard      | https://dashboard.clerk.com                |
-| Mapbox tokens        | https://account.mapbox.com/access-tokens/  |
+| Platform             | URL                                             |
+| -------------------- | ----------------------------------------------- |
+| Live web app         | https://freshy-25e.pages.dev                    |
+| Live API             | https://freshy-api.alexandrelheinen.workers.dev |
+| GitHub repo          | https://github.com/alexandrelheinen/freshy      |
+| Cloudflare dashboard | https://dash.cloudflare.com                     |
+| Clerk dashboard      | https://dashboard.clerk.com                     |
+| Mapbox tokens        | https://account.mapbox.com/access-tokens/       |
 
 ---
 
 ## Related docs
 
-| Doc                                    | Contents                                        |
-| -------------------------------------- | ----------------------------------------------- |
-| [deploy-api.md](deploy-api.md)         | Step-by-step Render + Pages + Clerk setup       |
-| [database.md](database.md)             | Schema, migrations, seed                        |
-| [infrastructure.md](infrastructure.md) | Cloudflare vs external split (current + target) |
-| [architecture.md](architecture.md)     | Monorepo layout, local dev                      |
-| [.env.example](../.env.example)        | All env var names                               |
+| Doc                                          | Contents                         |
+| -------------------------------------------- | -------------------------------- |
+| [local-development.md](local-development.md) | Local setup with wrangler dev    |
+| [database.md](database.md)                   | Schema, migrations, Drizzle      |
+| [infrastructure.md](infrastructure.md)       | Cloudflare services and bindings |
+| [architecture.md](architecture.md)           | Monorepo layout, data flow       |
+| [.env.example](../.env.example)              | All env var names                |
 
 _Last updated: June 2026_

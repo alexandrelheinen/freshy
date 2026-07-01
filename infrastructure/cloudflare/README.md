@@ -1,16 +1,28 @@
 # Cloudflare | Freshy
 
-Freshy uses **Cloudflare** for hosting, CDN, object storage, and (in production) the edge API. This guide covers account setup for **R2**, **Pages**, and CI screenshot uploads.
+Freshy uses **Cloudflare** for hosting, CDN, object storage, API (Workers), and database (D1). This guide covers account setup for **R2**, **Pages**, **Workers**, and **D1**.
 
-> Full architecture split (Cloudflare vs external): [docs/infrastructure.md](../../docs/infrastructure.md)
+> Full architecture: [docs/infrastructure.md](../../docs/infrastructure.md)  
+> Production resource names: [docs/platforms.md](../../docs/platforms.md)
+
+---
+
+## Production resources
+
+| Resource      | Name            | Config                                                           |
+| ------------- | --------------- | ---------------------------------------------------------------- |
+| Pages project | `freshy-25e`    | Git integration                                                  |
+| Worker        | `freshy-api`    | [`packages/api/wrangler.toml`](../../packages/api/wrangler.toml) |
+| D1 database   | `freshy-db`     | Binding `FRESHY_DB`                                              |
+| R2 bucket     | `freshy-assets` | Binding `FRESHY_ASSETS`                                          |
 
 ---
 
 ## Prerequisites
 
 - [Cloudflare account](https://dash.cloudflare.com/sign-up)
-- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/install-and-update/) (optional, for Workers/Pages deploys)
-- Domain on Cloudflare DNS (optional; recommended for production)
+- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/install-and-update/) (via `pnpm`, used in `packages/api`)
+- Domain on Cloudflare DNS (optional; recommended for custom domain)
 
 ---
 
@@ -33,7 +45,9 @@ Freshy uses **Cloudflare** for hosting, CDN, object storage, and (in production)
 
 ---
 
-## 2. R2 API token (for API + CI)
+## 2. R2 API token (for CI uploads)
+
+The Worker uses the native `FRESHY_ASSETS` binding. Separate R2 API tokens are needed for **GitHub Actions** (CI screenshots, place-default sync):
 
 1. **R2** → **Manage R2 API Tokens** → **Create API token**
 2. Permissions: **Object Read & Write** on `freshy-assets`
@@ -43,14 +57,14 @@ Note your **Account ID** (right sidebar on any Cloudflare dashboard page).
 
 ---
 
-## 3. Public access for `ci/` (PR screenshots)
+## 3. Public access for objects
 
-PR comments embed image URLs. Choose one:
+Place photos and CI screenshots need public URLs.
 
 ### Option A | R2 public bucket (`*.r2.dev`)
 
 1. Bucket → **Settings** → enable **Public access** (r2.dev subdomain)
-2. Set `R2_PUBLIC_URL=https://pub-<hash>.r2.dev`
+2. Set `R2_PUBLIC_URL=https://pub-<hash>.r2.dev` in `wrangler.toml` vars
 
 ### Option B | Custom domain (recommended for production)
 
@@ -58,13 +72,15 @@ PR comments embed image URLs. Choose one:
 2. Add the CNAME Cloudflare provides
 3. Set `R2_PUBLIC_URL=https://assets.freshy.app`
 
-Objects are public at: `{R2_PUBLIC_URL}/{key}` — e.g. `https://assets.freshy.app/ci/pr-42/explore.png`
+Objects are public at: `{R2_PUBLIC_URL}/{key}`
+
+Set `NEXT_PUBLIC_R2_PUBLIC_URL` on Cloudflare Pages to the same base URL.
 
 ---
 
 ## 4. CORS (web uploads)
 
-For browser-direct uploads to R2 (Phase 7), add CORS rules on the bucket:
+For browser-direct uploads to R2, add CORS rules on the bucket:
 
 ```json
 [
@@ -81,91 +97,100 @@ Dashboard → bucket → **Settings** → **CORS policy**.
 
 ---
 
-## 5. Local & API environment variables
-
-Copy root `.env.example` → `.env`:
-
-```env
-R2_ACCOUNT_ID=your-account-id
-R2_ACCESS_KEY_ID=your-access-key
-R2_SECRET_ACCESS_KEY=your-secret-key
-R2_BUCKET_NAME=freshy-assets
-R2_PUBLIC_URL=https://assets.freshy.app
-```
-
-The `@freshy/api` package uses the S3-compatible API (`@aws-sdk/client-s3`).
-
----
-
-## 6. GitHub Actions secrets
-
-Repository → **Settings → Secrets and variables → Actions**:
-
-| Secret                 | Value                                                   |
-| ---------------------- | ------------------------------------------------------- |
-| `R2_ACCOUNT_ID`        | Cloudflare account ID                                   |
-| `R2_ACCESS_KEY_ID`     | R2 token access key                                     |
-| `R2_SECRET_ACCESS_KEY` | R2 token secret                                         |
-| `R2_BUCKET_NAME`       | `freshy-assets`                                         |
-| `R2_PUBLIC_URL`        | Public base URL (no trailing slash)                     |
-| `DATABASE_URL`         | Neon connection string (CD: `migrate deploy` on `main`) |
-| `EXPO_TOKEN`           | Expo token (mobile releases — unchanged)                |
-
-After configuring, open a test PR — the bot should post screenshots hosted on R2.
-
-### CD workflows on `main`
-
-| Workflow                                                                         | Trigger                     | Action                                         |
-| -------------------------------------------------------------------------------- | --------------------------- | ---------------------------------------------- |
-| [migrate-database.yml](../../.github/workflows/migrate-database.yml)             | Prisma migrations change    | `migrate deploy` (needs `DATABASE_URL` secret) |
-| [sync-place-defaults.yml](../../.github/workflows/sync-place-defaults.yml)       | Default place images change | `pnpm upload:place-defaults`                   |
-| [production-screenshots.yml](../../.github/workflows/production-screenshots.yml) | Web or UI change            | Live Pages screenshots → `ci/main/latest/`     |
-| [smoke-production.yml](../../.github/workflows/smoke-production.yml)             | Every `main` push           | API + web health checks                        |
-
-Set `NEXT_PUBLIC_R2_PUBLIC_URL` on Cloudflare Pages (same value as `R2_PUBLIC_URL`) so the web app loads default place photos from R2.
-
----
-
-## 7. Cloudflare Pages (web app)
+## 5. Cloudflare Pages (web app)
 
 ### Connect GitHub
 
 1. Dashboard → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
 2. Select the `freshy` repository
-3. **Root directory:** `apps/web` (or monorepo build — see below)
 
 ### Build settings (monorepo)
 
-| Setting                    | Value                                                                                                          |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| **Framework preset**       | Next.js                                                                                                        |
-| **Build command**          | `cd ../.. && pnpm install && pnpm --filter @freshy/web build`                                                  |
-| **Build output directory** | `out` (static export — do **not** use `.next`; it includes webpack cache files over Cloudflare’s 25 MiB limit) |
-| **Node.js version**        | 20                                                                                                             |
-
-For full Next.js 15 SSR on Pages, use the [OpenNext Cloudflare adapter](https://opennext.js.org/cloudflare) when moving beyond static shell deploy. Until then, set **Build output directory** to `out` (not `.next`).
+| Setting                    | Value                                                         |
+| -------------------------- | ------------------------------------------------------------- |
+| **Framework preset**       | Next.js                                                       |
+| **Build command**          | `cd ../.. && pnpm install && pnpm --filter @freshy/web build` |
+| **Build output directory** | `out` (static export)                                         |
+| **Node.js version**        | 20                                                            |
 
 ### Environment variables (Pages)
 
-| Name                       | Example                  |
-| -------------------------- | ------------------------ |
-| `NEXT_PUBLIC_API_URL`      | `https://api.freshy.app` |
-| `NEXT_PUBLIC_MAPBOX_TOKEN` | `pk.xxx`                 |
+| Name                                | Example                                           |
+| ----------------------------------- | ------------------------------------------------- |
+| `NEXT_PUBLIC_API_URL`               | `https://freshy-api.alexandrelheinen.workers.dev` |
+| `NEXT_PUBLIC_MAPBOX_TOKEN`          | `pk.xxx`                                          |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | `pk_test_xxx`                                     |
+| `NEXT_PUBLIC_R2_PUBLIC_URL`         | Same as Worker `R2_PUBLIC_URL`                    |
 
 Preview deployments are created automatically for each pull request.
 
 ---
 
-## 8. Cloudflare Workers (API — production target)
+## 6. Cloudflare Worker (API)
 
-Local development uses **Express** (`packages/api`). Production deploys to **Workers** with **Hyperdrive** pointing at Neon/Supabase.
+Production config: [`packages/api/wrangler.toml`](../../packages/api/wrangler.toml).
 
-1. Copy `wrangler.toml.example` → `wrangler.toml` (do not commit secrets)
-2. Create a **Hyperdrive** config in the dashboard linked to your `DATABASE_URL`
-3. Bind R2 bucket and Hyperdrive in `wrangler.toml`
-4. Deploy: `wrangler deploy` (from `infrastructure/cloudflare/` or a future `apps/api-worker/`)
+### Bindings
 
-See [Hyperdrive docs](https://developers.cloudflare.com/hyperdrive/) for connection string setup.
+| Binding         | Resource           |
+| --------------- | ------------------ |
+| `FRESHY_DB`     | D1 `freshy-db`     |
+| `FRESHY_ASSETS` | R2 `freshy-assets` |
+
+### Secrets (Worker dashboard or `wrangler secret put`)
+
+| Secret                     | Purpose                   |
+| -------------------------- | ------------------------- |
+| `CLERK_SECRET_KEY`         | JWT verification          |
+| `CLERK_AUTHORIZED_PARTIES` | Allowed frontend origins  |
+| `MAPBOX_ACCESS_TOKEN`      | Geocoding on place submit |
+
+### Deploy
+
+```bash
+pnpm build:api
+pnpm --filter @freshy/db migrate:remote
+pnpm --filter @freshy/api deploy
+```
+
+Or push to `main` and let [deploy-api.yml](../../.github/workflows/deploy-api.yml) run.
+
+---
+
+## 7. Cloudflare D1 (database)
+
+1. Dashboard → **Workers & Pages** → **D1** → create `freshy-db`
+2. Copy database ID into `wrangler.toml`
+3. Apply migrations: `pnpm --filter @freshy/db migrate:remote`
+
+Migrations: [`packages/db/migrations/`](../../packages/db/migrations/)
+
+---
+
+## 8. GitHub Actions secrets
+
+Repository → **Settings → Secrets and variables → Actions**:
+
+| Secret                  | Value                                   |
+| ----------------------- | --------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | API token with Workers + D1 permissions |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID                   |
+| `R2_ACCOUNT_ID`         | For CI screenshot uploads (optional)    |
+| `R2_ACCESS_KEY_ID`      | R2 token access key (optional)          |
+| `R2_SECRET_ACCESS_KEY`  | R2 token secret (optional)              |
+| `R2_BUCKET_NAME`        | `freshy-assets` (optional)              |
+| `R2_PUBLIC_URL`         | Public base URL (optional)              |
+| `EXPO_TOKEN`            | Expo token (mobile releases)            |
+
+### CD workflows on `main`
+
+| Workflow                                                                         | Trigger                     | Action                           |
+| -------------------------------------------------------------------------------- | --------------------------- | -------------------------------- |
+| [deploy-api.yml](../../.github/workflows/deploy-api.yml)                         | API/db changes              | Build, D1 migrate, Worker deploy |
+| [migrate-database.yml](../../.github/workflows/migrate-database.yml)             | Schema/migration changes    | D1 migrate only                  |
+| [sync-place-defaults.yml](../../.github/workflows/sync-place-defaults.yml)       | Default place images change | `pnpm upload:place-defaults`     |
+| [production-screenshots.yml](../../.github/workflows/production-screenshots.yml) | Web or UI change            | Live Pages screenshots → R2      |
+| [smoke-production.yml](../../.github/workflows/smoke-production.yml)             | Every `main` push           | API + web health checks          |
 
 ---
 
@@ -185,14 +210,11 @@ If your domain is on Cloudflare:
 
 `@freshy/api` → `src/storage/r2.ts`:
 
-- `uploadAsset(path, buffer, contentType)` — upload file
-- `getSignedUrl(path)` — temporary read URL
+- Native R2 binding via `FRESHY_ASSETS` on Worker
 - `isR2Configured()` — health check (`GET /health` reports `r2` status)
 
 ---
 
-## Remove Google Cloud (if migrating)
+## Local development
 
-1. Delete GitHub secrets: `GCP_PROJECT_ID`, `GCS_BUCKET_NAME`, `GCP_SA_KEY`
-2. Remove local `GOOGLE_APPLICATION_CREDENTIALS` from `.env`
-3. Decommission GCS bucket when R2 is verified
+See [docs/local-development.md](../../docs/local-development.md). Wrangler emulates D1 and R2 locally during `wrangler dev`.

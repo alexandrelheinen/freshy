@@ -19,13 +19,10 @@ Read [CONTRIBUTING.md](../../CONTRIBUTING.md) before editing this repo. These ru
 
 ## How we build (mandatory)
 
-Follow [docs/development-cycle.md](../../docs/development-cycle.md) in order:
-
-1. Pick work from [docs/roadmap.md](../../docs/roadmap.md)
-2. Branch (`feat/*` or `cursor/*`)
-3. **Red → Green → Refactor** (TDD is default, not optional)
-4. Run `bash scripts/validation.sh` before opening a PR
-5. A task is **done** only when the PR is **mergeable** into `main` (no conflicts)
+1. Branch (`feat/*` or `cursor/*`)
+2. **Red → Green → Refactor** (TDD is default, not optional)
+3. Run `bash scripts/validation.sh` before opening a PR
+4. A task is **done** only when the PR is **mergeable** into `main` (no conflicts)
 
 ## Code style (TypeScript and monorepo)
 
@@ -36,8 +33,8 @@ Match existing code in the file and package you touch. See [docs/quality-standar
 - **Workspace imports**: `@freshy/ui`, `@freshy/db`, `@freshy/api`, `@freshy/config`
 - **Tests**: co-locate `foo.test.ts` next to `foo.ts`; add or update tests with behavior changes
 - **React**: functional components; hooks at top level; prefer `@clerk/clerk-react` on web (static export, not `@clerk/nextjs`)
-- **API**: Express in `packages/api`; verify Clerk JWT in auth middleware; no secrets in diffs
-- **DB**: schema changes need Prisma migrations; update `.env.example` for new env vars
+- **API**: Hono on Cloudflare Workers in `packages/api`; verify Clerk JWT in auth middleware; no secrets in diffs
+- **DB**: schema changes need D1 migrations in `packages/db/migrations/`; update `.env.example` for new env vars
 - **Minimal diffs**: one logical change; no drive-by refactors or unrelated fixes
 
 ## Production context (June 2026)
@@ -45,8 +42,9 @@ Match existing code in the file and package you touch. See [docs/quality-standar
 | Layer | Today |
 | ----- | ----- |
 | Web | Cloudflare Pages (`freshy-25e.pages.dev`) |
-| API | Render Express (`freshy-api.onrender.com`) |
-| DB | Neon PostgreSQL + PostGIS |
+| API | Cloudflare Worker (`freshy-api`) |
+| DB | Cloudflare D1 (`freshy-db`) |
+| Storage | Cloudflare R2 (`freshy-assets`) |
 | Auth | Clerk |
 | Pilot city | Clichy, France (92110) |
 

@@ -1,26 +1,25 @@
 # Freshy | Database Design
 
-> **Source of truth for structure:** [`packages/db/prisma/schema.prisma`](../packages/db/prisma/schema.prisma)  
+> **Source of truth for structure:** [`packages/db/src/schema.ts`](../packages/db/src/schema.ts)  
 > **All platforms:** [platforms.md](platforms.md)  
-> **Setup (Neon, migrate, seed):** see the database sections in [`setup-guide.md`](setup-guide.md)  
-> **Production API wiring:** [`deploy-api.md`](deploy-api.md)
+> **Local setup:** [local-development.md](local-development.md)
 
 ---
 
 ## Overview
 
-Freshy uses **PostgreSQL 16** with **PostGIS** (for future geo queries). The ORM is **Prisma 6**. Only the **API** (`packages/api`) and database tooling connect directly to Postgres. The web app and mobile app call the REST API over HTTP.
+Freshy uses **Cloudflare D1** (SQLite) in production and locally via wrangler. The ORM is **Drizzle**. Only the **API Worker** (`packages/api`) and database tooling connect directly to D1. The web app and mobile app call the REST API over HTTP.
 
 ```
-Browser / mobile  →  REST API  →  Prisma  →  PostgreSQL (Neon)
+Browser / mobile  →  REST API (Worker)  →  Drizzle  →  D1 (SQLite)
 ```
 
 | Layer                         | Connects to DB?                 |
 | ----------------------------- | ------------------------------- |
 | `apps/web` (Cloudflare Pages) | No — uses `NEXT_PUBLIC_API_URL` |
 | `apps/mobile` (Expo)          | No — uses API URL               |
-| `packages/api` (Express)      | Yes — `DATABASE_URL`            |
-| `packages/db` (Prisma)        | Yes — migrations, seed, client  |
+| `packages/api` (Worker)       | Yes — `FRESHY_DB` binding       |
+| `packages/db` (Drizzle)       | Yes — migrations, schema        |
 
 ---
 
@@ -55,7 +54,7 @@ erDiagram
         string address
         string photoUrl
         enum aggregatedFreshnessLevel
-        string[] tags
+        string tags
         boolean isOpen
         datetime createdAt
         datetime updatedAt
@@ -84,58 +83,60 @@ erDiagram
 
 ### `User`
 
-App users. One demo user is seeded for development.
+App users. Production data is imported or created via Clerk sign-in.
 
-| Column                    | Type          | Notes                                            |
-| ------------------------- | ------------- | ------------------------------------------------ |
-| `id`                      | `TEXT` (cuid) | Primary key                                      |
-| `clerkId`                 | `TEXT`        | Unique; Clerk user id (null for seed-only users) |
-| `email`                   | `TEXT`        | Unique                                           |
-| `displayName`             | `TEXT`        | Shown in UI                                      |
-| `username`                | `TEXT`        | Unique, e.g. `lucas_frescor`                     |
-| `avatarUrl`               | `TEXT`        | Optional, R2 URL in production                   |
-| `reliefPoints`            | `INT`         | Gamification score (default 0)                   |
-| `createdAt` / `updatedAt` | `TIMESTAMP`   | Audit                                            |
+| Column                    | Type          | Notes                          |
+| ------------------------- | ------------- | ------------------------------ |
+| `id`                      | `TEXT` (cuid) | Primary key                    |
+| `clerkId`                 | `TEXT`        | Unique; Clerk user id          |
+| `email`                   | `TEXT`        | Unique                         |
+| `displayName`             | `TEXT`        | Shown in UI                    |
+| `username`                | `TEXT`        | Unique                         |
+| `avatarUrl`               | `TEXT`        | Optional, R2 URL               |
+| `reliefPoints`            | `INTEGER`     | Gamification score (default 0) |
+| `createdAt` / `updatedAt` | `DATETIME`    | Audit                          |
 
 ### `Place`
 
 Cooling venues on the map.
 
-| Column                     | Type             | Notes                                                                         |
-| -------------------------- | ---------------- | ----------------------------------------------------------------------------- |
-| `id`                       | `TEXT` (cuid)    | Primary key                                                                   |
-| `slug`                     | `TEXT`           | Unique URL slug, e.g. `ice-coffee-central`                                    |
-| `name`                     | `TEXT`           | Display name                                                                  |
-| `description`              | `TEXT`           | Optional blurb                                                                |
-| `category`                 | `PlaceCategory`  | See enums below                                                               |
-| `latitude` / `longitude`   | `FLOAT`          | WGS84 coordinates                                                             |
-| `address`                  | `TEXT`           | Optional street address                                                       |
-| `photoUrl`                 | `TEXT`           | Optional, R2 URL in production                                                |
-| `aggregatedFreshnessLevel` | `FreshnessLevel` | Cooling quality tier (see [place-classification.md](place-classification.md)) |
-| `tags`                     | `TEXT[]`         | Tag IDs from `packages/config/place-tags.yaml` (default `[]`)                 |
-| `createdById`              | `TEXT`           | Optional FK to `User` who submitted the place                                 |
-| `status`                   | `PlaceStatus`    | `DRAFT` or `PUBLISHED` (public list shows `PUBLISHED` only)                   |
-| `isOpen`                   | `BOOLEAN`        | Default `true`                                                                |
+| Column                     | Type          | Notes                                                                         |
+| -------------------------- | ------------- | ----------------------------------------------------------------------------- |
+| `id`                       | `TEXT` (cuid) | Primary key                                                                   |
+| `slug`                     | `TEXT`        | Unique URL slug                                                               |
+| `name`                     | `TEXT`        | Display name                                                                  |
+| `description`              | `TEXT`        | Optional blurb                                                                |
+| `category`                 | `TEXT`        | See enums below                                                               |
+| `latitude` / `longitude`   | `REAL`        | WGS84 coordinates                                                             |
+| `address`                  | `TEXT`        | Optional street address                                                       |
+| `photoUrl`                 | `TEXT`        | Optional, R2 URL                                                              |
+| `aggregatedFreshnessLevel` | `TEXT`        | Cooling quality tier (see [place-classification.md](place-classification.md)) |
+| `tags`                     | `TEXT`        | JSON-encoded string array, e.g. `'["wifi","outdoor"]'`                        |
+| `createdById`              | `TEXT`        | Optional FK to `User` who submitted the place                                 |
+| `status`                   | `TEXT`        | `DRAFT` or `PUBLISHED` (public list shows `PUBLISHED` only)                   |
+| `isOpen`                   | `BOOLEAN`     | Default `true`                                                                |
 
 **Indexes:** `category`, `(latitude, longitude)`, unique `slug`.
 
 ### `Review`
 
-User-submitted climate reviews for a place. Displayed on place detail and profile when present; write API ships in Phase 5.
+User-submitted climate reviews for a place.
 
-| Column               | Type   | Notes                           |
-| -------------------- | ------ | ------------------------------- |
-| `userId` / `placeId` | `TEXT` | Foreign keys, cascade on delete |
-| `acStrength`         | `INT`  | 1–3 scale at API layer          |
-| `comment`            | `TEXT` | Optional text                   |
+| Column               | Type      | Notes                           |
+| -------------------- | --------- | ------------------------------- |
+| `userId` / `placeId` | `TEXT`    | Foreign keys, cascade on delete |
+| `acStrength`         | `INTEGER` | 1–3 scale at API layer          |
+| `comment`            | `TEXT`    | Optional text                   |
 
 ### `SavedPlace`
 
-User bookmarks (unique per user + place pair). Full list at `/saved`; carousel on `/profile`.
+User bookmarks (unique per user + place pair).
 
 ---
 
 ## Enums
+
+Stored as `TEXT` in SQLite. Defined in [`packages/db/src/schema.ts`](../packages/db/src/schema.ts).
 
 ### `PlaceCategory`
 
@@ -171,93 +172,69 @@ See [place-classification.md](place-classification.md) for full definitions.
 
 ---
 
-## Pilot city & seed data
+## Pilot city
 
-Seed script: [`packages/db/prisma/seed.ts`](../packages/db/prisma/seed.ts)  
 Pilot config: [`packages/config/pilot-city.ts`](../packages/config/pilot-city.ts)
 
-| Item                  | Value                                            |
-| --------------------- | ------------------------------------------------ |
-| City                  | **Clichy, France** (92110)                       |
-| Center                | `48.9042`, `2.3064`                              |
-| Default search radius | 2 km                                             |
-| Seeded users          | 1 — `lucas@freshy.app`, username `lucas_frescor` |
-| Seeded places         | 50 — all categories, spread around center        |
-| Seeded reviews        | 0                                                |
-| Seeded saved places   | 0                                                |
-
-Seed is **idempotent** (`upsert` by email / slug). Safe to re-run.
-
----
-
-## Environment variables
-
-| Variable              | Where                      | Purpose                                   |
-| --------------------- | -------------------------- | ----------------------------------------- |
-| `DATABASE_URL`        | API host, local `.env`, CI | Postgres connection string (Neon URI)     |
-| `NEXT_PUBLIC_API_URL` | Cloudflare Pages           | Web → API base URL (**not** the database) |
-
-See [`.env.example`](../.env.example). Never commit production credentials.
-
-**Neon URLs:** use the **direct** connection string for migrations and seed; pooled (`-pooler`) is fine for the running API.
-
----
-
-## Commands
-
-Run from repository root unless noted.
-
-| Task                                   | Command                                                      |
-| -------------------------------------- | ------------------------------------------------------------ |
-| Generate Prisma client                 | `pnpm db:generate`                                           |
-| Create/apply migrations (local dev)    | `pnpm db:migrate`                                            |
-| Apply migrations (production / Neon)   | `DATABASE_URL="..." pnpm --filter @freshy/db migrate:deploy` |
-| Seed demo data (local only)            | `SEED_DEMO=true DATABASE_URL="..." pnpm db:seed`             |
-| Seed demo user only (default)          | `DATABASE_URL="..." pnpm db:seed`                            |
-| Browse data (GUI)                      | `DATABASE_URL="..." pnpm --filter @freshy/db studio`         |
-| Enable PostGIS (Neon SQL Editor, once) | `CREATE EXTENSION IF NOT EXISTS postgis;`                    |
-
-**Order for a fresh cloud database:** PostGIS → `db:generate` → `migrate:deploy` → `db:seed`.
+| Item                  | Value                      |
+| --------------------- | -------------------------- |
+| City                  | **Clichy, France** (92110) |
+| Center                | `48.9042`, `2.3064`        |
+| Default search radius | 2 km                       |
 
 ---
 
 ## Migrations
 
-| Migration                                    | Description                                          |
-| -------------------------------------------- | ---------------------------------------------------- |
-| `20250629200000_init`                        | Creates enums, four tables, indexes, foreign keys    |
-| `20250630120000_place_amenities_and_creator` | Adds `amenities`, `createdById`, `status` on `Place` |
-| `20250630140000_place_tags`                  | Renames `amenities` to `tags`                        |
-| `20250630150000_freshness_levels`            | Replaces `AcStrength` with `FreshnessLevel` enum     |
+D1 migrations live in [`packages/db/migrations/`](../packages/db/migrations/). Applied via wrangler:
 
-Migration SQL: [`packages/db/prisma/migrations/20250629200000_init/migration.sql`](../packages/db/prisma/migrations/20250629200000_init/migration.sql)
+| Migration       | Description                                |
+| --------------- | ------------------------------------------ |
+| `0001_init.sql` | Creates four tables, indexes, foreign keys |
+
+### Commands
+
+Run from repository root:
+
+| Task                           | Command                                                                         |
+| ------------------------------ | ------------------------------------------------------------------------------- |
+| Generate migration from schema | `pnpm --filter @freshy/db generate`                                             |
+| Apply migrations (local D1)    | `pnpm --filter @freshy/db migrate:local`                                        |
+| Apply migrations (remote D1)   | `pnpm --filter @freshy/db migrate:remote`                                       |
+| Query via wrangler             | `wrangler d1 execute freshy-db --remote --command "SELECT COUNT(*) FROM Place"` |
+
+Configuration: [`packages/api/wrangler.toml`](../packages/api/wrangler.toml) (D1 binding + `migrations_dir`).
+
+---
+
+## Geo queries
+
+D1 has no PostGIS. Freshy uses **Haversine distance in application code** ([`packages/db/src/geo.ts`](../packages/db/src/geo.ts)) for radius search on `/places`.
 
 ---
 
 ## How the API uses the database
 
-| Endpoint                               | DB usage                                         |
-| -------------------------------------- | ------------------------------------------------ |
-| `GET /health`                          | No DB (optional R2 check)                        |
-| `GET /places`                          | `Place.findMany` + radius filter in app code     |
-| `GET /places/meta/categories`          | `Place.groupBy` + featured place                 |
-| `GET /places/:slug`                    | `Place.findUnique` + reviews with user           |
-| `GET /users/me`                        | Profile with review and saved counts             |
-| `GET /users/me/saved`                  | Saved places for current user                    |
-| `GET /users/me/reviews`                | Reviews authored by current user                 |
-| `POST /users/me/places`                | Create user-submitted place (draft or published) |
-| `POST/DELETE /users/me/saved/:placeId` | Bookmark toggle                                  |
-
-Geo filtering today uses **Haversine in application code** ([`packages/db/src/geo.ts`](../packages/db/src/geo.ts)). PostGIS is enabled for future `ST_DWithin` / GIST indexes.
+| Endpoint                               | DB usage                               |
+| -------------------------------------- | -------------------------------------- |
+| `GET /health`                          | Probes D1 with a lightweight query     |
+| `GET /places`                          | Place list + radius filter in app code |
+| `GET /places/meta/categories`          | Category aggregation                   |
+| `GET /places/:slug`                    | Place detail + reviews with user       |
+| `GET /users/me`                        | Profile with review and saved counts   |
+| `GET /users/me/saved`                  | Saved places for current user          |
+| `GET /users/me/reviews`                | Reviews authored by current user       |
+| `POST /users/me/places`                | Create user-submitted place            |
+| `POST/DELETE /users/me/saved/:placeId` | Bookmark toggle                        |
 
 ---
 
 ## Hosting
 
-| Environment | Database                             | API                                                                    |
-| ----------- | ------------------------------------ | ---------------------------------------------------------------------- |
-| Local       | Docker PostGIS (`setup-local-db.sh`) | Express `:4000`                                                        |
-| Production  | **Neon** or Supabase                 | Express on Render (interim) → Cloudflare Workers + Hyperdrive (target) |
+| Environment | Database                             | API                            |
+| ----------- | ------------------------------------ | ------------------------------ |
+| Local       | D1 via wrangler (`.wrangler/state/`) | wrangler dev                   |
+| Production  | Cloudflare D1 `freshy-db`            | Cloudflare Worker `freshy-api` |
 
 ---
 
@@ -265,17 +242,15 @@ Geo filtering today uses **Haversine in application code** ([`packages/db/src/ge
 
 After setup, confirm:
 
-```sql
-SELECT COUNT(*) FROM "Place";   -- expect 50
-SELECT COUNT(*) FROM "User";    -- expect 1
-```
-
 ```bash
-curl https://YOUR-API-URL/places        # JSON with data array
-curl https://YOUR-API-URL/health        # {"status":"ok",...}
+curl -s https://freshy-api.alexandrelheinen.workers.dev/health | jq '.db'
+# expect "ok"
+
+curl -s "https://freshy-api.alexandrelheinen.workers.dev/places?lat=48.9042&lng=2.3064&radius=3" | jq '.data | length'
+# expect > 0
 ```
 
-Deployed web app `/explore` shows places when `NEXT_PUBLIC_API_URL` points at that API.
+Deployed web app `/explore` shows places when `NEXT_PUBLIC_API_URL` points at the Worker.
 
 ---
 

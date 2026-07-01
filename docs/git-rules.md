@@ -1,7 +1,7 @@
 # Git & Repository Rules — Freshy
 
 > Full contributor guide: [CONTRIBUTING.md](../CONTRIBUTING.md)  
-> Development cycle (TDD): [development-cycle.md](development-cycle.md)  
+> Local setup: [local-development.md](local-development.md)  
 > Quality standards: [quality-standards.md](quality-standards.md)
 
 ## Branching
@@ -37,12 +37,12 @@ See [`.gitignore`](../.gitignore) for the full list.
 apps/web/          → Next.js PWA (4 main screens)
 apps/mobile/       → Expo (Android + iOS)
 packages/api/      → REST API + R2 integration
-packages/db/       → Prisma schema & migrations
+packages/db/       → Drizzle schema & D1 migrations
 packages/ui/       → Shared React components
 packages/config/   → ESLint, Tailwind tokens
 infrastructure/    → Docker (local), Cloudflare docs
 scripts/           → build.sh, validation.sh
-docs/              → roadmap, architecture, stitch designs
+docs/              → platforms, architecture, stitch designs
 ```
 
 ## Pull request checklist

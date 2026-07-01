@@ -2,7 +2,7 @@
 
 This document defines how Freshy must structure visual tokens so a new theme is added by editing configuration files, not application code. It supersedes the informal study from the initial theming conversation and reflects the repository state as of June 2026.
 
-**Scope:** specification only. Implementation follows [development-cycle.md](../development-cycle.md) (TDD, `validation.sh`, PR to `main`).
+**Scope:** specification only. Implementation follows [CONTRIBUTING.md](../../CONTRIBUTING.md) (TDD, `validation.sh`, PR to `main`).
 
 **Companion:** [dark-theme-spec.md](dark-theme-spec.md) describes the first alternate theme built on this foundation.
 
@@ -48,16 +48,16 @@ flowchart TB
 
 Phase 0 delivered a **shared Tailwind preset** (`@freshy/config/tailwind`) and semantic utility usage across web components. Recent work (Studio, icon name updates) did **not** alter the token architecture.
 
-| Area                             | Status                                        |
-| -------------------------------- | --------------------------------------------- |
-| Centralized preset               | Done                                          |
-| Semantic Tailwind classes on web | Mostly done (~14 component files)             |
-| `packages/theme` package         | Not started                                   |
-| CSS custom properties            | Not started                                   |
-| Dark mode in app                 | Not started (exists only in Stitch mocks)     |
-| Mobile token sharing             | Not started                                   |
-| Lint ban on raw hex in apps      | Not started                                   |
-| Tailwind v4                      | Documented in roadmap; **runtime is v3.4.17** |
+| Area                             | Status                                    |
+| -------------------------------- | ----------------------------------------- |
+| Centralized preset               | Done                                      |
+| Semantic Tailwind classes on web | Mostly done (~14 component files)         |
+| `packages/theme` package         | Not started                               |
+| CSS custom properties            | Not started                               |
+| Dark mode in app                 | Not started (exists only in Stitch mocks) |
+| Mobile token sharing             | Not started                               |
+| Lint ban on raw hex in apps      | Not started                               |
+| Tailwind v4                      | Planned; **runtime is v3.4.17**           |
 
 ### 1.3 Applicability of the prior study
 

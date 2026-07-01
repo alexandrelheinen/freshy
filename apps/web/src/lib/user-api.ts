@@ -132,7 +132,7 @@ export function createPlaceErrorMessage(status: number, body: unknown): string {
         ? body.error
         : '';
     if (errorText === 'Database unavailable') {
-      return 'The server database is unavailable. Migrations may need to run, or Neon may be paused. Try again in a few minutes.';
+      return 'The server database is unavailable. D1 migrations may need to run. Try again in a few minutes.';
     }
     if (errorText === 'Auth not configured') {
       return 'Sign-in is not configured on the API. Contact support.';

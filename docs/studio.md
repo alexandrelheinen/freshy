@@ -77,7 +77,7 @@ curl -X PATCH \
 
 ## Place lifecycle and public visibility
 
-Studio moderation is built on the existing `PlaceStatus` enum in Prisma:
+Studio moderation is built on the existing `PlaceStatus` enum in the Drizzle schema:
 
 | Status      | Meaning in Studio                 | Visible on map / public API |
 | ----------- | --------------------------------- | --------------------------- |
@@ -209,7 +209,7 @@ flowchart LR
     Clerk[Clerk publicMetadata role admin] --> JWT[Session JWT optional role claim]
     JWT --> WebGuard[StudioPageClient isStudioAdmin]
     JWT --> API[requireAdmin middleware]
-    API --> DB[(Neon PostgreSQL)]
+    API --> DB[(Cloudflare D1)]
     WebGuard --> UI[Studio UI or 404 page]
 ```
 
@@ -235,7 +235,7 @@ Optional hardening (not implemented): [Cloudflare Access](infrastructure.md) on 
 | `apps/web/src/lib/studio-api.ts`               | Browser API client + `isStudioAdmin()`             |
 | `packages/api/src/auth.ts`                     | `requireAdmin`, role claim helpers                 |
 | `packages/api/src/studio-places.ts`            | List, stats, merge, duplicate detection            |
-| `packages/api/src/studio-routes.ts`            | Express route registration                         |
+| `packages/api/src/studio-routes.ts`            | Hono route registration                            |
 | `packages/api/src/user-routes.ts`              | Forces `DRAFT` on user place create                |
 | `packages/ui/src/tokens.ts`                    | `ROUTES.studio`                                    |
 
@@ -258,9 +258,9 @@ pnpm --filter @freshy/web test
 
 ## Local end-to-end verification
 
-1. Start the database: `bash scripts/setup-local-db.sh`
-2. Migrate and seed: `pnpm db:migrate && pnpm db:seed`
-3. Configure `.env` with `DATABASE_URL`, `CLERK_SECRET_KEY`, `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `NEXT_PUBLIC_API_URL=http://localhost:4000`
+1. Apply local D1 migrations: `pnpm --filter @freshy/db migrate:local`
+2. Configure `.env` and `packages/api/.dev.vars` with Clerk keys (see [local-development.md](local-development.md))
+3. Set `NEXT_PUBLIC_API_URL=http://localhost:8787`
 4. Grant yourself `role: "admin"` in Clerk (see above) and sign in again.
 5. Run `pnpm dev`
 6. **Non-admin check:** open `/studio` as a normal user → 404 page.
@@ -285,7 +285,7 @@ Use `SKIP_SCREENSHOTS=1` to skip Playwright if needed.
 | ------------------------------------------ | ------------------------------------- |
 | Admin metadata on operator accounts        | Clerk Dashboard (production instance) |
 | Session token claim `role`                 | Clerk → Sessions                      |
-| `CLERK_SECRET_KEY` on API                  | Render                                |
+| `CLERK_SECRET_KEY` on API                  | Cloudflare Worker secrets             |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` on web | Cloudflare Pages                      |
 | Deploy API + web after merge               | GitHub → CI/CD                        |
 | Verify `/studio` as admin                  | `https://freshy-25e.pages.dev/studio` |
@@ -295,13 +295,12 @@ Use `SKIP_SCREENSHOTS=1` to skip Playwright if needed.
 
 ## Related docs
 
-| Document                           | Topic                            |
-| ---------------------------------- | -------------------------------- |
-| [deploy-api.md](deploy-api.md)     | Clerk keys on Pages and Render   |
-| [platforms.md](platforms.md)       | Platform dashboards and env vars |
-| [database.md](database.md)         | `PlaceStatus`, Prisma schema     |
-| [roadmap.md](roadmap.md)           | Phase 7 admin and data quality   |
-| [architecture.md](architecture.md) | Monorepo layout                  |
+| Document                                     | Topic                            |
+| -------------------------------------------- | -------------------------------- |
+| [local-development.md](local-development.md) | Clerk keys, local wrangler dev   |
+| [platforms.md](platforms.md)                 | Platform dashboards and env vars |
+| [database.md](database.md)                   | `PlaceStatus`, Drizzle schema    |
+| [architecture.md](architecture.md)           | Monorepo layout                  |
 
 ---
 

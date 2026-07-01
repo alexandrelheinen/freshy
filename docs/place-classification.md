@@ -8,7 +8,7 @@ Freshy classifies every place with two independent systems: **tags** (what the s
 
 **Config file:** [`packages/config/place-tags.yaml`](../packages/config/place-tags.yaml)
 
-Tags are optional labels stored on each place as `Place.tags` (`TEXT[]` in PostgreSQL). Only IDs listed in the YAML catalog are accepted by the API.
+Tags are optional labels stored on each place as `Place.tags` (JSON string array in D1). Only IDs listed in the YAML catalog are accepted by the API.
 
 | ID             | Label        | Icon       |
 | -------------- | ------------ | ---------- |
@@ -59,7 +59,7 @@ Freshness describes cooling quality. Each place stores one level in `Place.aggre
 ### How freshness flows through the stack
 
 1. Edit `freshness-levels.yaml` and keep [`freshness-levels.ts`](../packages/config/freshness-levels.ts) in sync.
-2. Prisma enum `FreshnessLevel` mirrors the YAML IDs.
+2. Drizzle schema `FreshnessLevel` type mirrors the YAML IDs.
 3. API validates levels on create and studio update.
 4. UI components `FreshnessBar` and `FreshnessSnowflakes` use `barSegments` and `tone` from config.
 

@@ -240,7 +240,7 @@ Optional: extend Playwright to set `data-theme="dark"` and capture screenshots f
 
 ## 7. Work order (TDD-friendly)
 
-Follow [development-cycle.md](../development-cycle.md).
+Follow [CONTRIBUTING.md](../../CONTRIBUTING.md).
 
 | Step | Red                                                        | Green                                      |
 | ---- | ---------------------------------------------------------- | ------------------------------------------ |
@@ -262,7 +262,7 @@ Branch naming: `feat/theme-dark` or `cursor/theme-dark-<id>`.
 | Profile theme picker UI                       | Follow-up PR after dark infra                    |
 | `high-contrast`, `daltonic`, `playful` themes | [modularity-spec.md](modularity-spec.md) Phase D |
 | Clerk themed appearance                       | Modularity Phase E                               |
-| Tailwind v4 migration                         | Separate roadmap item                            |
+| Tailwind v4 migration                         | Future work                                      |
 | Dark Stitch HTML sync                         | Informational only; production uses YAML         |
 
 ---
