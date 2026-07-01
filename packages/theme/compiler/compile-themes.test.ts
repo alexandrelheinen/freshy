@@ -10,7 +10,7 @@ const GENERATED_DIR = path.resolve(__dirname, '../generated');
 describe('compile-themes', () => {
   it('compiles default theme artifacts', () => {
     const ids = compileThemes();
-    assert.deepEqual(ids, ['default']);
+    assert.deepEqual(ids, ['dark', 'default']);
     assert.ok(fs.existsSync(path.join(GENERATED_DIR, 'default.css')));
     assert.ok(fs.existsSync(path.join(GENERATED_DIR, 'default.tokens.ts')));
     assert.ok(fs.existsSync(path.join(GENERATED_DIR, 'index.ts')));

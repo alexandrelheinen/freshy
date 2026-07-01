@@ -14,4 +14,10 @@ describe('theme contrast', () => {
     const failures = assertContrastPairs(theme.colors);
     assert.deepEqual(failures, []);
   });
+
+  it('dark theme on-color pairs meet WCAG AA', () => {
+    const theme = loadTheme('dark');
+    const failures = assertContrastPairs(theme.colors);
+    assert.deepEqual(failures, []);
+  });
 });
