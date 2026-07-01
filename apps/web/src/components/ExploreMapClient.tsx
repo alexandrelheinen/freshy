@@ -36,7 +36,12 @@ import { useUserLocation } from '../lib/use-user-location';
 import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
 import { API_BASE } from '../lib/api-base';
 import { AppMobileHeader, AppTopNav } from './AppNav';
-import { PlaceMapMarker, UserLocationMarker, freshnessLabel } from './map-markers';
+import {
+  PlaceMapMarker,
+  UserLocationMarker,
+  VerifiedBadge,
+  freshnessLabel,
+} from './map-markers';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
 const SEARCH_PULSE_COLOR = getDefaultThemeTokens().colors['outline-variant'];
@@ -215,11 +220,7 @@ function NearbyListItem({
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />
-          {verified ? (
-            <div className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full border border-surface bg-primary shadow-sm">
-              <MaterialIcon name="verified" filled size={10} className="text-on-primary" />
-            </div>
-          ) : null}
+          {verified ? <VerifiedBadge className="absolute right-0 top-0" size={14} /> : null}
         </div>
         <div className="flex-1">
           <div className="flex items-start justify-between">
