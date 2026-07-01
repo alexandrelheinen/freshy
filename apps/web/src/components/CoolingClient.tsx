@@ -16,7 +16,7 @@ import {
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import type { CategoryMeta } from '../lib/api';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+import { API_BASE } from '../lib/api-base';
 
 /** Desktop bento grid layout: category key and optional column span. */
 const DESKTOP_BENTO: Array<{ category: PlaceCategory; colSpan?: 1 | 2 }> = [

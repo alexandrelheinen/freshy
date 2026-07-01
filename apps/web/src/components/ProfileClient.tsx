@@ -140,6 +140,8 @@ function ProfileWithClerk() {
   const [reviews, setReviews] = useState<UserReviewDto[]>([]);
   const [activeTab, setActiveTab] = useState<ProfileTab>('saved');
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
   const [submittedPlaceSlug, setSubmittedPlaceSlug] = useState<string | null>(null);
 
   useEffect(() => {
@@ -156,23 +158,33 @@ function ProfileWithClerk() {
       setProfile(null);
       setSavedPlaces([]);
       setReviews([]);
+      setLoadError(null);
       setLoading(false);
       return;
     }
 
+    let cancelled = false;
+
     void (async () => {
       setLoading(true);
-      const [me, saved, myReviews] = await Promise.all([
+      setLoadError(null);
+      const [profileResult, saved, myReviews] = await Promise.all([
         fetchMyProfile(getToken),
         fetchMySavedPlaces(getToken),
         fetchMyReviews(getToken),
       ]);
-      setProfile(me);
+      if (cancelled) return;
+      setProfile(profileResult.profile);
+      setLoadError(profileResult.error);
       setSavedPlaces(saved);
       setReviews(myReviews);
       setLoading(false);
     })();
-  }, [isLoaded, isSignedIn, getToken]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isLoaded, isSignedIn, reloadKey]);
 
   if (!isLoaded) {
     return (
@@ -344,9 +356,19 @@ function ProfileWithClerk() {
             </section>
           </>
         ) : (
-          <p className="py-16 text-center text-on-surface-variant">
-            Could not load profile. Check that the API is running and Clerk is configured.
-          </p>
+          <div className="py-16 text-center">
+            <p className="text-on-surface-variant">
+              {loadError ??
+                'Could not load profile. Check that the API is running and Clerk is configured.'}
+            </p>
+            <button
+              type="button"
+              onClick={() => setReloadKey((key) => key + 1)}
+              className="mt-4 rounded-xl bg-primary px-6 py-3 font-label-caps text-on-primary"
+            >
+              Retry
+            </button>
+          </div>
         )}
       </main>
     </div>

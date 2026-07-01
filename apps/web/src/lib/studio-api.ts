@@ -1,6 +1,6 @@
 import type { PlaceDto } from './api';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+import { API_BASE } from './api-base';
 
 export type StudioPlaceStatus = 'verified' | 'pending' | 'duplicate';
 
