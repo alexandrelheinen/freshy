@@ -508,7 +508,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
           type="button"
           onClick={researchHere}
           disabled={!needsResearch}
-          className={`absolute left-1/2 top-4 z-30 -translate-x-1/2 rounded-full px-6 py-2.5 font-label-caps shadow-lg transition-all ${
+          className={`absolute left-1/2 top-20 z-40 -translate-x-1/2 rounded-full px-6 py-2.5 font-label-caps shadow-lg transition-all ${
             needsResearch
               ? 'bg-primary text-on-primary hover:brightness-110 active:scale-[0.98]'
               : 'pointer-events-none bg-surface-container-high/60 text-on-surface-variant/50'
@@ -534,7 +534,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         ) : null}
 
         {/* Mobile: floating search + chips */}
-        <div className="absolute left-0 top-16 z-20 w-full px-margin-mobile md:hidden">
+        <div className="absolute left-0 top-20 z-40 w-full px-margin-mobile md:hidden">
           <div className="glass flex items-center rounded-xl border border-glass-border px-4 py-3 shadow-md">
             <MaterialIcon name="search" className="text-outline" />
             <input
@@ -549,7 +549,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         </div>
 
         {/* Desktop: left sidebar */}
-        <div className="pointer-events-none absolute left-10 top-4 z-30 hidden max-h-[calc(100vh-9rem)] w-96 flex-col gap-4 md:flex">
+        <div className="pointer-events-none absolute left-10 top-20 z-40 hidden max-h-[calc(100vh-10rem)] w-96 flex-col gap-4 md:flex">
           <div className="glass-panel pointer-events-auto rounded-xl border border-glass-border p-4 shadow-xl">
             {searchBar('mb-4')}
             {filterChips}
