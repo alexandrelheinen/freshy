@@ -19,6 +19,7 @@ import {
   type MaterialIconName,
   type PlaceCategory,
 } from '@freshy/ui';
+import { getDefaultThemeTokens } from '@freshy/theme/tokens';
 import type { PlaceDto } from '../lib/api';
 import {
   freshnessBarState,
@@ -38,6 +39,7 @@ import { AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceMapMarker, UserLocationMarker, freshnessLabel } from './map-markers';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
+const SEARCH_PULSE_COLOR = getDefaultThemeTokens().colors['outline-variant'];
 
 type MapSearchAnchor = { latitude: number; longitude: number; zoom: number };
 
@@ -453,7 +455,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
             id="search-radius-pulse-fill"
             type="fill"
             paint={{
-              'fill-color': '#9ca3af',
+              'fill-color': SEARCH_PULSE_COLOR,
               'fill-opacity': 0.18,
             }}
           />
@@ -461,7 +463,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
             id="search-radius-pulse-outline"
             type="line"
             paint={{
-              'line-color': '#9ca3af',
+              'line-color': SEARCH_PULSE_COLOR,
               'line-opacity': 0.35,
               'line-width': 2,
             }}
