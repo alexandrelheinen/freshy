@@ -149,8 +149,8 @@ Production config: [`packages/api/wrangler.toml`](../../packages/api/wrangler.to
 
 ```bash
 pnpm build:api
-pnpm --filter @freshy/db migrate:remote
-pnpm --filter @freshy/api deploy
+pnpm db:migrate:remote
+pnpm deploy:api
 ```
 
 Or push to `main` and let [deploy-api.yml](../../.github/workflows/deploy-api.yml) run.

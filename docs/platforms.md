@@ -169,11 +169,38 @@ Set under **Workers & Pages → freshy-api → Settings → Variables and Secret
 
 ```bash
 pnpm build:api
-pnpm --filter @freshy/db migrate:remote
-pnpm --filter @freshy/api deploy
+pnpm db:migrate:remote    # skip if D1 already migrated
+pnpm deploy:api
 ```
 
 Or push to `main` and let [deploy-api.yml](../.github/workflows/deploy-api.yml) run.
+
+### Wrangler auth (local deploy)
+
+If `migrate:remote` or `deploy:api` fails with **code 7403** (account not authorized), Wrangler is not authenticated for the Cloudflare account that owns `freshy-db`.
+
+**Option A | Login (interactive)**
+
+```bash
+cd packages/api
+pnpm exec wrangler login
+pnpm exec wrangler whoami   # confirm account matches your dashboard
+```
+
+**Option B | API token (CI or non-interactive)**
+
+Create a token at https://dash.cloudflare.com/profile/api-tokens with **Workers Scripts Edit** and **D1 Edit** permissions, then:
+
+```bash
+export CLOUDFLARE_API_TOKEN="your-token"
+export CLOUDFLARE_ACCOUNT_ID="your-account-id"   # right sidebar in dashboard
+pnpm db:migrate:remote
+pnpm deploy:api
+```
+
+**Skip migrate if D1 is already up to date.** If you imported data and applied `0001_init.sql` earlier, go straight to `pnpm deploy:api` after `pnpm build:api`.
+
+**Do not use** `pnpm --filter @freshy/api deploy` — `deploy` is a reserved pnpm command. Use `pnpm deploy:api` or `pnpm --filter @freshy/api run deploy`.
 
 ### Manual deploy (when the dashboard has no Deploy button)
 
@@ -190,8 +217,8 @@ pnpm exec wrangler secret put MAPBOX_ACCESS_TOKEN
 # 2. Build and deploy
 cd ../..
 pnpm build:api
-pnpm --filter @freshy/db migrate:remote
-pnpm --filter @freshy/api deploy
+pnpm db:migrate:remote    # skip if D1 already migrated
+pnpm deploy:api
 ```
 
 Dashboard path for secrets: **Workers & Pages → freshy-api → Settings → Variables and Secrets → Add**.
