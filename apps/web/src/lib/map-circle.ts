@@ -4,7 +4,11 @@ export function circlePolygonGeoJson(
   longitude: number,
   radiusKm: number,
   points = 64,
-): GeoJSON.Feature<GeoJSON.Polygon> {
+): {
+  type: 'Feature';
+  properties: Record<string, never>;
+  geometry: { type: 'Polygon'; coordinates: [number, number][][] };
+} {
   const radiusM = radiusKm * 1000;
   const coordinates: [number, number][] = [];
 
