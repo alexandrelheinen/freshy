@@ -25,6 +25,8 @@ export function createApp(): Hono<AppEnv> {
     await next();
   });
 
+  app.get('/', (c) => c.redirect('/health', 302));
+
   app.get('/health', async (c) => {
     const db = c.get('db');
     const dbStatus = await checkDatabaseHealth(async () => {

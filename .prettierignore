@@ -5,3 +5,4 @@ docs/stitch/**/*.html
 **/.turbo/
 **/test-results/
 **/out/
+**/.wrangler/

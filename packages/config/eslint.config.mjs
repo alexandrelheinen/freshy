@@ -5,7 +5,7 @@ import react from 'eslint-plugin-react';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist/**', '**/dist/**', '**/.next/**', '**/out/**', 'build/**', 'node_modules/**', 'coverage/**', '**/*.config.js', '**/next-env.d.ts'] },
+  { ignores: ['dist/**', '**/dist/**', '**/.next/**', '**/out/**', '**/.wrangler/**', 'build/**', 'node_modules/**', 'coverage/**', '**/*.config.js', '**/next-env.d.ts'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

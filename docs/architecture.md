@@ -4,9 +4,9 @@
 
 Freshy is a **pnpm monorepo** managed with **Turborepo**. Each sub-project lives in its own folder with independent `package.json`, scripts, and CI integration.
 
-**Hosting strategy:** Web on **Cloudflare Pages**; API on **Render** (interim); database on **Neon**; auth on **Clerk**. Target: Cloudflare Workers + Hyperdrive for API.
+**Hosting strategy:** Web, API, database, and storage on **Cloudflare** (Pages, Workers, D1, R2). Auth on **Clerk**; maps on **Mapbox**.
 
-> **All platforms & dashboards:** [platforms.md](platforms.md)
+> **All platforms and dashboards:** [platforms.md](platforms.md)
 
 ```
 freshy/
@@ -14,114 +14,127 @@ freshy/
 │   ├── web/                 # @freshy/web — Next.js PWA → Cloudflare Pages
 │   └── mobile/              # @freshy/mobile — Expo (Android/iOS) → EAS
 ├── packages/
-│   ├── api/                 # @freshy/api — Express → Render (prod); Workers later
-│   ├── db/                  # @freshy/db — Prisma + PostgreSQL
+│   ├── api/                 # @freshy/api — Hono Worker → freshy-api
+│   ├── db/                  # @freshy/db — Drizzle schema + D1 migrations
 │   ├── ui/                  # @freshy/ui — Shared React components
 │   ├── config/              # @freshy/config — ESLint + Tailwind preset
-│   └── theme/               # @freshy/theme — YAML themes, CSS variables, token compiler
+│   └── theme/               # @freshy/theme — YAML themes, CSS variables
 ├── infrastructure/
-│   ├── docker/              # Local PostGIS via Docker Compose
-│   ├── cloudflare/          # R2, Pages, Workers wrangler template
-│   └── render/              # Render blueprint (render.yaml)
+│   └── cloudflare/          # R2, Pages, Workers setup guide
 ├── scripts/
 │   ├── validation.sh        # Full local validation pipeline
 │   ├── build.sh             # Compile all packages
-│   ├── setup-local-db.sh    # Start local PostgreSQL
+│   ├── smoke-api-start.sh   # Worker /health smoke test
 │   └── post-pr-screenshots.sh
 ├── docs/
 │   ├── stitch/              # Stitch design export (reference)
-│   ├── database.md          # Schema, seed, migrations, env vars
-│   ├── deploy-api.md        # Connect Pages → Render → Neon (production)
 │   ├── platforms.md         # All platforms, env vars, checklists (START HERE)
-│   ├── infrastructure.md    # Cloudflare vs external providers
-│   ├── roadmap.md           # Product & phase plan
-│   ├── studio.md            # Admin Studio: auth, API, moderation workflow
+│   ├── local-development.md # Local setup with wrangler dev
+│   ├── infrastructure.md    # Cloudflare services and bindings
+│   ├── database.md          # D1 schema, migrations, Drizzle
+│   ├── studio.md            # Admin Studio: auth, API, moderation
 │   ├── architecture.md      # This file
-│   ├── development-cycle.md # TDD workflow (mandatory)
 │   ├── quality-standards.md # Per-language quality rules
-│   ├── themes/              # Theme modularity + dark theme specs
-│   ├── git-rules.md         # Branching & PR rules
-│   └── milestones/          # Operational checklists per roadmap phase
-│       ├── README.md        # Milestone index
-│       └── phase-0-bootstrap.md
+│   ├── place-classification.md
+│   ├── git-rules.md         # Branching and PR rules
+│   └── themes/              # Theme modularity + dark theme specs
 └── screenshots/             # CI-generated page previews (gitignored)
 ```
 
-## Sub-projects mapped to roadmap phases
-
-| Phase              | Folder(s)                                                    | Deliverable                                    |
-| ------------------ | ------------------------------------------------------------ | ---------------------------------------------- |
-| 0 — Foundation     | `packages/config`, `packages/ui`, root tooling               | Design tokens, shared primitives               |
-| 1 — Map            | `apps/web` `/explore`, `packages/db`                         | Geo places, map UI                             |
-| 2 — Place detail   | `apps/web` `/places/[slug]`                                  | Detail page + API                              |
-| 3 — Categories     | `apps/web` `/cooling`, `/cooling/[category]`, `/saved`       | Category browser + lists                       |
-| 4 — Auth & profile | `apps/web` `/profile`, `/profile/places/new`, `packages/api` | Clerk, saved places, user submissions          |
-| 5 — Reviews        | `packages/db` `Review`, `packages/api`                       | Climate review write, points                   |
-| 6 — PWA            | `apps/web`                                                   | Service worker, install prompt                 |
-| 7 — Launch         | `apps/web` `/studio`, `packages/api` studio routes           | Admin moderation, R2 assets, production deploy |
-| Mobile             | `apps/mobile`                                                | Android + iOS via Expo EAS                     |
+---
 
 ## Data flow
 
-**Production:** Pages → Render API → Neon. **Local:** web → Express → Docker PostGIS.
+**Production:** Pages → Worker → D1 + R2. **Local:** web → wrangler dev → local D1.
 
 ```mermaid
 flowchart LR
-    Web[apps/web] -->|NEXT_PUBLIC_API_URL| API[packages/api]
+    Web[apps/web] -->|NEXT_PUBLIC_API_URL| API[packages/api Worker]
     Mobile[apps/mobile] -.-> API
-    API --> DB[(Neon / local PostGIS)]
+    API --> D1[(D1 freshy-db)]
+    API --> R2[(R2 freshy-assets)]
     API --> Clerk[Clerk JWT verify]
-    API -.-> R2[(R2 optional)]
     Web --> UI[packages/ui]
     Web --> Mapbox[Mapbox]
-    DB --> Prisma[packages/db]
+    DB[packages/db] --> D1
 ```
 
-## Storage (Cloudflare R2)
+---
 
-All binary assets (place photos, avatars, CI screenshots) use **Cloudflare R2**. See [`infrastructure/cloudflare/README.md`](../infrastructure/cloudflare/README.md) and [`docs/infrastructure.md`](infrastructure.md).
+## Cloudflare bindings
+
+Configured in [`packages/api/wrangler.toml`](../packages/api/wrangler.toml):
+
+| Binding         | Resource           | Used by                    |
+| --------------- | ------------------ | -------------------------- |
+| `FRESHY_DB`     | D1 `freshy-db`     | Drizzle queries in Worker  |
+| `FRESHY_ASSETS` | R2 `freshy-assets` | Photo uploads, asset reads |
+
+---
 
 ## Local development
 
 ```bash
-# 1. Start database
-bash scripts/setup-local-db.sh
-
-# 2. Install & migrate
 pnpm install
-pnpm db:generate
-pnpm db:migrate
-pnpm db:seed
-
-# 3. Run everything
+pnpm --filter @freshy/db migrate:local
 pnpm dev
 ```
 
-| Service  | URL                   |
-| -------- | --------------------- |
-| Web      | http://localhost:3000 |
-| API      | http://localhost:4000 |
-| Postgres | localhost:5432        |
+| Service      | URL                   |
+| ------------ | --------------------- |
+| Web          | http://localhost:3000 |
+| API (Worker) | http://localhost:8787 |
 
-R2 is optional locally — set `R2_*` env vars to test uploads.
+Full guide: [local-development.md](local-development.md).
+
+---
 
 ## CI/CD
 
-| Workflow      | Trigger             | Actions                                                           |
-| ------------- | ------------------- | ----------------------------------------------------------------- |
-| `ci.yml`      | Pull request        | Lint, typecheck, test, build, 6-page screenshots → R2, PR comment |
-| `release.yml` | GitHub Release `v*` | EAS build Android + iOS                                           |
+| Workflow               | Trigger                       | Actions                                        |
+| ---------------------- | ----------------------------- | ---------------------------------------------- |
+| `ci.yml`               | Pull request                  | Lint, typecheck, test, build, screenshots → R2 |
+| `deploy-api.yml`       | Push to `main` (api/db paths) | Build, D1 migrate, Worker deploy               |
+| `migrate-database.yml` | Schema/migration changes      | D1 migrate only                                |
+| `release.yml`          | GitHub Release `v*`           | EAS build Android + iOS                        |
+
+---
 
 ## Scripts reference
 
-| Script                      | Description                               |
-| --------------------------- | ----------------------------------------- |
-| `scripts/validation.sh`     | Full pipeline — use before opening a PR   |
-| `scripts/build.sh`          | Compile all TypeScript / Next.js / API    |
-| `scripts/setup-local-db.sh` | Docker PostGIS for simulators & local API |
+| Script                        | Description                             |
+| ----------------------------- | --------------------------------------- |
+| `scripts/validation.sh`       | Full pipeline — use before opening a PR |
+| `scripts/build.sh`            | Compile all TypeScript / Next.js / API  |
+| `scripts/smoke-api-start.sh`  | Build + wrangler dev + probe `/health`  |
+| `scripts/smoke-production.sh` | Smoke test live Worker + Pages          |
 
 Environment flags for `validation.sh`:
 
-- `SKIP_DB=1` — skip Docker database
+- `SKIP_DB=1` — skip local D1 migrations
 - `SKIP_SCREENSHOTS=1` — skip Playwright
 - `SKIP_INSTALL=1` — skip `pnpm install`
+
+---
+
+## Package responsibilities
+
+| Package          | Role                                           |
+| ---------------- | ---------------------------------------------- |
+| `@freshy/web`    | Next.js PWA, static export for Pages           |
+| `@freshy/api`    | Hono routes, Clerk auth, R2 storage, D1 access |
+| `@freshy/db`     | Drizzle schema, D1 migrations, geo helpers     |
+| `@freshy/ui`     | Shared React components, route tokens          |
+| `@freshy/config` | Place tags, freshness levels, ESLint/Tailwind  |
+| `@freshy/theme`  | YAML theme compiler, CSS variables             |
+
+---
+
+## Related docs
+
+| Doc                                    | Contents                             |
+| -------------------------------------- | ------------------------------------ |
+| [platforms.md](platforms.md)           | Resource names, env vars, dashboards |
+| [infrastructure.md](infrastructure.md) | Cloudflare services in detail        |
+| [database.md](database.md)             | Schema, migrations                   |
+| [CONTRIBUTING.md](../CONTRIBUTING.md)  | TDD, PR rules                        |

@@ -2,7 +2,7 @@
 
 This document defines **quality rules** and **authoritative references** for every language and format used in the Freshy monorepo. All contributors must follow these standards; CI enforces the automated checks listed below.
 
-See also [CONTRIBUTING.md](../CONTRIBUTING.md) and [development-cycle.md](development-cycle.md).
+See also [CONTRIBUTING.md](../CONTRIBUTING.md) and [local-development.md](local-development.md).
 
 ---
 
@@ -47,34 +47,34 @@ See also [CONTRIBUTING.md](../CONTRIBUTING.md) and [development-cycle.md](develo
 
 ---
 
-## SQL & Prisma (`.prisma`, migrations)
+## SQL & Drizzle (D1 migrations)
 
-**Scope:** `packages/db/prisma/`
+**Scope:** `packages/db/src/schema.ts`, `packages/db/migrations/`
 
 ### Rules
 
-| Rule                                                                             | Enforcement                                   |
-| -------------------------------------------------------------------------------- | --------------------------------------------- |
-| PostgreSQL 16 with PostGIS extension for geo columns                             | Docker Compose image `postgis/postgis:16-3.4` |
-| Schema changes require a migration (or documented `db push` for prototypes only) | `pnpm db:migrate`                             |
-| Use enums for fixed domains (`PlaceCategory`, `AcStrength`)                      | Prisma schema                                 |
-| `slug` fields must be unique and URL-safe                                        | Schema + tests                                |
-| Seed data in `prisma/seed.ts`; keep pilot-city sample data realistic             | `pnpm db:seed`                                |
-| Never commit production `DATABASE_URL`                                           | `.gitignore`, review                          |
+| Rule                                                                        | Enforcement                         |
+| --------------------------------------------------------------------------- | ----------------------------------- |
+| Cloudflare D1 (SQLite) in production and local wrangler emulation           | `wrangler.toml` binding             |
+| Schema changes require a new migration in `packages/db/migrations/`         | `pnpm --filter @freshy/db generate` |
+| Use const arrays for fixed domains (`PLACE_CATEGORIES`, `FRESHNESS_LEVELS`) | Drizzle schema                      |
+| `slug` fields must be unique and URL-safe                                   | Schema + tests                      |
+| Geo queries use Haversine in application code (no PostGIS on D1)            | `packages/db/src/geo.ts`            |
+| Never commit Worker secrets or `.dev.vars`                                  | `.gitignore`, review                |
 
 ### Tooling
 
-| Tool       | Command                                                |
-| ---------- | ------------------------------------------------------ |
-| Prisma CLI | `pnpm --filter @freshy/db generate`, `migrate`, `seed` |
-| Local DB   | `bash scripts/setup-local-db.sh`                       |
+| Tool              | Command                                   |
+| ----------------- | ----------------------------------------- |
+| Drizzle Kit       | `pnpm --filter @freshy/db generate`       |
+| Local D1 migrate  | `pnpm --filter @freshy/db migrate:local`  |
+| Remote D1 migrate | `pnpm --filter @freshy/db migrate:remote` |
 
 ### References
 
-- [Prisma docs](https://www.prisma.io/docs) — schema, migrations, client
-- [PostgreSQL 16 documentation](https://www.postgresql.org/docs/16/) — SQL dialect
-- [PostGIS documentation](https://postgis.net/documentation/) — spatial queries (`ST_DWithin`, GIST indexes)
-- [Prisma naming conventions](https://www.prisma.io/docs/orm/reference/prisma-schema-reference#naming-conventions)
+- [Drizzle ORM docs](https://orm.drizzle.team/docs/overview) — schema, queries
+- [Cloudflare D1](https://developers.cloudflare.com/d1/) — SQLite at the edge
+- [Drizzle + D1 guide](https://orm.drizzle.team/docs/get-started/d1-new)
 
 ---
 
@@ -186,8 +186,7 @@ See also [CONTRIBUTING.md](../CONTRIBUTING.md) and [development-cycle.md](develo
 | Formatted with Prettier where applicable                        | `pnpm format:check` |
 | English for all documentation and source code in the repo       | Review              |
 | Stitch exports under `docs/stitch/` may keep design mockup copy | Review              |
-| Link related docs (architecture, roadmap, contributing)         | Review              |
-| Keep roadmap phase checkboxes in sync with delivered work       | Review              |
+| Link related docs (architecture, platforms, contributing)       | Review              |
 
 ### References
 
@@ -235,12 +234,12 @@ Local equivalent: `bash scripts/validation.sh`.
 
 ## Security & secrets (cross-cutting)
 
-| Rule                                                      | Reference                        |
-| --------------------------------------------------------- | -------------------------------- |
-| No `.env` or `*.json` service account keys in git         | [git-rules.md](git-rules.md)     |
-| Validate all API input with Zod (when handlers are added) | [roadmap.md](roadmap.md) NFRs    |
-| HTTPS only in production                                  | Infrastructure docs              |
-| Location data requires user consent (LGPD)                | [roadmap.md](roadmap.md) Phase 7 |
+| Rule                                              | Reference                              |
+| ------------------------------------------------- | -------------------------------------- |
+| No `.env` or `*.json` service account keys in git | [git-rules.md](git-rules.md)           |
+| Validate all API input with Zod                   | `packages/api` routes                  |
+| HTTPS only in production                          | [infrastructure.md](infrastructure.md) |
+| Location data requires user consent (LGPD)        | Product policy                         |
 
 ---
 
