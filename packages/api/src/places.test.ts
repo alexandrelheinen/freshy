@@ -8,6 +8,18 @@ describe('placesQuerySchema', () => {
     const parsed = placesQuerySchema.parse({ lat: 48.9, lng: 2.3 });
     assert.equal(parsed.radius, PILOT_CITY.defaultRadiusKm);
   });
+
+  it('parses verifiedOnly from common query string values', () => {
+    assert.equal(
+      placesQuerySchema.parse({ lat: 48.9, lng: 2.3, verifiedOnly: 'true' }).verifiedOnly,
+      true,
+    );
+    assert.equal(
+      placesQuerySchema.parse({ lat: 48.9, lng: 2.3, verifiedOnly: 'false' }).verifiedOnly,
+      false,
+    );
+    assert.equal(placesQuerySchema.parse({ lat: 48.9, lng: 2.3 }).verifiedOnly, false);
+  });
 });
 
 describe('parseStoredTags', () => {

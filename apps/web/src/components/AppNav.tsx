@@ -12,6 +12,7 @@ import {
   type MaterialIconName,
 } from '@freshy/ui';
 import { isStudioAdmin } from '../lib/studio-api';
+import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
 
 export type NavActiveId = 'explore' | 'saved' | 'cooling' | 'profile' | 'studio';
 
@@ -34,6 +35,29 @@ function ThemePlaceholder() {
     >
       <MaterialIcon name="routine" className="text-on-surface-variant/50" />
       <span className="hidden font-label-caps sm:inline">Theme</span>
+    </button>
+  );
+}
+
+function VerifiedOnlyToggle({ onToggle }: { onToggle?: () => void }) {
+  const { verifiedOnly, setVerifiedOnly } = useVerifiedOnlyFilter();
+
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        setVerifiedOnly(!verifiedOnly);
+        onToggle?.();
+      }}
+      aria-pressed={verifiedOnly}
+      className={`flex h-10 items-center gap-2 rounded-full px-3 font-label-caps transition-colors ${
+        verifiedOnly
+          ? 'bg-primary-container text-primary'
+          : 'bg-surface-container-high text-on-surface-variant hover:text-primary'
+      }`}
+    >
+      <MaterialIcon name="verified" filled={verifiedOnly} className="text-current" />
+      <span className="hidden sm:inline">Verified only</span>
     </button>
   );
 }
@@ -117,6 +141,9 @@ function MobileNavMenu({
             onClick={onClose}
           />
         ) : null}
+        <div className="px-2 py-2">
+          <VerifiedOnlyToggle onToggle={onClose} />
+        </div>
         <NavLink
           href={ROUTES.profile}
           label="Profile"
@@ -170,6 +197,7 @@ export function AppTopNav({ active = 'explore' }: { active?: NavActiveId }) {
       </div>
 
       <div className="flex items-center gap-4">
+        <VerifiedOnlyToggle />
         <ThemePlaceholder />
         <ProfileAvatarLink />
       </div>

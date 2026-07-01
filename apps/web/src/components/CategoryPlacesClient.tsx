@@ -11,6 +11,7 @@ import { PlaceListClient } from './PlaceListClient';
 import { fetchPlaces } from '../lib/api';
 import { locationStatusMessage } from '../lib/location-messages';
 import { useUserLocation } from '../lib/use-user-location';
+import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
 
 function parseCategory(raw: string): PlaceCategory | null {
   const upper = raw.toUpperCase().replace(/-/g, '_');
@@ -32,6 +33,7 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
     loading,
     requestLocation,
   } = useUserLocation();
+  const { verifiedOnly } = useVerifiedOnlyFilter();
 
   const loadPlaces = useCallback(async () => {
     if (!category) return [];
@@ -40,8 +42,9 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
       lng: searchCenter.lng,
       radius: searchRadiusKm,
       category,
+      verifiedOnly,
     });
-  }, [category, searchCenter, searchRadiusKm]);
+  }, [category, searchCenter, searchRadiusKm, verifiedOnly]);
 
   const statusMessage = locationStatusMessage({
     permissionDenied: denied,

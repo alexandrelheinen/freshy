@@ -11,7 +11,7 @@ import {
   type PlaceCategory,
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
-import { freshnessBarState, formatDistanceWithWalk } from '../lib/api';
+import { freshnessBarState, formatDistanceWithWalk, isPlaceVerified } from '../lib/api';
 import { freshnessLabel, freshnessPowerLabel } from './map-markers';
 import { FreshnessBar } from '@freshy/ui';
 
@@ -29,6 +29,7 @@ export function PlaceListCard({
   const bar = freshnessBarState(place.aggregatedFreshnessLevel);
   const placeTags = filterValidPlaceTags(place.tags ?? []);
   const isGreen = bar.tone === 'green';
+  const verified = isPlaceVerified(place);
 
   return (
     <Link href={ROUTES.place(place.slug)} className="group block">
@@ -39,6 +40,11 @@ export function PlaceListCard({
             alt=""
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
+          {verified ? (
+            <div className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full border border-surface bg-primary shadow-sm">
+              <MaterialIcon name="verified" filled size={16} className="text-on-primary" />
+            </div>
+          ) : null}
           {showBookmark ? (
             <div className="absolute right-3 top-3">
               <button

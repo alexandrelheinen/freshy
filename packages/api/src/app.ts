@@ -49,6 +49,7 @@ export function createApp(): Hono<AppEnv> {
         radius: c.req.query('radius'),
         category: c.req.query('category'),
         q: c.req.query('q'),
+        verifiedOnly: c.req.query('verifiedOnly'),
       });
       if (!parsed.success) {
         return c.json({ error: 'Invalid query', details: parsed.error.flatten() }, 400);

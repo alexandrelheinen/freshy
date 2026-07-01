@@ -25,12 +25,14 @@ import {
   directionsUrl,
   formatDistance,
   formatDistanceWithWalk,
+  isPlaceVerified,
 } from '../lib/api';
 import { mapStyleUrl, type MapStyleId } from '../lib/map-styles';
 import { cappedSearchRadiusKm, formatSearchRadiusKm } from '../lib/map-zoom';
 import { circlePolygonGeoJson } from '../lib/map-circle';
 import { locationStatusMessage } from '../lib/location-messages';
 import { useUserLocation } from '../lib/use-user-location';
+import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceMapMarker, UserLocationMarker, freshnessLabel } from './map-markers';
 
@@ -191,6 +193,7 @@ function NearbyListItem({
   onSelect: () => void;
 }) {
   const freshness = freshnessBarState(place.aggregatedFreshnessLevel);
+  const verified = isPlaceVerified(place);
 
   return (
     <button
@@ -209,6 +212,11 @@ function NearbyListItem({
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />
+          {verified ? (
+            <div className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full border border-surface bg-primary shadow-sm">
+              <MaterialIcon name="verified" filled size={10} className="text-on-primary" />
+            </div>
+          ) : null}
         </div>
         <div className="flex-1">
           <div className="flex items-start justify-between">
@@ -250,6 +258,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     setMapCenter,
     zoomForSearchRadius,
   } = useUserLocation();
+  const { verifiedOnly } = useVerifiedOnlyFilter();
   const [viewState, setViewState] = useState<MapSearchAnchor>(() => ({
     latitude: mapCenter.lat,
     longitude: mapCenter.lng,
@@ -297,7 +306,14 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
   );
 
   const loadPlaces = useCallback(
-    async (opts: { lat: number; lng: number; zoom: number; category?: string; q?: string }) => {
+    async (opts: {
+      lat: number;
+      lng: number;
+      zoom: number;
+      category?: string;
+      q?: string;
+      verifiedOnly?: boolean;
+    }) => {
       const radius = cappedSearchRadiusKm(
         opts.lat,
         opts.zoom,
@@ -310,6 +326,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       params.set('radius', String(radius));
       if (opts.category) params.set('category', opts.category);
       if (opts.q) params.set('q', opts.q);
+      if (opts.verifiedOnly) params.set('verifiedOnly', 'true');
 
       const base = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
       const res = await fetch(`${base}/places?${params.toString()}`);
@@ -344,9 +361,10 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         zoom: anchor.zoom,
         category: activeCategory,
         q: query || undefined,
+        verifiedOnly,
       });
     },
-    [activeCategory, loadPlaces, query, setMapCenter],
+    [activeCategory, loadPlaces, query, setMapCenter, verifiedOnly],
   );
 
   useEffect(() => {
@@ -374,8 +392,9 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       zoom: searchAnchor.zoom,
       category: activeCategory,
       q: query || undefined,
+      verifiedOnly,
     });
-  }, [activeCategory, loadPlaces, query, searchAnchor]);
+  }, [activeCategory, loadPlaces, query, searchAnchor, verifiedOnly]);
 
   const decreaseSearchRadius = () =>
     setViewState((v) => {
