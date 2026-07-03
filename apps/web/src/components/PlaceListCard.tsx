@@ -41,7 +41,11 @@ export function PlaceListCard({
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
           {verified ? (
-            <div className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full border border-surface bg-primary shadow-sm">
+            <div
+              className={`absolute top-3 flex h-7 w-7 items-center justify-center rounded-full border border-surface bg-primary shadow-sm ${
+                showBookmark ? 'right-14' : 'right-3'
+              }`}
+            >
               <MaterialIcon name="verified" filled size={16} className="text-on-primary" />
             </div>
           ) : null}
