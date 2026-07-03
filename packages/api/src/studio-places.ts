@@ -16,10 +16,7 @@ import {
   users as usersTable,
 } from '@freshy/db';
 import { withResolvedPlacePhoto, serializePlaceForApi } from './places';
-import {
-  getStudioUsersByIds,
-  type StudioUserProfile,
-} from './studio-users';
+import { getStudioUsersByIds, type StudioUserProfile } from './studio-users';
 
 const DUPLICATE_RADIUS_KM = 0.05;
 
