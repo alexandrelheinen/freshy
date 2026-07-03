@@ -269,9 +269,16 @@ export async function resolveMissingStudioContributors(
   const contributorsById = new Map<string, StudioContributorDto>();
   await Promise.all(
     missingIds.map(async (userId) => {
-      const user = await fetchStudioUserById(getToken, userId);
-      if (user) {
-        contributorsById.set(userId, studioContributorFromUser({ ...user, secret: user.id }));
+      let contributor = await fetchStudioUserById(getToken, userId);
+      if (!contributor) {
+        const matches = await fetchStudioUsers(getToken, { q: userId, limit: 1 });
+        const matched = matches.find((user) => user.id === userId) ?? matches[0] ?? null;
+        if (matched) {
+          contributor = studioContributorFromUser(matched);
+        }
+      }
+      if (contributor) {
+        contributorsById.set(userId, contributor);
       }
     }),
   );

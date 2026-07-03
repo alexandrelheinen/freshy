@@ -74,6 +74,32 @@ async function fetchDraftPlacesInArea(params: PlacesFetchParams): Promise<PlaceD
   return json.data ?? [];
 }
 
+/** Paginate a distance-sorted place list for category views (fallback when category-list is unavailable). */
+export function buildCategoryPlacesPageFromList(
+  places: PlaceDto[],
+  options: { page: number; limit: number; radiusKm: number },
+): CategoryPlacesPageDto {
+  const sorted = [...places].sort(
+    (left, right) =>
+      (left.distanceKm ?? Number.POSITIVE_INFINITY) -
+      (right.distanceKm ?? Number.POSITIVE_INFINITY),
+  );
+  const nearbyCount = sorted.filter(
+    (place) => (place.distanceKm ?? Number.POSITIVE_INFINITY) <= options.radiusKm,
+  ).length;
+  const total = sorted.length;
+  const offset = (options.page - 1) * options.limit;
+  const items = sorted.slice(offset, offset + options.limit);
+
+  return {
+    items,
+    total,
+    page: options.page,
+    limit: options.limit,
+    nearbyCount,
+  };
+}
+
 /** Client-side places fetch for map and list views (never cached). Returns null when the API fails. */
 export async function fetchPlacesClient(params: PlacesFetchParams): Promise<PlaceDto[] | null> {
   const search = buildPlacesSearchParams(params);
@@ -84,11 +110,8 @@ export async function fetchPlacesClient(params: PlacesFetchParams): Promise<Plac
   let places = json.data ?? [];
 
   if (!params.verifiedOnly) {
-    const hasDraftRows = places.some((place) => place.status === 'DRAFT');
-    if (!hasDraftRows) {
-      const drafts = await fetchDraftPlacesInArea(params);
-      places = mergeDraftPlacesIntoResults(places, drafts);
-    }
+    const drafts = await fetchDraftPlacesInArea(params);
+    places = mergeDraftPlacesIntoResults(places, drafts);
 
     places = mergePendingMapPlaces(places, {
       lat: params.lat,
@@ -143,13 +166,15 @@ export interface CategoryPlacesFetchParams {
 export async function fetchCategoryPlacesPage(
   params: CategoryPlacesFetchParams,
 ): Promise<CategoryPlacesPageDto | null> {
+  const page = params.page ?? 1;
+  const limit = params.limit ?? CATEGORY_PLACES_PAGE_SIZE;
   const search = new URLSearchParams();
   search.set('lat', String(params.lat));
   search.set('lng', String(params.lng));
   search.set('radius', String(params.radius));
   search.set('category', params.category);
-  search.set('page', String(params.page ?? 1));
-  search.set('limit', String(params.limit ?? CATEGORY_PLACES_PAGE_SIZE));
+  search.set('page', String(page));
+  search.set('limit', String(limit));
   if (params.q) search.set('q', params.q);
   if (params.verifiedOnly) search.set('verifiedOnly', 'true');
   if (params.minFreshnessLevel != null) {
@@ -159,9 +184,28 @@ export async function fetchCategoryPlacesPage(
   const res = await fetch(`${API_BASE}/places/category-list?${search.toString()}`, {
     cache: 'no-store',
   });
-  if (!res.ok) return null;
-  const json = (await res.json()) as { data: CategoryPlacesPageDto };
-  return json.data ?? null;
+  if (res.ok) {
+    const json = (await res.json()) as { data: CategoryPlacesPageDto };
+    if (json.data) return json.data;
+  }
+
+  const places = await fetchPlacesClient({
+    lat: params.lat,
+    lng: params.lng,
+    radius: params.radius,
+    category: params.category,
+    q: params.q,
+    verifiedOnly: params.verifiedOnly,
+    minFreshnessLevel: params.minFreshnessLevel,
+  });
+  if (places === null) return null;
+
+  const categoryPlaces = places.filter((place) => place.category === params.category);
+  return buildCategoryPlacesPageFromList(categoryPlaces, {
+    page,
+    limit,
+    radiusKm: params.radius,
+  });
 }
 
 export async function fetchPlaces(params?: {

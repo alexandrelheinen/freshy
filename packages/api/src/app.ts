@@ -20,6 +20,9 @@ import { registerUserRoutes } from './user-routes';
 import { registerContributionRoutes } from './contribution-routes';
 import { registerStudioRoutes } from './studio-routes';
 
+/** Paths that must never be handled by GET /places/:slug. */
+const RESERVED_PLACE_PATHS = new Set(['drafts', 'category-list', 'meta']);
+
 export function createApp(): Hono<AppEnv> {
   const app = new Hono<AppEnv>();
 
@@ -123,8 +126,12 @@ export function createApp(): Hono<AppEnv> {
   });
 
   app.get('/places/:slug', async (c) => {
+    const slug = c.req.param('slug');
+    if (RESERVED_PLACE_PATHS.has(slug)) {
+      return c.json({ error: 'Not found' }, 404);
+    }
     try {
-      const place = await getPlaceBySlugWithReviews(c.get('db'), c.req.param('slug'));
+      const place = await getPlaceBySlugWithReviews(c.get('db'), slug);
       if (!place) {
         return c.json({ error: 'Place not found' }, 404);
       }

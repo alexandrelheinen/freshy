@@ -206,7 +206,9 @@ export interface CreatePlaceOptions {
   photoUrl?: string | null;
 }
 
-export type CreatePlaceResult = { ok: true; slug: string } | { ok: false; error: string };
+export type CreatePlaceResult =
+  | { ok: true; slug: string; latitude: number; longitude: number }
+  | { ok: false; error: string };
 
 export const UNKNOWN_SECRET_MESSAGE =
   'This secret is not recognized. Contact a team member to get one.';
@@ -306,8 +308,15 @@ export async function createUserPlace(
       const body = (await res.json().catch(() => ({}))) as unknown;
       return { ok: false, error: createPlaceErrorMessage(res.status, body) };
     }
-    const json = (await res.json()) as { data: { slug: string } };
-    return { ok: true, slug: json.data.slug };
+    const json = (await res.json()) as {
+      data: { slug: string; latitude: number; longitude: number };
+    };
+    return {
+      ok: true,
+      slug: json.data.slug,
+      latitude: json.data.latitude,
+      longitude: json.data.longitude,
+    };
   } catch {
     return { ok: false, error: 'Could not reach the API. Check your connection and try again.' };
   }
@@ -353,8 +362,15 @@ export async function createAnonymousPlace(
       const body = (await res.json().catch(() => ({}))) as unknown;
       return { ok: false, error: anonymousPlaceErrorMessage(res.status, body) };
     }
-    const json = (await res.json()) as { data: { slug: string } };
-    return { ok: true, slug: json.data.slug };
+    const json = (await res.json()) as {
+      data: { slug: string; latitude: number; longitude: number };
+    };
+    return {
+      ok: true,
+      slug: json.data.slug,
+      latitude: json.data.latitude,
+      longitude: json.data.longitude,
+    };
   } catch {
     return { ok: false, error: 'Could not reach the API. Check your connection and try again.' };
   }
