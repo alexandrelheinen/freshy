@@ -21,6 +21,7 @@ export interface ThemeFiles {
   typography: Record<
     string,
     {
+      fontFamily?: string;
       fontSize: string;
       lineHeight: string;
       fontWeight: string;

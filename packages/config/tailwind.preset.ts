@@ -37,7 +37,7 @@ const preset = {
         glass: 'var(--effect-glass-blur)',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Quicksand', 'system-ui', 'sans-serif'],
       },
       fontSize: {
         'display-lg': [

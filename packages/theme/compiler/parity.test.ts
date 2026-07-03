@@ -21,6 +21,8 @@ describe('default theme parity', () => {
   it('exports spacing and typography scales', () => {
     const tokens = getDefaultThemeTokens();
     assert.equal(tokens.spacing['margin-mobile'], '20px');
-    assert.equal(tokens.typography['headline-lg-mobile'].fontSize, '24px');
+    assert.equal(tokens.typography['headline-lg-mobile'].fontSize, '32px');
+    assert.equal(tokens.typography['headline-lg'].fontFamily, 'Quicksand');
+    assert.equal(tokens.typography['body-lg'].fontWeight, '500');
   });
 });
