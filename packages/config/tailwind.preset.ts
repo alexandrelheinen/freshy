@@ -7,6 +7,9 @@ import {
   type ColorRole,
   type ShadowRole,
 } from '@freshy/theme/roles';
+import { FRESHY_Z_INDEX } from './layering';
+
+export { FRESHY_Z_INDEX } from './layering';
 
 const defaultTheme = getDefaultThemeTokens();
 
@@ -99,6 +102,7 @@ const preset = {
         full: defaultTheme.radius.full,
       },
       spacing: freshySpacing,
+      zIndex: FRESHY_Z_INDEX,
     },
   },
 };

@@ -2,6 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { getDefaultThemeTokens } from '@freshy/theme/tokens';
 import { freshyColors, freshyShadows, freshySpacing, freshyTypography } from './tailwind.preset';
+import { FRESHY_Z_INDEX } from './layering';
 
 describe('@freshy/config tailwind preset', () => {
   it('maps colors to CSS variables', () => {
