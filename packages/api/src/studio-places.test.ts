@@ -4,6 +4,7 @@ import {
   detectDuplicatePlaceIds,
   mergePlacesSchema,
   parseUpdateStudioPlaceFields,
+  studioContributorForPlace,
   studioPlacesQuerySchema,
   updateStudioPlaceSchema,
 } from './studio-places';
@@ -68,6 +69,23 @@ describe('studio-places', () => {
       sourcePlaceId: 'place_a',
     });
     assert.equal(parsed.success, false);
+  });
+
+  it('resolves contributor for a place when createdById is known', () => {
+    const contributors = new Map([
+      [
+        'user_a',
+        {
+          id: 'user_a',
+          email: 'marie@example.com',
+          displayName: 'Marie',
+          username: 'marie',
+        },
+      ],
+    ]);
+    assert.deepEqual(studioContributorForPlace('user_a', contributors), contributors.get('user_a'));
+    assert.equal(studioContributorForPlace(null, contributors), null);
+    assert.equal(studioContributorForPlace('missing', contributors), null);
   });
 
   it('flags nearby places as duplicates', () => {

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { eq, like, or, sql, desc } from 'drizzle-orm';
+import { eq, like, or, sql, desc, inArray } from 'drizzle-orm';
 import { FRESHNESS_LEVEL_IDS, freshnessLevelScore } from '@freshy/config/freshness-levels';
 import { PLACE_TAG_IDS } from '@freshy/config/place-tags';
 import {
@@ -13,6 +13,7 @@ import {
   places as placesTable,
   reviews as reviewsTable,
   savedPlaces as savedPlacesTable,
+  users as usersTable,
 } from '@freshy/db';
 import { withResolvedPlacePhoto } from './places';
 
@@ -123,9 +124,17 @@ export type MergePlacesInput = z.infer<typeof mergePlacesSchema>;
 
 export type StudioPlaceStatus = 'verified' | 'pending' | 'duplicate';
 
+export interface StudioContributor {
+  id: string;
+  email: string;
+  displayName: string;
+  username: string;
+}
+
 export interface StudioPlaceListItem extends Place {
   studioStatus: StudioPlaceStatus;
   duplicateOfId: string | null;
+  contributor: StudioContributor | null;
 }
 
 export interface StudioPlacesPage {
@@ -184,6 +193,47 @@ function studioStatusForPlace(place: Place, duplicateOfId: string | null): Studi
   return 'pending';
 }
 
+export function studioContributorForPlace(
+  createdById: string | null,
+  contributors: Map<string, StudioContributor>,
+): StudioContributor | null {
+  if (!createdById) return null;
+  return contributors.get(createdById) ?? null;
+}
+
+async function loadContributorsByUserIds(
+  db: Db,
+  userIds: Array<string | null | undefined>,
+): Promise<Map<string, StudioContributor>> {
+  const uniqueIds = [...new Set(userIds.filter((id): id is string => Boolean(id)))];
+  if (uniqueIds.length === 0) return new Map();
+
+  const rows = await db
+    .select({
+      id: usersTable.id,
+      email: usersTable.email,
+      displayName: usersTable.displayName,
+      username: usersTable.username,
+    })
+    .from(usersTable)
+    .where(inArray(usersTable.id, uniqueIds));
+
+  return new Map(rows.map((row) => [row.id, row]));
+}
+
+function enrichStudioPlace(
+  place: Place,
+  duplicateOfId: string | null,
+  contributors: Map<string, StudioContributor>,
+): StudioPlaceListItem {
+  return {
+    ...withResolvedPlacePhoto(place),
+    studioStatus: studioStatusForPlace(place, duplicateOfId),
+    duplicateOfId,
+    contributor: studioContributorForPlace(place.createdById, contributors),
+  };
+}
+
 function matchesStudioFilter(
   place: StudioPlaceListItem,
   status: StudioPlacesQuery['status'],
@@ -217,14 +267,13 @@ export async function listStudioPlaces(
   }
 
   const duplicateMap = detectDuplicatePlaceIds(allPlaces);
-  const enriched: StudioPlaceListItem[] = allPlaces.map((place) => {
-    const duplicateOfId = duplicateMap.get(place.id) ?? null;
-    return {
-      ...withResolvedPlacePhoto(place),
-      studioStatus: studioStatusForPlace(place, duplicateOfId),
-      duplicateOfId,
-    };
-  });
+  const contributors = await loadContributorsByUserIds(
+    db,
+    allPlaces.map((place) => place.createdById),
+  );
+  const enriched: StudioPlaceListItem[] = allPlaces.map((place) =>
+    enrichStudioPlace(place, duplicateMap.get(place.id) ?? null, contributors),
+  );
 
   const filtered = enriched.filter((place) => matchesStudioFilter(place, query.status));
   const total = filtered.length;
@@ -392,10 +441,7 @@ export async function getStudioPlace(db: Db, placeId: string): Promise<StudioPla
     })
     .from(placesTable);
   const duplicateOfId = detectDuplicatePlaceIds(allPlaces).get(place.id) ?? null;
+  const contributors = await loadContributorsByUserIds(db, [place.createdById]);
 
-  return {
-    ...withResolvedPlacePhoto(place),
-    studioStatus: studioStatusForPlace(place, duplicateOfId),
-    duplicateOfId,
-  };
+  return enrichStudioPlace(place, duplicateOfId, contributors);
 }
