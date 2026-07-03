@@ -46,6 +46,12 @@ export function PlaceListClient({
     })();
   }, [loadPlaces]);
 
+  useEffect(() => {
+    if (activeFilter === 'nearby' && !places.some((place) => place.distanceKm != null)) {
+      setActiveFilter('all');
+    }
+  }, [activeFilter, places]);
+
   const filtered = useMemo(() => {
     let list = places;
     const q = query.trim().toLowerCase();
