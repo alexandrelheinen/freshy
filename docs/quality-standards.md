@@ -112,17 +112,16 @@ See also [CONTRIBUTING.md](../CONTRIBUTING.md) and [local-development.md](local-
 
 ## YAML (`.yml`, `.yaml`)
 
-**Scope:** `.github/workflows/`, `infrastructure/docker/docker-compose.yml`, `pnpm-workspace.yaml`
+**Scope:** `.github/workflows/`, `pnpm-workspace.yaml`
 
 ### Rules
 
-| Rule                                                 | Enforcement          |
-| ---------------------------------------------------- | -------------------- |
-| Formatted with Prettier (`pnpm format:check`)        | CI                   |
-| GitHub Actions: pin major versions (`@v4`)           | Review               |
-| Secrets only via `${{ secrets.* }}` — never hardcode | Review               |
-| `concurrency` groups on CI to cancel stale runs      | `ci.yml`             |
-| Docker Compose: healthchecks on database service     | `docker-compose.yml` |
+| Rule                                                 | Enforcement |
+| ---------------------------------------------------- | ----------- |
+| Formatted with Prettier (`pnpm format:check`)        | CI          |
+| GitHub Actions: pin major versions (`@v4`)           | Review      |
+| Secrets only via `${{ secrets.* }}` — never hardcode | Review      |
+| `concurrency` groups on CI to cancel stale runs      | `ci.yml`    |
 
 ### References
 

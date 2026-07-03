@@ -226,7 +226,12 @@ function VerifiedOnlyToggle({
           : 'bg-surface-container-high text-on-surface-variant hover:text-primary'
       }`}
     >
-      <MaterialIcon name="verified" filled={verifiedOnly} size={20} className="leading-none text-current" />
+      <MaterialIcon
+        name="verified"
+        filled={verifiedOnly}
+        size={20}
+        className="leading-none text-current"
+      />
     </button>
   );
 }
@@ -359,11 +364,6 @@ function MobileNavMenu({
   );
 }
 
-/** @deprecated Bottom navigation replaced by the mobile header menu. */
-export function AppBottomNav(_props: { active?: NavActiveId }) {
-  return null;
-}
-
 export function AppTopNav({ active = 'explore' }: { active?: NavActiveId }) {
   return (
     <header className="fixed top-0 z-nav hidden h-16 w-full items-center bg-surface px-10 shadow-sm md:flex">
@@ -466,7 +466,12 @@ export function AppMobileHeader({
       <div className="flex min-w-0 flex-1 items-center gap-2">
         {leading}
         {showBrand && !backHref ? (
-          <BrandLockup as="h1" iconSize={32} textClassName="truncate text-[2rem]" className="min-w-0" />
+          <BrandLockup
+            as="h1"
+            iconSize={32}
+            textClassName="truncate text-[2rem]"
+            className="min-w-0"
+          />
         ) : title ? (
           <h1 className="truncate font-headline-lg-mobile text-headline-lg-mobile tracking-tight text-primary">
             {title}

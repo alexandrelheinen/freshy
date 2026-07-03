@@ -78,18 +78,6 @@ export function freshnessLabel(strength: PlaceDto['aggregatedFreshnessLevel']): 
   return FRESHNESS_LEVEL_SHORT_LABELS[id].toUpperCase();
 }
 
-export function freshnessPowerLabel(strength: PlaceDto['aggregatedFreshnessLevel']): string {
-  const id = freshnessId(strength);
-  if (!id) return 'UNKNOWN';
-  return FRESHNESS_LEVEL_SHORT_LABELS[id].toUpperCase();
-}
-
-/** @deprecated Use freshnessLabel */
-export const acStrengthLabel = freshnessLabel;
-
-/** @deprecated Use freshnessPowerLabel */
-export const acStrengthPowerLabel = freshnessPowerLabel;
-
 export function VerifiedBadge({
   className = 'absolute -right-0.5 -top-0.5',
   size = 16,

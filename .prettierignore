@@ -6,3 +6,6 @@ docs/stitch/**/*.html
 **/test-results/
 **/out/
 **/.wrangler/
+scripts/.venv/
+apps/mobile/.expo/
+apps/mobile/expo-env.d.ts

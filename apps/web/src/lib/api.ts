@@ -288,14 +288,6 @@ export function freshnessBarState(level: PlaceDto['aggregatedFreshnessLevel']): 
   };
 }
 
-/** @deprecated Use freshnessBarState */
-export function acStrengthLevel(strength: PlaceDto['aggregatedFreshnessLevel']): 1 | 2 | 3 {
-  const segments = freshnessBarSegments(strength as FreshnessLevelId | null | undefined);
-  if (segments >= 3) return 3;
-  if (segments === 2) return 2;
-  return 1;
-}
-
 export function directionsUrl(options: {
   latitude: number;
   longitude: number;

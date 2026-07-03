@@ -46,13 +46,12 @@ If you have an older `places` staging table, re-run `scrape` after pulling this 
 
 ## CD on `main` (GitHub Actions)
 
-| Workflow                                                                      | Trigger                           | Command / action                           |
-| ----------------------------------------------------------------------------- | --------------------------------- | ------------------------------------------ |
-| [deploy-api.yml](../.github/workflows/deploy-api.yml)                         | Every push to `main`              | D1 migrate + Wrangler deploy               |
-| [migrate-database.yml](../.github/workflows/migrate-database.yml)             | Manual (`workflow_dispatch` only) | `d1 migrations apply --remote` (no deploy) |
-| [sync-place-defaults.yml](../.github/workflows/sync-place-defaults.yml)       | Default place images change       | `pnpm upload:place-defaults`               |
-| [production-screenshots.yml](../.github/workflows/production-screenshots.yml) | Web or UI change                  | Playwright against live Pages + R2 upload  |
-| [smoke-production.yml](../.github/workflows/smoke-production.yml)             | Every push to `main`              | `bash scripts/smoke-production.sh`         |
+| Workflow                                                                      | Trigger                      | Command / action                           |
+| ----------------------------------------------------------------------------- | ---------------------------- | ------------------------------------------ |
+| [migrate-database.yml](../.github/workflows/migrate-database.yml)             | Manual (`workflow_dispatch`) | `d1 migrations apply --remote` (no deploy) |
+| [sync-place-defaults.yml](../.github/workflows/sync-place-defaults.yml)       | Default place images change  | `pnpm upload:place-defaults`               |
+| [production-screenshots.yml](../.github/workflows/production-screenshots.yml) | Web or UI change             | Playwright against live Pages + R2 upload  |
+| [smoke-production.yml](../.github/workflows/smoke-production.yml)             | Every push to `main`         | `bash scripts/smoke-production.sh`         |
 
 **Secrets:** `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` (required for API CD); `R2_*` (optional, for asset and screenshot uploads).
 

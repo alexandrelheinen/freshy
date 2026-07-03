@@ -106,11 +106,13 @@ spacing:
 ---
 
 ## Brand & Style
-Freshy is a refreshing, hyper-modern discovery platform designed to help users find "cool" spots during hot weather. The brand personality is optimistic, energetic, and playful, aimed at a youthful, urban demographic. 
+
+Freshy is a refreshing, hyper-modern discovery platform designed to help users find "cool" spots during hot weather. The brand personality is optimistic, energetic, and playful, aimed at a youthful, urban demographic.
 
 The design style is a sophisticated blend of **Glassmorphism** and **Tactile Minimalism**. It uses high-vibrancy accent colors against clean, airy surfaces. Visual interest is driven by "bubble" elements—pill-shaped containers and circular buttons—that feel bouncy and responsive. The interface emphasizes clarity and speed, using translucent blurs to maintain context while focusing on high-intent actions.
 
 ## Colors
+
 The palette is rooted in deep, refreshing blues, moving away from high-contrast neon accents toward a more cohesive, "icy water" spectrum. The brand uses a systematic gradient of blues to establish hierarchy and professional polish.
 
 - **Primary & Containers:** The primary deep azure (`#1185d7`) provides a strong, reliable anchor for interactive states and primary actions. It represents the deep chill of water and provides excellent legibility against soft, cool surfaces.
@@ -118,6 +120,7 @@ The palette is rooted in deep, refreshing blues, moving away from high-contrast 
 - **Dynamic Accents:** Use Secondary (`#5cb7f8`) and Tertiary (`#b2dcfa`) tones for secondary informational badges (like "Trending" or "Super Cold") to maintain a colorful, high-energy vibe across the interface.
 
 ## Typography
+
 The system exclusively uses **Quicksand** to maintain a modern, friendly, and approachable geometric appearance. Its rounded terminals perfectly complement the "bubble" aesthetic of the UI.
 
 - **Headlines:** Use Bold weight (700) and slightly negative letter spacing for large displays to create a friendly yet impactful brand presence.
@@ -125,6 +128,7 @@ The system exclusively uses **Quicksand** to maintain a modern, friendly, and ap
 - **Clarity:** Body text is kept at a generous 16px/18px with Medium (500) or Regular (400) weights to ensure legibility while users are on the move.
 
 ## Layout & Spacing
+
 The layout follows a **Fluid Canvas** approach, specifically optimized for map-centric interfaces.
 
 - **Margins:** A strict 16px safe-zone is maintained on mobile, expanding to 64px on desktop to give elements "room to breathe."
@@ -132,6 +136,7 @@ The layout follows a **Fluid Canvas** approach, specifically optimized for map-c
 - **Responsiveness:** On mobile, navigation is anchored to the bottom using a "Floating Bar" pattern. On desktop, navigation moves to a top-right cluster to maximize map visibility.
 
 ## Elevation & Depth
+
 Depth is created through **Blue-Tinted Shadows** and **Glassmorphism** rather than traditional grey shadows.
 
 - **Floating Elements:** Search bars and floating cards use shadows that include a subtle 15-20% opacity blue tint (`#1185d7`) to simulate light passing through ice.
@@ -139,6 +144,7 @@ Depth is created through **Blue-Tinted Shadows** and **Glassmorphism** rather th
 - **Micro-interactions:** Elevation should increase on hover (scale up + deeper shadow) to provide tactile feedback in a digital environment.
 
 ## Shapes
+
 The shape language is defined by **organic, pill-shaped geometry**, which aligns with the rounded characteristics of the Quicksand typeface.
 
 - **Pills:** Search bars, chips, and primary buttons use a full `rounded-full` radius to evoke a friendly, "bubble" aesthetic.
@@ -146,6 +152,7 @@ The shape language is defined by **organic, pill-shaped geometry**, which aligns
 - **Interactive Pins:** Map markers are perfect circles with pulsating outer rings to indicate activity and draw the eye.
 
 ## Components
+
 - **Buttons:** Primary buttons are circular or pill-shaped. Icons should be centered. Use the deep `primary` azure for high-visibility actions and `secondary` sky blue for standard secondary actions.
 - **Search Bar:** A floating pill-shaped component. It includes a leading icon and a trailing action button (filter). The background is always `surface-container-lowest`.
 - **Chips:** Used for filtering. Active chips use `primary` azure with a high-contrast white text; inactive chips use `surface-container-lowest` with a subtle shadow.

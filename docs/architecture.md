@@ -94,7 +94,8 @@ Full guide: [local-development.md](local-development.md).
 | Workflow               | Trigger                      | Actions                                        |
 | ---------------------- | ---------------------------- | ---------------------------------------------- |
 | `ci.yml`               | Pull request                 | Lint, typecheck, test, build, screenshots → R2 |
-| `deploy-api.yml`       | Push to `main`               | Build, D1 migrate, Worker deploy               |
+| `pnpm deploy:api`      | Local / CI                   | Build and deploy Worker                        |
+| `migrate-database.yml` | Manual (`workflow_dispatch`) | Remote D1 migrations only                      |
 | `migrate-database.yml` | Manual (`workflow_dispatch`) | D1 migrate only (no Worker deploy)             |
 | `release.yml`          | GitHub Release `v*`          | EAS build Android + iOS                        |
 

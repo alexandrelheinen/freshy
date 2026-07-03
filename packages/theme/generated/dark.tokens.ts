@@ -186,7 +186,7 @@ export const icons = {
   nav: {
     explore: "explore",
     saved: "bookmark_heart",
-    cooling: "climate_mini_split",
+    cooling: "category_search",
     profile: "digital_wellbeing",
   },
   category: {

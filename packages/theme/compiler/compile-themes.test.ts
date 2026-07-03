@@ -50,7 +50,7 @@ describe('compile-themes', () => {
 
   it('writes logo font letter-spacing variable', () => {
     const css = fs.readFileSync(path.join(GENERATED_DIR, 'default.css'), 'utf8');
-    assert.match(css, /--font-logo-letter-spacing: 0\.00em;/);
+    assert.match(css, /--font-logo-letter-spacing: -0\.02em;/);
   });
 
   it('writes logo font baseline offset variable', () => {

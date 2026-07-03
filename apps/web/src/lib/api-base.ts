@@ -39,6 +39,3 @@ export function getApiBase(): string {
 
   return configured || LOCAL_API_URL;
 }
-
-/** @deprecated Use getApiBase() for client fetches so production Pages builds resolve correctly. */
-export const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? LOCAL_API_URL;

@@ -168,7 +168,7 @@ export const fonts = {
     ],
   },
   logo: {
-    family: "Concert One",
+    family: "Cherry Bomb One",
     fallbacks: [
       "system-ui",
       "sans-serif",
@@ -176,7 +176,7 @@ export const fonts = {
     weights: [
       400,
     ],
-    letterSpacing: "0.00em",
+    letterSpacing: "-0.02em",
     baselineOffset: "-0.08em",
   },
 } as const;
@@ -186,7 +186,7 @@ export const icons = {
   nav: {
     explore: "explore",
     saved: "bookmark_heart",
-    cooling: "climate_mini_split",
+    cooling: "category_search",
     profile: "digital_wellbeing",
   },
   category: {

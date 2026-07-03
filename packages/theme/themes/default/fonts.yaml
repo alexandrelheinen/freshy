@@ -10,13 +10,13 @@ sans:
     - 600
     - 700
 
-# Brand wordmark font
+# Brand wordmark font. Cherry Bomb One is a single-weight Google Font (400 only).
 logo:
-  family: 'Concert One'
+  family: Cherry Bomb One
   fallbacks:
     - system-ui
     - sans-serif
   weights:
     - 400
-  letterSpacing: '0.00em'
+  letterSpacing: '-0.02em'
   baselineOffset: '-0.08em'

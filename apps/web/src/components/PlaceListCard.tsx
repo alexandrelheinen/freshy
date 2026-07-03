@@ -14,7 +14,7 @@ import type { PlaceDto } from '../lib/api';
 import { freshnessBarState, isPlaceVerified } from '../lib/api';
 import { formatPlaceDistanceFromUser } from '../lib/place-distance';
 import { useUserLocation } from '../lib/use-user-location';
-import { freshnessLabel, freshnessPowerLabel } from './map-markers';
+import { freshnessLabel } from './map-markers';
 import { FreshnessBar } from '@freshy/ui';
 
 export function PlaceListCard({
@@ -124,7 +124,7 @@ export function PlaceListCard({
                 isGreen ? 'text-success' : 'text-primary'
               }`}
             >
-              {freshnessPowerLabel(place.aggregatedFreshnessLevel)}
+              {freshnessLabel(place.aggregatedFreshnessLevel)}
             </span>
           </div>
         </div>

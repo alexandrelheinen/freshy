@@ -218,7 +218,9 @@ export function StudioClient() {
         <div className="px-8 py-8">
           <Link href={ROUTES.explore} className="flex items-center gap-3">
             <MaterialIcon name={BRAND_ICON} filled size={32} className="text-primary" />
-            <span className="font-logo tracking-logo text-headline-lg text-primary">{BRAND_NAME}</span>
+            <span className="font-logo tracking-logo text-headline-lg text-primary">
+              {BRAND_NAME}
+            </span>
           </Link>
           <p className="mt-2 font-label-caps text-secondary opacity-60">PLACE STUDIO</p>
         </div>

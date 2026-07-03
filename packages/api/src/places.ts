@@ -105,13 +105,6 @@ export function explorePlaceStatuses(
   return null;
 }
 
-/** @deprecated Use explorePlaceStatuses */
-export function publishedPlaceStatuses(
-  query: Pick<PlacesQuery, 'verifiedOnly'>,
-): Array<Place['status']> | null {
-  return explorePlaceStatuses(query);
-}
-
 function matchesMinFreshnessLevel(
   level: Place['aggregatedFreshnessLevel'],
   minFreshnessLevel: number | undefined,

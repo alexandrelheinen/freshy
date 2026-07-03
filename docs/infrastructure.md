@@ -99,7 +99,7 @@ flowchart TB
     end
 
     subgraph ci [GitHub Actions]
-        GHA[CI + deploy-api.yml]
+        GHA[CI + manual deploy]
     end
 
     Web --> Pages

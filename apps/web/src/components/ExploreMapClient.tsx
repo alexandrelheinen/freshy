@@ -762,11 +762,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
           </div>
           {selected ? (
             <div className="pointer-events-auto max-h-[min(40vh,22rem)] min-h-0 shrink-0 overflow-y-auto xl:hidden">
-              <ExplorePreviewCard
-                place={selected}
-                userLocation={userLocation}
-                variant="desktop"
-              />
+              <ExplorePreviewCard place={selected} userLocation={userLocation} variant="desktop" />
             </div>
           ) : null}
         </div>

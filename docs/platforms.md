@@ -70,7 +70,7 @@ flowchart TB
 
     LocalWeb --> LocalWorker --> LocalD1
     GitHub -->|Pages build| Pages
-    GitHub -->|deploy-api.yml| Worker
+    GitHub -->|pnpm deploy:api| Worker
     GitHub -->|d1 migrations| D1
     GitHub -.->|optional| R2
     EAS -.-> Mobile[Expo mobile app]
@@ -100,7 +100,7 @@ flowchart TB
 | `R2_PUBLIC_URL`         | Public URL for screenshot links in PR comments (optional) |
 | `EXPO_TOKEN`            | Mobile EAS builds on release (optional)                   |
 
-**Docs:** [.github/workflows/ci.yml](../.github/workflows/ci.yml), [deploy-api.yml](../.github/workflows/deploy-api.yml)
+**Docs:** [.github/workflows/ci.yml](../.github/workflows/ci.yml), [migrate-database.yml](../.github/workflows/migrate-database.yml)
 
 ---
 
@@ -173,7 +173,7 @@ pnpm db:migrate:remote    # skip if D1 already migrated
 pnpm deploy:api
 ```
 
-Or push to `main` and let [deploy-api.yml](../.github/workflows/deploy-api.yml) run.
+Or run `pnpm migrate:deploy:production` and `pnpm deploy:api` with Cloudflare credentials.
 
 ### Wrangler auth (local deploy)
 
@@ -354,7 +354,7 @@ sequenceDiagram
 
     Dev->>GH: Merge PR to main
     GH->>Pages: Auto build + deploy static site
-    GH->>GHA: deploy-api.yml (when api/db changes)
+    GH->>GHA: migrate-database.yml or pnpm deploy:api (when api/db changes)
     GHA->>D1: d1 migrations apply --remote
     GHA->>Worker: wrangler deploy
     Note over Pages: NEXT_PUBLIC_API_URL<br/>NEXT_PUBLIC_MAPBOX_TOKEN<br/>NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY

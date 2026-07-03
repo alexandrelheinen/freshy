@@ -41,12 +41,6 @@ export function FreshnessBar({
   );
 }
 
-/** @deprecated Use FreshnessBar */
-export function AcStrengthBar({ level }: { level: 1 | 2 | 3 }) {
-  return <FreshnessBar segments={level} tone="blue" />;
-}
-
-/** Five snowflake icons used on place detail (Stitch detalhes_do_local). */
 export function FreshnessSnowflakes({
   segments,
   tone = 'blue',
@@ -76,18 +70,10 @@ export function FreshnessSnowflakes({
   );
 }
 
-/** @deprecated Use FreshnessSnowflakes */
-export function AcStrengthSnowflakes({ level }: { level: 1 | 2 | 3 }) {
-  return <FreshnessSnowflakes segments={level} tone="blue" />;
-}
-
 export * from './tokens';
 
 export { ThemeProvider, useTheme, useResolvedThemeId } from './theme/ThemeProvider';
 export {
-  readThemePreference,
-  writeThemePreference,
-  resolveThemeId,
   themePreferenceLabel,
   THEME_BOOTSTRAP_SCRIPT,
   type ThemePreference,

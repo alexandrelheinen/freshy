@@ -1,5 +1,3 @@
-# Disabled on push: deploy-api.yml already runs `d1 migrations apply --remote` before
-# Worker deploy on every main push. Automatic runs here caused double migrations.
 # Use workflow_dispatch for migration-only runs without deploying the Worker.
 name: Deploy database migrations
 

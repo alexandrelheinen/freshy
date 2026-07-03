@@ -60,9 +60,6 @@ service-account*.json
 gcloud-key.json
 .wrangler/
 
-# Prisma
-packages/db/prisma/migrations/**/migration_lock.toml
-
 # Misc
 *.pem
 .vercel

@@ -67,19 +67,19 @@ sequenceDiagram
     participant D1 as freshy-db D1
 
     GH->>Pages: Build Next.js static export
-    GH->>GHA: deploy-api.yml (api/db changes)
+    GH->>GHA: migrate-database.yml or pnpm deploy:api (manual)
     GHA->>D1: d1 migrations apply --remote
     GHA->>Worker: wrangler deploy
     Pages->>Worker: HTTPS /places /users/me
     Worker->>D1: Drizzle queries
 ```
 
-| Workflow                                                       | Trigger                      | Action                           |
-| -------------------------------------------------------------- | ---------------------------- | -------------------------------- |
-| Pages (Git integration)                                        | Push to `main`               | Build and deploy web shell       |
-| [deploy-api.yml](.github/workflows/deploy-api.yml)             | Push to `main`               | Build, D1 migrate, Worker deploy |
-| [migrate-database.yml](.github/workflows/migrate-database.yml) | Manual (`workflow_dispatch`) | D1 migrate only (no deploy)      |
-| [ci.yml](.github/workflows/ci.yml)                             | Pull requests                | Lint, test, build, screenshots   |
+| Workflow                                                       | Trigger                      | Action                         |
+| -------------------------------------------------------------- | ---------------------------- | ------------------------------ |
+| Pages (Git integration)                                        | Push to `main`               | Build and deploy web shell     |
+| [migrate-database.yml](.github/workflows/migrate-database.yml) | Manual (`workflow_dispatch`) | Remote D1 migrations only      |
+| `pnpm deploy:api`                                              | Local / CI                   | Build and deploy Worker        |
+| [ci.yml](.github/workflows/ci.yml)                             | Pull requests                | Lint, test, build, screenshots |
 
 Required GitHub secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`. See [docs/platforms.md](docs/platforms.md).
 

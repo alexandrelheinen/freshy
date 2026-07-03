@@ -153,7 +153,7 @@ pnpm db:migrate:remote
 pnpm deploy:api
 ```
 
-Or push to `main` and let [deploy-api.yml](../../.github/workflows/deploy-api.yml) run.
+Or run `pnpm migrate:deploy:production` and `pnpm deploy:api` locally with Cloudflare credentials.
 
 ---
 
@@ -186,7 +186,8 @@ Repository → **Settings → Secrets and variables → Actions**:
 
 | Workflow                                                                         | Trigger                     | Action                             |
 | -------------------------------------------------------------------------------- | --------------------------- | ---------------------------------- |
-| [deploy-api.yml](../../.github/workflows/deploy-api.yml)                         | Every push to `main`        | Build, D1 migrate, Worker deploy   |
+| `pnpm deploy:api`                                                                | Local / CI                  | Build and deploy Worker            |
+| [migrate-database.yml](../../.github/workflows/migrate-database.yml)             | Manual (`workflow_dispatch`) | Remote D1 migrations only          |
 | [migrate-database.yml](../../.github/workflows/migrate-database.yml)             | Manual only                 | D1 migrate only (no Worker deploy) |
 | [sync-place-defaults.yml](../../.github/workflows/sync-place-defaults.yml)       | Default place images change | `pnpm upload:place-defaults`       |
 | [production-screenshots.yml](../../.github/workflows/production-screenshots.yml) | Web or UI change            | Live Pages screenshots → R2        |
