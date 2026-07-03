@@ -7,6 +7,7 @@ import {
   FRESHNESS_LEVEL_LABELS,
   FreshnessBar,
   EXPLORE_FILTER_CHIPS,
+  EXPLORE_MIN_FRESHNESS_CHIPS,
   GlassCard,
   MAP_SEARCH,
   MaterialIcon,
@@ -19,6 +20,7 @@ import {
   useResolvedThemeId,
   type MaterialIconName,
   type PlaceCategory,
+  type FreshnessLevelId,
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
 import { getThemeTokens } from '@freshy/theme/tokens';
@@ -37,6 +39,8 @@ import { circlePolygonGeoJson } from '../lib/map-circle';
 import { locationStatusMessage } from '../lib/location-messages';
 import { useUserLocation } from '../lib/use-user-location';
 import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
+import { useMinFreshnessFilter } from '../lib/use-min-freshness-filter';
+import { minFreshnessScore } from '../lib/min-freshness-filter-storage';
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import { SearchRadiusControl } from './SearchRadiusControl';
 import { PlaceMapMarker, UserLocationMarker, VerifiedBadge, freshnessLabel } from './map-markers';
@@ -281,6 +285,11 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     zoomForSearchRadius,
   } = useUserLocation();
   const { verifiedOnly } = useVerifiedOnlyFilter();
+  const { minFreshnessLevel, setMinFreshnessLevel } = useMinFreshnessFilter();
+  const minFreshnessScoreValue = useMemo(
+    () => minFreshnessScore(minFreshnessLevel),
+    [minFreshnessLevel],
+  );
   const resolvedTheme = useResolvedThemeId();
   const searchPulseColor = useMemo(() => {
     const color = readThemeColor('outline-variant');
@@ -348,6 +357,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       zoom: number;
       category?: string;
       verifiedOnly?: boolean;
+      minFreshnessLevel?: number;
     }) => {
       const radius = cappedSearchRadiusKm(
         opts.lat,
@@ -361,6 +371,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         radius,
         category: opts.category,
         verifiedOnly: opts.verifiedOnly,
+        minFreshnessLevel: opts.minFreshnessLevel,
       });
       if (places === null) {
         setPlacesLoadError('Could not load places for this area. Try again in a moment.');
@@ -396,9 +407,10 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         zoom: anchor.zoom,
         category: activeCategory,
         verifiedOnly,
+        minFreshnessLevel: minFreshnessScoreValue,
       });
     },
-    [activeCategory, loadPlaces, setMapCenter, verifiedOnly],
+    [activeCategory, loadPlaces, setMapCenter, verifiedOnly, minFreshnessScoreValue],
   );
 
   useEffect(() => {
@@ -426,8 +438,9 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       zoom: searchAnchor.zoom,
       category: activeCategory,
       verifiedOnly,
+      minFreshnessLevel: minFreshnessScoreValue,
     });
-  }, [activeCategory, loadPlaces, searchAnchor, verifiedOnly]);
+  }, [activeCategory, loadPlaces, searchAnchor, verifiedOnly, minFreshnessScoreValue]);
 
   const decreaseSearchRadius = () =>
     setViewState((v) => {
@@ -541,42 +554,83 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
   );
 
   const filterChips = (
-    <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
-      <button
-        type="button"
-        onClick={() => setActiveCategory(undefined)}
-        aria-label="All places"
-        aria-pressed={activeCategory == null}
-        className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 shadow-sm transition-colors ${
-          activeCategory == null
-            ? 'bg-primary text-on-primary'
-            : 'bg-surface-container-high text-on-surface-variant hover:bg-secondary-container'
-        }`}
-      >
-        <MaterialIcon name="explore" size={18} />
-        <span className="whitespace-nowrap text-sm font-medium">All</span>
-      </button>
-      {EXPLORE_FILTER_CHIPS.map((chip) => {
-        const isActive = activeCategory === chip.category;
-        const icon = chipIcon(chip.category);
-        return (
-          <button
-            key={chip.label}
-            type="button"
-            onClick={() => setActiveCategory(chip.category)}
-            aria-label={chip.label}
-            aria-pressed={isActive}
-            className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 shadow-sm transition-colors ${
-              isActive
-                ? 'bg-primary text-on-primary'
-                : 'glass border border-glass-border text-secondary hover:bg-glass-surface md:bg-surface-container-high md:text-on-surface-variant md:hover:bg-secondary-container'
-            }`}
-          >
-            {icon ? <MaterialIcon name={icon} size={18} /> : null}
-            <span className="whitespace-nowrap text-sm font-medium">{chip.label}</span>
-          </button>
-        );
-      })}
+    <div className="space-y-2">
+      <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+        <button
+          type="button"
+          onClick={() => setActiveCategory(undefined)}
+          aria-label="All places"
+          aria-pressed={activeCategory == null}
+          className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 shadow-sm transition-colors ${
+            activeCategory == null
+              ? 'bg-primary text-on-primary'
+              : 'bg-surface-container-high text-on-surface-variant hover:bg-secondary-container'
+          }`}
+        >
+          <MaterialIcon name="explore" size={18} />
+          <span className="whitespace-nowrap text-sm font-medium">All</span>
+        </button>
+        {EXPLORE_FILTER_CHIPS.map((chip) => {
+          const isActive = activeCategory === chip.category;
+          const icon = chipIcon(chip.category);
+          return (
+            <button
+              key={chip.label}
+              type="button"
+              onClick={() => setActiveCategory(chip.category)}
+              aria-label={chip.label}
+              aria-pressed={isActive}
+              className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 shadow-sm transition-colors ${
+                isActive
+                  ? 'bg-primary text-on-primary'
+                  : 'glass border border-glass-border text-secondary hover:bg-glass-surface md:bg-surface-container-high md:text-on-surface-variant md:hover:bg-secondary-container'
+              }`}
+            >
+              {icon ? <MaterialIcon name={icon} size={18} /> : null}
+              <span className="whitespace-nowrap text-sm font-medium">{chip.label}</span>
+            </button>
+          );
+        })}
+      </div>
+      <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+        <button
+          type="button"
+          onClick={() => setMinFreshnessLevel(null)}
+          aria-label="Any freshness level"
+          aria-pressed={minFreshnessLevel == null}
+          className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 shadow-sm transition-colors ${
+            minFreshnessLevel == null
+              ? 'bg-primary text-on-primary'
+              : 'bg-surface-container-high text-on-surface-variant hover:bg-secondary-container'
+          }`}
+        >
+          <MaterialIcon name="ac_unit" size={18} />
+          <span className="whitespace-nowrap text-sm font-medium">Any freshness</span>
+        </button>
+        {EXPLORE_MIN_FRESHNESS_CHIPS.map((chip) => {
+          const isActive = minFreshnessLevel === chip.level;
+          const bar = freshnessBarState(chip.level);
+          return (
+            <button
+              key={chip.level}
+              type="button"
+              onClick={() => setMinFreshnessLevel(chip.level as FreshnessLevelId)}
+              aria-label={`Minimum freshness: ${chip.label}`}
+              aria-pressed={isActive}
+              className={`flex shrink-0 items-center gap-2 rounded-full px-3 py-1.5 shadow-sm transition-colors ${
+                isActive
+                  ? 'bg-primary text-on-primary'
+                  : 'glass border border-glass-border text-secondary hover:bg-glass-surface md:bg-surface-container-high md:text-on-surface-variant md:hover:bg-secondary-container'
+              }`}
+            >
+              <span className="inline-flex w-10">
+                <FreshnessBar segments={bar.segments} tone={bar.tone} />
+              </span>
+              <span className="whitespace-nowrap text-sm font-medium">{chip.label}+</span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 
