@@ -26,6 +26,7 @@ export const BRAND_NAME = 'Freshy';
 export const BRAND_TAGLINE = 'Find fresh places near you, from natural shade to cold AC.';
 export const BRAND_TITLE = 'Freshy | Fresh Places Map';
 export const BRAND_ICON = defaultThemeIcons.brand;
+export const LOGO_FONT = getDefaultThemeTokens().fonts.logo.family;
 
 export const TYPOGRAPHY_SCALE = [
   'display-lg',

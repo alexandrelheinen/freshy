@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useState, type ReactNode } from 'react';
 import {
   BRAND_ICON,
+  BRAND_NAME,
   MaterialIcon,
   NAV_ICONS,
   ROUTES,
@@ -18,6 +19,39 @@ import { isStudioAdmin } from '../lib/studio-api';
 import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
 
 export type NavActiveId = 'explore' | 'cooling' | 'profile' | 'studio';
+
+/** Shared height for header controls (nav links, utilities). Logo uses natural metrics. */
+const HEADER_CONTROL_CLASS = 'h-10';
+
+/** Icon + wordmark as one lockup: no gap, optical offset from theme tokens. */
+function BrandLockup({
+  iconSize,
+  textClassName,
+  as: Text = 'span',
+  className = '',
+}: {
+  iconSize: 32 | 40;
+  textClassName: string;
+  as?: 'span' | 'h1';
+  className?: string;
+}) {
+  const wordmarkTuck = iconSize === 40 ? '-ml-2' : '-ml-1.5';
+
+  return (
+    <div className={`inline-flex items-center ${className}`}>
+      <MaterialIcon
+        name={BRAND_ICON}
+        className="shrink-0 leading-none text-primary"
+        size={iconSize}
+      />
+      <Text
+        className={`m-0 shrink-0 p-0 font-logo tracking-logo leading-none text-primary ${wordmarkTuck} translate-y-[var(--font-logo-offset-y,-0.08em)] ${textClassName}`}
+      >
+        {BRAND_NAME}
+      </Text>
+    </div>
+  );
+}
 
 const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 
@@ -83,17 +117,19 @@ function ThemeMenu({ variant = 'header' }: { variant?: 'header' | 'menu' }) {
   }
 
   return (
-    <div className="relative">
+    <div className="relative flex items-center">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="flex h-10 items-center gap-2 rounded-full bg-surface-container-high px-3 text-on-surface-variant transition-colors hover:text-primary"
+        className="inline-flex h-10 items-center gap-2 rounded-full bg-surface-container-high px-3 text-on-surface-variant transition-colors hover:text-primary"
         aria-label="Theme"
         aria-expanded={open}
         aria-haspopup="listbox"
       >
-        <MaterialIcon name="routine" className="text-current" />
-        <span className="hidden font-label-caps sm:inline">{themePreferenceLabel(preference)}</span>
+        <MaterialIcon name="routine" size={20} className="shrink-0 leading-none text-current" />
+        <span className="hidden font-label-caps leading-none sm:inline">
+          {themePreferenceLabel(preference)}
+        </span>
       </button>
       {open ? (
         <>
@@ -190,7 +226,7 @@ function VerifiedOnlyToggle({
           : 'bg-surface-container-high text-on-surface-variant hover:text-primary'
       }`}
     >
-      <MaterialIcon name="verified" filled={verifiedOnly} className="text-current" />
+      <MaterialIcon name="verified" filled={verifiedOnly} size={20} className="leading-none text-current" />
     </button>
   );
 }
@@ -207,7 +243,7 @@ function ClerkProfileAvatarLink({ className = '' }: { className?: string }) {
       {isSignedIn && user?.imageUrl ? (
         <img src={user.imageUrl} alt="" className="h-full w-full object-cover" />
       ) : (
-        <MaterialIcon name="digital_wellbeing" className="text-primary" />
+        <MaterialIcon name="digital_wellbeing" size={20} className="leading-none text-primary" />
       )}
     </Link>
   );
@@ -221,7 +257,7 @@ function ProfileAvatarLink({ className = '' }: { className?: string }) {
         className={`flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-primary-container bg-primary-container/30 ${className}`}
         aria-label="Profile"
       >
-        <MaterialIcon name="digital_wellbeing" className="text-primary" />
+        <MaterialIcon name="digital_wellbeing" size={20} className="leading-none text-primary" />
       </Link>
     );
   }
@@ -235,18 +271,25 @@ function NavLink({
   iconName,
   isActive,
   onClick,
+  variant = 'menu',
 }: {
   href: string;
   label: string;
   iconName: MaterialIconName;
   isActive: boolean;
   onClick?: () => void;
+  variant?: 'menu' | 'bar';
 }) {
+  const layoutClass =
+    variant === 'bar'
+      ? `group inline-flex ${HEADER_CONTROL_CLASS} items-center gap-2 rounded-lg px-3`
+      : 'group flex items-center gap-3 rounded-lg px-2 py-3';
+
   return (
     <Link
       href={href}
       onClick={onClick}
-      className={`group flex items-center gap-3 rounded-lg px-2 py-3 font-label-caps transition-colors ${
+      className={`${layoutClass} font-label-caps transition-colors ${
         isActive
           ? 'text-primary'
           : 'text-on-surface-variant hover:bg-surface-container hover:text-primary'
@@ -255,10 +298,10 @@ function NavLink({
       <MaterialIcon
         name={iconName}
         filled={isActive}
-        size={22}
-        className="transition-transform group-hover:scale-110"
+        size={20}
+        className="shrink-0 leading-none transition-transform group-hover:scale-110"
       />
-      {label}
+      <span className="leading-none">{label}</span>
     </Link>
   );
 }
@@ -322,41 +365,45 @@ export function AppBottomNav(_props: { active?: NavActiveId }) {
 }
 
 export function AppTopNav({ active = 'explore' }: { active?: NavActiveId }) {
-  const studioLink = (isAdmin: boolean) =>
-    isAdmin ? (
-      <NavLink
-        href={ROUTES.studio}
-        label="Studio"
-        iconName="dashboard_2_edit"
-        isActive={active === 'studio'}
-      />
-    ) : null;
-
   return (
-    <header className="fixed top-0 z-nav hidden h-16 w-full items-center justify-between bg-surface px-10 shadow-sm md:flex">
-      <div className="flex items-center gap-10">
-        <Link href={ROUTES.explore} className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center">
-            <MaterialIcon name={BRAND_ICON} className="text-primary" size={40} />
-          </div>
-          <span className="font-display-lg text-3xl text-primary">Freshy</span>
-        </Link>
+    <header className="fixed top-0 z-nav hidden h-16 w-full items-center bg-surface px-10 shadow-sm md:flex">
+      <Link
+        href={ROUTES.explore}
+        className="inline-flex shrink-0 items-center"
+        aria-label={`${BRAND_NAME} home`}
+      >
+        <BrandLockup iconSize={40} textClassName="text-[2.5rem]" />
+      </Link>
 
-        <nav className="flex items-center gap-8">
-          {DESKTOP_NAV_ITEMS.map((item) => (
-            <NavLink
-              key={item.id}
-              href={item.href}
-              label={item.label}
-              iconName={NAV_ICONS[item.id] as MaterialIconName}
-              isActive={active === item.id}
-            />
-          ))}
-          {clerkEnabled ? <ClerkAdminFlag>{studioLink}</ClerkAdminFlag> : null}
-        </nav>
-      </div>
+      <nav className="ml-10 flex items-center gap-6 lg:ml-12 lg:gap-8" aria-label="Primary">
+        {DESKTOP_NAV_ITEMS.map((item) => (
+          <NavLink
+            key={item.id}
+            href={item.href}
+            label={item.label}
+            iconName={NAV_ICONS[item.id] as MaterialIconName}
+            isActive={active === item.id}
+            variant="bar"
+          />
+        ))}
+        {clerkEnabled ? (
+          <ClerkAdminFlag>
+            {(isAdmin) =>
+              isAdmin ? (
+                <NavLink
+                  href={ROUTES.studio}
+                  label="Studio"
+                  iconName="dashboard_2_edit"
+                  isActive={active === 'studio'}
+                  variant="bar"
+                />
+              ) : null
+            }
+          </ClerkAdminFlag>
+        ) : null}
+      </nav>
 
-      <div className="flex items-center gap-4">
+      <div className="ml-auto flex h-10 shrink-0 items-center gap-3">
         <VerifiedOnlyToggle />
         <ThemeMenu />
         <ProfileAvatarLink />
@@ -383,10 +430,10 @@ export function AppMobileHeader({
     leading = (
       <Link
         href={backHref}
-        className="rounded-full p-2 text-primary transition-colors hover:bg-primary/10 active:scale-95"
+        className={`inline-flex ${HEADER_CONTROL_CLASS} w-10 shrink-0 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10 active:scale-95`}
         aria-label="Go back"
       >
-        <MaterialIcon name="arrow_back" />
+        <MaterialIcon name="arrow_back" className="leading-none" />
       </Link>
     );
   } else {
@@ -394,11 +441,11 @@ export function AppMobileHeader({
       <button
         type="button"
         onClick={() => setMenuOpen((open) => !open)}
-        className="rounded-full p-2 text-primary transition-colors hover:bg-primary/10 active:scale-95"
+        className={`inline-flex ${HEADER_CONTROL_CLASS} w-10 shrink-0 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10 active:scale-95`}
         aria-label={menuOpen ? 'Close menu' : 'Open menu'}
         aria-expanded={menuOpen}
       >
-        <MaterialIcon name={menuOpen ? 'close' : 'menu'} />
+        <MaterialIcon name={menuOpen ? 'close' : 'menu'} className="leading-none" />
       </button>
     );
   }
@@ -419,19 +466,14 @@ export function AppMobileHeader({
       <div className="flex min-w-0 flex-1 items-center gap-2">
         {leading}
         {showBrand && !backHref ? (
-          <>
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center">
-              <MaterialIcon name={BRAND_ICON} className="text-primary" size={32} />
-            </div>
-            <h1 className="truncate font-display-lg text-xl tracking-tight text-primary">Freshy</h1>
-          </>
+          <BrandLockup as="h1" iconSize={32} textClassName="truncate text-[2rem]" className="min-w-0" />
         ) : title ? (
           <h1 className="truncate font-headline-lg-mobile text-headline-lg-mobile tracking-tight text-primary">
             {title}
           </h1>
         ) : null}
       </div>
-      <div className="flex shrink-0 items-center gap-2">
+      <div className={`flex shrink-0 items-center gap-2 ${HEADER_CONTROL_CLASS}`}>
         {showHeaderUtilities ? (
           <>
             <VerifiedOnlyToggle />

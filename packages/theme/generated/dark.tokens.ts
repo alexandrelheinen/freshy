@@ -153,6 +153,34 @@ export const radius = {
   full: "9999px",
 } as const;
 
+export const fonts = {
+  sans: {
+    family: "Quicksand",
+    fallbacks: [
+      "system-ui",
+      "sans-serif",
+    ],
+    weights: [
+      400,
+      500,
+      600,
+      700,
+    ],
+  },
+  logo: {
+    family: "Cherry Bomb One",
+    fallbacks: [
+      "system-ui",
+      "sans-serif",
+    ],
+    weights: [
+      400,
+    ],
+    letterSpacing: "-0.02em",
+    baselineOffset: "-0.11em",
+  },
+} as const;
+
 export const icons = {
   brand: "nest_farsight_cool",
   nav: {

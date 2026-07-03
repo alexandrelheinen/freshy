@@ -190,7 +190,7 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
         </section>
 
         <div className="px-margin-mobile md:px-10">
-          <h2 className="mt-6 font-display-lg text-display-lg text-on-surface">{place.name}</h2>
+          <h2 className="mt-6 font-headline-lg text-headline-lg text-on-surface">{place.name}</h2>
 
           <section className="relative z-10 mt-4">
             <GlassCard className="flex flex-col items-center p-4 text-center shadow-card-elevated">

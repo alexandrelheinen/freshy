@@ -18,6 +18,11 @@
       "types": "./src/roles.ts",
       "import": "./src/roles.ts",
       "default": "./src/roles.ts"
+    },
+    "./fonts": {
+      "types": "./src/fonts.ts",
+      "import": "./src/fonts.ts",
+      "default": "./src/fonts.ts"
     }
   },
   "typesVersions": {
@@ -30,13 +35,16 @@
       ],
       "roles": [
         "src/roles.ts"
+      ],
+      "fonts": [
+        "src/fonts.ts"
       ]
     }
   },
   "scripts": {
     "build": "tsx compiler/compile-themes.ts",
     "validate": "tsx compiler/validate-themes.ts",
-    "test": "pnpm build && tsx --test compiler/compile-themes.test.ts compiler/contrast.test.ts compiler/parity.test.ts",
+    "test": "pnpm build && tsx --test compiler/compile-themes.test.ts compiler/contrast.test.ts compiler/parity.test.ts src/fonts.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

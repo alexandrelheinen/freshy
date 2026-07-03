@@ -70,5 +70,7 @@
   --shadow-card-elevated: 0 20px 20px rgba(0, 0, 0, 0.35);
   --shadow-nav: 0 -4px 20px rgba(0, 0, 0, 0.4);
   --shadow-floating: 0 2px 4px rgba(0, 0, 0, 0.35);
+  --font-logo-letter-spacing: -0.02em;
+  --font-logo-offset-y: -0.11em;
   color-scheme: dark;
 }

@@ -10,7 +10,7 @@ export function StudioNotFound() {
       data-page="studio-not-found"
     >
       <MaterialIcon name="search_off" size={48} className="text-secondary" />
-      <h1 className="mt-4 font-display-lg text-headline-lg text-on-surface">Page not found</h1>
+      <h1 className="mt-4 font-headline-lg text-headline-lg text-on-surface">Page not found</h1>
       <p className="mt-2 max-w-sm text-body-lg text-secondary">
         This page does not exist or you do not have access to it.
       </p>

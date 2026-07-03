@@ -6,6 +6,7 @@ import {
   BRAND_NAME,
   BRAND_TAGLINE,
   BRAND_TITLE,
+  LOGO_FONT,
   DEFAULT_PLACE_PHOTO_PATHS,
   EXPLORE_FILTER_CHIPS,
   getPlacePhotoUrl,
@@ -72,6 +73,7 @@ describe('@freshy/ui tokens', () => {
 
   it('defines navigation and brand icons', () => {
     assert.equal(BRAND_ICON, 'nest_farsight_cool');
+    assert.equal(LOGO_FONT, 'Cherry Bomb One');
     assert.equal(NAV_ICONS.explore, 'explore');
     assert.equal(NAV_ICONS.saved, 'bookmark_heart');
     assert.equal(NAV_ICONS.cooling, 'climate_mini_split');

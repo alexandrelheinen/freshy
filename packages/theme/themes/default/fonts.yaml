@@ -1,0 +1,22 @@
+# UI body font (Freshy Arctic: Quicksand throughout the interface).
+sans:
+  family: Quicksand
+  fallbacks:
+    - system-ui
+    - sans-serif
+  weights:
+    - 400
+    - 500
+    - 600
+    - 700
+
+# Brand wordmark font
+logo:
+  family: 'Concert One'
+  fallbacks:
+    - system-ui
+    - sans-serif
+  weights:
+    - 400
+  letterSpacing: '0.00em'
+  baselineOffset: '-0.08em'

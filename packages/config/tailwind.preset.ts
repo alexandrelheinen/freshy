@@ -1,4 +1,5 @@
 import { getDefaultThemeTokens } from '@freshy/theme/tokens';
+import { fontStack } from '@freshy/theme/fonts';
 import {
   COLOR_ROLES,
   SHADOW_ROLES,
@@ -12,6 +13,7 @@ import { FRESHY_Z_INDEX } from './layering';
 export { FRESHY_Z_INDEX } from './layering';
 
 const defaultTheme = getDefaultThemeTokens();
+const logoLetterSpacing = defaultTheme.fonts.logo.letterSpacing ?? '-0.02em';
 
 export const freshyColors = Object.fromEntries(
   COLOR_ROLES.map((role: ColorRole) => [role, colorVarRef(role)]),
@@ -37,7 +39,11 @@ const preset = {
         glass: 'var(--effect-glass-blur)',
       },
       fontFamily: {
-        sans: ['Quicksand', 'system-ui', 'sans-serif'],
+        sans: fontStack(defaultTheme.fonts.sans),
+        logo: fontStack(defaultTheme.fonts.logo),
+      },
+      letterSpacing: {
+        logo: logoLetterSpacing,
       },
       fontSize: {
         'display-lg': [

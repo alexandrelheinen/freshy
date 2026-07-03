@@ -25,4 +25,12 @@ describe('default theme parity', () => {
     assert.equal(tokens.typography['headline-lg'].fontFamily, 'Quicksand');
     assert.equal(tokens.typography['body-lg'].fontWeight, '500');
   });
+
+  it('exports sans and logo font roles', () => {
+    const tokens = getDefaultThemeTokens();
+    assert.equal(tokens.fonts.sans.family, 'Quicksand');
+    assert.equal(tokens.fonts.logo.family, 'Cherry Bomb One');
+    assert.equal(tokens.fonts.logo.weights[0], 400);
+    assert.equal(tokens.fonts.logo.letterSpacing, '-0.02em');
+  });
 });

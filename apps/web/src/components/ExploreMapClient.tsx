@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import Map, { AttributionControl, Layer, Marker, Source } from 'react-map-gl';
 import Link from 'next/link';
 import {
@@ -45,6 +45,7 @@ import { minFreshnessScore } from '../lib/min-freshness-filter-storage';
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import { SearchRadiusControl } from './SearchRadiusControl';
 import { PlaceMapMarker, UserLocationMarker, VerifiedBadge, freshnessLabel } from './map-markers';
+import { nearbyPlacesForList } from '../lib/explore-nearby-places';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
 
@@ -218,11 +219,13 @@ function NearbyListItem({
   userLocation,
   isSelected,
   onSelect,
+  itemRef,
 }: {
   place: PlaceDto;
   userLocation: UserCoords | null;
   isSelected: boolean;
   onSelect: () => void;
+  itemRef?: RefObject<HTMLButtonElement | null>;
 }) {
   const freshness = freshnessBarState(place.aggregatedFreshnessLevel);
   const verified = isPlaceVerified(place);
@@ -230,6 +233,7 @@ function NearbyListItem({
 
   return (
     <button
+      ref={isSelected ? itemRef : undefined}
       type="button"
       onClick={onSelect}
       className={`w-full rounded-lg p-3 text-left transition-colors ${
@@ -313,6 +317,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     longitude: number;
     radiusKm: number;
   } | null>(null);
+  const selectedListItemRef = useRef<HTMLButtonElement>(null);
 
   const activeSearchRadiusKm = useMemo(
     () =>
@@ -338,21 +343,19 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     [viewState.latitude, viewState.zoom],
   );
 
-  const selected = useMemo(
-    () => places.find((p) => p.slug === selectedSlug) ?? places[0],
+  const selected = useMemo(() => {
+    if (!selectedSlug) return places[0] ?? null;
+    return places.find((p) => p.slug === selectedSlug) ?? null;
+  }, [places, selectedSlug]);
+
+  const nearbyPlaces = useMemo(
+    () => nearbyPlacesForList(places, selectedSlug, 5),
     [places, selectedSlug],
   );
 
-  const nearbyPlaces = useMemo(
-    () =>
-      [...places]
-        .sort(
-          (a, b) =>
-            (a.distanceKm ?? Number.POSITIVE_INFINITY) - (b.distanceKm ?? Number.POSITIVE_INFINITY),
-        )
-        .slice(0, 5),
-    [places],
-  );
+  useEffect(() => {
+    selectedListItemRef.current?.scrollIntoView({ block: 'nearest' });
+  }, [selectedSlug]);
 
   const loadPlaces = useCallback(
     async (opts: {
@@ -722,7 +725,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
           </div>
         </div>
 
-        {/* Desktop: left sidebar (list only until xl, when detail card has its own column) */}
+        {/* Desktop: left sidebar; detail card lives here on md-lg, floats right on xl+ */}
         <div className="pointer-events-none absolute left-4 top-20 z-map-overlay hidden max-h-[calc(100vh-13rem)] w-[min(20rem,calc(100vw-2rem))] flex-col gap-4 md:flex lg:left-6 lg:w-80 xl:max-h-[calc(100vh-12rem)] xl:w-96">
           <div className="glass-panel pointer-events-auto rounded-xl border border-glass-border p-4 shadow-xl">
             {filterChips}
@@ -751,11 +754,21 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
                     userLocation={userLocation}
                     isSelected={place.slug === selectedSlug}
                     onSelect={() => setSelectedSlug(place.slug)}
+                    itemRef={selectedListItemRef}
                   />
                 ))
               )}
             </div>
           </div>
+          {selected ? (
+            <div className="pointer-events-auto max-h-[min(40vh,22rem)] min-h-0 shrink-0 overflow-y-auto xl:hidden">
+              <ExplorePreviewCard
+                place={selected}
+                userLocation={userLocation}
+                variant="desktop"
+              />
+            </div>
+          ) : null}
         </div>
 
         {/* Mobile: bottom overlay stack */}
@@ -794,15 +807,15 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
             </div>
           </div>
           {selected && !exploreLocationMessage ? (
-            <div className="pointer-events-auto w-full">
+            <div className="pointer-events-auto max-h-[min(45vh,22rem)] w-full overflow-y-auto">
               <ExplorePreviewCard place={selected} userLocation={userLocation} variant="mobile" />
             </div>
           ) : null}
         </div>
 
-        {/* Desktop: right detail card (wide screens only to avoid md/lg overlap) */}
+        {/* Desktop: right detail card (xl+); md-lg uses sidebar panel above */}
         {selected ? (
-          <div className="pointer-events-none absolute bottom-8 right-6 z-map-overlay hidden w-[min(24rem,calc(100vw-24rem))] xl:block xl:right-8">
+          <div className="pointer-events-none absolute bottom-8 right-6 z-map-overlay hidden max-h-[calc(100vh-10rem)] w-[min(24rem,calc(100vw-26rem))] overflow-y-auto xl:block xl:right-8">
             <ExplorePreviewCard place={selected} userLocation={userLocation} variant="desktop" />
           </div>
         ) : null}

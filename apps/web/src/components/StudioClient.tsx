@@ -218,7 +218,7 @@ export function StudioClient() {
         <div className="px-8 py-8">
           <Link href={ROUTES.explore} className="flex items-center gap-3">
             <MaterialIcon name={BRAND_ICON} filled size={32} className="text-primary" />
-            <span className="font-display-lg text-headline-lg text-primary">{BRAND_NAME}</span>
+            <span className="font-logo tracking-logo text-headline-lg text-primary">{BRAND_NAME}</span>
           </Link>
           <p className="mt-2 font-label-caps text-secondary opacity-60">PLACE STUDIO</p>
         </div>
@@ -574,7 +574,7 @@ function StatCard({
         <MaterialIcon name={icon} />
       </div>
       <p className="mb-1 font-label-caps text-secondary">{label}</p>
-      <h3 className="font-display-lg text-headline-lg">{value}</h3>
+      <h3 className="font-headline-lg text-headline-lg">{value}</h3>
     </div>
   );
 }

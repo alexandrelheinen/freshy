@@ -48,12 +48,24 @@ describe('compile-themes', () => {
     }
   });
 
+  it('writes logo font letter-spacing variable', () => {
+    const css = fs.readFileSync(path.join(GENERATED_DIR, 'default.css'), 'utf8');
+    assert.match(css, /--font-logo-letter-spacing: 0\.00em;/);
+  });
+
+  it('writes logo font baseline offset variable', () => {
+    const css = fs.readFileSync(path.join(GENERATED_DIR, 'default.css'), 'utf8');
+    assert.match(css, /--font-logo-offset-y: -0\.08em;/);
+    const darkCss = fs.readFileSync(path.join(GENERATED_DIR, 'dark.css'), 'utf8');
+    assert.match(darkCss, /--font-logo-offset-y: -0\.11em;/);
+  });
+
   it('fails when a required color role is missing', () => {
     const theme = loadTheme('default');
     const broken = { ...theme.colors };
     delete (broken as Record<string, string>)['primary'];
     assert.throws(() => {
-      validateTheme('broken', broken, theme.effects);
+      validateTheme('broken', broken, theme.effects, theme.fonts);
     }, /missing color role: primary/);
   });
 });

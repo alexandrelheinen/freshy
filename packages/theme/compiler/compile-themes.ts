@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import YAML from 'yaml';
 import { COLOR_ROLES, SHADOW_ROLES, type ColorRole } from '../src/roles';
+import { FONT_ROLES, type FontDefinition, type ThemeFonts } from '../src/fonts';
 
 export interface ThemeMeta {
   id: string;
@@ -29,6 +30,7 @@ export interface ThemeFiles {
     }
   >;
   radius: Record<string, string>;
+  fonts: ThemeFonts;
   icons: {
     brand: string;
     nav: Record<string, string>;
@@ -67,17 +69,19 @@ export function loadTheme(themeId: string): ThemeFiles {
   const spacing = readYamlFile<ThemeFiles['spacing']>(path.join(themeDir, 'spacing.yaml'));
   const typography = readYamlFile<ThemeFiles['typography']>(path.join(themeDir, 'typography.yaml'));
   const radius = readYamlFile<ThemeFiles['radius']>(path.join(themeDir, 'radius.yaml'));
+  const fonts = readYamlFile<ThemeFiles['fonts']>(path.join(themeDir, 'fonts.yaml'));
   const icons = readYamlFile<ThemeFiles['icons']>(path.join(themeDir, 'icons.yaml'));
 
-  validateTheme(themeId, colors, effects);
+  validateTheme(themeId, colors, effects, fonts);
 
-  return { meta, colors, effects, spacing, typography, radius, icons };
+  return { meta, colors, effects, spacing, typography, radius, fonts, icons };
 }
 
 export function validateTheme(
   themeId: string,
   colors: Record<string, string>,
   effects: ThemeFiles['effects'],
+  fonts: ThemeFiles['fonts'],
 ): void {
   for (const role of COLOR_ROLES) {
     if (!colors[role]) {
@@ -93,6 +97,19 @@ export function validateTheme(
 
   if (!effects.glass?.blur) {
     throw new Error(`Theme "${themeId}" is missing effects.glass.blur`);
+  }
+
+  for (const role of FONT_ROLES) {
+    const definition = fonts[role] as FontDefinition | undefined;
+    if (!definition?.family) {
+      throw new Error(`Theme "${themeId}" is missing font role: ${role}`);
+    }
+    if (!definition.fallbacks?.length) {
+      throw new Error(`Theme "${themeId}" font "${role}" is missing fallbacks`);
+    }
+    if (!definition.weights?.length) {
+      throw new Error(`Theme "${themeId}" font "${role}" is missing weights`);
+    }
   }
 }
 
@@ -114,6 +131,14 @@ export function buildThemeCss(themeId: string, theme: ThemeFiles): string {
 
   for (const role of SHADOW_ROLES) {
     lines.push(`  --shadow-${role}: ${theme.effects.shadow[role]};`);
+  }
+
+  if (theme.fonts.logo.letterSpacing) {
+    lines.push(`  --font-logo-letter-spacing: ${theme.fonts.logo.letterSpacing};`);
+  }
+
+  if (theme.fonts.logo.baselineOffset) {
+    lines.push(`  --font-logo-offset-y: ${theme.fonts.logo.baselineOffset};`);
   }
 
   lines.push(`  color-scheme: ${theme.meta.colorScheme};`);
@@ -155,6 +180,8 @@ export const spacing = ${toTsObject(theme.spacing)} as const;
 export const typography = ${toTsObject(theme.typography)} as const;
 
 export const radius = ${toTsObject(theme.radius)} as const;
+
+export const fonts = ${toTsObject(theme.fonts)} as const;
 
 export const icons = ${toTsObject(theme.icons)} as const;
 `;

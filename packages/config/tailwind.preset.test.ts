@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { getDefaultThemeTokens } from '@freshy/theme/tokens';
-import { freshyColors, freshyShadows, freshySpacing, freshyTypography } from './tailwind.preset';
+import preset, { freshyColors, freshyShadows, freshySpacing, freshyTypography } from './tailwind.preset';
 import { FRESHY_Z_INDEX } from './layering';
 
 describe('@freshy/config tailwind preset', () => {
@@ -10,6 +10,19 @@ describe('@freshy/config tailwind preset', () => {
     assert.equal(freshyColors['primary-container'], 'var(--color-primary-container)');
     assert.equal(freshyColors.background, 'var(--color-background)');
     assert.ok(!Object.values(freshyColors).some((value) => value.includes('#')));
+  });
+
+  it('maps sans and logo font stacks from theme tokens', () => {
+    const tokens = getDefaultThemeTokens();
+    assert.deepEqual(preset.theme.extend.fontFamily.sans, [
+      tokens.fonts.sans.family,
+      ...tokens.fonts.sans.fallbacks,
+    ]);
+    assert.deepEqual(preset.theme.extend.fontFamily.logo, [
+      `"${tokens.fonts.logo.family}"`,
+      ...tokens.fonts.logo.fallbacks,
+    ]);
+    assert.equal(preset.theme.extend.letterSpacing.logo, tokens.fonts.logo.letterSpacing);
   });
 
   it('maps shadows to CSS variables', () => {
