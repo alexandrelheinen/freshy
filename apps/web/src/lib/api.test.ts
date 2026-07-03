@@ -5,12 +5,14 @@ import {
   buildCategoryPlacesPageFromList,
   buildPlacesSearchParams,
   directionsUrl,
+  filterPlacesByMinFreshnessLevel,
   formatDistance,
   formatDistanceWithWalk,
   formatRelativeTime,
   formatWalkTime,
   freshnessBarState,
   mergeDraftPlacesIntoResults,
+  placeMatchesMinFreshnessFilter,
 } from './api';
 
 describe('@freshy/web api helpers', () => {
@@ -156,5 +158,36 @@ describe('@freshy/web api helpers', () => {
     assert.equal(page.items[0]?.slug, 'near');
     assert.equal(page.total, 2);
     assert.equal(page.nearbyCount, 1);
+  });
+
+  it('excludes level 0 places when minimum freshness is higher', () => {
+    const places = [
+      {
+        id: '1',
+        slug: 'cold',
+        name: 'Cold Spot',
+        description: null,
+        category: 'CAFE',
+        latitude: 48.9,
+        longitude: 2.3,
+        address: null,
+        aggregatedFreshnessLevel: 'VERY_COLD_AC' as const,
+      },
+      {
+        id: '2',
+        slug: 'none',
+        name: 'No Cooling',
+        description: null,
+        category: 'CAFE',
+        latitude: 48.9,
+        longitude: 2.3,
+        address: null,
+        aggregatedFreshnessLevel: 'NONE' as const,
+      },
+    ];
+
+    assert.equal(placeMatchesMinFreshnessFilter(places[1]!, 2), false);
+    assert.equal(filterPlacesByMinFreshnessLevel(places, 2).length, 1);
+    assert.equal(filterPlacesByMinFreshnessLevel(places, 2)[0]?.slug, 'cold');
   });
 });

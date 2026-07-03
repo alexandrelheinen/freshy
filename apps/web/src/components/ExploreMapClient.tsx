@@ -38,6 +38,7 @@ import { cappedSearchRadiusKm } from '../lib/map-zoom';
 import { circlePolygonGeoJson } from '../lib/map-circle';
 import { locationStatusMessage } from '../lib/location-messages';
 import { useUserLocation } from '../lib/use-user-location';
+import { FilterChipScrollRow } from './FilterChipScrollRow';
 import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
 import { useMinFreshnessFilter } from '../lib/use-min-freshness-filter';
 import { minFreshnessScore } from '../lib/min-freshness-filter-storage';
@@ -560,7 +561,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
 
   const filterChips = (
     <div className="space-y-2">
-      <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+      <FilterChipScrollRow aria-label="Place category filters">
         <button
           type="button"
           onClick={() => setActiveCategory(undefined)}
@@ -596,8 +597,8 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
             </button>
           );
         })}
-      </div>
-      <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+      </FilterChipScrollRow>
+      <FilterChipScrollRow aria-label="Minimum freshness filters">
         <button
           type="button"
           onClick={() => setMinFreshnessLevel(null)}
@@ -635,7 +636,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
             </button>
           );
         })}
-      </div>
+      </FilterChipScrollRow>
     </div>
   );
 
