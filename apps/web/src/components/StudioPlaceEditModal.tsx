@@ -16,6 +16,7 @@ import {
 } from '@freshy/ui';
 import { defaultPlacePhotoLocalPath, defaultPlacePhotoR2Key } from '@freshy/config/place-photos';
 import type { StudioPlaceDto } from '../lib/studio-api';
+import { StudioContributorSummary } from './StudioContributorCell';
 
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 
@@ -189,6 +190,13 @@ export function StudioPlaceEditModal({ place, onCancel, onSave }: StudioPlaceEdi
         className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-outline-variant/20 bg-surface-container-lowest p-6 shadow-2xl"
       >
         <h3 className="font-headline-lg text-headline-lg text-on-surface">Edit place</h3>
+
+        <div className="mt-4">
+          <StudioContributorSummary
+            contributor={place.contributor}
+            submittedAt={place.createdAt}
+          />
+        </div>
 
         <div className="mt-6 space-y-4">
           <section className="space-y-3">

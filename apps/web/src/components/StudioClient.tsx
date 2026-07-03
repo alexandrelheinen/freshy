@@ -26,6 +26,7 @@ import {
   type StudioStatsDto,
 } from '../lib/studio-api';
 import { StudioPlaceEditModal } from './StudioPlaceEditModal';
+import { StudioContributorCell } from './StudioContributorCell';
 import { freshnessBarState } from '../lib/api';
 
 type StudioView = 'all' | 'verified' | 'pending' | 'duplicate';
@@ -340,6 +341,7 @@ export function StudioClient() {
                       Coolness
                     </th>
                     <th className="px-4 py-4 font-label-caps uppercase text-secondary">Status</th>
+                    <th className="px-4 py-4 font-label-caps uppercase text-secondary">Added by</th>
                     <th className="px-4 py-4 text-right font-label-caps uppercase text-secondary md:px-8">
                       Actions
                     </th>
@@ -393,6 +395,12 @@ export function StudioClient() {
                         </div>
                       </td>
                       <td className="px-4 py-5">{statusBadge(place.studioStatus)}</td>
+                      <td className="px-4 py-5">
+                        <StudioContributorCell
+                          contributor={place.contributor}
+                          submittedAt={place.createdAt}
+                        />
+                      </td>
                       <td className="px-4 py-5 text-right md:px-8">
                         <div className="flex justify-end gap-2">
                           {place.studioStatus === 'pending' ? (
@@ -443,7 +451,7 @@ export function StudioClient() {
                   ))}
                   {!loading && items.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-8 py-12 text-center text-secondary">
+                      <td colSpan={6} className="px-8 py-12 text-center text-secondary">
                         No places match this view.
                       </td>
                     </tr>
