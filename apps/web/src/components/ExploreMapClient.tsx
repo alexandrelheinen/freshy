@@ -658,9 +658,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         </div>
 
         {/* Mobile: bottom overlay stack */}
-        <div
-          className={`pointer-events-none absolute inset-x-0 bottom-0 z-map-overlay flex flex-col gap-3 px-margin-mobile pb-4 md:hidden ${exploreLocationMessage ? 'pointer-events-none' : ''}`}
-        >
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-map-overlay flex flex-col gap-3 px-margin-mobile pb-4 md:hidden">
           <div className="grid grid-cols-[3rem_1fr_3rem] items-end gap-2">
             <div aria-hidden="true" />
             <div className="pointer-events-auto flex justify-center">

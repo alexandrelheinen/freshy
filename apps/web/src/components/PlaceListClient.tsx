@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { MaterialIcon, PLACE_CATEGORY_LABELS, type PlaceCategory } from '@freshy/ui';
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceListCard } from './PlaceListCard';
@@ -31,7 +31,7 @@ export function PlaceListClient({
   navActive?: 'explore' | 'saved' | 'cooling' | 'profile';
   searchPlaceholder?: string;
   emptyMessage?: string;
-  statusBanner?: React.ReactNode;
+  statusBanner?: ReactNode;
 }) {
   const [places, setPlaces] = useState<PlaceDto[]>(initialPlaces ?? []);
   const [query, setQuery] = useState('');
