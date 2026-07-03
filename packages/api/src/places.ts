@@ -50,14 +50,15 @@ export function parseStoredTags(tags: string | string[] | null | undefined): str
   }
 }
 
-export function serializePlaceForApi<T extends Pick<Place, 'photoUrl' | 'category' | 'tags'>>(
-  place: T,
-): Omit<T, 'tags'> & { tags: string[] } {
+export function serializePlaceForApi<
+  T extends Pick<Place, 'photoUrl' | 'category' | 'tags'> & { createdById?: string | null },
+>(place: T): Omit<T, 'tags' | 'createdById'> & { tags: string[] } {
   const resolved = withResolvedPlacePhoto(place);
+  const { tags: _tags, createdById: _createdById, ...publicPlace } = resolved;
   return {
-    ...resolved,
+    ...publicPlace,
     tags: parseStoredTags(place.tags),
-  };
+  } as Omit<T, 'tags' | 'createdById'> & { tags: string[] };
 }
 
 export interface PlaceListItem extends Omit<Place, 'tags'> {

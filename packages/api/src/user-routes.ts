@@ -107,7 +107,7 @@ export function registerUserRoutes(app: Hono<AppEnv>): void {
           latitude: coords.latitude,
           longitude: coords.longitude,
         });
-        return c.json({ data: withResolvedPlacePhoto(place) }, 201);
+        return c.json({ data: serializePlaceForApi(place) }, 201);
       }
 
       const formData = await c.req.formData();
