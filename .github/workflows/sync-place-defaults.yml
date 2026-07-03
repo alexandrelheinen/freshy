@@ -37,7 +37,10 @@ jobs:
         run: |
           test -d apps/web/public/place-defaults
           ls -la apps/web/public/place-defaults/
-          test "$(find apps/web/public/place-defaults -maxdepth 1 -name 'default-*.png' | wc -l)" -eq 7
+          test "$(find apps/web/public/place-defaults -maxdepth 1 -name 'default-*.png' | wc -l)" -eq 8
+
+      - name: Install AWS CLI for R2 upload
+        run: pip install awscli --quiet
 
       - name: Sync to Cloudflare R2
         env:

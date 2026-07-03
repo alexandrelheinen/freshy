@@ -24,12 +24,18 @@
       "require": "./dist/freshness-levels.js",
       "default": "./freshness-levels.ts"
     },
+    "./r2-s3": {
+      "types": "./r2-s3.ts",
+      "import": "./r2-s3.ts",
+      "require": "./dist/r2-s3.js",
+      "default": "./r2-s3.ts"
+    },
     "./tailwind": "./tailwind.preset.ts"
   },
   "scripts": {
     "build": "pnpm --filter @freshy/theme build && tsc",
     "typecheck": "tsc --noEmit",
-    "test": "pnpm --filter @freshy/theme build && tsx --test place-photos.test.ts place-tags.test.ts freshness-levels.test.ts tailwind.preset.test.ts"
+    "test": "pnpm --filter @freshy/theme build && tsx --test place-photos.test.ts place-tags.test.ts freshness-levels.test.ts r2-s3.test.ts tailwind.preset.test.ts"
   },
   "dependencies": {
     "@freshy/theme": "workspace:*",
