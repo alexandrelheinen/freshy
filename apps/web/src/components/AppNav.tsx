@@ -17,7 +17,7 @@ import { DESKTOP_NAV_ITEMS, MOBILE_MENU_NAV_ITEMS } from '../lib/nav-config';
 import { isStudioAdmin } from '../lib/studio-api';
 import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
 
-export type NavActiveId = 'explore' | 'saved' | 'cooling' | 'profile' | 'studio';
+export type NavActiveId = 'explore' | 'cooling' | 'profile' | 'studio';
 
 const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 

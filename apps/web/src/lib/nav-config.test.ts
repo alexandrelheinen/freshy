@@ -9,11 +9,10 @@ describe('nav-config', () => {
     assert.deepEqual(ids, ['explore', 'cooling']);
   });
 
-  it('includes Saved in the mobile drawer', () => {
-    const saved = MOBILE_MENU_NAV_ITEMS.find((item) => item.id === 'saved');
-    assert.ok(saved, 'Saved should appear in the mobile menu');
-    assert.equal(saved.label, 'Saved');
-    assert.equal(saved.href, ROUTES.saved);
+  it('keeps Saved out of the mobile drawer', () => {
+    const ids = MOBILE_MENU_NAV_ITEMS.map((item) => item.id);
+    assert.deepEqual(ids, ['explore', 'cooling']);
+    assert.equal(ROUTES.saved, '/saved');
   });
 
   it('renders Profile only once in the mobile drawer footer', () => {

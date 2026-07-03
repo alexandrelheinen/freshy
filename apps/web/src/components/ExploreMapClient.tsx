@@ -22,13 +22,9 @@ import {
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
 import { getThemeTokens } from '@freshy/theme/tokens';
-import {
-  freshnessBarState,
-  directionsUrl,
-  formatDistance,
-  formatDistanceWithWalk,
-  isPlaceVerified,
-} from '../lib/api';
+import { freshnessBarState, directionsUrl, formatDistance, isPlaceVerified } from '../lib/api';
+import { formatPlaceDistanceFromUser, distanceKmFromUser } from '../lib/place-distance';
+import type { UserCoords } from '../lib/location-context';
 import { mapStyleUrl, type MapStyleId } from '../lib/map-styles';
 import { cappedSearchRadiusKm } from '../lib/map-zoom';
 import { circlePolygonGeoJson } from '../lib/map-circle';
@@ -72,12 +68,15 @@ function chipIcon(category?: PlaceCategory): MaterialIconName | null {
 
 function ExplorePreviewCard({
   place,
+  userLocation,
   variant = 'mobile',
 }: {
   place: PlaceDto;
+  userLocation: UserCoords | null;
   variant?: 'mobile' | 'desktop';
 }) {
   const freshness = freshnessBarState(place.aggregatedFreshnessLevel);
+  const distanceLabel = formatPlaceDistanceFromUser(place, userLocation);
 
   if (variant === 'desktop') {
     const validTags = filterValidPlaceTags(place.tags ?? []);
@@ -173,8 +172,12 @@ function ExplorePreviewCard({
                 {place.name}
               </h2>
               <p className="flex items-center gap-1 font-body-sm text-secondary">
-                <MaterialIcon name="location_on" size={14} />
-                {place.distanceKm != null ? formatDistanceWithWalk(place.distanceKm) : 'Nearby'}
+                {distanceLabel ? (
+                  <>
+                    <MaterialIcon name="location_on" size={14} />
+                    {distanceLabel}
+                  </>
+                ) : null}
               </p>
             </div>
           </div>
@@ -202,15 +205,18 @@ function ExplorePreviewCard({
 
 function NearbyListItem({
   place,
+  userLocation,
   isSelected,
   onSelect,
 }: {
   place: PlaceDto;
+  userLocation: UserCoords | null;
   isSelected: boolean;
   onSelect: () => void;
 }) {
   const freshness = freshnessBarState(place.aggregatedFreshnessLevel);
   const verified = isPlaceVerified(place);
+  const distanceKm = distanceKmFromUser(place, userLocation);
 
   return (
     <button
@@ -244,10 +250,8 @@ function NearbyListItem({
                 <FreshnessBar segments={freshness.segments} tone={freshness.tone} />
               </div>
             ) : null}
-            {place.distanceKm != null ? (
-              <span className="text-[10px] text-outline">
-                • {formatDistance(place.distanceKm)} away
-              </span>
+            {distanceKm != null ? (
+              <span className="text-[10px] text-outline">• {formatDistance(distanceKm)} away</span>
             ) : null}
           </div>
         </div>
@@ -648,6 +652,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
                   <NearbyListItem
                     key={place.id}
                     place={place}
+                    userLocation={userLocation}
                     isSelected={place.slug === selectedSlug}
                     onSelect={() => setSelectedSlug(place.slug)}
                   />
@@ -694,7 +699,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
           </div>
           {selected && !exploreLocationMessage ? (
             <div className="pointer-events-auto w-full">
-              <ExplorePreviewCard place={selected} variant="mobile" />
+              <ExplorePreviewCard place={selected} userLocation={userLocation} variant="mobile" />
             </div>
           ) : null}
         </div>
@@ -702,7 +707,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         {/* Desktop: right detail card (wide screens only to avoid md/lg overlap) */}
         {selected ? (
           <div className="pointer-events-none absolute bottom-8 right-6 z-map-overlay hidden w-[min(24rem,calc(100vw-24rem))] xl:block xl:right-8">
-            <ExplorePreviewCard place={selected} variant="desktop" />
+            <ExplorePreviewCard place={selected} userLocation={userLocation} variant="desktop" />
           </div>
         ) : null}
 

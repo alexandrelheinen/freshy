@@ -5,6 +5,8 @@ import { MaterialIcon, PLACE_CATEGORY_LABELS, type PlaceCategory } from '@freshy
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceListCard } from './PlaceListCard';
 import type { PlaceDto } from '../lib/api';
+import { distanceKmFromUser } from '../lib/place-distance';
+import { useUserLocation } from '../lib/use-user-location';
 
 type FilterChip = 'all' | 'cold' | 'nearby';
 
@@ -28,7 +30,7 @@ export function PlaceListClient({
   loadPlaces?: () => Promise<PlaceDto[]>;
   showBookmark?: boolean;
   onUnsave?: (placeId: string) => Promise<void>;
-  navActive?: 'explore' | 'saved' | 'cooling' | 'profile';
+  navActive?: 'explore' | 'cooling' | 'profile';
   searchPlaceholder?: string;
   emptyMessage?: string;
   statusBanner?: ReactNode;
@@ -37,6 +39,7 @@ export function PlaceListClient({
   const [query, setQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterChip>('all');
   const [loading, setLoading] = useState(!initialPlaces);
+  const { location } = useUserLocation();
 
   useEffect(() => {
     if (!loadPlaces) return;
@@ -49,10 +52,10 @@ export function PlaceListClient({
   }, [loadPlaces]);
 
   useEffect(() => {
-    if (activeFilter === 'nearby' && !places.some((place) => place.distanceKm != null)) {
+    if (activeFilter === 'nearby' && !location) {
       setActiveFilter('all');
     }
-  }, [activeFilter, places]);
+  }, [activeFilter, location]);
 
   const filtered = useMemo(() => {
     let list = places;
@@ -74,18 +77,19 @@ export function PlaceListClient({
           p.aggregatedFreshnessLevel === 'NATURALLY_FRESH',
       );
     }
-    if (activeFilter === 'nearby') {
-      list = list.filter((p) => p.distanceKm != null && p.distanceKm <= 1);
+    if (activeFilter === 'nearby' && location) {
+      list = list.filter((p) => {
+        const km = distanceKmFromUser(p, location);
+        return km != null && km <= 1;
+      });
     }
     return list;
-  }, [places, query, activeFilter]);
+  }, [places, query, activeFilter, location]);
 
   const filterChips: Array<{ id: FilterChip; label: string }> = [
     { id: 'all', label: 'All' },
     { id: 'cold', label: 'Coldest' },
-    ...(places.some((place) => place.distanceKm != null)
-      ? [{ id: 'nearby' as const, label: 'Within 1km' }]
-      : []),
+    ...(location ? [{ id: 'nearby' as const, label: 'Within 1km' }] : []),
   ];
 
   return (
