@@ -76,6 +76,31 @@ body {
   animation: marker-float 3s ease-in-out infinite;
 }
 
+[data-page='explore'] .mapboxgl-ctrl-top-right {
+  top: 4.25rem;
+  right: 0.75rem;
+}
+
+[data-page='explore'] .mapboxgl-ctrl-attrib.mapboxgl-compact {
+  margin: 0;
+  min-height: 1.5rem;
+  padding: 0 0.35rem;
+  font-size: 10px;
+  line-height: 1.2;
+  background-color: color-mix(in srgb, var(--color-surface) 82%, transparent);
+}
+
+[data-page='explore'] .mapboxgl-ctrl-attrib.mapboxgl-compact .mapboxgl-ctrl-attrib-button {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+[data-page='explore'] .mapboxgl-ctrl-attrib.mapboxgl-compact-show {
+  padding: 0.25rem 0.4rem;
+  font-size: 10px;
+  max-width: 12rem;
+}
+
 .status-bar-segment {
   height: 4px;
   width: 24px;

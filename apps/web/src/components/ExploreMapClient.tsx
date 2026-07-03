@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import Map, { Layer, Marker, Source } from 'react-map-gl';
+import Map, { AttributionControl, Layer, Marker, Source } from 'react-map-gl';
 import Link from 'next/link';
 import {
   FRESHNESS_LEVEL_LABELS,
@@ -480,6 +480,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
   const mapContent = MAPBOX_TOKEN ? (
     <Map
       mapboxAccessToken={MAPBOX_TOKEN}
+      attributionControl={false}
       {...viewState}
       onMove={(evt) => setViewState(evt.viewState)}
       onMoveEnd={(evt) =>
@@ -488,6 +489,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       style={{ width: '100%', height: '100%' }}
       mapStyle={mapStyleUrl(mapStyleId, streetsMapStyle)}
     >
+      <AttributionControl position="top-right" compact />
       {searchPulse ? (
         <Source
           id="search-radius-pulse"
@@ -680,19 +682,33 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         <div className="absolute inset-0">{mapContent}</div>
 
         {exploreLocationMessage ? (
-          <div className="absolute left-4 right-4 top-36 z-map-overlay mx-auto max-w-md rounded-xl border border-outline-variant/30 bg-surface/95 p-4 text-center shadow-lg backdrop-blur md:bottom-auto md:left-6 md:right-auto md:top-24 md:mx-0">
-            <p className="font-body-sm text-on-surface-variant">{exploreLocationMessage}</p>
-            <p className="mt-2 font-body-sm text-on-surface-variant">
-              You can also pan the map to search another area.
-            </p>
-            <button
-              type="button"
-              onClick={requestLocation}
-              className="mt-3 rounded-lg bg-primary px-4 py-2 font-label-caps text-on-primary"
-            >
-              Use my location
-            </button>
-          </div>
+          <>
+            <div className="absolute left-4 right-4 top-36 z-map-overlay mx-auto max-w-md rounded-xl border border-outline-variant/30 bg-surface/95 p-4 text-center shadow-lg backdrop-blur md:hidden">
+              <p className="font-body-sm text-on-surface-variant">{exploreLocationMessage}</p>
+              <p className="mt-2 font-body-sm text-on-surface-variant">
+                You can also pan the map to search another area.
+              </p>
+              <button
+                type="button"
+                onClick={requestLocation}
+                className="mt-3 rounded-lg bg-primary px-4 py-2 font-label-caps text-on-primary"
+              >
+                Use my location
+              </button>
+            </div>
+            <div className="pointer-events-auto absolute right-14 top-20 z-map-overlay hidden max-w-[11rem] text-right md:block lg:right-16 lg:max-w-[12rem]">
+              <p className="text-[10px] leading-snug text-on-surface-variant/90">
+                {exploreLocationMessage}
+              </p>
+              <button
+                type="button"
+                onClick={requestLocation}
+                className="mt-1 text-[10px] font-medium text-primary hover:underline"
+              >
+                Use my location
+              </button>
+            </div>
+          </>
         ) : null}
 
         {desktopResearchButton}
