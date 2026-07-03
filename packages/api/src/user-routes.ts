@@ -15,7 +15,7 @@ import {
   unsavePlace,
 } from './users';
 import { createPlaceSchema, createUserPlace } from './create-place';
-import { serializePlaceForApi, withResolvedPlacePhoto } from './places';
+import { serializePlaceForApi } from './places';
 import { resolvePlaceCoordinates } from './place-submission';
 import { handleCreatePlace } from './place-create-handler';
 import { photoFromFormData, requireParam } from './route-utils';
@@ -92,7 +92,8 @@ export function registerUserRoutes(app: Hono<AppEnv>): void {
       const contentType = c.req.header('content-type') ?? '';
       if (!contentType.includes('multipart/form-data')) {
         const body = await c.req.json<Record<string, unknown>>();
-        const { secret: _ignoredSecret, ...bodyWithoutSecret } = body;
+        const bodyWithoutSecret = { ...body };
+        delete (bodyWithoutSecret as { secret?: string }).secret;
         const parsed = createPlaceSchema.safeParse(bodyWithoutSecret);
         if (!parsed.success) {
           return c.json({ error: 'Invalid body', details: parsed.error.flatten() }, 400);

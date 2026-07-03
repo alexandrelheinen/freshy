@@ -31,7 +31,8 @@ describe('authenticated place submission', () => {
       tags: ['calm'],
       secret: 'user-uuid-123',
     };
-    const { secret: _ignoredSecret, ...bodyWithoutSecret } = body;
+    const bodyWithoutSecret = { ...body };
+    delete (bodyWithoutSecret as { secret?: string }).secret;
     const parsed = createPlaceSchema.safeParse(bodyWithoutSecret);
     assert.equal(parsed.success, true);
   });

@@ -54,14 +54,15 @@ export function serializePlaceForApi<
   T extends Pick<Place, 'photoUrl' | 'category' | 'tags'> & { createdById?: string | null },
 >(place: T): Omit<T, 'tags' | 'createdById'> & { tags: string[] } {
   const resolved = withResolvedPlacePhoto(place);
-  const { tags: _tags, createdById: _createdById, ...publicPlace } = resolved;
-  return {
-    ...publicPlace,
+  const publicPlace = {
+    ...resolved,
     tags: parseStoredTags(place.tags),
-  } as Omit<T, 'tags' | 'createdById'> & { tags: string[] };
+  };
+  delete (publicPlace as { createdById?: string | null }).createdById;
+  return publicPlace as Omit<T, 'tags' | 'createdById'> & { tags: string[] };
 }
 
-export interface PlaceListItem extends Omit<Place, 'tags'> {
+export interface PlaceListItem extends Omit<Place, 'tags' | 'createdById'> {
   tags: string[];
   distanceKm?: number;
 }
@@ -133,7 +134,7 @@ export async function categoryCounts(
 
 export async function featuredPlace(
   db: Db,
-): Promise<(Omit<Place, 'tags'> & { tags: string[] }) | null> {
+): Promise<(Omit<Place, 'tags' | 'createdById'> & { tags: string[] }) | null> {
   const rows = await db
     .select()
     .from(placesTable)
@@ -157,7 +158,7 @@ export interface PlaceReviewSummary {
   user: { displayName: string; username: string };
 }
 
-export interface PlaceDetail extends Omit<Place, 'tags'> {
+export interface PlaceDetail extends Omit<Place, 'tags' | 'createdById'> {
   tags: string[];
   reviews: PlaceReviewSummary[];
 }

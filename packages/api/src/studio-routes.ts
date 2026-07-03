@@ -19,11 +19,7 @@ import {
   updateStudioPlace,
   updateStudioPlaceSchema,
 } from './studio-places';
-import {
-  getStudioUserSecret,
-  listStudioUsers,
-  studioUsersQuerySchema,
-} from './studio-users';
+import { getStudioUserSecret, listStudioUsers, studioUsersQuerySchema } from './studio-users';
 
 export function registerStudioRoutes(app: Hono<AppEnv>): void {
   app.get('/studio/stats', requireAdmin, async (c) => {

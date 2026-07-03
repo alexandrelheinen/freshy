@@ -36,7 +36,8 @@ export function registerContributionRoutes(app: Hono<AppEnv>): void {
           );
         }
 
-        const { secret: _secret, ...placeInput } = parsed.data;
+        const placeInput = { ...parsed.data };
+        delete (placeInput as { secret?: string }).secret;
         const coords = await resolvePlaceCoordinates(placeInput, c.env.MAPBOX_ACCESS_TOKEN);
         if ('error' in coords) {
           return c.json({ error: coords.error }, 400);

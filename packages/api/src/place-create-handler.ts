@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm';
 import { places as placesTable } from '@freshy/db';
 import type { AppEnv } from './env';
 import { createUserPlace } from './create-place';
-import { withResolvedPlacePhoto, serializePlaceForApi } from './places';
+import { serializePlaceForApi } from './places';
 import { parseCreatePlaceFields, resolvePlaceCoordinates } from './place-submission';
 import { uploadPlacePhoto } from './place-photo-upload';
 import { isR2Configured, r2ContextFromEnv } from './storage/r2';
