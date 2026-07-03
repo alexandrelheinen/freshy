@@ -242,7 +242,7 @@ export function StudioClient() {
           <div className="flex flex-1 items-center gap-4">
             <h2 className="font-headline-lg text-headline-lg text-on-surface">Establishments</h2>
             <form
-              className="hidden items-center gap-2 rounded-full border border-outline-variant/20 bg-surface-container px-4 py-1.5 sm:flex"
+              className="flex flex-1 items-center gap-2 rounded-full border border-outline-variant/20 bg-surface-container px-4 py-1.5 md:max-w-xs"
               onSubmit={(event) => {
                 event.preventDefault();
                 setQuery(search.trim());
@@ -259,6 +259,30 @@ export function StudioClient() {
             </form>
           </div>
         </header>
+
+        <div className="hide-scrollbar flex gap-2 overflow-x-auto border-b border-outline-variant/10 px-4 py-3 md:hidden">
+          {VIEW_ITEMS.map((item) => {
+            const active = view === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => {
+                  setView(item.id);
+                  setPage(1);
+                }}
+                className={`flex shrink-0 items-center gap-2 rounded-full px-4 py-2 font-label-caps transition-colors ${
+                  active
+                    ? 'bg-primary text-on-primary'
+                    : 'bg-surface-container-high text-on-surface-variant'
+                }`}
+              >
+                <MaterialIcon name={item.icon} size={18} />
+                {item.label}
+              </button>
+            );
+          })}
+        </div>
 
         <div className="p-4 md:p-8">
           <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
