@@ -165,21 +165,35 @@ function ProfileSignedOutView({ showSignIn }: { showSignIn: boolean }) {
       <AppMobileHeader active="profile" />
       <AppTopNav active="profile" />
       <main className="mx-auto mt-20 max-w-4xl px-margin-mobile md:max-w-7xl md:px-10">
-        <section className="flex flex-col items-center py-16 text-center">
-          <h2 className="font-headline-lg-mobile text-on-surface">Sign in to Freshy</h2>
-          <p className="mt-2 max-w-sm text-on-surface-variant">
-            Save your favourite cooling spots and share how cool they feel inside.
+        <section className="mx-auto flex max-w-md flex-col items-center py-16 text-center">
+          <h2 className="font-headline-lg-mobile text-on-surface">Welcome to Freshy</h2>
+          <p className="mt-3 max-w-sm text-on-surface-variant">
+            Find cooling spots near you, join the community, or contribute a new place to the map.
           </p>
-          {showSignIn ? (
-            <SignInButton mode="modal">
-              <button
-                type="button"
-                className="mt-8 rounded-xl bg-primary px-8 py-3 font-semibold text-on-primary shadow-lg"
-              >
-                Sign in
-              </button>
-            </SignInButton>
-          ) : null}
+          <div className="mt-10 flex w-full flex-col gap-4">
+            {showSignIn ? (
+              <SignInButton mode="modal">
+                <button
+                  type="button"
+                  className="w-full rounded-xl bg-primary px-8 py-3.5 font-semibold text-on-primary shadow-lg"
+                >
+                  Connect or register
+                </button>
+              </SignInButton>
+            ) : null}
+            <Link
+              href={`${ROUTES.addPlace}?anonymous=1`}
+              className="w-full rounded-xl border border-primary bg-primary-container/30 px-8 py-3.5 font-semibold text-primary shadow-sm transition-colors hover:bg-primary-container/50"
+            >
+              Contribute
+            </Link>
+            <Link
+              href={ROUTES.explore}
+              className="w-full rounded-xl border border-outline-variant px-8 py-3.5 font-semibold text-on-surface-variant transition-colors hover:bg-surface-container-high"
+            >
+              Explore
+            </Link>
+          </div>
         </section>
       </main>
     </div>
