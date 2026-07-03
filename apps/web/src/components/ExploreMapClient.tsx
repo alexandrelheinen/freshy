@@ -575,6 +575,16 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         })
       : null;
 
+  const researchButton = needsResearch ? (
+    <button
+      type="button"
+      onClick={researchHere}
+      className="pointer-events-auto absolute top-full left-1/2 z-10 mt-2 -translate-x-1/2 whitespace-nowrap rounded-full bg-primary px-6 py-2.5 font-label-caps text-on-primary shadow-lg transition-opacity hover:brightness-110 active:scale-[0.98]"
+    >
+      Research in this area
+    </button>
+  ) : null;
+
   return (
     <div className="relative min-h-screen" data-page="explore">
       <AppMobileHeader active="explore" />
@@ -599,26 +609,21 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
           </div>
         ) : null}
 
-        {/* Mobile: category chips stay fixed; research CTA floats above without shifting layout */}
+        {/* Mobile: category chips stay fixed; research CTA floats below without shifting layout */}
         <div className="absolute left-0 top-20 z-40 w-full px-margin-mobile md:hidden">
           <div className="relative">
-            {needsResearch ? (
-              <button
-                type="button"
-                onClick={researchHere}
-                className="absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 whitespace-nowrap rounded-full bg-primary px-6 py-2.5 font-label-caps text-on-primary shadow-lg transition-opacity hover:brightness-110 active:scale-[0.98]"
-              >
-                Research in this area
-              </button>
-            ) : null}
             {filterChips}
+            {researchButton}
           </div>
         </div>
 
         {/* Desktop: left sidebar */}
         <div className="pointer-events-none absolute left-10 top-20 z-40 hidden max-h-[calc(100vh-10rem)] w-96 flex-col gap-4 md:flex">
-          <div className="glass-panel pointer-events-auto rounded-xl border border-glass-border p-4 shadow-xl">
-            {filterChips}
+          <div className="relative">
+            <div className="glass-panel pointer-events-auto rounded-xl border border-glass-border p-4 shadow-xl">
+              {filterChips}
+            </div>
+            {researchButton}
           </div>
           <div className="glass-panel pointer-events-auto flex flex-1 flex-col overflow-hidden rounded-xl border border-glass-border shadow-xl">
             <div className="flex items-center justify-between border-b border-outline-variant/20 p-4">
