@@ -72,6 +72,53 @@ export function publishedPlaceStatuses(query: PlacesQuery): Array<Place['status'
   return ['PUBLISHED', 'DRAFT'];
 }
 
+export async function listDraftPlaces(db: Db, query: PlacesQuery): Promise<PlaceListItem[]> {
+  const lat = query.lat;
+  const lng = query.lng;
+  const radiusKm = query.radius ?? PILOT_CITY.defaultRadiusKm;
+
+  const conditions = [eq(placesTable.status, 'DRAFT')];
+
+  if (query.category) {
+    conditions.push(eq(placesTable.category, query.category));
+  }
+
+  let results: Place[];
+  if (query.q) {
+    const pattern = `%${query.q}%`;
+    results = await db
+      .select()
+      .from(placesTable)
+      .where(
+        and(
+          eq(placesTable.status, 'DRAFT'),
+          query.category ? eq(placesTable.category, query.category) : sql`1=1`,
+          or(
+            like(placesTable.name, pattern),
+            like(placesTable.address, pattern),
+            like(placesTable.description, pattern),
+          ),
+        ),
+      )
+      .orderBy(placesTable.name);
+  } else {
+    results = await db
+      .select()
+      .from(placesTable)
+      .where(and(...conditions))
+      .orderBy(placesTable.name);
+  }
+
+  const withDistance = filterPlacesByRadius(results, lat, lng, radiusKm);
+
+  return withDistance.map(({ place, distanceKm }) =>
+    serializePlaceForApi({
+      ...place,
+      distanceKm: Math.round(distanceKm * 100) / 100,
+    }),
+  );
+}
+
 export async function listPlaces(db: Db, query: PlacesQuery): Promise<PlaceListItem[]> {
   const lat = query.lat;
   const lng = query.lng;

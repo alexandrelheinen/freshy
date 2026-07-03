@@ -10,6 +10,7 @@ import {
   categoryCounts,
   featuredPlace,
   getPlaceBySlugWithReviews,
+  listDraftPlaces,
   listPlaces,
   placesQuerySchema,
 } from './places';
@@ -56,6 +57,26 @@ export function createApp(): Hono<AppEnv> {
         return c.json({ error: 'Invalid query', details: parsed.error.flatten() }, 400);
       }
       const data = await listPlaces(c.get('db'), parsed.data);
+      return c.json({ data });
+    } catch {
+      return c.json({ error: 'Database unavailable' }, 503);
+    }
+  });
+
+  /** Draft places in a map area. Used when the main /places handler omits unverified rows. */
+  app.get('/places/drafts', async (c) => {
+    try {
+      const parsed = placesQuerySchema.safeParse({
+        lat: c.req.query('lat'),
+        lng: c.req.query('lng'),
+        radius: c.req.query('radius'),
+        category: c.req.query('category'),
+        q: c.req.query('q'),
+      });
+      if (!parsed.success) {
+        return c.json({ error: 'Invalid query', details: parsed.error.flatten() }, 400);
+      }
+      const data = await listDraftPlaces(c.get('db'), parsed.data);
       return c.json({ data });
     } catch {
       return c.json({ error: 'Database unavailable' }, 503);
