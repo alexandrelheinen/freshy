@@ -1,8 +1,9 @@
 'use client';
 
-import { useId, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { MaterialIcon } from '@freshy/ui';
 import type { StudioContributorDto } from '../lib/studio-api';
+import { FloatingPopover } from './FloatingPopover';
 
 function formatContributedAt(iso: string): string {
   return new Intl.DateTimeFormat('en-GB', {
@@ -18,6 +19,7 @@ interface StudioContributorCellProps {
 
 export function StudioContributorCell({ contributor, submittedAt }: StudioContributorCellProps) {
   const popoverId = useId();
+  const anchorRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
 
   if (!contributor) {
@@ -25,34 +27,33 @@ export function StudioContributorCell({ contributor, submittedAt }: StudioContri
   }
 
   return (
-    <div className="relative">
+    <>
       <button
+        ref={anchorRef}
         type="button"
         className="inline-flex max-w-[180px] items-center gap-1 truncate text-left text-body-sm text-on-surface-variant hover:text-primary"
         aria-describedby={open ? popoverId : undefined}
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
-        onFocus={() => setOpen(true)}
-        onBlur={() => setOpen(false)}
+        aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
       >
         <span className="truncate">{contributor.email}</span>
         <MaterialIcon name="person" size={16} className="shrink-0 text-secondary" />
       </button>
-      {open ? (
-        <div
-          id={popoverId}
-          role="tooltip"
-          className="absolute left-0 top-full z-20 mt-2 w-64 rounded-xl border border-outline-variant/20 bg-surface-container-lowest p-3 text-left shadow-lg"
-        >
-          <p className="font-title-md text-on-surface">{contributor.displayName}</p>
-          <p className="mt-1 text-body-sm text-on-surface-variant">{contributor.email}</p>
-          <p className="mt-2 text-[12px] text-secondary">
-            Submitted: {formatContributedAt(submittedAt)}
-          </p>
-        </div>
-      ) : null}
-    </div>
+      <FloatingPopover
+        id={popoverId}
+        role="tooltip"
+        anchorRef={anchorRef}
+        open={open}
+        onClose={() => setOpen(false)}
+        className="p-3 text-left"
+      >
+        <p className="font-title-md text-on-surface">{contributor.displayName}</p>
+        <p className="mt-1 text-body-sm text-on-surface-variant">{contributor.email}</p>
+        <p className="mt-2 text-[12px] text-secondary">
+          Submitted: {formatContributedAt(submittedAt)}
+        </p>
+      </FloatingPopover>
+    </>
   );
 }
 
