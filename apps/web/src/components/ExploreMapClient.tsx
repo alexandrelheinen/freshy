@@ -609,24 +609,27 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
           <div className="glass-panel pointer-events-auto flex flex-1 flex-col overflow-hidden rounded-xl border border-glass-border shadow-xl">
             <div className="flex items-center justify-between border-b border-outline-variant/20 p-4">
               <h2 className="font-title-md text-on-surface">Nearby Places</h2>
-              <span className="rounded bg-primary-container px-2 py-0.5 text-xs font-bold text-primary">
-                {places.length} Results
-              </span>
+              {places.length > 0 ? (
+                <span className="rounded bg-primary-container px-2 py-0.5 text-xs font-bold text-primary">
+                  {places.length} Results
+                </span>
+              ) : null}
             </div>
             <div className="hide-scrollbar flex-1 space-y-2 overflow-y-auto p-2">
-              {places.map((place) => (
-                <NearbyListItem
-                  key={place.id}
-                  place={place}
-                  isSelected={place.slug === selectedSlug}
-                  onSelect={() => setSelectedSlug(place.slug)}
-                />
-              ))}
               {places.length === 0 ? (
                 <p className="p-4 text-center text-sm text-on-surface-variant">
-                  No places found nearby.
+                  {exploreEmptyMessage(activeCategory)}
                 </p>
-              ) : null}
+              ) : (
+                places.map((place) => (
+                  <NearbyListItem
+                    key={place.id}
+                    place={place}
+                    isSelected={place.slug === selectedSlug}
+                    onSelect={() => setSelectedSlug(place.slug)}
+                  />
+                ))
+              )}
             </div>
           </div>
         </div>
