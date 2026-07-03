@@ -83,11 +83,12 @@ function matchesMinFreshnessLevel(
   return score != null && score >= minFreshnessLevel;
 }
 
-function filterPlacesByMinFreshness<
-  T extends { aggregatedFreshnessLevel: Place['aggregatedFreshnessLevel'] },
->(places: T[], minFreshnessLevel: number | undefined): T[] {
+function filterPlacesByMinFreshness<T extends { place: Pick<Place, 'aggregatedFreshnessLevel'> }>(
+  places: T[],
+  minFreshnessLevel: number | undefined,
+): T[] {
   if (minFreshnessLevel == null) return places;
-  return places.filter((place) =>
+  return places.filter(({ place }) =>
     matchesMinFreshnessLevel(place.aggregatedFreshnessLevel, minFreshnessLevel),
   );
 }
