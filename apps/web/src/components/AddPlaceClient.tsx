@@ -465,7 +465,10 @@ export function AddPlaceClient() {
   );
 
   return (
-    <div className={`min-h-screen md:pb-8 ${MOBILE_FORM_FOOTER_PADDING_CLASS}`} data-page="add-place">
+    <div
+      className={`min-h-screen md:pb-8 ${MOBILE_FORM_FOOTER_PADDING_CLASS}`}
+      data-page="add-place"
+    >
       <AppMobileHeader title="Add Place" backHref={ROUTES.profile} showBrand={false} />
       <AppTopNav active="profile" />
 
