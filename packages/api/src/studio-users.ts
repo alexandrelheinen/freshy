@@ -77,10 +77,7 @@ export async function listStudioUsers(
   return rows.map((row) => ({ ...row, secret: row.id }));
 }
 
-export async function getStudioUsersByIds(
-  db: Db,
-  userIds: string[],
-): Promise<StudioUserProfile[]> {
+export async function getStudioUsersByIds(db: Db, userIds: string[]): Promise<StudioUserProfile[]> {
   const ids = [...new Set(userIds.map((id) => id.trim()).filter(Boolean))];
   if (ids.length === 0) return [];
 

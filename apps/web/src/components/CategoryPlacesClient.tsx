@@ -103,14 +103,13 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
       loading={loading}
       loadError={loadError}
       navActive="cooling"
-      searchPlaceholder={`Search in ${title}…`}
       emptyMessage={`No ${title.toLowerCase()} in the database yet.`}
       pagination={
-        placesPage && placesPage.total > 0
+        category
           ? {
               page,
               totalPages,
-              total: placesPage.total,
+              total: placesPage?.total ?? 0,
               pageSize: CATEGORY_PLACES_PAGE_SIZE,
               onPageChange: setPage,
             }

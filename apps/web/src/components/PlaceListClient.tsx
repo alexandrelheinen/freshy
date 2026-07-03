@@ -1,14 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { MaterialIcon, PLACE_CATEGORY_LABELS, type PlaceCategory } from '@freshy/ui';
+import { useEffect, useState, type ReactNode } from 'react';
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceListCard } from './PlaceListCard';
 import type { PlaceDto } from '../lib/api';
-import { distanceKmFromUser } from '../lib/place-distance';
-import { useUserLocation } from '../lib/use-user-location';
-
-type FilterChip = 'all' | 'cold' | 'nearby';
 
 export interface PlaceListPagination {
   page: number;
@@ -23,11 +18,9 @@ export function PlaceListClient({
   subtitle,
   backHref,
   places: initialPlaces,
-  loadPlaces,
   showBookmark = false,
   onUnsave,
   navActive = 'cooling',
-  searchPlaceholder = 'Search places…',
   emptyMessage = 'No places found.',
   listNotice,
   pagination,
@@ -39,11 +32,9 @@ export function PlaceListClient({
   subtitle?: string;
   backHref?: string;
   places?: PlaceDto[];
-  loadPlaces?: () => Promise<PlaceDto[]>;
   showBookmark?: boolean;
   onUnsave?: (placeId: string) => Promise<void>;
   navActive?: 'explore' | 'cooling' | 'profile';
-  searchPlaceholder?: string;
   emptyMessage?: string;
   listNotice?: string | null;
   pagination?: PlaceListPagination;
@@ -52,72 +43,13 @@ export function PlaceListClient({
   statusBanner?: ReactNode;
 }) {
   const [places, setPlaces] = useState<PlaceDto[]>(initialPlaces ?? []);
-  const [query, setQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState<FilterChip>('all');
-  const [internalLoading, setInternalLoading] = useState(!initialPlaces && Boolean(loadPlaces));
-  const { location } = useUserLocation();
-  const loading = loadingOverride ?? internalLoading;
+  const loading = loadingOverride ?? false;
 
   useEffect(() => {
     if (initialPlaces != null) {
       setPlaces(initialPlaces);
     }
   }, [initialPlaces]);
-
-  useEffect(() => {
-    if (!loadPlaces) return;
-    void (async () => {
-      setInternalLoading(true);
-      const data = await loadPlaces();
-      setPlaces(data);
-      setInternalLoading(false);
-    })();
-  }, [loadPlaces]);
-
-  useEffect(() => {
-    if (activeFilter === 'nearby' && !location) {
-      setActiveFilter('all');
-    }
-  }, [activeFilter, location]);
-
-  const filtered = useMemo(() => {
-    if (pagination) {
-      return places;
-    }
-
-    let list = places;
-    const q = query.trim().toLowerCase();
-    if (q) {
-      list = list.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          (p.description?.toLowerCase().includes(q) ?? false) ||
-          (PLACE_CATEGORY_LABELS[p.category as PlaceCategory] ?? p.category)
-            .toLowerCase()
-            .includes(q),
-      );
-    }
-    if (activeFilter === 'cold') {
-      list = list.filter(
-        (p) =>
-          p.aggregatedFreshnessLevel === 'VERY_COLD_AC' ||
-          p.aggregatedFreshnessLevel === 'NATURALLY_FRESH',
-      );
-    }
-    if (activeFilter === 'nearby' && location) {
-      list = list.filter((p) => {
-        const km = distanceKmFromUser(p, location);
-        return km != null && km <= 1;
-      });
-    }
-    return list;
-  }, [places, query, activeFilter, location, pagination]);
-
-  const filterChips: Array<{ id: FilterChip; label: string }> = [
-    { id: 'all', label: 'All' },
-    { id: 'cold', label: 'Coldest' },
-    ...(location ? [{ id: 'nearby' as const, label: 'Within 1km' }] : []),
-  ];
 
   return (
     <div className="min-h-screen pb-8" data-page="place-list">
@@ -149,43 +81,6 @@ export function PlaceListClient({
               <p className="mt-1 font-body-lg text-on-surface-variant">{subtitle}</p>
             ) : null}
           </div>
-
-          {!pagination ? (
-            <>
-              <div className="relative">
-                <MaterialIcon
-                  name="search"
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-outline"
-                />
-                <input
-                  className="w-full rounded-xl border border-outline-variant bg-surface-container-low py-3 pl-10 pr-4 font-body-sm shadow-sm transition-all outline-none focus:border-transparent focus:ring-2 focus:ring-primary md:rounded-full"
-                  placeholder={searchPlaceholder}
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                />
-              </div>
-
-              <div className="hide-scrollbar mt-4 flex gap-2 overflow-x-auto pb-1">
-                {filterChips.map((chip) => {
-                  const isActive = activeFilter === chip.id;
-                  return (
-                    <button
-                      key={chip.id}
-                      type="button"
-                      onClick={() => setActiveFilter(chip.id)}
-                      className={`shrink-0 whitespace-nowrap rounded-full px-4 py-2 font-label-caps text-label-caps transition-colors ${
-                        isActive
-                          ? 'bg-primary text-on-primary'
-                          : 'bg-secondary-container text-on-secondary-container'
-                      }`}
-                    >
-                      {chip.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </>
-          ) : null}
         </section>
 
         {listNotice ? (
@@ -198,12 +93,12 @@ export function PlaceListClient({
           <p className="py-16 text-center text-error">{loadError}</p>
         ) : loading ? (
           <p className="py-16 text-center text-on-surface-variant">Loading places…</p>
-        ) : filtered.length === 0 ? (
+        ) : places.length === 0 ? (
           <p className="py-16 text-center text-on-surface-variant">{emptyMessage}</p>
         ) : (
           <>
             <section className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-6 lg:grid-cols-2">
-              {filtered.map((place, index) => (
+              {places.map((place, index) => (
                 <div
                   key={place.id}
                   className="animate-in fade-in slide-in-from-bottom-4"
@@ -225,7 +120,7 @@ export function PlaceListClient({
               ))}
             </section>
 
-            {pagination ? (
+            {pagination && pagination.totalPages > 1 ? (
               <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-outline-variant/20 pt-4">
                 <button
                   type="button"
