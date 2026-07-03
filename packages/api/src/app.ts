@@ -14,6 +14,7 @@ import {
   placesQuerySchema,
 } from './places';
 import { registerUserRoutes } from './user-routes';
+import { registerContributionRoutes } from './contribution-routes';
 import { registerStudioRoutes } from './studio-routes';
 
 export function createApp(): Hono<AppEnv> {
@@ -86,6 +87,7 @@ export function createApp(): Hono<AppEnv> {
   });
 
   registerUserRoutes(app);
+  registerContributionRoutes(app);
   registerStudioRoutes(app);
 
   return app;
