@@ -166,11 +166,6 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
             className="absolute inset-0 h-full w-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
-          <div className="absolute right-4 top-4 md:right-6 md:top-6">
-            <span className="inline-block rounded-full bg-primary-container px-3 py-1 font-label-caps text-label-caps text-on-primary-container shadow-sm">
-              {place.isOpen !== false ? 'OPEN NOW' : 'CLOSED'}
-            </span>
-          </div>
         </section>
 
         <div className="px-margin-mobile md:px-10">
