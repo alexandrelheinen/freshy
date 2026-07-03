@@ -199,7 +199,8 @@ export function AddPlaceClient() {
     return (
       <div className="min-h-screen pb-8" data-page="add-place">
         <AppMobileHeader title="Add Place" backHref={ROUTES.profile} showBrand={false} />
-        <main className="mx-auto mt-24 max-w-md px-margin-mobile text-center">
+        <AppTopNav active="profile" />
+        <main className="mx-auto mt-24 max-w-md px-margin-mobile text-center md:mt-28">
           <p className="text-on-surface-variant">Sign in to add a cooling spot.</p>
           <SignInButton mode="modal">
             <button type="button" className="mt-6 rounded-xl bg-primary px-8 py-3 text-on-primary">
