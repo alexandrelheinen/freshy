@@ -3,12 +3,6 @@ name: Deploy API Worker
 on:
   push:
     branches: [main]
-    paths:
-      - 'packages/api/**'
-      - 'packages/db/**'
-      - 'packages/config/**'
-      - 'packages/theme/**'
-      - '.github/workflows/deploy-api.yml'
   workflow_dispatch:
 
 concurrency:
@@ -68,3 +62,42 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: packages/api
           command: deploy
+
+      - name: Verify deployed routes
+        env:
+          API_URL: https://freshy-api.alexandrelheinen.workers.dev
+          SMOKE_MAX_ATTEMPTS: 15
+          SMOKE_SLEEP_SECONDS: 10
+        run: |
+          route_not_missing() {
+            local method="$1"
+            local path="$2"
+            local expected_status="$3"
+            local code
+            code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 -X "${method}" "${API_URL}${path}" \
+              ${4:+-H "$4"} \
+              ${5:+-d "$5"})"
+            if [ "$code" = "404" ]; then
+              echo "Route missing after deploy: ${method} ${path} (got 404)"
+              return 1
+            fi
+            [ "$code" = "$expected_status" ] || {
+              echo "Unexpected status for ${method} ${path}: expected ${expected_status}, got ${code}"
+              return 1
+            }
+          }
+
+          attempt=1
+          while [ "$attempt" -le "$SMOKE_MAX_ATTEMPTS" ]; do
+            if route_not_missing POST /contributions/places 400 "Content-Type: application/json" '{}' \
+              && route_not_missing GET /users/me/contributor-secret 401 \
+              && route_not_missing GET "/places/drafts?lat=48.9042&lng=2.3064&radius=3" 200; then
+              echo "Deployed routes verified (attempt ${attempt})"
+              exit 0
+            fi
+            echo "Retry ${attempt}/${SMOKE_MAX_ATTEMPTS}: routes not ready yet..."
+            attempt=$((attempt + 1))
+            sleep "$SMOKE_SLEEP_SECONDS"
+          done
+          echo "::error::Deployed Worker is missing required routes after ${SMOKE_MAX_ATTEMPTS} attempts"
+          exit 1

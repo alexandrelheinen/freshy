@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { eq, like, or, sql, desc, inArray } from 'drizzle-orm';
+import { eq, like, or, sql, desc } from 'drizzle-orm';
 import { FRESHNESS_LEVEL_IDS } from '@freshy/config/freshness-levels';
 import { PLACE_TAG_IDS } from '@freshy/config/place-tags';
 import {
@@ -315,11 +315,7 @@ export async function listStudioPlaces(
     .map((id) => rowsById.get(id))
     .filter((row): row is (typeof pageRows)[number] => row != null)
     .map((row) =>
-      formatStudioPlaceListItem(
-        row.place,
-        duplicateMap.get(row.place.id) ?? null,
-        row.contributor,
-      ),
+      formatStudioPlaceListItem(row.place, duplicateMap.get(row.place.id) ?? null, row.contributor),
     );
 
   return {

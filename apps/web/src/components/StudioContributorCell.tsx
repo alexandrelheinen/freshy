@@ -1,7 +1,11 @@
 'use client';
 
 import type { StudioContributorDto } from '../lib/studio-api';
-import { contributorDisplayName, contributorFallbackLabel, useStudioContributor } from '../lib/use-studio-contributor';
+import {
+  contributorDisplayName,
+  contributorFallbackLabel,
+  useStudioContributor,
+} from '../lib/use-studio-contributor';
 
 function formatContributedAt(iso: string): string {
   return new Intl.DateTimeFormat('en-GB', {

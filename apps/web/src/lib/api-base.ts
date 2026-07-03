@@ -14,9 +14,7 @@ function isLikelyPagesHost(url: string): boolean {
 
 function isProductionWebHost(hostname: string): boolean {
   return (
-    hostname.endsWith('.pages.dev') ||
-    hostname === 'freshy.app' ||
-    hostname.endsWith('.freshy.app')
+    hostname.endsWith('.pages.dev') || hostname === 'freshy.app' || hostname.endsWith('.freshy.app')
   );
 }
 

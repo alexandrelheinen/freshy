@@ -12,9 +12,9 @@
 | `smoke-production.sh`               | Post-deploy checks against live Worker and Pages               |
 | `smoke-api-start.sh`                | Build API and verify Worker `/health` locally                  |
 
-| Script (Python)                     | Usage                                                          |
-| ----------------------------------- | -------------------------------------------------------------- |
-| `freshy_seeder.py`                  | Scrape French cooling places (OSM, data.gouv) and sync to D1   |
+| Script (Python)    | Usage                                                        |
+| ------------------ | ------------------------------------------------------------ |
+| `freshy_seeder.py` | Scrape French cooling places (OSM, data.gouv) and sync to D1 |
 
 ## freshy-seeder (Python)
 
