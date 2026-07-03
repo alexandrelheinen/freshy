@@ -26,13 +26,64 @@ function ClerkAdminFlag({ children }: { children: (isAdmin: boolean) => ReactNod
   return <>{children(isStudioAdmin(user?.publicMetadata))}</>;
 }
 
-const MAIN_NAV_ITEMS = NAV_ITEMS.filter((item) => item.id !== 'profile' && item.id !== 'saved');
+const DESKTOP_NAV_ITEMS = NAV_ITEMS.filter((item) => item.id !== 'profile' && item.id !== 'saved');
+const MOBILE_MENU_NAV_ITEMS = NAV_ITEMS.filter((item) => item.id !== 'profile');
 
-function ThemeMenu() {
+function ThemeMenu({ variant = 'header' }: { variant?: 'header' | 'menu' }) {
   const { preference, setTheme } = useTheme();
   const [open, setOpen] = useState(false);
 
   const options: ThemePreference[] = ['default', 'dark', 'system'];
+
+  if (variant === 'menu') {
+    return (
+      <div className="border-t border-outline-variant/20 pt-1">
+        <button
+          type="button"
+          onClick={() => setOpen((value) => !value)}
+          className="flex w-full items-center gap-3 rounded-lg px-2 py-3 text-left font-label-caps text-on-surface-variant transition-colors hover:bg-surface-container hover:text-primary"
+          aria-label="Theme"
+          aria-expanded={open}
+          aria-haspopup="listbox"
+        >
+          <MaterialIcon name="routine" size={22} className="shrink-0" />
+          <span className="flex-1">Theme</span>
+          <span className="font-body-sm text-on-surface-variant">
+            {themePreferenceLabel(preference)}
+          </span>
+          <MaterialIcon
+            name="expand_more"
+            size={20}
+            className={`shrink-0 text-on-surface-variant transition-transform ${open ? 'rotate-180' : ''}`}
+          />
+        </button>
+        {open ? (
+          <div role="listbox" aria-label="Theme" className="mb-1 space-y-0.5 pl-9 pr-2">
+            {options.map((option) => (
+              <button
+                key={option}
+                type="button"
+                role="option"
+                aria-selected={preference === option}
+                onClick={() => {
+                  setTheme(option);
+                  setOpen(false);
+                }}
+                className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left font-body-sm transition-colors hover:bg-surface-container ${
+                  preference === option ? 'text-primary' : 'text-on-surface'
+                }`}
+              >
+                {themePreferenceLabel(option)}
+                {preference === option ? (
+                  <MaterialIcon name="check_circle" size={18} className="text-primary" filled />
+                ) : null}
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
+    );
+  }
 
   return (
     <div className="relative">
@@ -87,8 +138,43 @@ function ThemeMenu() {
   );
 }
 
-function VerifiedOnlyToggle({ onToggle }: { onToggle?: () => void }) {
+function VerifiedOnlyToggle({
+  onToggle,
+  variant = 'header',
+}: {
+  onToggle?: () => void;
+  variant?: 'header' | 'menu';
+}) {
   const { verifiedOnly, setVerifiedOnly } = useVerifiedOnlyFilter();
+
+  if (variant === 'menu') {
+    return (
+      <button
+        type="button"
+        onClick={() => {
+          setVerifiedOnly(!verifiedOnly);
+          onToggle?.();
+        }}
+        aria-pressed={verifiedOnly}
+        aria-label={
+          verifiedOnly ? 'Showing verified places only' : 'Show all places including unverified'
+        }
+        className="flex w-full items-center gap-3 rounded-lg px-2 py-3 text-left font-label-caps text-on-surface-variant transition-colors hover:bg-surface-container hover:text-primary"
+      >
+        <MaterialIcon name="verified" filled={verifiedOnly} size={22} className="shrink-0" />
+        <span className="flex-1">Verified only</span>
+        <span
+          className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
+            verifiedOnly
+              ? 'bg-primary-container text-primary'
+              : 'bg-surface-container-high text-on-surface-variant'
+          }`}
+        >
+          {verifiedOnly ? 'On' : 'Off'}
+        </span>
+      </button>
+    );
+  }
 
   return (
     <button
@@ -163,8 +249,10 @@ function NavLink({
     <Link
       href={href}
       onClick={onClick}
-      className={`group flex items-center gap-2 font-label-caps transition-colors ${
-        isActive ? 'text-primary' : 'text-on-surface-variant hover:text-primary'
+      className={`group flex items-center gap-3 rounded-lg px-2 py-3 font-label-caps transition-colors ${
+        isActive
+          ? 'text-primary'
+          : 'text-on-surface-variant hover:bg-surface-container hover:text-primary'
       }`}
     >
       <MaterialIcon
@@ -193,8 +281,8 @@ function MobileNavMenu({
 
   return (
     <nav className="absolute left-0 right-0 top-16 z-40 border-b border-outline-variant/20 bg-surface shadow-lg md:hidden">
-      <div className="flex flex-col gap-1 px-margin-mobile py-3">
-        {MAIN_NAV_ITEMS.map((item) => (
+      <div className="flex flex-col gap-0.5 px-margin-mobile py-3">
+        {MOBILE_MENU_NAV_ITEMS.map((item) => (
           <NavLink
             key={item.id}
             href={item.href}
@@ -213,19 +301,19 @@ function MobileNavMenu({
             onClick={onClose}
           />
         ) : null}
-        <div className="px-2 py-2">
-          <VerifiedOnlyToggle onToggle={onClose} />
+        <div className="mt-1 border-t border-outline-variant/20 pt-1">
+          <VerifiedOnlyToggle variant="menu" />
+          <ThemeMenu variant="menu" />
         </div>
-        <div className="px-2 py-2">
-          <ThemeMenu />
+        <div className="border-t border-outline-variant/20 pt-1">
+          <NavLink
+            href={ROUTES.profile}
+            label="Profile"
+            iconName={NAV_ICONS.profile as MaterialIconName}
+            isActive={active === 'profile'}
+            onClick={onClose}
+          />
         </div>
-        <NavLink
-          href={ROUTES.profile}
-          label="Profile"
-          iconName={NAV_ICONS.profile as MaterialIconName}
-          isActive={active === 'profile'}
-          onClick={onClose}
-        />
       </div>
     </nav>
   );
@@ -258,7 +346,7 @@ export function AppTopNav({ active = 'explore' }: { active?: NavActiveId }) {
         </Link>
 
         <nav className="flex items-center gap-8">
-          {MAIN_NAV_ITEMS.map((item) => (
+          {DESKTOP_NAV_ITEMS.map((item) => (
             <NavLink
               key={item.id}
               href={item.href}
@@ -327,26 +415,32 @@ export function AppMobileHeader({
     />
   );
 
+  const showHeaderUtilities = Boolean(backHref);
+
   return (
     <header className="fixed top-0 z-50 flex h-16 w-full items-center justify-between bg-surface px-margin-mobile shadow-sm md:hidden">
-      <div className="flex items-center gap-2">
+      <div className="flex min-w-0 flex-1 items-center gap-2">
         {leading}
         {showBrand && !backHref ? (
           <>
-            <div className="flex h-10 w-10 items-center justify-center">
-              <MaterialIcon name={BRAND_ICON} className="text-primary" size={40} />
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center">
+              <MaterialIcon name={BRAND_ICON} className="text-primary" size={32} />
             </div>
-            <h1 className="font-display-lg text-3xl tracking-tight text-primary">Freshy</h1>
+            <h1 className="truncate font-display-lg text-xl tracking-tight text-primary">Freshy</h1>
           </>
         ) : title ? (
-          <h1 className="font-headline-lg-mobile text-headline-lg-mobile tracking-tight text-primary">
+          <h1 className="truncate font-headline-lg-mobile text-headline-lg-mobile tracking-tight text-primary">
             {title}
           </h1>
         ) : null}
       </div>
-      <div className="flex items-center gap-2">
-        <VerifiedOnlyToggle />
-        <ThemeMenu />
+      <div className="flex shrink-0 items-center gap-2">
+        {showHeaderUtilities ? (
+          <>
+            <VerifiedOnlyToggle />
+            <ThemeMenu />
+          </>
+        ) : null}
         <ProfileAvatarLink />
       </div>
       {clerkEnabled ? <ClerkAdminFlag>{mobileMenu}</ClerkAdminFlag> : mobileMenu(false)}

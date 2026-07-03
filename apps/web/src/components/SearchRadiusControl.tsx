@@ -47,18 +47,18 @@ export function SearchRadiusControl({
   }
 
   return (
-    <div className="glass flex items-center gap-2 rounded-full border border-glass-border px-3 py-1.5 shadow-lg">
-      <MaterialIcon name="near_me" size={16} className="text-primary" />
+    <div className="glass flex items-center gap-2 rounded-full border border-glass-border px-4 py-2 shadow-lg">
+      <MaterialIcon name="near_me" size={18} className="shrink-0 text-primary" />
       <button
         type="button"
         onClick={onDecrease}
         aria-label="Decrease search radius"
-        className="text-on-surface-variant active:text-primary"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-on-surface-variant active:bg-surface-container active:text-primary"
       >
-        <MaterialIcon name="remove" size={18} />
+        <MaterialIcon name="remove" size={20} />
       </button>
       <span
-        className="min-w-[48px] text-center text-xs font-bold text-on-surface"
+        className="min-w-[52px] shrink-0 text-center text-sm font-bold tabular-nums text-on-surface"
         aria-label={`Search radius ${radiusLabel}`}
       >
         {radiusLabel}
@@ -67,9 +67,9 @@ export function SearchRadiusControl({
         type="button"
         onClick={onIncrease}
         aria-label="Increase search radius"
-        className="text-on-surface-variant active:text-primary"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-on-surface-variant active:bg-surface-container active:text-primary"
       >
-        <MaterialIcon name="add" size={18} />
+        <MaterialIcon name="add" size={20} />
       </button>
     </div>
   );
