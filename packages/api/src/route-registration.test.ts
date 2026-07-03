@@ -1,0 +1,30 @@
+import { describe, it } from 'node:test';
+import assert from 'node:assert/strict';
+import { createApp } from './app';
+
+describe('route registration', () => {
+  const app = createApp();
+
+  it('registers GET /users/me/contributor-secret', async () => {
+    const res = await app.request('/users/me/contributor-secret');
+    assert.notEqual(res.status, 404);
+  });
+
+  it('registers POST /contributions/places', async () => {
+    const res = await app.request('/contributions/places', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{}',
+    });
+    assert.notEqual(res.status, 404);
+  });
+
+  it('registers POST /users/me/places', async () => {
+    const res = await app.request('/users/me/places', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{}',
+    });
+    assert.notEqual(res.status, 404);
+  });
+});

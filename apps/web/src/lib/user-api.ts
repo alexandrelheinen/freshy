@@ -79,9 +79,18 @@ export async function fetchMyContributorSecret(
   getToken: () => Promise<string | null>,
 ): Promise<string | null> {
   const res = await authFetch('/users/me/contributor-secret', getToken);
-  if (!res?.ok) return null;
-  const json = (await res.json()) as { data: { secret: string } };
-  return json.data.secret ?? null;
+  if (res?.ok) {
+    const json = (await res.json()) as { data: { secret: string } };
+    return json.data.secret ?? null;
+  }
+
+  // The secret is always Freshy User.id. Fall back when the API is not deployed yet.
+  if (res?.status === 404) {
+    const { profile } = await fetchMyProfile(getToken);
+    return profile?.id ?? null;
+  }
+
+  return null;
 }
 
 export async function fetchMySavedPlaces(
@@ -210,6 +219,9 @@ function readApiMessage(body: unknown): string | null {
 }
 
 export function anonymousPlaceErrorMessage(status: number, body: unknown): string {
+  if (status === 404) {
+    return 'Anonymous place submission is temporarily unavailable. Try again in a few minutes.';
+  }
   if (status === 400) {
     const errorText =
       body && typeof body === 'object' && 'error' in body && typeof body.error === 'string'

@@ -14,9 +14,47 @@ describe('fetchMyContributorSecret response', () => {
 
     globalThis.fetch = originalFetch;
   });
+
+  it('falls back to profile id when the contributor-secret route is missing', async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = async (input: RequestInfo | URL) => {
+      const path = String(input);
+      if (path.endsWith('/users/me/contributor-secret')) {
+        return new Response('Not Found', { status: 404 });
+      }
+      if (path.endsWith('/users/me')) {
+        return new Response(
+          JSON.stringify({
+            data: {
+              id: 'usr_profile_fallback',
+              email: 'creator@example.com',
+              displayName: 'Creator',
+              username: 'creator',
+              avatarUrl: null,
+              reliefPoints: 0,
+              reviewCount: 0,
+              savedCount: 0,
+            },
+          }),
+          { status: 200 },
+        );
+      }
+      return new Response('Not Found', { status: 404 });
+    };
+
+    const { fetchMyContributorSecret } = await import('./user-api');
+    const secret = await fetchMyContributorSecret(async () => 'token');
+    assert.equal(secret, 'usr_profile_fallback');
+
+    globalThis.fetch = originalFetch;
+  });
 });
 
 describe('anonymousPlaceErrorMessage', () => {
+  it('returns a clear message when the contributions route is missing', () => {
+    assert.match(anonymousPlaceErrorMessage(404, {}), /temporarily unavailable/i);
+  });
+
   it('returns the API message for unknown secrets', () => {
     assert.equal(
       anonymousPlaceErrorMessage(400, {
