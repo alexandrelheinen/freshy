@@ -92,7 +92,8 @@ export function registerUserRoutes(app: Hono<AppEnv>): void {
       const contentType = c.req.header('content-type') ?? '';
       if (!contentType.includes('multipart/form-data')) {
         const body = await c.req.json<Record<string, unknown>>();
-        const parsed = createPlaceSchema.safeParse(body);
+        const { secret: _ignoredSecret, ...bodyWithoutSecret } = body;
+        const parsed = createPlaceSchema.safeParse(bodyWithoutSecret);
         if (!parsed.success) {
           return c.json({ error: 'Invalid body', details: parsed.error.flatten() }, 400);
         }
