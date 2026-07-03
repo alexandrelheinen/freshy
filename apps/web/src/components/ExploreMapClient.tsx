@@ -531,13 +531,14 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         onClick={() => setActiveCategory(undefined)}
         aria-label="All places"
         aria-pressed={activeCategory == null}
-        className={`flex shrink-0 items-center justify-center rounded-full p-2.5 shadow-sm transition-colors ${
+        className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 shadow-sm transition-colors ${
           activeCategory == null
             ? 'bg-primary text-on-primary'
             : 'bg-surface-container-high text-on-surface-variant hover:bg-secondary-container'
         }`}
       >
-        <MaterialIcon name="explore" size={20} />
+        <MaterialIcon name="explore" size={18} />
+        <span className="whitespace-nowrap text-sm font-medium">All</span>
       </button>
       {EXPLORE_FILTER_CHIPS.map((chip) => {
         const isActive = activeCategory === chip.category;
@@ -549,13 +550,14 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
             onClick={() => setActiveCategory(chip.category)}
             aria-label={chip.label}
             aria-pressed={isActive}
-            className={`flex shrink-0 items-center justify-center rounded-full p-2.5 shadow-sm transition-colors ${
+            className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 shadow-sm transition-colors ${
               isActive
                 ? 'bg-primary text-on-primary'
                 : 'glass border border-glass-border text-secondary hover:bg-glass-surface md:bg-surface-container-high md:text-on-surface-variant md:hover:bg-secondary-container'
             }`}
           >
-            {icon ? <MaterialIcon name={icon} size={20} /> : null}
+            {icon ? <MaterialIcon name={icon} size={18} /> : null}
+            <span className="whitespace-nowrap text-sm font-medium">{chip.label}</span>
           </button>
         );
       })}
@@ -580,18 +582,8 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       <main className="relative h-screen w-full overflow-hidden pt-16">
         <div className="absolute inset-0">{mapContent}</div>
 
-        {needsResearch ? (
-          <button
-            type="button"
-            onClick={researchHere}
-            className="absolute left-1/2 top-20 z-40 -translate-x-1/2 rounded-full bg-primary px-6 py-2.5 font-label-caps text-on-primary shadow-lg transition-all hover:brightness-110 active:scale-[0.98]"
-          >
-            Research in this area
-          </button>
-        ) : null}
-
         {exploreLocationMessage ? (
-          <div className="absolute bottom-28 left-4 right-4 z-30 mx-auto max-w-md rounded-xl border border-outline-variant/30 bg-surface/95 p-4 text-center shadow-lg backdrop-blur md:bottom-8 md:left-10 md:right-auto">
+          <div className="absolute bottom-44 left-4 right-4 z-30 mx-auto max-w-md rounded-xl border border-outline-variant/30 bg-surface/95 p-4 text-center shadow-lg backdrop-blur md:bottom-8 md:left-10 md:right-auto">
             <p className="font-body-sm text-on-surface-variant">{exploreLocationMessage}</p>
             <p className="mt-2 font-body-sm text-on-surface-variant">
               You can also pan the map to search another area.
@@ -606,8 +598,17 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
           </div>
         ) : null}
 
-        {/* Mobile: category filter chips */}
-        <div className="absolute left-0 top-20 z-40 w-full px-margin-mobile md:hidden">
+        {/* Mobile: category filter chips and research CTA */}
+        <div className="absolute left-0 top-20 z-40 flex w-full flex-col gap-2 px-margin-mobile md:hidden">
+          {needsResearch ? (
+            <button
+              type="button"
+              onClick={researchHere}
+              className="self-center rounded-full bg-primary px-6 py-2.5 font-label-caps text-on-primary shadow-lg transition-all hover:brightness-110 active:scale-[0.98]"
+            >
+              Research in this area
+            </button>
+          ) : null}
           {filterChips}
         </div>
 
@@ -646,15 +647,18 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
           </div>
         </div>
 
-        {/* Mobile: bottom overlay stack (FABs above preview card, both above bottom nav) */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex flex-col items-end gap-3 px-margin-mobile pb-4 md:hidden">
-          <div className="pointer-events-auto flex items-center gap-2">
-            <SearchRadiusControl
-              radiusKm={displaySearchRadiusKm}
-              onDecrease={decreaseSearchRadius}
-              onIncrease={increaseSearchRadius}
-            />
-            <div className="flex flex-col gap-2">
+        {/* Mobile: bottom overlay stack */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex flex-col gap-3 px-margin-mobile pb-4 md:hidden">
+          <div className="grid grid-cols-[3rem_1fr_3rem] items-end gap-2">
+            <div aria-hidden="true" />
+            <div className="pointer-events-auto flex justify-center">
+              <SearchRadiusControl
+                radiusKm={displaySearchRadiusKm}
+                onDecrease={decreaseSearchRadius}
+                onIncrease={increaseSearchRadius}
+              />
+            </div>
+            <div className="pointer-events-auto flex flex-col gap-2">
               <button
                 type="button"
                 onClick={toggleMapStyle}
