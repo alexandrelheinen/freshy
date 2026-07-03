@@ -187,12 +187,14 @@ export function PlaceMapMarker({
 }
 
 export function UserLocationMarker({ variant = 'mobile' }: { variant?: 'mobile' | 'desktop' }) {
-  if (variant === 'desktop') return null;
+  const sizeClass = variant === 'desktop' ? 'h-6 w-6 border-2' : 'h-8 w-8 border-4';
 
   return (
     <div className="flex flex-col items-center">
-      <div className="marker-pulse flex h-8 w-8 items-center justify-center rounded-full border-4 border-marker-border bg-primary shadow-lg">
-        <div className="h-3 w-3 rounded-full bg-marker-border" />
+      <div
+        className={`marker-pulse flex items-center justify-center rounded-full border-marker-border bg-primary shadow-lg ${sizeClass}`}
+      >
+        <div className={`rounded-full bg-marker-border ${variant === 'desktop' ? 'h-2 w-2' : 'h-3 w-3'}`} />
       </div>
     </div>
   );
