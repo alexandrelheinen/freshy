@@ -108,13 +108,6 @@ export const NAV_ITEMS = [
   { id: 'profile' as const, label: 'Profile', href: ROUTES.profile },
 ];
 
-export const EXPLORE_FILTER_CHIPS: Array<{ label: string; category?: PlaceCategory }> = [
-  { label: 'Cafes', category: 'CAFE' },
-  { label: 'Restaurants', category: 'RESTAURANT' },
-  { label: 'Public Spaces', category: 'PUBLIC_SPACE' },
-  { label: 'Malls & Shops', category: 'MALL' },
-];
-
 export const ALL_PLACE_CATEGORIES: PlaceCategory[] = [
   'CAFE',
   'RESTAURANT',
@@ -125,6 +118,24 @@ export const ALL_PLACE_CATEGORIES: PlaceCategory[] = [
   'COWORKING',
   'PUBLIC_SPACE',
 ];
+
+/** Short labels for explore map filter chips. Keep in sync with ALL_PLACE_CATEGORIES. */
+export const PLACE_CATEGORY_CHIP_LABELS: Record<PlaceCategory, string> = {
+  CAFE: 'Cafes',
+  RESTAURANT: 'Restaurants',
+  BAR: 'Bars',
+  LIBRARY: 'Libraries',
+  MALL: 'Malls',
+  MUSEUM: 'Museums',
+  COWORKING: 'Coworking',
+  PUBLIC_SPACE: 'Public Spaces',
+};
+
+export const EXPLORE_FILTER_CHIPS: Array<{ label: string; category: PlaceCategory }> =
+  ALL_PLACE_CATEGORIES.map((category) => ({
+    category,
+    label: PLACE_CATEGORY_CHIP_LABELS[category],
+  }));
 
 export const DEFAULT_PLACE_PHOTO_PATHS: Record<PlaceCategory, string> = {
   CAFE: defaultPlacePhotoLocalPath('CAFE'),

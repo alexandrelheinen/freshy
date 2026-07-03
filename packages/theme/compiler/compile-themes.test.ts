@@ -10,7 +10,7 @@ const GENERATED_DIR = path.resolve(__dirname, '../generated');
 describe('compile-themes', () => {
   it('compiles default theme artifacts', () => {
     const ids = compileThemes();
-    assert.deepEqual(ids, ['dark', 'default']);
+    assert.deepEqual(ids, ['default', 'dark']);
     assert.ok(fs.existsSync(path.join(GENERATED_DIR, 'default.css')));
     assert.ok(fs.existsSync(path.join(GENERATED_DIR, 'default.tokens.ts')));
     assert.ok(fs.existsSync(path.join(GENERATED_DIR, 'index.ts')));
@@ -26,9 +26,18 @@ describe('compile-themes', () => {
 
   it('writes root and data-theme selectors for default', () => {
     const css = fs.readFileSync(path.join(GENERATED_DIR, 'default.css'), 'utf8');
-    assert.match(css, /:root,/);
+    assert.match(css, /:root:not\(\[data-theme='dark'\]\)/);
     assert.match(css, /\[data-theme='default'\]/);
     assert.match(css, /--color-primary: #0c6780;/);
+  });
+
+  it('orders themes so dark variables are not overridden by default :root', () => {
+    const themesCss = fs.readFileSync(path.join(GENERATED_DIR, 'themes.css'), 'utf8');
+    const defaultIndex = themesCss.indexOf(":root:not([data-theme='dark'])");
+    const darkIndex = themesCss.indexOf("[data-theme='dark']");
+    assert.ok(defaultIndex >= 0);
+    assert.ok(darkIndex > defaultIndex);
+    assert.doesNotMatch(themesCss, /:root,\s*\n\[data-theme='default'\]/);
   });
 
   it('writes shadow and glass variables', () => {

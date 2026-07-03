@@ -6,9 +6,11 @@ import {
   BRAND_NAME,
   BRAND_TITLE,
   DEFAULT_PLACE_PHOTO_PATHS,
+  EXPLORE_FILTER_CHIPS,
   getPlacePhotoUrl,
   NAV_ICONS,
   PILOT_CITY,
+  PLACE_CATEGORY_CHIP_LABELS,
   PLACE_CATEGORY_ICONS,
   ROUTES,
   TYPOGRAPHY_SCALE,
@@ -58,6 +60,14 @@ describe('@freshy/ui tokens', () => {
     assert.equal(NAV_ICONS.cooling, 'climate_mini_split');
     assert.equal(NAV_ICONS.profile, 'digital_wellbeing');
     assert.equal(PLACE_CATEGORY_ICONS.PUBLIC_SPACE, 'nature');
+  });
+
+  it('derives explore filter chips from every place category', () => {
+    assert.equal(EXPLORE_FILTER_CHIPS.length, ALL_PLACE_CATEGORIES.length);
+    for (const category of ALL_PLACE_CATEGORIES) {
+      assert.equal(PLACE_CATEGORY_CHIP_LABELS[category].length > 0, true);
+      assert.ok(EXPLORE_FILTER_CHIPS.some((chip) => chip.category === category));
+    }
   });
 
   it('lists typography scale keys aligned with DESIGN.md', () => {
