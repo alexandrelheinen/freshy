@@ -23,7 +23,7 @@ function ClerkAdminFlag({ children }: { children: (isAdmin: boolean) => ReactNod
   return <>{children(isStudioAdmin(user?.publicMetadata))}</>;
 }
 
-const MAIN_NAV_ITEMS = NAV_ITEMS.filter((item) => item.id !== 'profile');
+const MAIN_NAV_ITEMS = NAV_ITEMS.filter((item) => item.id !== 'profile' && item.id !== 'saved');
 
 function ThemePlaceholder() {
   return (
