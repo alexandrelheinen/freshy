@@ -21,6 +21,7 @@ import {
 } from '@freshy/ui';
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import { createAnonymousPlace, createUserPlace } from '../lib/user-api';
+import { MOBILE_FORM_FOOTER_PADDING_CLASS } from '../lib/layout';
 import { useUserLocation } from '../lib/use-user-location';
 
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
