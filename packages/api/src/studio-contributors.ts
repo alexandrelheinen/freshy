@@ -51,9 +51,7 @@ export async function buildContributorMap(
 ): Promise<Map<string, StudioContributor>> {
   const normalized = [
     ...new Set(
-      createdByIds
-        .map((id) => normalizeCreatedById(id))
-        .filter((id): id is string => id != null),
+      createdByIds.map((id) => normalizeCreatedById(id)).filter((id): id is string => id != null),
     ),
   ];
 
@@ -83,6 +81,23 @@ export function contributorForCreatedById(
   const normalized = normalizeCreatedById(createdById);
   if (!normalized) return null;
   return contributors.get(normalized) ?? syntheticContributorForProviderId(normalized);
+}
+
+interface JoinedUserRow {
+  userId: string | null;
+  email: string | null;
+  displayName: string | null;
+  username: string | null;
+}
+
+export function joinedUserProfile(row: JoinedUserRow): StudioUserProfile | null {
+  if (!row.userId || !row.email || !row.displayName || !row.username) return null;
+  return {
+    id: row.userId,
+    email: row.email,
+    displayName: row.displayName,
+    username: row.username,
+  };
 }
 
 export function contributorFromJoinedUser(
@@ -124,16 +139,6 @@ export async function loadStudioPlacesWithContributors(
 
   return rows.map((row) => ({
     place: row.place,
-    contributor: contributorFromJoinedUser(
-      row.place.createdById,
-      row.userId
-        ? {
-            id: row.userId,
-            email: row.email,
-            displayName: row.displayName,
-            username: row.username,
-          }
-        : null,
-    ),
+    contributor: contributorFromJoinedUser(row.place.createdById, joinedUserProfile(row)),
   }));
 }

@@ -314,9 +314,7 @@ function ProfileWithClerk() {
           <p className="py-16 text-center text-on-surface-variant">Loading profile…</p>
         ) : profile ? (
           <>
-            {submittedPlaceSlug ? (
-              <PlaceSubmittedBanner />
-            ) : null}
+            {submittedPlaceSlug ? <PlaceSubmittedBanner /> : null}
             <section className="mb-8 flex flex-col items-center md:mb-12 md:flex-row md:items-end md:gap-8">
               <div className="relative mb-4 md:mb-0">
                 {profile.avatarUrl ? (

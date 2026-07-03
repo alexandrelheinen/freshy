@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { eq, and, or, like, sql, desc, inArray, neq } from 'drizzle-orm';
+import { eq, and, or, like, sql, desc, inArray, ne } from 'drizzle-orm';
 import { freshnessLevelScore } from '@freshy/config/freshness-levels';
 import type { Place } from '@freshy/db';
 import {
@@ -136,7 +136,7 @@ export async function listDraftPlaces(db: Db, query: PlacesQuery): Promise<Place
   const lng = query.lng;
   const radiusKm = query.radius ?? PILOT_CITY.defaultRadiusKm;
 
-  const conditions = [neq(placesTable.status, 'PUBLISHED')];
+  const conditions = [ne(placesTable.status, 'PUBLISHED')];
 
   if (query.category) {
     conditions.push(eq(placesTable.category, query.category));
@@ -150,7 +150,7 @@ export async function listDraftPlaces(db: Db, query: PlacesQuery): Promise<Place
       .from(placesTable)
       .where(
         and(
-          neq(placesTable.status, 'PUBLISHED'),
+          ne(placesTable.status, 'PUBLISHED'),
           query.category ? eq(placesTable.category, query.category) : sql`1=1`,
           or(
             like(placesTable.name, pattern),

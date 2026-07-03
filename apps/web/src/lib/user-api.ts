@@ -222,7 +222,7 @@ function readApiMessage(body: unknown): string | null {
 
 export function anonymousPlaceErrorMessage(status: number, body: unknown): string {
   if (status === 404) {
-    return 'Anonymous place submission is unavailable from this site build. Confirm NEXT_PUBLIC_API_URL on Cloudflare Pages, redeploy the API Worker, then try again.';
+    return 'Anonymous place submission is unavailable. The API Worker may not include the /contributions/places route yet. Redeploy freshy-api from main, confirm NEXT_PUBLIC_API_URL on Cloudflare Pages points at the Worker, then try again.';
   }
   if (status === 400) {
     const errorText =

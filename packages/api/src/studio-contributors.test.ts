@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   contributorForCreatedById,
   contributorFromJoinedUser,
+  joinedUserProfile,
   normalizeCreatedById,
   syntheticContributorForProviderId,
   type StudioContributor,
@@ -39,6 +40,32 @@ describe('studio-contributors', () => {
       'Alexandre Loeblein Heinen',
     );
     assert.equal(contributorForCreatedById('osm', map)?.displayName, 'OpenStreetMap Import');
+  });
+
+  it('builds a profile from a joined user row with nullable columns', () => {
+    assert.deepEqual(
+      joinedUserProfile({
+        userId: 'user_a',
+        email: 'marie@example.com',
+        displayName: 'Marie',
+        username: 'marie',
+      }),
+      {
+        id: 'user_a',
+        email: 'marie@example.com',
+        displayName: 'Marie',
+        username: 'marie',
+      },
+    );
+    assert.equal(
+      joinedUserProfile({
+        userId: 'user_a',
+        email: null,
+        displayName: 'Marie',
+        username: 'marie',
+      }),
+      null,
+    );
   });
 
   it('resolves contributors from a Place LEFT JOIN User row', () => {

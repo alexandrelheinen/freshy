@@ -52,7 +52,8 @@ describe('fetchMyContributorSecret response', () => {
 
 describe('anonymousPlaceErrorMessage', () => {
   it('returns a clear message when the contributions route is missing', () => {
-    assert.match(anonymousPlaceErrorMessage(404, {}), /unavailable from this site build/i);
+    assert.match(anonymousPlaceErrorMessage(404, {}), /unavailable/i);
+    assert.match(anonymousPlaceErrorMessage(404, {}), /contributions\/places/i);
   });
 
   it('returns the API message for unknown secrets', () => {

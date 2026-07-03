@@ -30,8 +30,8 @@ trap cleanup EXIT
 
 for _ in $(seq 1 60); do
   if curl -sf "http://127.0.0.1:${PORT}/health" | grep -q '"status":"ok"'; then
-    echo "Worker /health responded OK on port ${PORT}"
-    exit 0
+  echo "Worker /health responded OK on port ${PORT}"
+  break
   fi
   if ! kill -0 "${API_PID}" 2>/dev/null; then
     echo "ERROR: wrangler dev exited before /health responded" >&2
@@ -41,5 +41,26 @@ for _ in $(seq 1 60); do
   sleep 0.25
 done
 
-echo "ERROR: Worker did not respond on /health within timeout" >&2
-exit 1
+if ! curl -sf "http://127.0.0.1:${PORT}/health" | grep -q '"status":"ok"'; then
+  echo "ERROR: Worker did not respond on /health within timeout" >&2
+  exit 1
+fi
+
+route_not_missing() {
+  local method="$1"
+  local path="$2"
+  shift 2
+  local code
+  code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 -X "${method}" "http://127.0.0.1:${PORT}${path}" "$@")"
+  if [ "$code" = "404" ]; then
+    echo "ERROR: Route missing: ${method} ${path} (got 404)" >&2
+    exit 1
+  fi
+}
+
+step "Verify critical API routes"
+route_not_missing POST /contributions/places -H "Content-Type: application/json" -d '{}'
+route_not_missing GET /users/me/contributor-secret
+route_not_missing GET "/places/drafts?lat=48.9&lng=2.3&radius=3"
+route_not_missing POST /users/me/places -H "Content-Type: application/json" -d '{}'
+echo "Critical API routes registered"
