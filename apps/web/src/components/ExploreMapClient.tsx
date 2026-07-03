@@ -250,7 +250,6 @@ function NearbyListItem({
 export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] }) {
   const [places, setPlaces] = useState(initialPlaces);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(initialPlaces[0]?.slug ?? null);
-  const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<PlaceCategory | undefined>();
   const {
     location: userLocation,
@@ -315,7 +314,6 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       lng: number;
       zoom: number;
       category?: string;
-      q?: string;
       verifiedOnly?: boolean;
     }) => {
       const radius = cappedSearchRadiusKm(
@@ -329,7 +327,6 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       params.set('lng', String(opts.lng));
       params.set('radius', String(radius));
       if (opts.category) params.set('category', opts.category);
-      if (opts.q) params.set('q', opts.q);
       if (opts.verifiedOnly) params.set('verifiedOnly', 'true');
 
       const res = await fetch(`${API_BASE}/places?${params.toString()}`);
@@ -363,11 +360,10 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         lng: anchor.longitude,
         zoom: anchor.zoom,
         category: activeCategory,
-        q: query || undefined,
         verifiedOnly,
       });
     },
-    [activeCategory, loadPlaces, query, setMapCenter, verifiedOnly],
+    [activeCategory, loadPlaces, setMapCenter, verifiedOnly],
   );
 
   useEffect(() => {
@@ -394,10 +390,9 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       lng: searchAnchor.longitude,
       zoom: searchAnchor.zoom,
       category: activeCategory,
-      q: query || undefined,
       verifiedOnly,
     });
-  }, [activeCategory, loadPlaces, query, searchAnchor, verifiedOnly]);
+  }, [activeCategory, loadPlaces, searchAnchor, verifiedOnly]);
 
   const decreaseSearchRadius = () =>
     setViewState((v) => {
@@ -545,21 +540,6 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     </div>
   );
 
-  const searchBar = (className = '') => (
-    <div className={`relative ${className}`}>
-      <MaterialIcon
-        name="search"
-        className="absolute left-3 top-1/2 -translate-y-1/2 text-outline"
-      />
-      <input
-        className="w-full rounded-xl border-none bg-surface-container-low py-3 pl-10 pr-4 font-body-lg text-on-surface placeholder:text-outline-variant focus:ring-2 focus:ring-primary/20 md:rounded-lg"
-        placeholder="Search places..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
-    </div>
-  );
-
   const exploreLocationMessage =
     locationDenied || locationError
       ? locationStatusMessage({
@@ -604,25 +584,14 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
           </div>
         ) : null}
 
-        {/* Mobile: floating search + chips */}
+        {/* Mobile: category filter chips */}
         <div className="absolute left-0 top-20 z-40 w-full px-margin-mobile md:hidden">
-          <div className="glass flex items-center rounded-xl border border-glass-border px-4 py-3 shadow-md">
-            <MaterialIcon name="search" className="text-outline" />
-            <input
-              className="ml-2 w-full border-none bg-transparent font-body-lg focus:ring-0"
-              placeholder="Find a place..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-            <MaterialIcon name="mic" className="text-primary" />
-          </div>
-          <div className="mt-4">{filterChips}</div>
+          {filterChips}
         </div>
 
         {/* Desktop: left sidebar */}
         <div className="pointer-events-none absolute left-10 top-20 z-40 hidden max-h-[calc(100vh-10rem)] w-96 flex-col gap-4 md:flex">
           <div className="glass-panel pointer-events-auto rounded-xl border border-glass-border p-4 shadow-xl">
-            {searchBar('mb-4')}
             {filterChips}
           </div>
           <div className="glass-panel pointer-events-auto flex flex-1 flex-col overflow-hidden rounded-xl border border-glass-border shadow-xl">
