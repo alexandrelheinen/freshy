@@ -19,7 +19,7 @@ import {
   updateStudioPlace,
   updateStudioPlaceSchema,
 } from './studio-places';
-import { getStudioUserSecret, listStudioUsers, studioUsersQuerySchema } from './studio-users';
+import { getStudioUser, getStudioUserSecret, listStudioUsers, studioUsersQuerySchema } from './studio-users';
 
 export function registerStudioRoutes(app: Hono<AppEnv>): void {
   app.get('/studio/stats', requireAdmin, async (c) => {
@@ -52,6 +52,20 @@ export function registerStudioRoutes(app: Hono<AppEnv>): void {
     if (userId instanceof Response) return userId;
     try {
       const data = await getStudioUserSecret(c.get('db'), userId);
+      if (!data) {
+        return c.json({ error: 'Not found' }, 404);
+      }
+      return c.json({ data });
+    } catch {
+      return c.json({ error: 'Database unavailable' }, 503);
+    }
+  });
+
+  app.get('/studio/users/:userId', requireAdmin, async (c) => {
+    const userId = requireParam(c, 'userId');
+    if (userId instanceof Response) return userId;
+    try {
+      const data = await getStudioUser(c.get('db'), userId);
       if (!data) {
         return c.json({ error: 'Not found' }, 404);
       }

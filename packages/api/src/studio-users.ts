@@ -18,6 +18,8 @@ export interface StudioUserSecret {
   secret: string;
 }
 
+export type StudioUserProfile = Omit<StudioUserSecret, 'secret'>;
+
 export async function listStudioUsers(
   db: Db,
   query: StudioUsersQuery,
@@ -60,6 +62,16 @@ export async function listStudioUsers(
     .limit(limit);
 
   return rows.map((row) => ({ ...row, secret: row.id }));
+}
+
+export async function getStudioUser(
+  db: Db,
+  userId: string,
+): Promise<StudioUserProfile | null> {
+  const user = await getStudioUserSecret(db, userId);
+  if (!user) return null;
+  const { secret: _secret, ...profile } = user;
+  return profile;
 }
 
 export async function getStudioUserSecret(
