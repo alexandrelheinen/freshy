@@ -1,5 +1,6 @@
 import { API_BASE } from './api-base';
 import { mergePendingMapPlaces } from './pending-map-place';
+import { freshnessLevelScore, type FreshnessLevelId } from '@freshy/config/freshness-levels';
 
 export interface PlaceDto {
   id: string;
@@ -51,6 +52,24 @@ export function buildPlacesSearchParams(params: PlacesFetchParams): URLSearchPar
     search.set('minFreshnessLevel', String(params.minFreshnessLevel));
   }
   return search;
+}
+
+/** True when a place meets the minimum freshness score filter. */
+export function placeMatchesMinFreshnessFilter(
+  place: Pick<PlaceDto, 'aggregatedFreshnessLevel'>,
+  minFreshnessLevel: number | undefined,
+): boolean {
+  if (minFreshnessLevel == null) return true;
+  const score = freshnessLevelScore(place.aggregatedFreshnessLevel as FreshnessLevelId | null);
+  return score != null && score >= minFreshnessLevel;
+}
+
+export function filterPlacesByMinFreshnessLevel(
+  places: PlaceDto[],
+  minFreshnessLevel: number | undefined,
+): PlaceDto[] {
+  if (minFreshnessLevel == null) return places;
+  return places.filter((place) => placeMatchesMinFreshnessFilter(place, minFreshnessLevel));
 }
 
 /** Merge draft rows into a published list without duplicating slugs. */
@@ -121,7 +140,7 @@ export async function fetchPlacesClient(params: PlacesFetchParams): Promise<Plac
     });
   }
 
-  return places;
+  return filterPlacesByMinFreshnessLevel(places, params.minFreshnessLevel);
 }
 
 export { mergePendingMapPlaces };
@@ -267,11 +286,7 @@ export function staticMapUrl(lat: number, lng: number, token?: string): string |
   return `https://api.mapbox.com/styles/v1/mapbox/light-v11/static/pin-l+0c6780(${lng},${lat})/${lng},${lat},14,0/600x300@2x?access_token=${token}`;
 }
 
-import {
-  freshnessBarSegments,
-  freshnessTone,
-  type FreshnessLevelId,
-} from '@freshy/config/freshness-levels';
+import { freshnessBarSegments, freshnessTone } from '@freshy/config/freshness-levels';
 
 export function freshnessBarState(level: PlaceDto['aggregatedFreshnessLevel']): {
   segments: number;
