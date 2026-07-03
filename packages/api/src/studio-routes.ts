@@ -22,7 +22,9 @@ import {
 import {
   getStudioUser,
   getStudioUserSecret,
+  getStudioUsersByIds,
   listStudioUsers,
+  studioUsersLookupSchema,
   studioUsersQuerySchema,
 } from './studio-users';
 
@@ -46,6 +48,25 @@ export function registerStudioRoutes(app: Hono<AppEnv>): void {
     }
     try {
       const data = await listStudioUsers(c.get('db'), parsed.data);
+      return c.json({ data });
+    } catch {
+      return c.json({ error: 'Database unavailable' }, 503);
+    }
+  });
+
+  app.get('/studio/users/lookup', requireAdmin, async (c) => {
+    const parsed = studioUsersLookupSchema.safeParse({
+      ids: c.req.query('ids'),
+    });
+    if (!parsed.success) {
+      return c.json({ error: 'Invalid query', details: parsed.error.flatten() }, 400);
+    }
+    const userIds = parsed.data.ids
+      .split(',')
+      .map((id) => id.trim())
+      .filter(Boolean);
+    try {
+      const data = await getStudioUsersByIds(c.get('db'), userIds);
       return c.json({ data });
     } catch {
       return c.json({ error: 'Database unavailable' }, 503);

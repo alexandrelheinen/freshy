@@ -1,11 +1,15 @@
 import { z } from 'zod';
-import { desc, eq, like, or } from 'drizzle-orm';
+import { desc, eq, inArray, like, or } from 'drizzle-orm';
 import type { Db } from '@freshy/db';
 import { users as usersTable } from '@freshy/db';
 
 export const studioUsersQuerySchema = z.object({
   q: z.string().trim().optional(),
   limit: z.coerce.number().int().min(1).max(50).optional().default(25),
+});
+
+export const studioUsersLookupSchema = z.object({
+  ids: z.string().trim().min(1),
 });
 
 export type StudioUsersQuery = z.infer<typeof studioUsersQuerySchema>;
@@ -19,6 +23,15 @@ export interface StudioUserSecret {
 }
 
 export type StudioUserProfile = Omit<StudioUserSecret, 'secret'>;
+
+function contributorProfileFromRow(row: StudioUserProfile): StudioUserProfile {
+  return {
+    id: row.id,
+    email: row.email,
+    displayName: row.displayName,
+    username: row.username,
+  };
+}
 
 export async function listStudioUsers(
   db: Db,
@@ -62,6 +75,26 @@ export async function listStudioUsers(
     .limit(limit);
 
   return rows.map((row) => ({ ...row, secret: row.id }));
+}
+
+export async function getStudioUsersByIds(
+  db: Db,
+  userIds: string[],
+): Promise<StudioUserProfile[]> {
+  const ids = [...new Set(userIds.map((id) => id.trim()).filter(Boolean))];
+  if (ids.length === 0) return [];
+
+  const rows = await db
+    .select({
+      id: usersTable.id,
+      email: usersTable.email,
+      displayName: usersTable.displayName,
+      username: usersTable.username,
+    })
+    .from(usersTable)
+    .where(inArray(usersTable.id, ids));
+
+  return rows.map(contributorProfileFromRow);
 }
 
 export async function getStudioUser(db: Db, userId: string): Promise<StudioUserProfile | null> {

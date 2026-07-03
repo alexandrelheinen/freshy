@@ -1,4 +1,5 @@
 import { API_BASE } from './api-base';
+import { MAP_SEARCH } from '@freshy/config/map-search';
 import { mergePendingMapPlaces } from './pending-map-place';
 import { freshnessLevelScore, type FreshnessLevelId } from '@freshy/config/freshness-levels';
 
@@ -190,7 +191,6 @@ export async function fetchCategoryPlacesPage(
   const search = new URLSearchParams();
   search.set('lat', String(params.lat));
   search.set('lng', String(params.lng));
-  search.set('radius', String(params.radius));
   search.set('category', params.category);
   search.set('page', String(page));
   search.set('limit', String(limit));
@@ -211,7 +211,7 @@ export async function fetchCategoryPlacesPage(
   const places = await fetchPlacesClient({
     lat: params.lat,
     lng: params.lng,
-    radius: params.radius,
+    radius: MAP_SEARCH.maxRadiusKm,
     category: params.category,
     q: params.q,
     verifiedOnly: params.verifiedOnly,

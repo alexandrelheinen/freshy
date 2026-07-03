@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { PILOT_CITY } from '@freshy/config/pilot-city';
 import {
   categoryPlacesQuerySchema,
+  listCategoryPlacesPage,
   parseStoredTags,
   placesQuerySchema,
   publishedPlaceStatuses,
@@ -69,6 +70,63 @@ describe('parseStoredTags', () => {
 
   it('passes through arrays unchanged', () => {
     assert.deepEqual(parseStoredTags(['calm']), ['calm']);
+  });
+});
+
+describe('listCategoryPlacesPage', () => {
+  it('returns every place in the category sorted by distance without a radius cap', async () => {
+    const farMuseum = {
+      id: 'museum-far',
+      slug: 'far-museum',
+      name: 'Far Museum',
+      description: null,
+      category: 'MUSEUM' as const,
+      latitude: 49.5,
+      longitude: 2.8,
+      address: null,
+      photoUrl: null,
+      aggregatedFreshnessLevel: 'MODEST_AC' as const,
+      status: 'PUBLISHED' as const,
+      tags: '[]',
+      createdById: null,
+      isOpen: true,
+      createdAt: '',
+      updatedAt: '',
+    };
+    const nearMuseum = {
+      ...farMuseum,
+      id: 'museum-near',
+      slug: 'near-museum',
+      name: 'Near Museum',
+      latitude: PILOT_CITY.latitude + 0.001,
+      longitude: PILOT_CITY.longitude + 0.001,
+    };
+
+    const db = {
+      select: () => ({
+        from: () => ({
+          where: () => ({
+            orderBy: async () => [nearMuseum, farMuseum],
+          }),
+        }),
+      }),
+    } as unknown as Parameters<typeof listCategoryPlacesPage>[0];
+
+    const page = await listCategoryPlacesPage(db, {
+      lat: PILOT_CITY.latitude,
+      lng: PILOT_CITY.longitude,
+      radius: PILOT_CITY.defaultRadiusKm,
+      category: 'MUSEUM',
+      page: 1,
+      limit: 10,
+    });
+
+    assert.equal(page.total, 2);
+    assert.equal(page.items.length, 2);
+    assert.equal(page.items[0]?.slug, 'near-museum');
+    assert.equal(page.items[1]?.slug, 'far-museum');
+    assert.ok((page.items[1]?.distanceKm ?? 0) > PILOT_CITY.defaultRadiusKm);
+    assert.equal(page.nearbyCount, 1);
   });
 });
 
