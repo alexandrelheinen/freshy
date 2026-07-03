@@ -6,8 +6,8 @@ export type FontRole = (typeof FONT_ROLES)[number];
 
 export interface FontDefinition {
   family: string;
-  fallbacks: string[];
-  weights: number[];
+  fallbacks: readonly string[];
+  weights: readonly number[];
   letterSpacing?: string;
   /** Vertical nudge for wordmark optical centering (e.g. `-0.05em`). */
   baselineOffset?: string;
