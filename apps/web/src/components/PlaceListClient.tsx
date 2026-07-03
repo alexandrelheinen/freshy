@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { PLACE_CATEGORY_LABELS, type PlaceCategory } from '@freshy/ui';
+import { MaterialIcon, PLACE_CATEGORY_LABELS, type PlaceCategory } from '@freshy/ui';
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceListCard } from './PlaceListCard';
 import type { PlaceDto } from '../lib/api';
@@ -100,18 +100,17 @@ export function PlaceListClient({
             ) : null}
           </div>
 
-          <div className="relative flex-grow">
-              <MaterialIcon
-                name="search"
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-outline"
-              />
-              <input
-                className="w-full rounded-xl border border-outline-variant bg-surface-container-low py-3 pl-10 pr-4 font-body-sm shadow-sm transition-all outline-none focus:border-transparent focus:ring-2 focus:ring-primary md:rounded-full"
-                placeholder={searchPlaceholder}
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-            </div>
+          <div className="relative">
+            <MaterialIcon
+              name="search"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-outline"
+            />
+            <input
+              className="w-full rounded-xl border border-outline-variant bg-surface-container-low py-3 pl-10 pr-4 font-body-sm shadow-sm transition-all outline-none focus:border-transparent focus:ring-2 focus:ring-primary md:rounded-full"
+              placeholder={searchPlaceholder}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
           </div>
 
           <div className="hide-scrollbar mt-4 flex gap-2 overflow-x-auto pb-1">
