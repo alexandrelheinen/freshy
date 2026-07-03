@@ -115,7 +115,7 @@ function ProfileSignedOutView({ showSignIn }: { showSignIn: boolean }) {
         <section className="flex flex-col items-center py-16 text-center">
           <h2 className="font-headline-lg-mobile text-on-surface">Sign in to Freshy</h2>
           <p className="mt-2 max-w-sm text-on-surface-variant">
-            Save your favourite cooling spots and track your relief points.
+            Save your favourite cooling spots and share how cool they feel inside.
           </p>
           {showSignIn ? (
             <SignInButton mode="modal">
@@ -243,13 +243,6 @@ function ProfileWithClerk() {
                   {profile.displayName}
                 </h2>
                 <p className="font-body-lg text-on-surface-variant">@{profile.username}</p>
-                <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-primary/10 bg-primary-container/30 px-6 py-2 shadow-sm">
-                  <MaterialIcon name="star" filled className="text-primary" size={18} />
-                  <span className="font-label-caps">
-                    <span className="font-bold text-primary">{profile.reliefPoints}</span> Relief
-                    Points
-                  </span>
-                </div>
               </div>
               <div className="mt-6 flex gap-3 md:mt-0">
                 <Link
@@ -261,32 +254,6 @@ function ProfileWithClerk() {
                 </Link>
               </div>
             </section>
-
-            <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6">
-              <GlassCard className="flex flex-col items-center p-4 text-center md:p-6">
-                <MaterialIcon name="reviews" className="mb-2 text-primary md:hidden" size={28} />
-                <span className="font-headline-lg text-primary">{profile.reviewCount}</span>
-                <span className="font-label-caps uppercase tracking-widest text-secondary">
-                  Reviews
-                </span>
-              </GlassCard>
-              <GlassCard className="flex flex-col items-center p-4 text-center md:p-6">
-                <MaterialIcon
-                  name="bookmark_heart"
-                  className="mb-2 text-primary md:hidden"
-                  size={28}
-                />
-                <span className="font-headline-lg text-primary">{profile.savedCount}</span>
-                <span className="font-label-caps uppercase tracking-widest text-secondary">
-                  Saved
-                </span>
-              </GlassCard>
-              <GlassCard className="hidden flex-col items-center p-6 text-center md:flex">
-                <MaterialIcon name="add_location" className="mb-2 text-primary" size={28} />
-                <span className="text-3xl font-bold text-on-surface">+</span>
-                <span className="font-label-caps text-on-surface-variant">Contribute</span>
-              </GlassCard>
-            </div>
 
             <div className="mb-6 flex gap-8 overflow-x-auto border-b border-outline-variant pb-px md:mb-8">
               {(
