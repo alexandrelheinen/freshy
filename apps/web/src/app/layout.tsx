@@ -1,12 +1,10 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
 import { BRAND_TITLE } from '@freshy/ui';
 import { getDefaultThemeTokens } from '@freshy/theme/tokens';
 import { FreshyClerkProvider } from '../components/FreshyClerkProvider';
 import { FreshyLocationProvider } from '../components/FreshyLocationProvider';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const defaultTheme = getDefaultThemeTokens();
 
 export const metadata: Metadata = {
@@ -31,6 +29,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link
           rel="preload"
           as="style"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+        <link
+          rel="preload"
+          as="style"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=block"
         />
         <link
@@ -38,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body className={`${inter.variable} font-sans bg-background text-on-background antialiased`}>
+      <body className="font-sans bg-background text-on-background antialiased">
         <FreshyClerkProvider>
           <FreshyLocationProvider>{children}</FreshyLocationProvider>
         </FreshyClerkProvider>
