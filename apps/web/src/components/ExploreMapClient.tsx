@@ -38,12 +38,7 @@ import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
 import { API_BASE } from '../lib/api-base';
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import { SearchRadiusControl } from './SearchRadiusControl';
-import {
-  PlaceMapMarker,
-  UserLocationMarker,
-  VerifiedBadge,
-  freshnessLabel,
-} from './map-markers';
+import { PlaceMapMarker, UserLocationMarker, VerifiedBadge, freshnessLabel } from './map-markers';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
 
