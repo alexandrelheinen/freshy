@@ -510,13 +510,15 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       <button
         type="button"
         onClick={() => setActiveCategory(undefined)}
-        className={`shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-xs font-bold shadow-sm transition-colors ${
+        aria-label="All places"
+        aria-pressed={activeCategory == null}
+        className={`flex shrink-0 items-center justify-center rounded-full p-2.5 shadow-sm transition-colors ${
           activeCategory == null
             ? 'bg-primary text-on-primary'
             : 'bg-surface-container-high text-on-surface-variant hover:bg-secondary-container'
         }`}
       >
-        All Places
+        <MaterialIcon name="explore" size={20} />
       </button>
       {EXPLORE_FILTER_CHIPS.map((chip) => {
         const isActive = activeCategory === chip.category;
@@ -526,14 +528,15 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
             key={chip.label}
             type="button"
             onClick={() => setActiveCategory(chip.category)}
-            className={`flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-4 py-2 text-xs font-bold shadow-sm transition-colors md:py-2 ${
+            aria-label={chip.label}
+            aria-pressed={isActive}
+            className={`flex shrink-0 items-center justify-center rounded-full p-2.5 shadow-sm transition-colors ${
               isActive
                 ? 'bg-primary text-on-primary'
                 : 'glass border border-glass-border text-secondary hover:bg-glass-surface md:bg-surface-container-high md:text-on-surface-variant md:hover:bg-secondary-container'
             }`}
           >
-            {icon ? <MaterialIcon name={icon} size={16} /> : null}
-            {chip.label}
+            {icon ? <MaterialIcon name={icon} size={20} /> : null}
           </button>
         );
       })}

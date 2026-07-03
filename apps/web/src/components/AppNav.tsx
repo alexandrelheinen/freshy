@@ -50,14 +50,14 @@ function VerifiedOnlyToggle({ onToggle }: { onToggle?: () => void }) {
         onToggle?.();
       }}
       aria-pressed={verifiedOnly}
-      className={`flex h-10 items-center gap-2 rounded-full px-3 font-label-caps transition-colors ${
+      aria-label={verifiedOnly ? 'Showing verified places only' : 'Show all places including unverified'}
+      className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
         verifiedOnly
           ? 'bg-primary-container text-primary'
           : 'bg-surface-container-high text-on-surface-variant hover:text-primary'
       }`}
     >
       <MaterialIcon name="verified" filled={verifiedOnly} className="text-current" />
-      <span className="hidden sm:inline">Verified only</span>
     </button>
   );
 }
