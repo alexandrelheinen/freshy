@@ -333,6 +333,14 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     [places, selectedSlug],
   );
 
+  const nearbyPlaces = useMemo(
+    () =>
+      [...places]
+        .sort((a, b) => (a.distanceKm ?? Number.POSITIVE_INFINITY) - (b.distanceKm ?? Number.POSITIVE_INFINITY))
+        .slice(0, 5),
+    [places],
+  );
+
   const loadPlaces = useCallback(
     async (opts: {
       lat: number;
@@ -582,7 +590,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         })
       : null;
 
-  const researchButton = needsResearch ? (
+  const mobileResearchButton = needsResearch ? (
     <button
       type="button"
       onClick={researchHere}
@@ -592,7 +600,19 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     </button>
   ) : null;
 
-  const filterChipsContainerClassName = needsResearch ? 'relative pb-14' : 'relative';
+  const desktopResearchButton = needsResearch ? (
+    <div className="pointer-events-none absolute left-1/2 top-24 z-map-overlay hidden -translate-x-1/2 md:block">
+      <button
+        type="button"
+        onClick={researchHere}
+        className="pointer-events-auto whitespace-nowrap rounded-full bg-primary px-6 py-2.5 font-label-caps text-on-primary shadow-lg transition-opacity hover:brightness-110 active:scale-[0.98]"
+      >
+        Research in this area
+      </button>
+    </div>
+  ) : null;
+
+  const mobileFilterChipsContainerClassName = needsResearch ? 'relative pb-14' : 'relative';
 
   return (
     <div className="relative min-h-screen" data-page="explore">
@@ -618,40 +638,39 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
           </div>
         ) : null}
 
+        {desktopResearchButton}
+
         {/* Mobile: category chips stay fixed; research CTA floats below without shifting layout */}
         <div className="absolute left-0 top-20 z-map-overlay w-full px-margin-mobile md:hidden">
-          <div className={filterChipsContainerClassName}>
+          <div className={mobileFilterChipsContainerClassName}>
             {filterChips}
-            {researchButton}
+            {mobileResearchButton}
           </div>
         </div>
 
         {/* Desktop: left sidebar (list only until xl, when detail card has its own column) */}
         <div className="pointer-events-none absolute left-4 top-20 z-map-overlay hidden max-h-[calc(100vh-13rem)] w-[min(20rem,calc(100vw-2rem))] flex-col gap-4 md:flex lg:left-6 lg:w-80 xl:max-h-[calc(100vh-12rem)] xl:w-96">
-          <div className={filterChipsContainerClassName}>
-            <div className="glass-panel pointer-events-auto rounded-xl border border-glass-border p-4 shadow-xl">
-              {filterChips}
-            </div>
-            {researchButton}
+          <div className="glass-panel pointer-events-auto rounded-xl border border-glass-border p-4 shadow-xl">
+            {filterChips}
           </div>
           <div className="glass-panel pointer-events-auto flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-glass-border shadow-xl">
             <div className="flex items-center justify-between border-b border-outline-variant/20 p-4">
               <h2 className="font-title-md text-on-surface">Nearby Places</h2>
-              {places.length > 0 ? (
+              {nearbyPlaces.length > 0 ? (
                 <span className="rounded bg-primary-container px-2 py-0.5 text-xs font-bold text-primary">
-                  {places.length} Results
+                  {nearbyPlaces.length} closest
                 </span>
               ) : null}
             </div>
             <div className="hide-scrollbar flex-1 space-y-2 overflow-y-auto p-2">
               {placesLoadError ? (
                 <p className="p-4 text-center text-sm text-error">{placesLoadError}</p>
-              ) : places.length === 0 ? (
+              ) : nearbyPlaces.length === 0 ? (
                 <p className="p-4 text-center text-sm text-on-surface-variant">
                   {exploreEmptyMessage(activeCategory)}
                 </p>
               ) : (
-                places.map((place) => (
+                nearbyPlaces.map((place) => (
                   <NearbyListItem
                     key={place.id}
                     place={place}
