@@ -2,6 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   CATEGORY_PLACES_PAGE_SIZE,
+  buildCategoryPlacesPageFromList,
   buildPlacesSearchParams,
   directionsUrl,
   formatDistance,
@@ -118,5 +119,42 @@ describe('@freshy/web api helpers', () => {
 
   it('uses five places per page for category list defaults', () => {
     assert.equal(CATEGORY_PLACES_PAGE_SIZE, 5);
+  });
+
+  it('paginates category places by distance for fallback list views', () => {
+    const page = buildCategoryPlacesPageFromList(
+      [
+        {
+          id: '1',
+          slug: 'near',
+          name: 'Near Bar',
+          description: null,
+          category: 'BAR',
+          latitude: 48.9,
+          longitude: 2.3,
+          address: null,
+          aggregatedFreshnessLevel: 'MODEST_AC',
+          distanceKm: 0.5,
+        },
+        {
+          id: '2',
+          slug: 'far',
+          name: 'Far Bar',
+          description: null,
+          category: 'BAR',
+          latitude: 49.5,
+          longitude: 2.8,
+          address: null,
+          aggregatedFreshnessLevel: 'MODEST_AC',
+          distanceKm: 12,
+        },
+      ],
+      { page: 1, limit: 1, radiusKm: 3 },
+    );
+
+    assert.equal(page.items.length, 1);
+    assert.equal(page.items[0]?.slug, 'near');
+    assert.equal(page.total, 2);
+    assert.equal(page.nearbyCount, 1);
   });
 });

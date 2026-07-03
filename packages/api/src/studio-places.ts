@@ -203,26 +203,6 @@ export function studioContributorForPlace(
   return contributors.get(createdById) ?? null;
 }
 
-async function loadContributorsByUserIds(
-  db: Db,
-  userIds: Array<string | null | undefined>,
-): Promise<Map<string, StudioContributor>> {
-  const uniqueIds = [...new Set(userIds.filter((id): id is string => Boolean(id)))];
-  if (uniqueIds.length === 0) return new Map();
-
-  const rows = await db
-    .select({
-      id: usersTable.id,
-      email: usersTable.email,
-      displayName: usersTable.displayName,
-      username: usersTable.username,
-    })
-    .from(usersTable)
-    .where(inArray(usersTable.id, uniqueIds));
-
-  return new Map(rows.map((row) => [row.id, row]));
-}
-
 /** Serialize a DB place row for Studio API responses (parsed tags, resolved photo). */
 export function formatStudioPlaceListItem(
   place: Place,
@@ -237,18 +217,6 @@ export function formatStudioPlaceListItem(
     duplicateOfId,
     contributor,
   };
-}
-
-function enrichStudioPlace(
-  place: Place,
-  duplicateOfId: string | null,
-  contributors: Map<string, StudioContributor>,
-): StudioPlaceListItem {
-  return formatStudioPlaceListItem(
-    place,
-    duplicateOfId,
-    studioContributorForPlace(place.createdById, contributors),
-  );
 }
 
 function matchesStudioStatusFilter(
@@ -320,20 +288,38 @@ export async function listStudioPlaces(
     return { items: [], total, page: query.page, limit: query.limit };
   }
 
-  const pagePlaces = await db.select().from(placesTable).where(inArray(placesTable.id, pageIds));
-  const placesById = new Map(pagePlaces.map((place) => [place.id, place]));
-  const orderedPlaces = pageIds
-    .map((id) => placesById.get(id))
-    .filter((place): place is Place => place != null);
+  const pageRows = await db
+    .select({
+      place: placesTable,
+      contributorId: usersTable.id,
+      contributorEmail: usersTable.email,
+      contributorDisplayName: usersTable.displayName,
+      contributorUsername: usersTable.username,
+    })
+    .from(placesTable)
+    .leftJoin(usersTable, eq(placesTable.createdById, usersTable.id))
+    .where(inArray(placesTable.id, pageIds));
 
-  const contributors = await loadContributorsByUserIds(
-    db,
-    orderedPlaces.map((place) => place.createdById),
-  );
-
-  const items = orderedPlaces.map((place) =>
-    enrichStudioPlace(place, duplicateMap.get(place.id) ?? null, contributors),
-  );
+  const rowsById = new Map(pageRows.map((row) => [row.place.id, row]));
+  const items = pageIds
+    .map((id) => rowsById.get(id))
+    .filter((row): row is (typeof pageRows)[number] => row != null)
+    .map((row) => {
+      const contributor =
+        row.contributorId != null
+          ? {
+              id: row.contributorId,
+              email: row.contributorEmail!,
+              displayName: row.contributorDisplayName!,
+              username: row.contributorUsername!,
+            }
+          : null;
+      return formatStudioPlaceListItem(
+        row.place,
+        duplicateMap.get(row.place.id) ?? null,
+        contributor,
+      );
+    });
 
   return { items, total, page: query.page, limit: query.limit };
 }
@@ -483,9 +469,20 @@ export async function mergeStudioPlaces(db: Db, input: MergePlacesInput): Promis
 }
 
 export async function getStudioPlace(db: Db, placeId: string): Promise<StudioPlaceListItem | null> {
-  const rows = await db.select().from(placesTable).where(eq(placesTable.id, placeId)).limit(1);
-  if (!rows[0]) return null;
-  const place = rows[0];
+  const rows = await db
+    .select({
+      place: placesTable,
+      contributorId: usersTable.id,
+      contributorEmail: usersTable.email,
+      contributorDisplayName: usersTable.displayName,
+      contributorUsername: usersTable.username,
+    })
+    .from(placesTable)
+    .leftJoin(usersTable, eq(placesTable.createdById, usersTable.id))
+    .where(eq(placesTable.id, placeId))
+    .limit(1);
+  const row = rows[0];
+  if (!row) return null;
 
   const allPlaces = await db
     .select({
@@ -495,8 +492,16 @@ export async function getStudioPlace(db: Db, placeId: string): Promise<StudioPla
       createdAt: placesTable.createdAt,
     })
     .from(placesTable);
-  const duplicateOfId = detectDuplicatePlaceIds(allPlaces).get(place.id) ?? null;
-  const contributors = await loadContributorsByUserIds(db, [place.createdById]);
+  const duplicateOfId = detectDuplicatePlaceIds(allPlaces).get(row.place.id) ?? null;
+  const contributor =
+    row.contributorId != null
+      ? {
+          id: row.contributorId,
+          email: row.contributorEmail!,
+          displayName: row.contributorDisplayName!,
+          username: row.contributorUsername!,
+        }
+      : null;
 
-  return enrichStudioPlace(place, duplicateOfId, contributors);
+  return formatStudioPlaceListItem(row.place, duplicateOfId, contributor);
 }

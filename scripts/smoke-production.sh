@@ -87,6 +87,14 @@ check_authed_places_route() {
   route_not_missing POST /users/me/places 401 "Content-Type: application/json" '{}'
 }
 
+check_category_list_route() {
+  route_not_missing GET "/places/category-list?lat=${PILOT_LAT}&lng=${PILOT_LNG}&radius=3&category=BAR&page=1&limit=5" 200
+}
+
+check_drafts_route() {
+  route_not_missing GET "/places/drafts?lat=${PILOT_LAT}&lng=${PILOT_LNG}&radius=3" 200
+}
+
 check_web_page() {
   local path="$1"
   local code
@@ -144,6 +152,10 @@ step "Contributor and place submission routes"
 retry "API /users/me/contributor-secret" check_contributor_secret_route
 retry "API /contributions/places" check_contributions_route
 retry "API /users/me/places" check_authed_places_route
+
+step "Category list and draft routes"
+retry "API /places/category-list" check_category_list_route
+retry "API /places/drafts" check_drafts_route
 
 step "Default place photos"
 retry "default place photo" check_default_place_photo

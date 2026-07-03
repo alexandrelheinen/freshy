@@ -808,7 +808,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
 
         {/* Desktop: map controls centered in the map corridor */}
         <div className="pointer-events-none absolute bottom-8 left-1/2 z-map-overlay hidden -translate-x-1/2 md:flex">
-          <div className="glass-panel flex items-center gap-4 rounded-full border border-glass-border px-6 py-3 shadow-xl">
+          <div className="glass-panel pointer-events-auto flex items-center gap-4 rounded-full border border-glass-border px-6 py-3 shadow-xl">
             <button
               type="button"
               onClick={recenter}
