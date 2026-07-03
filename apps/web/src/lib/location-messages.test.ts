@@ -10,7 +10,7 @@ describe('locationStatusMessage', () => {
       searchRadiusKm: 3,
       usingGps: false,
     });
-    assert.match(message ?? '', /blocked in your browser/i);
+    assert.match(message ?? '', /Allow location access/i);
   });
 
   it('suggests GPS when using map fallback', () => {
@@ -20,8 +20,8 @@ describe('locationStatusMessage', () => {
       searchRadiusKm: 3,
       usingGps: false,
     });
-    assert.match(message ?? '', /last map area/i);
-    assert.match(message ?? '', /Use my location/i);
+    assert.match(message ?? '', /Allow location access/i);
+    assert.match(message ?? '', /pan the map/i);
   });
 
   it('returns null when GPS is active', () => {
