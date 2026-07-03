@@ -7,13 +7,13 @@ import {
   BRAND_ICON,
   MaterialIcon,
   NAV_ICONS,
-  NAV_ITEMS,
   ROUTES,
   themePreferenceLabel,
   useTheme,
   type MaterialIconName,
   type ThemePreference,
 } from '@freshy/ui';
+import { DESKTOP_NAV_ITEMS, MOBILE_MENU_NAV_ITEMS } from '../lib/nav-config';
 import { isStudioAdmin } from '../lib/studio-api';
 import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
 
@@ -25,9 +25,6 @@ function ClerkAdminFlag({ children }: { children: (isAdmin: boolean) => ReactNod
   const { user } = useUser();
   return <>{children(isStudioAdmin(user?.publicMetadata))}</>;
 }
-
-const DESKTOP_NAV_ITEMS = NAV_ITEMS.filter((item) => item.id !== 'profile' && item.id !== 'saved');
-const MOBILE_MENU_NAV_ITEMS = NAV_ITEMS.filter((item) => item.id !== 'profile');
 
 function ThemeMenu({ variant = 'header' }: { variant?: 'header' | 'menu' }) {
   const { preference, setTheme } = useTheme();
