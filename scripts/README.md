@@ -48,8 +48,8 @@ If you have an older `places` staging table, re-run `scrape` after pulling this 
 
 | Workflow                                                                      | Trigger                            | Command / action                          |
 | ----------------------------------------------------------------------------- | ---------------------------------- | ----------------------------------------- |
-| [migrate-database.yml](../.github/workflows/migrate-database.yml)             | D1 schema or migrations change     | `d1 migrations apply --remote`            |
-| [deploy-api.yml](../.github/workflows/deploy-api.yml)                         | API / db package changes on `main` | Wrangler deploy + D1 migrations           |
+| [deploy-api.yml](../.github/workflows/deploy-api.yml)                         | Every push to `main`               | D1 migrate + Wrangler deploy              |
+| [migrate-database.yml](../.github/workflows/migrate-database.yml)             | Manual (`workflow_dispatch` only)  | `d1 migrations apply --remote` (no deploy) |
 | [sync-place-defaults.yml](../.github/workflows/sync-place-defaults.yml)       | Default place images change        | `pnpm upload:place-defaults`              |
 | [production-screenshots.yml](../.github/workflows/production-screenshots.yml) | Web or UI change                   | Playwright against live Pages + R2 upload |
 | [smoke-production.yml](../.github/workflows/smoke-production.yml)             | Every push to `main`               | `bash scripts/smoke-production.sh`        |

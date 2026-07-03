@@ -186,8 +186,8 @@ Repository → **Settings → Secrets and variables → Actions**:
 
 | Workflow                                                                         | Trigger                     | Action                           |
 | -------------------------------------------------------------------------------- | --------------------------- | -------------------------------- |
-| [deploy-api.yml](../../.github/workflows/deploy-api.yml)                         | API/db changes              | Build, D1 migrate, Worker deploy |
-| [migrate-database.yml](../../.github/workflows/migrate-database.yml)             | Schema/migration changes    | D1 migrate only                  |
+| [deploy-api.yml](../../.github/workflows/deploy-api.yml)                         | Every push to `main`        | Build, D1 migrate, Worker deploy |
+| [migrate-database.yml](../../.github/workflows/migrate-database.yml)             | Manual only                 | D1 migrate only (no Worker deploy) |
 | [sync-place-defaults.yml](../../.github/workflows/sync-place-defaults.yml)       | Default place images change | `pnpm upload:place-defaults`     |
 | [production-screenshots.yml](../../.github/workflows/production-screenshots.yml) | Web or UI change            | Live Pages screenshots → R2      |
 | [smoke-production.yml](../../.github/workflows/smoke-production.yml)             | Every `main` push           | API + web health checks          |

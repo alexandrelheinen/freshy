@@ -77,8 +77,8 @@ sequenceDiagram
 | Workflow                                                       | Trigger                       | Action                           |
 | -------------------------------------------------------------- | ----------------------------- | -------------------------------- |
 | Pages (Git integration)                                        | Push to `main`                | Build and deploy web shell       |
-| [deploy-api.yml](.github/workflows/deploy-api.yml)             | Push to `main` (api/db paths) | Build, D1 migrate, Worker deploy |
-| [migrate-database.yml](.github/workflows/migrate-database.yml) | Schema/migration changes      | D1 migrate only                  |
+| [deploy-api.yml](.github/workflows/deploy-api.yml)             | Push to `main`                | Build, D1 migrate, Worker deploy |
+| [migrate-database.yml](.github/workflows/migrate-database.yml) | Manual (`workflow_dispatch`)  | D1 migrate only (no deploy)      |
 | [ci.yml](.github/workflows/ci.yml)                             | Pull requests                 | Lint, test, build, screenshots   |
 
 Required GitHub secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`. See [docs/platforms.md](docs/platforms.md).
