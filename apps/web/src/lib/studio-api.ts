@@ -14,6 +14,7 @@ export interface StudioContributorDto {
 
 export interface StudioPlaceDto extends PlaceDto {
   status: 'DRAFT' | 'PUBLISHED';
+  createdById?: string | null;
   studioStatus: StudioPlaceStatus;
   duplicateOfId: string | null;
   contributor: StudioContributorDto | null;
@@ -114,7 +115,11 @@ export async function fetchStudioPlaces(
   if (res.status === 404) return null;
   if (!res.ok) return null;
   const json = (await res.json()) as { data: StudioPlacesPageDto };
-  return json.data;
+  const data = json.data;
+  return {
+    ...data,
+    items: await resolveMissingStudioContributors(getToken, data.items),
+  };
 }
 
 export async function fetchStudioUsers(
@@ -207,6 +212,62 @@ export async function updateStudioPlace(
 export function isStudioAdmin(publicMetadata: unknown): boolean {
   if (!publicMetadata || typeof publicMetadata !== 'object') return false;
   return (publicMetadata as { role?: string }).role === 'admin';
+}
+
+/** Merge API contributor data with a lookup map keyed by Freshy User.id. */
+export function mergeStudioPlaceContributor(
+  place: StudioPlaceDto,
+  contributorsById: ReadonlyMap<string, StudioContributorDto>,
+): StudioPlaceDto {
+  if (place.contributor) return place;
+  if (!place.createdById) return place;
+  const contributor = contributorsById.get(place.createdById) ?? null;
+  if (!contributor) return place;
+  return { ...place, contributor };
+}
+
+export function mergeStudioPlaceContributors(
+  places: StudioPlaceDto[],
+  contributorsById: ReadonlyMap<string, StudioContributorDto>,
+): StudioPlaceDto[] {
+  return places.map((place) => mergeStudioPlaceContributor(place, contributorsById));
+}
+
+function studioContributorFromUser(user: StudioUserSecretDto): StudioContributorDto {
+  return {
+    id: user.id,
+    email: user.email,
+    displayName: user.displayName,
+    username: user.username,
+  };
+}
+
+/** Resolve contributor profiles when the API only returned createdById. */
+export async function resolveMissingStudioContributors(
+  getToken: () => Promise<string | null>,
+  places: StudioPlaceDto[],
+): Promise<StudioPlaceDto[]> {
+  const missingIds = [
+    ...new Set(
+      places
+        .filter((place) => !place.contributor && place.createdById)
+        .map((place) => place.createdById as string),
+    ),
+  ];
+  if (missingIds.length === 0) return places;
+
+  const contributorsById = new Map<string, StudioContributorDto>();
+  await Promise.all(
+    missingIds.map(async (userId) => {
+      const users = await fetchStudioUsers(getToken, { q: userId, limit: 1 });
+      const user = users.find((row) => row.id === userId);
+      if (user) {
+        contributorsById.set(userId, studioContributorFromUser(user));
+      }
+    }),
+  );
+
+  return mergeStudioPlaceContributors(places, contributorsById);
 }
 
 /** D1 stores tags as JSON; Studio list items should be arrays but normalize defensively. */

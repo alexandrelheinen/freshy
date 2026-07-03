@@ -14,15 +14,27 @@ function formatContributedAt(iso: string): string {
 
 interface StudioContributorCellProps {
   contributor: StudioContributorDto | null;
+  createdById?: string | null;
   submittedAt: string;
 }
 
-export function StudioContributorCell({ contributor, submittedAt }: StudioContributorCellProps) {
+export function StudioContributorCell({
+  contributor,
+  createdById,
+  submittedAt,
+}: StudioContributorCellProps) {
   const popoverId = useId();
   const anchorRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
 
   if (!contributor) {
+    if (createdById) {
+      return (
+        <span className="text-body-sm text-secondary" title={createdById}>
+          User {createdById.slice(0, 8)}
+        </span>
+      );
+    }
     return <span className="text-body-sm text-secondary">Unknown</span>;
   }
 
@@ -57,12 +69,18 @@ export function StudioContributorCell({ contributor, submittedAt }: StudioContri
   );
 }
 
-export function StudioContributorSummary({ contributor, submittedAt }: StudioContributorCellProps) {
+export function StudioContributorSummary({
+  contributor,
+  createdById,
+  submittedAt,
+}: StudioContributorCellProps) {
   if (!contributor) {
     return (
       <section className="rounded-xl border border-outline-variant/20 bg-surface-container-low px-4 py-3">
         <p className="font-label-caps text-secondary">Contributor</p>
-        <p className="mt-1 text-body-sm text-on-surface-variant">Contributor not recorded</p>
+        <p className="mt-1 text-body-sm text-on-surface-variant">
+          {createdById ? `User ${createdById}` : 'Contributor not recorded'}
+        </p>
         <p className="mt-1 text-[12px] text-secondary">
           Submitted: {formatContributedAt(submittedAt)}
         </p>
