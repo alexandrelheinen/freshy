@@ -91,7 +91,10 @@ describe('@freshy/web api helpers', () => {
 
     const merged = mergeDraftPlacesIntoResults(published, drafts);
     assert.equal(merged.length, 2);
-    assert.equal(merged.some((place) => place.slug === 'cafe-draft'), true);
+    assert.equal(
+      merged.some((place) => place.slug === 'cafe-draft'),
+      true,
+    );
   });
 
   it('omits verifiedOnly from places query unless the filter is enabled', () => {

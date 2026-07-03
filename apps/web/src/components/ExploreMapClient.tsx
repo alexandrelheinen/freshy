@@ -345,7 +345,10 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
   const nearbyPlaces = useMemo(
     () =>
       [...places]
-        .sort((a, b) => (a.distanceKm ?? Number.POSITIVE_INFINITY) - (b.distanceKm ?? Number.POSITIVE_INFINITY))
+        .sort(
+          (a, b) =>
+            (a.distanceKm ?? Number.POSITIVE_INFINITY) - (b.distanceKm ?? Number.POSITIVE_INFINITY),
+        )
         .slice(0, 5),
     [places],
   );
