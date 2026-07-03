@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import { getDefaultThemeTokens } from '../generated/index';
 
 describe('default theme parity', () => {
-  it('matches legacy primary colors', () => {
+  it('matches Freshy Arctic primary colors', () => {
     const tokens = getDefaultThemeTokens();
-    assert.equal(tokens.colors.primary, '#0c6780');
-    assert.equal(tokens.colors['primary-container'], '#87ceeb');
-    assert.equal(tokens.colors.background, '#f7f9fb');
-    assert.equal(tokens.colors['surface-container-highest'], '#e0e3e5');
+    assert.equal(tokens.colors.primary, '#005f9d');
+    assert.equal(tokens.colors['primary-container'], '#0078c5');
+    assert.equal(tokens.colors.background, '#f3faff');
+    assert.equal(tokens.colors['surface-container-highest'], '#dae4e9');
   });
 
   it('exports icon slots', () => {

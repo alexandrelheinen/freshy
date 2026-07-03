@@ -1,7 +1,7 @@
 glass:
   blur: '15px'
 shadow:
-  card: '0 4px 20px rgba(12, 103, 128, 0.04)'
-  card-elevated: '0 20px 20px rgba(12, 103, 128, 0.04)'
+  card: '0 4px 20px rgba(0, 95, 157, 0.04)'
+  card-elevated: '0 20px 20px rgba(0, 95, 157, 0.04)'
   nav: '0 -4px 20px rgba(0, 0, 0, 0.04)'
   floating: '0 2px 4px rgba(0, 0, 0, 0.1)'

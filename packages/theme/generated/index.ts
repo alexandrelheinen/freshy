@@ -2,12 +2,12 @@
 import * as defaultTheme from './default.tokens';
 import * as dark from './dark.tokens';
 
-export const THEME_IDS = ['default', 'dark'] as const;
+export const THEME_IDS = ["default","dark"] as const;
 export type ThemeId = (typeof THEME_IDS)[number];
 
 const themes = {
-  default: defaultTheme,
-  dark: dark,
+  "default": defaultTheme,
+  "dark": dark,
 } as const;
 
 export type ThemeTokens = (typeof themes)[ThemeId];

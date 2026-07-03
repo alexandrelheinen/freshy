@@ -28,7 +28,7 @@ describe('compile-themes', () => {
     const css = fs.readFileSync(path.join(GENERATED_DIR, 'default.css'), 'utf8');
     assert.match(css, /:root:not\(\[data-theme='dark'\]\)/);
     assert.match(css, /\[data-theme='default'\]/);
-    assert.match(css, /--color-primary: #0c6780;/);
+    assert.match(css, /--color-primary: #005f9d;/);
   });
 
   it('orders themes so dark variables are not overridden by default :root', () => {

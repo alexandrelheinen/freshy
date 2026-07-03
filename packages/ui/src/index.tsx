@@ -28,7 +28,7 @@ export function FreshnessBar({
   tone?: 'neutral' | 'blue' | 'green';
 }) {
   const activeClass =
-    tone === 'green' ? 'bg-emerald-600' : tone === 'blue' ? 'bg-primary' : 'bg-outline-variant/60';
+    tone === 'green' ? 'bg-success' : tone === 'blue' ? 'bg-primary' : 'bg-outline-variant/60';
   return (
     <div className="flex h-1.5 w-full gap-1">
       {[1, 2, 3].map((i) => (
@@ -57,7 +57,7 @@ export function FreshnessSnowflakes({
   const filled = segments >= 3 ? 5 : segments === 2 ? 3 : segments === 1 ? 1 : 0;
   const activeClass =
     tone === 'green'
-      ? 'text-emerald-600'
+      ? 'text-success'
       : tone === 'blue'
         ? 'text-primary'
         : 'text-outline-variant/70';
