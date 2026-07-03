@@ -6,6 +6,7 @@ import type { AppEnv } from './env';
 import { requireAuth } from './auth';
 import {
   getUserProfile,
+  contributorSecretForUser,
   isPlaceSaved,
   listSavedPlaces,
   listUserReviews,
@@ -52,6 +53,12 @@ export function registerUserRoutes(app: Hono<AppEnv>): void {
     } catch {
       return c.json({ error: 'Database unavailable' }, 503);
     }
+  });
+
+  app.get('/users/me/contributor-secret', requireAuth, async (c) => {
+    const user = await withDbUser(c);
+    if (user instanceof Response) return user;
+    return c.json({ data: { secret: contributorSecretForUser(user) } });
   });
 
   app.delete('/users/me', requireAuth, async (c) => {

@@ -27,7 +27,7 @@ import {
 } from '../lib/studio-api';
 import { StudioPlaceEditModal } from './StudioPlaceEditModal';
 import { StudioContributorCell } from './StudioContributorCell';
-import { StudioContributorSecretsPanel } from './StudioContributorSecretsPanel';
+import { StudioMyContributorSecretBar } from './StudioMyContributorSecretBar';
 import { freshnessBarState } from '../lib/api';
 
 type StudioView = 'all' | 'verified' | 'pending' | 'duplicate';
@@ -260,8 +260,9 @@ export function StudioClient() {
               />
             </form>
           </div>
-          <StudioContributorSecretsPanel getToken={getToken} onCopied={setToast} />
         </header>
+
+        <StudioMyContributorSecretBar getToken={getToken} onCopied={setToast} />
 
         <div className="hide-scrollbar flex gap-2 overflow-x-auto border-b border-outline-variant/10 px-4 py-3 md:hidden">
           {VIEW_ITEMS.map((item) => {

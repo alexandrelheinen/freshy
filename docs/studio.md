@@ -103,7 +103,7 @@ Studio place rows include an **Added by** column:
 | Set           | Contributor email with hover summary (name, email, submitted date) |
 | `null`        | **Unknown** (legacy or admin-seeded places)                        |
 
-Admins can open **Contributor secrets** in the Studio header to search users and copy a contributor secret (`User.id`) for offline sharing.
+Admins see a **My secret** bar below the Studio header with their own contributor secret (`User.id`). Copy it to share offline with trusted contributors who submit without signing in.
 
 ### Public reads
 
@@ -157,8 +157,9 @@ Middleware: `requireAdmin` in `packages/api/src/auth.ts`.
 
 | Method   | Path                                       | Description                               |
 | -------- | ------------------------------------------ | ----------------------------------------- |
+| `GET`    | `/users/me/contributor-secret`             | Current user's contributor secret         |
 | `GET`    | `/studio/users`                            | Search users and list contributor secrets |
-| `GET`    | `/studio/users/:userId/contributor-secret` | Single user contributor secret            |
+| `GET`    | `/studio/users/:userId/contributor-secret` | Single user contributor secret (admin)    |
 | `GET`    | `/studio/stats`                            | Dashboard metrics                         |
 | `GET`    | `/studio/places`                           | Paginated place list                      |
 | `GET`    | `/studio/places/:placeId`                  | Single place with `studioStatus`          |
