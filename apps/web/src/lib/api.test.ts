@@ -13,6 +13,7 @@ import {
   freshnessBarState,
   mergeDraftPlacesIntoResults,
   placeMatchesMinFreshnessFilter,
+  isPlaceVerified,
 } from './api';
 
 describe('@freshy/web api helpers', () => {
@@ -49,6 +50,31 @@ describe('@freshy/web api helpers', () => {
   it('builds directions URL from coordinates when address is missing', () => {
     const url = directionsUrl({ latitude: 48.9042, longitude: 2.3064, address: null });
     assert.equal(url, 'https://www.google.com/maps/dir/?api=1&destination=48.9042,2.3064');
+  });
+
+  it('omits verifiedOnly from places query unless the filter is enabled', () => {
+    const off = buildPlacesSearchParams({
+      lat: 48.9042,
+      lng: 2.3064,
+      radius: 5,
+      verifiedOnly: false,
+    });
+    assert.equal(off.has('verifiedOnly'), false);
+
+    const on = buildPlacesSearchParams({
+      lat: 48.9042,
+      lng: 2.3064,
+      radius: 5,
+      verifiedOnly: true,
+    });
+    assert.equal(on.get('verifiedOnly'), 'true');
+  });
+
+  it('treats only published places as verified on Explore', () => {
+    assert.equal(isPlaceVerified({ status: 'PUBLISHED' }), true);
+    assert.equal(isPlaceVerified({ status: 'DRAFT' }), false);
+    assert.equal(isPlaceVerified({ status: 'IMPORTED' }), false);
+    assert.equal(isPlaceVerified({}), false);
   });
 
   it('merges draft places without duplicating slugs already returned by the API', () => {
@@ -99,24 +125,6 @@ describe('@freshy/web api helpers', () => {
       merged.some((place) => place.slug === 'cafe-draft'),
       true,
     );
-  });
-
-  it('omits verifiedOnly from places query unless the filter is enabled', () => {
-    const off = buildPlacesSearchParams({
-      lat: 48.9042,
-      lng: 2.3064,
-      radius: 5,
-      verifiedOnly: false,
-    });
-    assert.equal(off.has('verifiedOnly'), false);
-
-    const on = buildPlacesSearchParams({
-      lat: 48.9042,
-      lng: 2.3064,
-      radius: 5,
-      verifiedOnly: true,
-    });
-    assert.equal(on.get('verifiedOnly'), 'true');
   });
 
   it('uses five places per page for category list defaults', () => {

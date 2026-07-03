@@ -1,7 +1,7 @@
 'use client';
 
 import type { StudioContributorDto } from '../lib/studio-api';
-import { contributorDisplayName, useStudioContributor } from '../lib/use-studio-contributor';
+import { contributorDisplayName, contributorFallbackLabel, useStudioContributor } from '../lib/use-studio-contributor';
 
 function formatContributedAt(iso: string): string {
   return new Intl.DateTimeFormat('en-GB', {
@@ -33,14 +33,15 @@ export function StudioContributorCell({
   }
 
   if (!resolved) {
-    if (createdById) {
+    const fallback = contributorFallbackLabel(createdById);
+    if (fallback) {
       return (
-        <span className="text-body-sm text-secondary" title={createdById}>
-          Unknown contributor
+        <span className="text-body-sm text-on-surface-variant" title={createdById ?? undefined}>
+          {fallback}
         </span>
       );
     }
-    return <span className="text-body-sm text-secondary">Unknown</span>;
+    return <span className="text-body-sm text-secondary">Contributor not recorded</span>;
   }
 
   const label = contributorDisplayName(resolved);
@@ -77,11 +78,12 @@ export function StudioContributorSummary({
   }
 
   if (!resolved) {
+    const fallback = contributorFallbackLabel(createdById);
     return (
       <section className="rounded-xl border border-outline-variant/20 bg-surface-container-low px-4 py-3">
         <p className="font-label-caps text-secondary">Contributor</p>
         <p className="mt-1 text-body-sm text-on-surface-variant">
-          {createdById ? 'Unknown contributor' : 'Contributor not recorded'}
+          {fallback ?? 'Contributor not recorded'}
         </p>
         <p className="mt-1 text-[12px] text-secondary">
           Submitted: {formatContributedAt(submittedAt)}

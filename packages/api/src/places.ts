@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { eq, and, or, like, sql, desc, inArray } from 'drizzle-orm';
+import { eq, and, or, like, sql, desc, inArray, neq } from 'drizzle-orm';
 import { freshnessLevelScore } from '@freshy/config/freshness-levels';
 import type { Place } from '@freshy/db';
 import {
@@ -97,11 +97,19 @@ export interface PlaceListItem extends Omit<Place, 'tags' | 'createdById'> {
   distanceKm?: number;
 }
 
+/** Explore map statuses. Null means every place (verified + pending/imported). */
+export function explorePlaceStatuses(
+  query: Pick<PlacesQuery, 'verifiedOnly'>,
+): Array<Place['status']> | null {
+  if (query.verifiedOnly) return ['PUBLISHED'];
+  return null;
+}
+
+/** @deprecated Use explorePlaceStatuses */
 export function publishedPlaceStatuses(
   query: Pick<PlacesQuery, 'verifiedOnly'>,
-): Array<Place['status']> {
-  if (query.verifiedOnly) return ['PUBLISHED'];
-  return ['PUBLISHED', 'DRAFT'];
+): Array<Place['status']> | null {
+  return explorePlaceStatuses(query);
 }
 
 function matchesMinFreshnessLevel(
@@ -128,7 +136,7 @@ export async function listDraftPlaces(db: Db, query: PlacesQuery): Promise<Place
   const lng = query.lng;
   const radiusKm = query.radius ?? PILOT_CITY.defaultRadiusKm;
 
-  const conditions = [eq(placesTable.status, 'DRAFT')];
+  const conditions = [neq(placesTable.status, 'PUBLISHED')];
 
   if (query.category) {
     conditions.push(eq(placesTable.category, query.category));
@@ -142,7 +150,7 @@ export async function listDraftPlaces(db: Db, query: PlacesQuery): Promise<Place
       .from(placesTable)
       .where(
         and(
-          eq(placesTable.status, 'DRAFT'),
+          neq(placesTable.status, 'PUBLISHED'),
           query.category ? eq(placesTable.category, query.category) : sql`1=1`,
           or(
             like(placesTable.name, pattern),
@@ -175,9 +183,9 @@ export async function listPlaces(db: Db, query: PlacesQuery): Promise<PlaceListI
   const lat = query.lat;
   const lng = query.lng;
   const radiusKm = query.radius ?? PILOT_CITY.defaultRadiusKm;
-  const statuses = publishedPlaceStatuses(query);
+  const statuses = explorePlaceStatuses(query);
 
-  const conditions = [inArray(placesTable.status, statuses)];
+  const conditions = statuses ? [inArray(placesTable.status, statuses)] : [];
 
   if (query.category) {
     conditions.push(eq(placesTable.category, query.category));
@@ -191,7 +199,7 @@ export async function listPlaces(db: Db, query: PlacesQuery): Promise<PlaceListI
       .from(placesTable)
       .where(
         and(
-          inArray(placesTable.status, statuses),
+          ...(statuses ? [inArray(placesTable.status, statuses)] : []),
           query.category ? eq(placesTable.category, query.category) : sql`1=1`,
           or(
             like(placesTable.name, pattern),
@@ -205,7 +213,7 @@ export async function listPlaces(db: Db, query: PlacesQuery): Promise<PlaceListI
     results = await db
       .select()
       .from(placesTable)
-      .where(and(...conditions))
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
       .orderBy(placesTable.name);
   }
 
@@ -224,9 +232,9 @@ export async function listCategoryPlacesPage(
   db: Db,
   query: CategoryPlacesQuery,
 ): Promise<CategoryPlacesPage> {
-  const statuses = publishedPlaceStatuses({ verifiedOnly: query.verifiedOnly });
+  const statuses = explorePlaceStatuses({ verifiedOnly: query.verifiedOnly });
   const conditions = [
-    inArray(placesTable.status, statuses),
+    ...(statuses ? [inArray(placesTable.status, statuses)] : []),
     eq(placesTable.category, query.category),
   ];
 
@@ -324,7 +332,7 @@ export interface PlaceDetail extends Omit<Place, 'tags' | 'createdById'> {
 export async function getPlaceBySlugWithReviews(db: Db, slug: string): Promise<PlaceDetail | null> {
   const placeRows = await db.select().from(placesTable).where(eq(placesTable.slug, slug)).limit(1);
   const place = placeRows[0];
-  if (!place || (place.status !== 'PUBLISHED' && place.status !== 'DRAFT')) {
+  if (!place) {
     return null;
   }
 

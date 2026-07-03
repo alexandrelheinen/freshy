@@ -89,7 +89,6 @@ export function AddPlaceClient() {
   const [photoPreviewIsObjectUrl, setPhotoPreviewIsObjectUrl] = useState(false);
   const [locationHint, setLocationHint] = useState<string | null>(null);
   const [secret, setSecret] = useState('');
-  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     if (userLocation) {
@@ -243,7 +242,8 @@ export function AddPlaceClient() {
         );
 
         if (anonymousMode) {
-          setSubmitted(true);
+          sessionStorage.setItem(PLACE_SUBMITTED_KEY, result.slug);
+          router.push(ROUTES.profile);
           return;
         }
         sessionStorage.setItem(PLACE_SUBMITTED_KEY, result.slug);
@@ -283,28 +283,6 @@ export function AddPlaceClient() {
             className="mt-4 inline-block font-label-caps text-primary hover:underline"
           >
             Contribute without signing in
-          </Link>
-        </main>
-      </div>
-    );
-  }
-
-  if (submitted) {
-    return (
-      <div className="min-h-screen pb-8" data-page="add-place">
-        <AppMobileHeader title="Add Place" backHref={ROUTES.profile} showBrand={false} />
-        <AppTopNav active="profile" />
-        <main className="mx-auto mt-24 max-w-md px-margin-mobile text-center md:mt-28">
-          <h2 className="font-headline-lg-mobile text-on-surface">Place submitted for review</h2>
-          <p className="mt-3 text-on-surface-variant">
-            Thank you for contributing. Your cooling spot is pending validation and will appear on
-            the map after review.
-          </p>
-          <Link
-            href={ROUTES.explore}
-            className="mt-8 inline-flex rounded-xl bg-primary px-8 py-3 font-semibold text-on-primary shadow-lg"
-          >
-            Explore the map
           </Link>
         </main>
       </div>

@@ -1,5 +1,5 @@
 import type { PlaceDto } from './api';
-import { API_BASE } from './api-base';
+import { getApiBase } from './api-base';
 
 export interface UserProfileDto {
   id: string;
@@ -25,7 +25,7 @@ async function authFetch(
   try {
     const token = await getToken();
     if (!token) return null;
-    return await fetch(`${API_BASE}${path}`, {
+    return await fetch(`${getApiBase()}${path}`, {
       ...init,
       headers: {
         ...init?.headers,
@@ -222,7 +222,7 @@ function readApiMessage(body: unknown): string | null {
 
 export function anonymousPlaceErrorMessage(status: number, body: unknown): string {
   if (status === 404) {
-    return 'Anonymous place submission is temporarily unavailable. Try again in a few minutes.';
+    return 'Anonymous place submission is unavailable from this site build. Confirm NEXT_PUBLIC_API_URL on Cloudflare Pages, redeploy the API Worker, then try again.';
   }
   if (status === 400) {
     const errorText =
@@ -344,14 +344,14 @@ export async function createAnonymousPlace(
       form.append('aggregatedFreshnessLevel', payload.aggregatedFreshnessLevel);
       form.append('tags', JSON.stringify(payload.tags));
       form.append('photo', photo);
-      res = await fetch(`${API_BASE}/contributions/places`, { method: 'POST', body: form });
+      res = await fetch(`${getApiBase()}/contributions/places`, { method: 'POST', body: form });
     } else {
       const body: CreatePlacePayload & { secret: string } = {
         ...payload,
         secret: secret.trim(),
       };
       if (photoUrl) body.photoUrl = photoUrl;
-      res = await fetch(`${API_BASE}/contributions/places`, {
+      res = await fetch(`${getApiBase()}/contributions/places`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),

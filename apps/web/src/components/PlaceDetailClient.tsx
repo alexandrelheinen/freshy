@@ -31,7 +31,7 @@ import {
   type PlaceDetailDto,
 } from '../lib/api';
 
-import { API_BASE } from '../lib/api-base';
+import { getApiBase } from '../lib/api-base';
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
 
 function userInitials(name: string): string {
@@ -53,7 +53,7 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
       setLoading(true);
       setLoadError(null);
       try {
-        const res = await fetch(`${API_BASE}/places/${slug}`);
+        const res = await fetch(`${getApiBase()}/places/${slug}`);
         if (res.ok) {
           const json = (await res.json()) as { data: PlaceDetailDto };
           setPlace(json.data);

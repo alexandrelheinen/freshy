@@ -1,4 +1,4 @@
-import { API_BASE } from './api-base';
+import { getApiBase } from './api-base';
 import { MAP_SEARCH } from '@freshy/config/map-search';
 import { mergePendingMapPlaces } from './pending-map-place';
 import { freshnessLevelScore, type FreshnessLevelId } from '@freshy/config/freshness-levels';
@@ -23,11 +23,11 @@ export interface PlaceDto {
   tags?: string[];
   isOpen?: boolean;
   distanceKm?: number;
-  status?: 'DRAFT' | 'PUBLISHED';
+  status?: 'DRAFT' | 'PUBLISHED' | 'IMPORTED';
 }
 
 export function isPlaceVerified(place: Pick<PlaceDto, 'status'>): boolean {
-  return place.status !== 'DRAFT';
+  return place.status === 'PUBLISHED';
 }
 
 export interface PlacesFetchParams {
@@ -86,14 +86,6 @@ export function mergeDraftPlacesIntoResults(published: PlaceDto[], drafts: Place
   return merged;
 }
 
-async function fetchDraftPlacesInArea(params: PlacesFetchParams): Promise<PlaceDto[]> {
-  const search = buildPlacesSearchParams({ ...params, verifiedOnly: false });
-  const res = await fetch(`${API_BASE}/places/drafts?${search.toString()}`, { cache: 'no-store' });
-  if (!res.ok) return [];
-  const json = (await res.json()) as { data: PlaceDto[] };
-  return json.data ?? [];
-}
-
 /** Paginate a distance-sorted place list for category views (fallback when category-list is unavailable). */
 export function buildCategoryPlacesPageFromList(
   places: PlaceDto[],
@@ -123,16 +115,13 @@ export function buildCategoryPlacesPageFromList(
 /** Client-side places fetch for map and list views (never cached). Returns null when the API fails. */
 export async function fetchPlacesClient(params: PlacesFetchParams): Promise<PlaceDto[] | null> {
   const search = buildPlacesSearchParams(params);
-  const res = await fetch(`${API_BASE}/places?${search.toString()}`, { cache: 'no-store' });
+  const res = await fetch(`${getApiBase()}/places?${search.toString()}`, { cache: 'no-store' });
   if (!res.ok) return null;
 
   const json = (await res.json()) as { data: PlaceDto[] };
   let places = json.data ?? [];
 
   if (!params.verifiedOnly) {
-    const drafts = await fetchDraftPlacesInArea(params);
-    places = mergeDraftPlacesIntoResults(places, drafts);
-
     places = mergePendingMapPlaces(places, {
       lat: params.lat,
       lng: params.lng,
@@ -200,7 +189,7 @@ export async function fetchCategoryPlacesPage(
     search.set('minFreshnessLevel', String(params.minFreshnessLevel));
   }
 
-  const res = await fetch(`${API_BASE}/places/category-list?${search.toString()}`, {
+  const res = await fetch(`${getApiBase()}/places/category-list?${search.toString()}`, {
     cache: 'no-store',
   });
   if (res.ok) {

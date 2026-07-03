@@ -62,6 +62,33 @@ describe('studio-api', () => {
     assert.equal(merged.contributor?.email, 'marie@example.com');
   });
 
+  it('falls back to import provider labels when API omits contributor rows', () => {
+    const merged = mergeStudioPlaceContributor(
+      {
+        id: 'place_import',
+        slug: 'imported-place',
+        name: 'Imported Place',
+        description: null,
+        category: 'LIBRARY',
+        latitude: 48.9,
+        longitude: 2.3,
+        address: null,
+        photoUrl: null,
+        aggregatedFreshnessLevel: 'MODEST_AC',
+        tags: [],
+        status: 'DRAFT',
+        createdById: 'osm',
+        studioStatus: 'pending',
+        duplicateOfId: null,
+        contributor: null,
+        createdAt: '2025-01-01T00:00:00.000Z',
+        updatedAt: '2025-01-01T00:00:00.000Z',
+      },
+      new Map(),
+    );
+    assert.equal(merged.contributor?.displayName, 'OpenStreetMap Import');
+  });
+
   it('keeps an existing contributor from the API response', () => {
     const contributorsById = new Map<string, StudioContributorDto>();
     const place = {

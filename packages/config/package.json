@@ -5,6 +5,7 @@
   "exports": {
     "./eslint": "./eslint.config.mjs",
     "./pilot-city": "./pilot-city.js",
+    "./public-api": "./public-api.js",
     "./map-search": "./map-search.js",
     "./place-photos": {
       "types": "./place-photos.ts",

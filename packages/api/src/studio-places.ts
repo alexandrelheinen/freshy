@@ -13,10 +13,13 @@ import {
   places as placesTable,
   reviews as reviewsTable,
   savedPlaces as savedPlacesTable,
-  users as usersTable,
 } from '@freshy/db';
 import { withResolvedPlacePhoto, serializePlaceForApi } from './places';
-import { getStudioUsersByIds, type StudioUserProfile } from './studio-users';
+import {
+  loadStudioPlacesWithContributors,
+  normalizeCreatedById,
+  type StudioContributor,
+} from './studio-contributors';
 
 const DUPLICATE_RADIUS_KM = 0.05;
 
@@ -125,12 +128,7 @@ export type MergePlacesInput = z.infer<typeof mergePlacesSchema>;
 
 export type StudioPlaceStatus = 'verified' | 'pending' | 'duplicate';
 
-export interface StudioContributor {
-  id: string;
-  email: string;
-  displayName: string;
-  username: string;
-}
+export type { StudioContributor } from './studio-contributors';
 
 export interface StudioPlaceListItem extends Omit<Place, 'tags' | 'createdById'> {
   tags: string[];
@@ -153,35 +151,24 @@ export interface StudioStats {
   activeConflicts: number;
 }
 
-function contributorFromProfile(profile: StudioUserProfile): StudioContributor {
-  return {
-    id: profile.id,
-    email: profile.email,
-    displayName: profile.displayName,
-    username: profile.username,
-  };
-}
-
-/** Fill contributor profiles when the join did not resolve createdById. */
+/** Fill contributor profiles when list items are missing contributor data. */
 export async function attachMissingContributors(
   db: Db,
   items: StudioPlaceListItem[],
 ): Promise<StudioPlaceListItem[]> {
-  const missingIds = [
-    ...new Set(
-      items
-        .filter((item) => item.createdById && !item.contributor)
-        .map((item) => item.createdById as string),
-    ),
-  ];
+  const missingIds = items
+    .filter((item) => !item.contributor && item.createdById)
+    .map((item) => item.id);
   if (missingIds.length === 0) return items;
 
-  const profiles = await getStudioUsersByIds(db, missingIds);
-  const byId = new Map(profiles.map((profile) => [profile.id, contributorFromProfile(profile)]));
+  const loaded = await loadStudioPlacesWithContributors(db, missingIds);
+  const contributorsByPlaceId = new Map(
+    loaded.map((row) => [row.place.id, row.contributor] as const),
+  );
 
   return items.map((item) => {
-    if (item.contributor || !item.createdById) return item;
-    const contributor = byId.get(item.createdById) ?? null;
+    if (item.contributor) return item;
+    const contributor = contributorsByPlaceId.get(item.id) ?? null;
     return contributor ? { ...item, contributor } : item;
   });
 }
@@ -245,7 +232,7 @@ export function formatStudioPlaceListItem(
   const serialized = serializePlaceForApi(place);
   return {
     ...serialized,
-    createdById: place.createdById ?? null,
+    createdById: normalizeCreatedById(place.createdById),
     studioStatus: studioStatusForPlace(place, duplicateOfId),
     duplicateOfId,
     contributor,
@@ -321,41 +308,22 @@ export async function listStudioPlaces(
     return { items: [], total, page: query.page, limit: query.limit };
   }
 
-  const pageRows = await db
-    .select({
-      place: placesTable,
-      contributorId: usersTable.id,
-      contributorEmail: usersTable.email,
-      contributorDisplayName: usersTable.displayName,
-      contributorUsername: usersTable.username,
-    })
-    .from(placesTable)
-    .leftJoin(usersTable, eq(placesTable.createdById, usersTable.id))
-    .where(inArray(placesTable.id, pageIds));
+  const pageRows = await loadStudioPlacesWithContributors(db, pageIds);
 
   const rowsById = new Map(pageRows.map((row) => [row.place.id, row]));
   const items = pageIds
     .map((id) => rowsById.get(id))
     .filter((row): row is (typeof pageRows)[number] => row != null)
-    .map((row) => {
-      const contributor =
-        row.contributorId != null
-          ? {
-              id: row.contributorId,
-              email: row.contributorEmail!,
-              displayName: row.contributorDisplayName!,
-              username: row.contributorUsername!,
-            }
-          : null;
-      return formatStudioPlaceListItem(
+    .map((row) =>
+      formatStudioPlaceListItem(
         row.place,
         duplicateMap.get(row.place.id) ?? null,
-        contributor,
-      );
-    });
+        row.contributor,
+      ),
+    );
 
   return {
-    items: await attachMissingContributors(db, items),
+    items,
     total,
     page: query.page,
     limit: query.limit,
@@ -499,20 +467,9 @@ export async function mergeStudioPlaces(db: Db, input: MergePlacesInput): Promis
 }
 
 export async function getStudioPlace(db: Db, placeId: string): Promise<StudioPlaceListItem | null> {
-  const rows = await db
-    .select({
-      place: placesTable,
-      contributorId: usersTable.id,
-      contributorEmail: usersTable.email,
-      contributorDisplayName: usersTable.displayName,
-      contributorUsername: usersTable.username,
-    })
-    .from(placesTable)
-    .leftJoin(usersTable, eq(placesTable.createdById, usersTable.id))
-    .where(eq(placesTable.id, placeId))
-    .limit(1);
-  const row = rows[0];
-  if (!row) return null;
+  const rows = await db.select().from(placesTable).where(eq(placesTable.id, placeId)).limit(1);
+  const place = rows[0];
+  if (!place) return null;
 
   const allPlaces = await db
     .select({
@@ -522,20 +479,9 @@ export async function getStudioPlace(db: Db, placeId: string): Promise<StudioPla
       createdAt: placesTable.createdAt,
     })
     .from(placesTable);
-  const duplicateOfId = detectDuplicatePlaceIds(allPlaces).get(row.place.id) ?? null;
-  const contributor =
-    row.contributorId != null
-      ? {
-          id: row.contributorId,
-          email: row.contributorEmail!,
-          displayName: row.contributorDisplayName!,
-          username: row.contributorUsername!,
-        }
-      : null;
+  const duplicateOfId = detectDuplicatePlaceIds(allPlaces).get(place.id) ?? null;
+  const [loaded] = await loadStudioPlacesWithContributors(db, [place.id]);
+  const contributor = loaded?.contributor ?? null;
 
-  return (
-    await attachMissingContributors(db, [
-      formatStudioPlaceListItem(row.place, duplicateOfId, contributor),
-    ])
-  )[0]!;
+  return formatStudioPlaceListItem(place, duplicateOfId, contributor);
 }

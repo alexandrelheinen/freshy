@@ -159,13 +159,54 @@ function ProfileAccountActions() {
   );
 }
 
+const PLACE_SUBMITTED_KEY = 'freshy-place-submitted';
+
+function PlaceSubmittedBanner() {
+  return (
+    <div className="mb-6 rounded-xl border border-primary-container bg-primary-container/20 px-4 py-3 text-body-sm text-on-surface">
+      <p className="font-title-md text-primary">Place submitted for review</p>
+      <p className="mt-1 text-on-surface-variant">
+        Thank you for contributing. Your cooling spot is pending validation and will appear on the
+        map after review in Studio.
+      </p>
+      <Link
+        href={ROUTES.explore}
+        className="mt-4 inline-flex rounded-xl bg-primary px-6 py-2.5 font-semibold text-on-primary shadow-lg"
+      >
+        Explore the map
+      </Link>
+    </div>
+  );
+}
+
+function useSubmittedPlaceSlug(): string | null {
+  const [submittedPlaceSlug, setSubmittedPlaceSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    const slug = sessionStorage.getItem(PLACE_SUBMITTED_KEY);
+    if (slug) {
+      sessionStorage.removeItem(PLACE_SUBMITTED_KEY);
+      setSubmittedPlaceSlug(slug);
+    }
+  }, []);
+
+  return submittedPlaceSlug;
+}
+
 function ProfileSignedOutView({ showSignIn }: { showSignIn: boolean }) {
+  const submittedPlaceSlug = useSubmittedPlaceSlug();
+
   return (
     <div className="min-h-screen pb-8" data-page="profile">
       <AppMobileHeader active="profile" />
       <AppTopNav active="profile" />
       <main className="mx-auto mt-20 max-w-4xl px-margin-mobile md:max-w-7xl md:px-10">
         <section className="mx-auto flex max-w-md flex-col items-center py-16 text-center">
+          {submittedPlaceSlug ? (
+            <div className="mb-8 w-full text-left">
+              <PlaceSubmittedBanner />
+            </div>
+          ) : null}
           <h2 className="font-headline-lg-mobile text-on-surface">Welcome to Freshy</h2>
           <p className="mt-3 max-w-sm text-on-surface-variant">
             Find cooling spots near you, join the community, or contribute a new place to the map.
@@ -211,15 +252,7 @@ function ProfileWithClerk() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
-  const [submittedPlaceSlug, setSubmittedPlaceSlug] = useState<string | null>(null);
-
-  useEffect(() => {
-    const slug = sessionStorage.getItem('freshy-place-submitted');
-    if (slug) {
-      sessionStorage.removeItem('freshy-place-submitted');
-      setSubmittedPlaceSlug(slug);
-    }
-  }, []);
+  const submittedPlaceSlug = useSubmittedPlaceSlug();
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -282,13 +315,7 @@ function ProfileWithClerk() {
         ) : profile ? (
           <>
             {submittedPlaceSlug ? (
-              <div className="mb-6 rounded-xl border border-primary-container bg-primary-container/20 px-4 py-3 text-body-sm text-on-surface">
-                <p className="font-title-md text-primary">Place submitted for review</p>
-                <p className="mt-1 text-on-surface-variant">
-                  Your cooling spot is pending validation. It will appear on the map after an admin
-                  approves it in Studio.
-                </p>
-              </div>
+              <PlaceSubmittedBanner />
             ) : null}
             <section className="mb-8 flex flex-col items-center md:mb-12 md:flex-row md:items-end md:gap-8">
               <div className="relative mb-4 md:mb-0">

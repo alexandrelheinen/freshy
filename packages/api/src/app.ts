@@ -69,7 +69,7 @@ export function createApp(): Hono<AppEnv> {
     }
   });
 
-  /** Draft places in a map area. Used when the main /places handler omits unverified rows. */
+  /** Pending places in a map area (non-PUBLISHED). Kept for older clients; Explore uses GET /places. */
   app.get('/places/drafts', async (c) => {
     try {
       const parsed = placesQuerySchema.safeParse({

@@ -16,7 +16,7 @@ import {
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import type { CategoryMeta } from '../lib/api';
 
-import { API_BASE } from '../lib/api-base';
+import { getApiBase } from '../lib/api-base';
 
 /** Desktop bento grid layout: category key and optional column span. */
 const DESKTOP_BENTO: Array<{ category: PlaceCategory; colSpan?: 1 | 2 }> = [
@@ -101,7 +101,7 @@ export function CoolingClient() {
 
   useEffect(() => {
     void (async () => {
-      const res = await fetch(`${API_BASE}/places/meta/categories`);
+      const res = await fetch(`${getApiBase()}/places/meta/categories`);
       if (!res.ok) return;
       const json = (await res.json()) as { data: CategoryMeta };
       setMeta(json.data);

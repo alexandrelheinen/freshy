@@ -24,7 +24,7 @@ export const FRESHNESS_LEVELS = [
 ] as const;
 export type FreshnessLevel = (typeof FRESHNESS_LEVELS)[number];
 
-export const PLACE_STATUSES = ['DRAFT', 'PUBLISHED'] as const;
+export const PLACE_STATUSES = ['DRAFT', 'PUBLISHED', 'IMPORTED'] as const;
 export type PlaceStatus = (typeof PLACE_STATUSES)[number];
 
 // ── Tables ────────────────────────────────────────────────────────────────────

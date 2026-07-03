@@ -4,9 +4,9 @@ import { PILOT_CITY } from '@freshy/config/pilot-city';
 import {
   categoryPlacesQuerySchema,
   listCategoryPlacesPage,
+  explorePlaceStatuses,
   parseStoredTags,
   placesQuerySchema,
-  publishedPlaceStatuses,
   serializePlaceForApi,
 } from './places';
 
@@ -49,11 +49,11 @@ describe('categoryPlacesQuerySchema', () => {
   });
 });
 
-describe('publishedPlaceStatuses', () => {
-  it('includes draft places unless verifiedOnly is enabled', () => {
+describe('explorePlaceStatuses', () => {
+  it('returns every place unless verifiedOnly is enabled', () => {
     const base = placesQuerySchema.parse({ lat: 48.9, lng: 2.3 });
-    assert.deepEqual(publishedPlaceStatuses(base), ['PUBLISHED', 'DRAFT']);
-    assert.deepEqual(publishedPlaceStatuses({ ...base, verifiedOnly: true }), ['PUBLISHED']);
+    assert.equal(explorePlaceStatuses(base), null);
+    assert.deepEqual(explorePlaceStatuses({ ...base, verifiedOnly: true }), ['PUBLISHED']);
   });
 });
 

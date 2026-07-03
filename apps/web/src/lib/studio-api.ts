@@ -1,7 +1,7 @@
 import type { PlaceDto } from './api';
 
 import { filterValidPlaceTags, type PlaceTagId } from '@freshy/ui';
-import { API_BASE } from './api-base';
+import { getApiBase } from './api-base';
 
 export type StudioPlaceStatus = 'verified' | 'pending' | 'duplicate';
 
@@ -10,6 +10,30 @@ export interface StudioContributorDto {
   email: string;
   displayName: string;
   username: string;
+}
+
+/** Matches seeder import dummy User ids until those rows exist in D1. */
+export const IMPORT_PROVIDER_CONTRIBUTORS: Record<string, StudioContributorDto> = {
+  osm: {
+    id: 'osm',
+    email: 'osm@import.freshy',
+    displayName: 'OpenStreetMap Import',
+    username: 'osm-import',
+  },
+  datagouv: {
+    id: 'datagouv',
+    email: 'datagouv@import.freshy',
+    displayName: 'data.gouv Import',
+    username: 'datagouv-import',
+  },
+};
+
+export function syntheticStudioContributor(
+  createdById: string | null | undefined,
+): StudioContributorDto | null {
+  if (!createdById) return null;
+  const trimmed = createdById.trim();
+  return IMPORT_PROVIDER_CONTRIBUTORS[trimmed] ?? null;
 }
 
 export interface StudioPlaceDto extends PlaceDto {
@@ -76,7 +100,7 @@ async function studioFetch(
   if (!token) {
     throw new Error('Not signed in');
   }
-  return fetch(`${API_BASE}${path}`, {
+  return fetch(`${getApiBase()}${path}`, {
     ...init,
     headers: {
       ...init?.headers,
@@ -247,8 +271,10 @@ export function mergeStudioPlaceContributor(
   contributorsById: ReadonlyMap<string, StudioContributorDto>,
 ): StudioPlaceDto {
   if (place.contributor) return place;
-  if (!place.createdById) return place;
-  const contributor = contributorsById.get(place.createdById) ?? null;
+  const createdById = place.createdById?.trim();
+  if (!createdById) return place;
+  const contributor =
+    contributorsById.get(createdById) ?? syntheticStudioContributor(createdById) ?? null;
   if (!contributor) return place;
   return { ...place, contributor };
 }
@@ -278,7 +304,7 @@ export async function resolveMissingStudioContributors(
     ...new Set(
       places
         .filter((place) => !place.contributor && place.createdById)
-        .map((place) => place.createdById as string),
+        .map((place) => place.createdById!.trim()),
     ),
   ];
   if (missingIds.length === 0) return places;
@@ -291,8 +317,13 @@ export async function resolveMissingStudioContributors(
 
   for (const userId of missingIds) {
     if (contributorsById.has(userId)) continue;
-    const matches = await fetchStudioUsers(getToken, { q: userId, limit: 1 });
-    const matched = matches.find((user) => user.id === userId) ?? matches[0] ?? null;
+    const synthetic = syntheticStudioContributor(userId);
+    if (synthetic) {
+      contributorsById.set(userId, synthetic);
+      continue;
+    }
+    const matches = await fetchStudioUsers(getToken, { q: userId, limit: 5 });
+    const matched = matches.find((user) => user.id.trim() === userId) ?? null;
     if (matched) {
       contributorsById.set(userId, studioContributorFromUser(matched));
     }
