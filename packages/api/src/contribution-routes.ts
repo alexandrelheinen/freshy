@@ -1,7 +1,7 @@
 import type { Hono } from 'hono';
 import type { AppEnv } from './env';
 import { anonymousCreatePlaceSchema } from './anonymous-contribution';
-import { findContributorBySecret } from './contributor';
+import { contributorErrorResponse, resolveContributorFromSecret } from './contributor-resolve';
 import { createUserPlace } from './create-place';
 import { withResolvedPlacePhoto } from './places';
 import { resolvePlaceCoordinates } from './place-submission';
@@ -25,9 +25,15 @@ export function registerContributionRoutes(app: Hono<AppEnv>): void {
           return c.json({ error: 'Invalid body', details: parsed.error.flatten() }, 400);
         }
 
-        const contributor = await findContributorBySecret(c.get('db'), parsed.data.secret);
-        if (!contributor) {
-          return c.json({ error: 'Invalid contributor secret' }, 400);
+        const contributorResult = await resolveContributorFromSecret(
+          c.get('db'),
+          parsed.data.secret,
+        );
+        if (!contributorResult.ok) {
+          return c.json(
+            contributorErrorResponse(contributorResult.code, contributorResult.message),
+            400,
+          );
         }
 
         const { secret: _secret, ...placeInput } = parsed.data;
@@ -36,7 +42,7 @@ export function registerContributionRoutes(app: Hono<AppEnv>): void {
           return c.json({ error: coords.error }, 400);
         }
 
-        const place = await createUserPlace(c.get('db'), contributor.id, {
+        const place = await createUserPlace(c.get('db'), contributorResult.user.id, {
           ...placeInput,
           status: 'DRAFT',
           latitude: coords.latitude,
@@ -47,13 +53,12 @@ export function registerContributionRoutes(app: Hono<AppEnv>): void {
 
       const formData = await c.req.formData();
       const secret = formValue(formData, 'secret');
-      if (!secret?.trim()) {
-        return c.json({ error: 'Invalid contributor secret' }, 400);
-      }
-
-      const contributor = await findContributorBySecret(c.get('db'), secret);
-      if (!contributor) {
-        return c.json({ error: 'Invalid contributor secret' }, 400);
+      const contributorResult = await resolveContributorFromSecret(c.get('db'), secret);
+      if (!contributorResult.ok) {
+        return c.json(
+          contributorErrorResponse(contributorResult.code, contributorResult.message),
+          400,
+        );
       }
 
       const body: Record<string, unknown> = {
@@ -67,7 +72,7 @@ export function registerContributionRoutes(app: Hono<AppEnv>): void {
         tags: formValue(formData, 'tags'),
       };
       const photo = photoFromFormData(formData);
-      return handleCreatePlace(c, contributor.id, body, photo);
+      return handleCreatePlace(c, contributorResult.user.id, body, photo);
     } catch (err) {
       if (err instanceof Error && err.message !== 'R2_NOT_CONFIGURED') {
         return c.json({ error: err.message }, 400);
