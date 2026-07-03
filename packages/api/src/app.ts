@@ -52,6 +52,7 @@ export function createApp(): Hono<AppEnv> {
         category: c.req.query('category'),
         q: c.req.query('q'),
         verifiedOnly: c.req.query('verifiedOnly'),
+        minFreshnessLevel: c.req.query('minFreshnessLevel'),
       });
       if (!parsed.success) {
         return c.json({ error: 'Invalid query', details: parsed.error.flatten() }, 400);
@@ -72,6 +73,7 @@ export function createApp(): Hono<AppEnv> {
         radius: c.req.query('radius'),
         category: c.req.query('category'),
         q: c.req.query('q'),
+        minFreshnessLevel: c.req.query('minFreshnessLevel'),
       });
       if (!parsed.success) {
         return c.json({ error: 'Invalid query', details: parsed.error.flatten() }, 400);

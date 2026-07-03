@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { eq, and, or, like, sql, desc, inArray } from 'drizzle-orm';
+import { freshnessLevelScore } from '@freshy/config/freshness-levels';
 import type { Place } from '@freshy/db';
 import {
   PLACE_CATEGORIES,
@@ -24,6 +25,7 @@ export const placesQuerySchema = z.object({
     (value) => value === true || value === 'true' || value === '1',
     z.boolean().optional(),
   ),
+  minFreshnessLevel: z.coerce.number().int().min(0).max(4).optional(),
 });
 
 export type PlacesQuery = z.infer<typeof placesQuerySchema>;
@@ -72,6 +74,23 @@ export function publishedPlaceStatuses(query: PlacesQuery): Array<Place['status'
   return ['PUBLISHED', 'DRAFT'];
 }
 
+function matchesMinFreshnessLevel(
+  level: Place['aggregatedFreshnessLevel'],
+  minFreshnessLevel: number | undefined,
+): boolean {
+  if (minFreshnessLevel == null) return true;
+  const score = freshnessLevelScore(level);
+  return score != null && score >= minFreshnessLevel;
+}
+
+function filterPlacesByMinFreshness<T extends { aggregatedFreshnessLevel: Place['aggregatedFreshnessLevel'] }>(
+  places: T[],
+  minFreshnessLevel: number | undefined,
+): T[] {
+  if (minFreshnessLevel == null) return places;
+  return places.filter((place) => matchesMinFreshnessLevel(place.aggregatedFreshnessLevel, minFreshnessLevel));
+}
+
 export async function listDraftPlaces(db: Db, query: PlacesQuery): Promise<PlaceListItem[]> {
   const lat = query.lat;
   const lng = query.lng;
@@ -110,8 +129,9 @@ export async function listDraftPlaces(db: Db, query: PlacesQuery): Promise<Place
   }
 
   const withDistance = filterPlacesByRadius(results, lat, lng, radiusKm);
+  const withinFreshness = filterPlacesByMinFreshness(withDistance, query.minFreshnessLevel);
 
-  return withDistance.map(({ place, distanceKm }) =>
+  return withinFreshness.map(({ place, distanceKm }) =>
     serializePlaceForApi({
       ...place,
       distanceKm: Math.round(distanceKm * 100) / 100,
@@ -158,8 +178,9 @@ export async function listPlaces(db: Db, query: PlacesQuery): Promise<PlaceListI
   }
 
   const withDistance = filterPlacesByRadius(results, lat, lng, radiusKm);
+  const withinFreshness = filterPlacesByMinFreshness(withDistance, query.minFreshnessLevel);
 
-  return withDistance.map(({ place, distanceKm }) =>
+  return withinFreshness.map(({ place, distanceKm }) =>
     serializePlaceForApi({
       ...place,
       distanceKm: Math.round(distanceKm * 100) / 100,

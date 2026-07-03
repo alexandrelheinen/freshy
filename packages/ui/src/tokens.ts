@@ -1,6 +1,7 @@
 /** Re-export design token names for consumers that cannot import Tailwind preset directly. */
 export { PILOT_CITY } from '@freshy/config/pilot-city';
 export { MAP_SEARCH } from '@freshy/config/map-search';
+import { FRESHNESS_LEVELS, type FreshnessLevelId } from '@freshy/config/freshness-levels';
 import { getDefaultThemeTokens } from '@freshy/theme/tokens';
 import {
   defaultPlacePhotoLocalPath,
@@ -136,6 +137,15 @@ export const EXPLORE_FILTER_CHIPS: Array<{ label: string; category: PlaceCategor
     category,
     label: PLACE_CATEGORY_CHIP_LABELS[category],
   }));
+
+/** Minimum freshness filter chips for the explore map (excludes "No Cooling"). */
+export const EXPLORE_MIN_FRESHNESS_CHIPS: Array<{
+  label: string;
+  level: FreshnessLevelId;
+}> = FRESHNESS_LEVELS.filter((level) => level.level > 0).map((level) => ({
+  level: level.id,
+  label: level.shortLabel,
+}));
 
 export const DEFAULT_PLACE_PHOTO_PATHS: Record<PlaceCategory, string> = {
   CAFE: defaultPlacePhotoLocalPath('CAFE'),

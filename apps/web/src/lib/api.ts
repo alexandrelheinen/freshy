@@ -35,6 +35,7 @@ export interface PlacesFetchParams {
   category?: string;
   q?: string;
   verifiedOnly?: boolean;
+  minFreshnessLevel?: number;
 }
 
 /** Build query params for GET /places. Sends verifiedOnly=true only when the filter is on. */
@@ -46,6 +47,9 @@ export function buildPlacesSearchParams(params: PlacesFetchParams): URLSearchPar
   if (params.category) search.set('category', params.category);
   if (params.q) search.set('q', params.q);
   if (params.verifiedOnly) search.set('verifiedOnly', 'true');
+  if (params.minFreshnessLevel != null) {
+    search.set('minFreshnessLevel', String(params.minFreshnessLevel));
+  }
   return search;
 }
 
@@ -124,6 +128,7 @@ export async function fetchPlaces(params?: {
   category?: string;
   q?: string;
   verifiedOnly?: boolean;
+  minFreshnessLevel?: number;
 }): Promise<PlaceDto[]> {
   if (params?.lat == null || params?.lng == null || params?.radius == null) {
     return [];
@@ -136,6 +141,7 @@ export async function fetchPlaces(params?: {
     category: params.category,
     q: params.q,
     verifiedOnly: params.verifiedOnly,
+    minFreshnessLevel: params.minFreshnessLevel,
   }).then((places) => places ?? []);
 }
 

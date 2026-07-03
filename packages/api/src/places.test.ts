@@ -25,6 +25,13 @@ describe('placesQuerySchema', () => {
     );
     assert.equal(placesQuerySchema.parse({ lat: 48.9, lng: 2.3 }).verifiedOnly, false);
   });
+
+  it('parses minFreshnessLevel from query strings', () => {
+    assert.equal(
+      placesQuerySchema.parse({ lat: 48.9, lng: 2.3, minFreshnessLevel: '2' }).minFreshnessLevel,
+      2,
+    );
+  });
 });
 
 describe('publishedPlaceStatuses', () => {
