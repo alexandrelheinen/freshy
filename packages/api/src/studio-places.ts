@@ -15,7 +15,7 @@ import {
   savedPlaces as savedPlacesTable,
   users as usersTable,
 } from '@freshy/db';
-import { withResolvedPlacePhoto } from './places';
+import { withResolvedPlacePhoto, serializePlaceForApi } from './places';
 
 const DUPLICATE_RADIUS_KM = 0.05;
 
@@ -131,7 +131,8 @@ export interface StudioContributor {
   username: string;
 }
 
-export interface StudioPlaceListItem extends Place {
+export interface StudioPlaceListItem extends Omit<Place, 'tags' | 'createdById'> {
+  tags: string[];
   studioStatus: StudioPlaceStatus;
   duplicateOfId: string | null;
   contributor: StudioContributor | null;
@@ -221,17 +222,31 @@ async function loadContributorsByUserIds(
   return new Map(rows.map((row) => [row.id, row]));
 }
 
+/** Serialize a DB place row for Studio API responses (parsed tags, resolved photo). */
+export function formatStudioPlaceListItem(
+  place: Place,
+  duplicateOfId: string | null,
+  contributor: StudioContributor | null,
+): StudioPlaceListItem {
+  const serialized = serializePlaceForApi(place);
+  return {
+    ...serialized,
+    studioStatus: studioStatusForPlace(place, duplicateOfId),
+    duplicateOfId,
+    contributor,
+  };
+}
+
 function enrichStudioPlace(
   place: Place,
   duplicateOfId: string | null,
   contributors: Map<string, StudioContributor>,
 ): StudioPlaceListItem {
-  return {
-    ...withResolvedPlacePhoto(place),
-    studioStatus: studioStatusForPlace(place, duplicateOfId),
+  return formatStudioPlaceListItem(
+    place,
     duplicateOfId,
-    contributor: studioContributorForPlace(place.createdById, contributors),
-  };
+    studioContributorForPlace(place.createdById, contributors),
+  );
 }
 
 function matchesStudioFilter(
