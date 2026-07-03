@@ -122,6 +122,16 @@ export async function fetchStudioPlaces(
   };
 }
 
+export async function fetchStudioUserById(
+  getToken: () => Promise<string | null>,
+  userId: string,
+): Promise<StudioContributorDto | null> {
+  const res = await studioFetch(`/studio/users/${encodeURIComponent(userId)}`, getToken);
+  if (res.status === 404 || !res.ok) return null;
+  const json = (await res.json()) as { data: StudioContributorDto };
+  return json.data ?? null;
+}
+
 export async function fetchStudioUsers(
   getToken: () => Promise<string | null>,
   params?: { q?: string; limit?: number },
@@ -259,10 +269,9 @@ export async function resolveMissingStudioContributors(
   const contributorsById = new Map<string, StudioContributorDto>();
   await Promise.all(
     missingIds.map(async (userId) => {
-      const users = await fetchStudioUsers(getToken, { q: userId, limit: 1 });
-      const user = users.find((row) => row.id === userId);
+      const user = await fetchStudioUserById(getToken, userId);
       if (user) {
-        contributorsById.set(userId, studioContributorFromUser(user));
+        contributorsById.set(userId, studioContributorFromUser({ ...user, secret: user.id }));
       }
     }),
   );

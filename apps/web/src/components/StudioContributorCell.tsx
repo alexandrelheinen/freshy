@@ -12,6 +12,10 @@ function formatContributedAt(iso: string): string {
   }).format(new Date(iso));
 }
 
+function contributorDisplayName(contributor: StudioContributorDto): string {
+  return contributor.displayName.trim() || contributor.username || contributor.email;
+}
+
 interface StudioContributorCellProps {
   contributor: StudioContributorDto | null;
   createdById?: string | null;
@@ -38,17 +42,20 @@ export function StudioContributorCell({
     return <span className="text-body-sm text-secondary">Unknown</span>;
   }
 
+  const label = contributorDisplayName(contributor);
+
   return (
     <>
       <button
         ref={anchorRef}
         type="button"
+        title={contributor.email}
         className="inline-flex max-w-[180px] items-center gap-1 truncate text-left text-body-sm text-on-surface-variant hover:text-primary"
         aria-describedby={open ? popoverId : undefined}
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
       >
-        <span className="truncate">{contributor.email}</span>
+        <span className="truncate">{label}</span>
         <MaterialIcon name="person" size={16} className="shrink-0 text-secondary" />
       </button>
       <FloatingPopover
@@ -59,7 +66,7 @@ export function StudioContributorCell({
         onClose={() => setOpen(false)}
         className="p-3 text-left"
       >
-        <p className="font-title-md text-on-surface">{contributor.displayName}</p>
+        <p className="font-title-md text-on-surface">{label}</p>
         <p className="mt-1 text-body-sm text-on-surface-variant">{contributor.email}</p>
         <p className="mt-2 text-[12px] text-secondary">
           Submitted: {formatContributedAt(submittedAt)}
@@ -79,7 +86,7 @@ export function StudioContributorSummary({
       <section className="rounded-xl border border-outline-variant/20 bg-surface-container-low px-4 py-3">
         <p className="font-label-caps text-secondary">Contributor</p>
         <p className="mt-1 text-body-sm text-on-surface-variant">
-          {createdById ? `User ${createdById}` : 'Contributor not recorded'}
+          {createdById ? `User ${createdById.slice(0, 8)}` : 'Contributor not recorded'}
         </p>
         <p className="mt-1 text-[12px] text-secondary">
           Submitted: {formatContributedAt(submittedAt)}
@@ -88,10 +95,14 @@ export function StudioContributorSummary({
     );
   }
 
+  const label = contributorDisplayName(contributor);
+
   return (
     <section className="rounded-xl border border-outline-variant/20 bg-surface-container-low px-4 py-3">
       <p className="font-label-caps text-secondary">Contributor</p>
-      <p className="mt-1 font-title-md text-on-surface">{contributor.displayName}</p>
+      <p className="mt-1 font-title-md text-on-surface" title={contributor.email}>
+        {label}
+      </p>
       <p className="text-body-sm text-on-surface-variant">{contributor.email}</p>
       <p className="mt-2 text-[12px] text-secondary">
         Submitted: {formatContributedAt(submittedAt)}
