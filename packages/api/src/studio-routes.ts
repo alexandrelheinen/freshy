@@ -19,11 +19,46 @@ import {
   updateStudioPlace,
   updateStudioPlaceSchema,
 } from './studio-places';
+import {
+  getStudioUserSecret,
+  listStudioUsers,
+  studioUsersQuerySchema,
+} from './studio-users';
 
 export function registerStudioRoutes(app: Hono<AppEnv>): void {
   app.get('/studio/stats', requireAdmin, async (c) => {
     try {
       const data = await getStudioStats(c.get('db'));
+      return c.json({ data });
+    } catch {
+      return c.json({ error: 'Database unavailable' }, 503);
+    }
+  });
+
+  app.get('/studio/users', requireAdmin, async (c) => {
+    const parsed = studioUsersQuerySchema.safeParse({
+      q: c.req.query('q'),
+      limit: c.req.query('limit'),
+    });
+    if (!parsed.success) {
+      return c.json({ error: 'Invalid query', details: parsed.error.flatten() }, 400);
+    }
+    try {
+      const data = await listStudioUsers(c.get('db'), parsed.data);
+      return c.json({ data });
+    } catch {
+      return c.json({ error: 'Database unavailable' }, 503);
+    }
+  });
+
+  app.get('/studio/users/:userId/contributor-secret', requireAdmin, async (c) => {
+    const userId = requireParam(c, 'userId');
+    if (userId instanceof Response) return userId;
+    try {
+      const data = await getStudioUserSecret(c.get('db'), userId);
+      if (!data) {
+        return c.json({ error: 'Not found' }, 404);
+      }
       return c.json({ data });
     } catch {
       return c.json({ error: 'Database unavailable' }, 503);
