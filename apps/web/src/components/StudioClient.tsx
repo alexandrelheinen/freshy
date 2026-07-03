@@ -96,14 +96,19 @@ export function StudioClient() {
   const loadData = useCallback(async () => {
     setLoading(true);
     setActionError(null);
-    const status = view === 'all' ? 'all' : view;
-    const [nextStats, nextPlaces] = await Promise.all([
-      fetchStudioStats(getToken),
-      fetchStudioPlaces(getToken, { status, q: query || undefined, page, limit: 25 }),
-    ]);
-    setStats(nextStats);
-    setPlacesPage(nextPlaces);
-    setLoading(false);
+    try {
+      const status = view === 'all' ? 'all' : view;
+      const [nextStats, nextPlaces] = await Promise.all([
+        fetchStudioStats(getToken),
+        fetchStudioPlaces(getToken, { status, q: query || undefined, page, limit: 25 }),
+      ]);
+      setStats(nextStats);
+      setPlacesPage(nextPlaces);
+    } catch {
+      setActionError('Could not load studio data. Try signing in again.');
+    } finally {
+      setLoading(false);
+    }
   }, [getToken, page, query, view]);
 
   useEffect(() => {
@@ -117,34 +122,46 @@ export function StudioClient() {
   }, [toast]);
 
   async function handleApprove(placeId: string) {
-    const ok = await approveStudioPlace(getToken, placeId);
-    if (!ok) {
-      setActionError('Could not validate place.');
-      return;
+    try {
+      const ok = await approveStudioPlace(getToken, placeId);
+      if (!ok) {
+        setActionError('Could not validate place.');
+        return;
+      }
+      setToast('Place validated and published.');
+      await loadData();
+    } catch {
+      setActionError('Could not validate place. Try signing in again.');
     }
-    setToast('Place validated and published.');
-    await loadData();
   }
 
   async function handleDelete(placeId: string, placeName: string) {
     if (!window.confirm(`Delete "${placeName}"? This cannot be undone.`)) return;
-    const ok = await deleteStudioPlace(getToken, placeId);
-    if (!ok) {
-      setActionError('Could not delete place.');
-      return;
+    try {
+      const ok = await deleteStudioPlace(getToken, placeId);
+      if (!ok) {
+        setActionError('Could not delete place.');
+        return;
+      }
+      setToast('Place deleted.');
+      await loadData();
+    } catch {
+      setActionError('Could not delete place. Try signing in again.');
     }
-    setToast('Place deleted.');
-    await loadData();
   }
 
   async function handleMerge(targetPlaceId: string, sourcePlaceId: string) {
-    const ok = await mergeStudioPlaces(getToken, targetPlaceId, sourcePlaceId);
-    if (!ok) {
-      setActionError('Could not merge places.');
-      return;
+    try {
+      const ok = await mergeStudioPlaces(getToken, targetPlaceId, sourcePlaceId);
+      if (!ok) {
+        setActionError('Could not merge places.');
+        return;
+      }
+      setToast('Places merged successfully.');
+      await loadData();
+    } catch {
+      setActionError('Could not merge places. Try signing in again.');
     }
-    setToast('Places merged successfully.');
-    await loadData();
   }
 
   async function handleSaveEdit(payload: {
@@ -159,28 +176,32 @@ export function StudioClient() {
     photoFile: File | null;
   }) {
     if (!editing) return;
-    const ok = await updateStudioPlace(
-      getToken,
-      editing.id,
-      {
-        name: payload.name,
-        address: payload.address,
-        category: payload.category,
-        aggregatedFreshnessLevel: payload.aggregatedFreshnessLevel,
-        status: payload.status,
-        description: payload.description,
-        tags: payload.tags,
-        ...(payload.photoUrl !== undefined ? { photoUrl: payload.photoUrl } : {}),
-      },
-      payload.photoFile ? { photo: payload.photoFile } : undefined,
-    );
-    if (!ok) {
-      setActionError('Could not update place.');
-      return;
+    try {
+      const ok = await updateStudioPlace(
+        getToken,
+        editing.id,
+        {
+          name: payload.name,
+          address: payload.address,
+          category: payload.category,
+          aggregatedFreshnessLevel: payload.aggregatedFreshnessLevel,
+          status: payload.status,
+          description: payload.description,
+          tags: payload.tags,
+          ...(payload.photoUrl !== undefined ? { photoUrl: payload.photoUrl } : {}),
+        },
+        payload.photoFile ? { photo: payload.photoFile } : undefined,
+      );
+      if (!ok) {
+        setActionError('Could not update place.');
+        return;
+      }
+      setEditing(null);
+      setToast('Place updated.');
+      await loadData();
+    } catch {
+      setActionError('Could not update place. Try signing in again.');
     }
-    setEditing(null);
-    setToast('Place updated.');
-    await loadData();
   }
 
   const items = placesPage?.items ?? [];

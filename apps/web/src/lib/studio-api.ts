@@ -1,5 +1,6 @@
 import type { PlaceDto } from './api';
 
+import { filterValidPlaceTags, type PlaceTagId } from '@freshy/ui';
 import { API_BASE } from './api-base';
 
 export type StudioPlaceStatus = 'verified' | 'pending' | 'duplicate';
@@ -206,4 +207,19 @@ export async function updateStudioPlace(
 export function isStudioAdmin(publicMetadata: unknown): boolean {
   if (!publicMetadata || typeof publicMetadata !== 'object') return false;
   return (publicMetadata as { role?: string }).role === 'admin';
+}
+
+/** D1 stores tags as JSON; Studio list items should be arrays but normalize defensively. */
+export function normalizeStudioPlaceTags(tags: string[] | string | null | undefined): PlaceTagId[] {
+  if (Array.isArray(tags)) return filterValidPlaceTags(tags);
+  if (typeof tags === 'string' && tags.trim()) {
+    try {
+      const parsed: unknown = JSON.parse(tags);
+      if (!Array.isArray(parsed)) return [];
+      return filterValidPlaceTags(parsed.filter((tag): tag is string => typeof tag === 'string'));
+    } catch {
+      return [];
+    }
+  }
+  return [];
 }

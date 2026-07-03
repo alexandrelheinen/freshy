@@ -2,6 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   detectDuplicatePlaceIds,
+  formatStudioPlaceListItem,
   mergePlacesSchema,
   parseUpdateStudioPlaceFields,
   studioContributorForPlace,
@@ -86,6 +87,33 @@ describe('studio-places', () => {
     assert.deepEqual(studioContributorForPlace('user_a', contributors), contributors.get('user_a'));
     assert.equal(studioContributorForPlace(null, contributors), null);
     assert.equal(studioContributorForPlace('missing', contributors), null);
+  });
+
+  it('formats studio list items with parsed tags for API clients', () => {
+    const item = formatStudioPlaceListItem(
+      {
+        id: 'p1',
+        slug: 'test-cafe',
+        name: 'Test Cafe',
+        description: null,
+        category: 'CAFE',
+        latitude: 48.9,
+        longitude: 2.3,
+        address: '1 Rue Test',
+        photoUrl: null,
+        aggregatedFreshnessLevel: 'MODEST_AC',
+        tags: '["calm","foodie"]',
+        isOpen: true,
+        createdById: null,
+        status: 'DRAFT',
+        createdAt: '2025-01-01T00:00:00.000Z',
+        updatedAt: '2025-01-01T00:00:00.000Z',
+      },
+      null,
+      null,
+    );
+    assert.deepEqual(item.tags, ['calm', 'foodie']);
+    assert.equal(item.studioStatus, 'pending');
   });
 
   it('flags nearby places as duplicates', () => {

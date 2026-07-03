@@ -16,6 +16,7 @@ import {
 } from '@freshy/ui';
 import { defaultPlacePhotoLocalPath, defaultPlacePhotoR2Key } from '@freshy/config/place-photos';
 import type { StudioPlaceDto } from '../lib/studio-api';
+import { normalizeStudioPlaceTags } from '../lib/studio-api';
 import { StudioContributorSummary } from './StudioContributorCell';
 
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
@@ -51,10 +52,8 @@ interface StudioPlaceEditModalProps {
 
 export function StudioPlaceEditModal({ place, onCancel, onSave }: StudioPlaceEditModalProps) {
   const category = place.category as PlaceCategory;
-  const [selectedTags, setSelectedTags] = useState<PlaceTagId[]>(
-    (place.tags ?? []).filter((tag): tag is PlaceTagId =>
-      PLACE_TAGS.some((item) => item.id === tag),
-    ),
+  const [selectedTags, setSelectedTags] = useState<PlaceTagId[]>(() =>
+    normalizeStudioPlaceTags(place.tags),
   );
   const [photoPreview, setPhotoPreview] = useState<string | null>(
     getPlacePhotoUrl(place.photoUrl, category),
