@@ -184,7 +184,7 @@ export function StudioPlaceEditModal({ place, onCancel, onSave }: StudioPlaceEdi
     photoFile != null || photoUrl.trim() !== '' || initialCustomPhotoUrl(place) !== '';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-inverse-surface/40 p-4">
+    <div className="fixed inset-0 z-modal flex items-center justify-center bg-inverse-surface/40 p-4">
       <form
         onSubmit={(event) => void handleSubmit(event)}
         className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl border border-outline-variant/20 bg-surface-container-lowest p-6 shadow-2xl"
