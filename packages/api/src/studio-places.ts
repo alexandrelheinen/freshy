@@ -251,25 +251,37 @@ function enrichStudioPlace(
   );
 }
 
-function matchesStudioFilter(
-  place: StudioPlaceListItem,
+function matchesStudioStatusFilter(
+  studioStatus: StudioPlaceStatus,
   status: StudioPlacesQuery['status'],
 ): boolean {
   if (status === 'all') return true;
-  if (status === 'verified') return place.studioStatus === 'verified';
-  if (status === 'pending') return place.studioStatus === 'pending';
-  return place.studioStatus === 'duplicate';
+  if (status === 'verified') return studioStatus === 'verified';
+  if (status === 'pending') return studioStatus === 'pending';
+  return studioStatus === 'duplicate';
 }
 
-export async function listStudioPlaces(
-  db: Db,
-  query: StudioPlacesQuery,
-): Promise<StudioPlacesPage> {
-  let allPlaces: Place[];
-  if (query.q) {
-    const pattern = `%${query.q}%`;
-    allPlaces = await db
-      .select()
+interface PlaceIndexRow {
+  id: string;
+  latitude: number;
+  longitude: number;
+  createdAt: string | Date;
+  status: Place['status'];
+}
+
+async function loadPlaceIndexRows(db: Db, q?: string): Promise<PlaceIndexRow[]> {
+  const columns = {
+    id: placesTable.id,
+    latitude: placesTable.latitude,
+    longitude: placesTable.longitude,
+    createdAt: placesTable.createdAt,
+    status: placesTable.status,
+  };
+
+  if (q) {
+    const pattern = `%${q}%`;
+    return db
+      .select(columns)
       .from(placesTable)
       .where(
         or(
@@ -279,23 +291,49 @@ export async function listStudioPlaces(
         ),
       )
       .orderBy(desc(placesTable.createdAt));
-  } else {
-    allPlaces = await db.select().from(placesTable).orderBy(desc(placesTable.createdAt));
   }
 
-  const duplicateMap = detectDuplicatePlaceIds(allPlaces);
+  return db.select(columns).from(placesTable).orderBy(desc(placesTable.createdAt));
+}
+
+export async function listStudioPlaces(
+  db: Db,
+  query: StudioPlacesQuery,
+): Promise<StudioPlacesPage> {
+  const indexRows = await loadPlaceIndexRows(db, query.q);
+  const duplicateMap = detectDuplicatePlaceIds(indexRows);
+
+  const filteredIds: string[] = [];
+  for (const row of indexRows) {
+    const duplicateOfId = duplicateMap.get(row.id) ?? null;
+    const studioStatus = studioStatusForPlace(row as Place, duplicateOfId);
+    if (matchesStudioStatusFilter(studioStatus, query.status)) {
+      filteredIds.push(row.id);
+    }
+  }
+
+  const total = filteredIds.length;
+  const offset = (query.page - 1) * query.limit;
+  const pageIds = filteredIds.slice(offset, offset + query.limit);
+
+  if (pageIds.length === 0) {
+    return { items: [], total, page: query.page, limit: query.limit };
+  }
+
+  const pagePlaces = await db.select().from(placesTable).where(inArray(placesTable.id, pageIds));
+  const placesById = new Map(pagePlaces.map((place) => [place.id, place]));
+  const orderedPlaces = pageIds
+    .map((id) => placesById.get(id))
+    .filter((place): place is Place => place != null);
+
   const contributors = await loadContributorsByUserIds(
     db,
-    allPlaces.map((place) => place.createdById),
-  );
-  const enriched: StudioPlaceListItem[] = allPlaces.map((place) =>
-    enrichStudioPlace(place, duplicateMap.get(place.id) ?? null, contributors),
+    orderedPlaces.map((place) => place.createdById),
   );
 
-  const filtered = enriched.filter((place) => matchesStudioFilter(place, query.status));
-  const total = filtered.length;
-  const offset = (query.page - 1) * query.limit;
-  const items = filtered.slice(offset, offset + query.limit);
+  const items = orderedPlaces.map((place) =>
+    enrichStudioPlace(place, duplicateMap.get(place.id) ?? null, contributors),
+  );
 
   return { items, total, page: query.page, limit: query.limit };
 }

@@ -67,6 +67,9 @@ function freshnessBarForPlace(strength: StudioPlaceDto['aggregatedFreshnessLevel
   return freshnessBarState(strength);
 }
 
+const STUDIO_PAGE_SIZE_OPTIONS = [10, 50, 100] as const;
+type StudioPageSize = (typeof STUDIO_PAGE_SIZE_OPTIONS)[number];
+
 export function StudioClient() {
   const { getToken } = useAuth();
   const { user } = useUser();
@@ -74,6 +77,7 @@ export function StudioClient() {
   const [search, setSearch] = useState('');
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<StudioPageSize>(10);
   const [stats, setStats] = useState<StudioStatsDto | null>(null);
   const [placesPage, setPlacesPage] = useState<{
     items: StudioPlaceDto[];
@@ -100,7 +104,7 @@ export function StudioClient() {
       const status = view === 'all' ? 'all' : view;
       const [nextStats, nextPlaces] = await Promise.all([
         fetchStudioStats(getToken),
-        fetchStudioPlaces(getToken, { status, q: query || undefined, page, limit: 25 }),
+        fetchStudioPlaces(getToken, { status, q: query || undefined, page, limit: pageSize }),
       ]);
       setStats(nextStats);
       setPlacesPage(nextPlaces);
@@ -109,7 +113,7 @@ export function StudioClient() {
     } finally {
       setLoading(false);
     }
-  }, [getToken, page, query, view]);
+  }, [getToken, page, pageSize, query, view]);
 
   useEffect(() => {
     void loadData();
@@ -206,7 +210,7 @@ export function StudioClient() {
 
   const items = placesPage?.items ?? [];
   const total = placesPage?.total ?? 0;
-  const totalPages = Math.max(1, Math.ceil(total / (placesPage?.limit ?? 25)));
+  const totalPages = Math.max(1, Math.ceil(total / (placesPage?.limit ?? pageSize)));
 
   return (
     <div className="min-h-screen bg-surface-container-low/30 md:flex" data-page="studio">
@@ -494,9 +498,29 @@ export function StudioClient() {
               >
                 Previous
               </button>
-              <span className="text-body-sm text-secondary">
-                Page {page} of {totalPages}
-              </span>
+              <div className="flex flex-wrap items-center gap-3">
+                <label className="flex items-center gap-2 text-body-sm text-secondary">
+                  <span>Per page</span>
+                  <select
+                    value={pageSize}
+                    onChange={(event) => {
+                      const next = Number(event.target.value) as StudioPageSize;
+                      setPageSize(next);
+                      setPage(1);
+                    }}
+                    className="rounded-lg border border-outline-variant/30 bg-surface px-2 py-1 text-on-surface"
+                  >
+                    {STUDIO_PAGE_SIZE_OPTIONS.map((size) => (
+                      <option key={size} value={size}>
+                        {size}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <span className="text-body-sm text-secondary">
+                  Page {page} of {totalPages} ({total} places)
+                </span>
+              </div>
               <button
                 type="button"
                 disabled={page >= totalPages}
