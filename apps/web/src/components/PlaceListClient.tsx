@@ -10,6 +10,14 @@ import { useUserLocation } from '../lib/use-user-location';
 
 type FilterChip = 'all' | 'cold' | 'nearby';
 
+export interface PlaceListPagination {
+  page: number;
+  totalPages: number;
+  total: number;
+  pageSize: number;
+  onPageChange: (page: number) => void;
+}
+
 export function PlaceListClient({
   title,
   subtitle,
@@ -21,6 +29,10 @@ export function PlaceListClient({
   navActive = 'cooling',
   searchPlaceholder = 'Search places…',
   emptyMessage = 'No places found.',
+  listNotice,
+  pagination,
+  loading: loadingOverride,
+  loadError,
   statusBanner,
 }: {
   title: string;
@@ -33,21 +45,32 @@ export function PlaceListClient({
   navActive?: 'explore' | 'cooling' | 'profile';
   searchPlaceholder?: string;
   emptyMessage?: string;
+  listNotice?: string | null;
+  pagination?: PlaceListPagination;
+  loading?: boolean;
+  loadError?: string | null;
   statusBanner?: ReactNode;
 }) {
   const [places, setPlaces] = useState<PlaceDto[]>(initialPlaces ?? []);
   const [query, setQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterChip>('all');
-  const [loading, setLoading] = useState(!initialPlaces);
+  const [internalLoading, setInternalLoading] = useState(!initialPlaces && Boolean(loadPlaces));
   const { location } = useUserLocation();
+  const loading = loadingOverride ?? internalLoading;
+
+  useEffect(() => {
+    if (initialPlaces != null) {
+      setPlaces(initialPlaces);
+    }
+  }, [initialPlaces]);
 
   useEffect(() => {
     if (!loadPlaces) return;
     void (async () => {
-      setLoading(true);
+      setInternalLoading(true);
       const data = await loadPlaces();
       setPlaces(data);
-      setLoading(false);
+      setInternalLoading(false);
     })();
   }, [loadPlaces]);
 
@@ -58,6 +81,10 @@ export function PlaceListClient({
   }, [activeFilter, location]);
 
   const filtered = useMemo(() => {
+    if (pagination) {
+      return places;
+    }
+
     let list = places;
     const q = query.trim().toLowerCase();
     if (q) {
@@ -84,7 +111,7 @@ export function PlaceListClient({
       });
     }
     return list;
-  }, [places, query, activeFilter, location]);
+  }, [places, query, activeFilter, location, pagination]);
 
   const filterChips: Array<{ id: FilterChip; label: string }> = [
     { id: 'all', label: 'All' },
@@ -123,67 +150,105 @@ export function PlaceListClient({
             ) : null}
           </div>
 
-          <div className="relative">
-            <MaterialIcon
-              name="search"
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-outline"
-            />
-            <input
-              className="w-full rounded-xl border border-outline-variant bg-surface-container-low py-3 pl-10 pr-4 font-body-sm shadow-sm transition-all outline-none focus:border-transparent focus:ring-2 focus:ring-primary md:rounded-full"
-              placeholder={searchPlaceholder}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </div>
+          {!pagination ? (
+            <>
+              <div className="relative">
+                <MaterialIcon
+                  name="search"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-outline"
+                />
+                <input
+                  className="w-full rounded-xl border border-outline-variant bg-surface-container-low py-3 pl-10 pr-4 font-body-sm shadow-sm transition-all outline-none focus:border-transparent focus:ring-2 focus:ring-primary md:rounded-full"
+                  placeholder={searchPlaceholder}
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+              </div>
 
-          <div className="hide-scrollbar mt-4 flex gap-2 overflow-x-auto pb-1">
-            {filterChips.map((chip) => {
-              const isActive = activeFilter === chip.id;
-              return (
-                <button
-                  key={chip.id}
-                  type="button"
-                  onClick={() => setActiveFilter(chip.id)}
-                  className={`shrink-0 whitespace-nowrap rounded-full px-4 py-2 font-label-caps text-label-caps transition-colors ${
-                    isActive
-                      ? 'bg-primary text-on-primary'
-                      : 'bg-secondary-container text-on-secondary-container'
-                  }`}
-                >
-                  {chip.label}
-                </button>
-              );
-            })}
-          </div>
+              <div className="hide-scrollbar mt-4 flex gap-2 overflow-x-auto pb-1">
+                {filterChips.map((chip) => {
+                  const isActive = activeFilter === chip.id;
+                  return (
+                    <button
+                      key={chip.id}
+                      type="button"
+                      onClick={() => setActiveFilter(chip.id)}
+                      className={`shrink-0 whitespace-nowrap rounded-full px-4 py-2 font-label-caps text-label-caps transition-colors ${
+                        isActive
+                          ? 'bg-primary text-on-primary'
+                          : 'bg-secondary-container text-on-secondary-container'
+                      }`}
+                    >
+                      {chip.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </>
+          ) : null}
         </section>
 
-        {loading ? (
+        {listNotice ? (
+          <p className="mb-4 rounded-xl border border-outline-variant/20 bg-surface-container-low px-4 py-3 text-center text-sm text-on-surface-variant">
+            {listNotice}
+          </p>
+        ) : null}
+
+        {loadError ? (
+          <p className="py-16 text-center text-error">{loadError}</p>
+        ) : loading ? (
           <p className="py-16 text-center text-on-surface-variant">Loading places…</p>
         ) : filtered.length === 0 ? (
           <p className="py-16 text-center text-on-surface-variant">{emptyMessage}</p>
         ) : (
-          <section className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-6 lg:grid-cols-2">
-            {filtered.map((place, index) => (
-              <div
-                key={place.id}
-                className="animate-in fade-in slide-in-from-bottom-4"
-                style={{ animationDelay: `${index * 80}ms`, animationFillMode: 'both' }}
-              >
-                <PlaceListCard
-                  place={place}
-                  showBookmark={showBookmark}
-                  bookmarkFilled={showBookmark}
-                  onBookmarkClick={
-                    onUnsave
-                      ? () => {
-                          void onUnsave(place.id);
-                        }
-                      : undefined
-                  }
-                />
+          <>
+            <section className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-6 lg:grid-cols-2">
+              {filtered.map((place, index) => (
+                <div
+                  key={place.id}
+                  className="animate-in fade-in slide-in-from-bottom-4"
+                  style={{ animationDelay: `${index * 80}ms`, animationFillMode: 'both' }}
+                >
+                  <PlaceListCard
+                    place={place}
+                    showBookmark={showBookmark}
+                    bookmarkFilled={showBookmark}
+                    onBookmarkClick={
+                      onUnsave
+                        ? () => {
+                            void onUnsave(place.id);
+                          }
+                        : undefined
+                    }
+                  />
+                </div>
+              ))}
+            </section>
+
+            {pagination ? (
+              <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-outline-variant/20 pt-4">
+                <button
+                  type="button"
+                  disabled={pagination.page <= 1}
+                  onClick={() => pagination.onPageChange(Math.max(1, pagination.page - 1))}
+                  className="rounded-lg px-3 py-1 text-body-sm text-secondary disabled:opacity-40"
+                >
+                  Previous
+                </button>
+                <span className="text-body-sm text-secondary">
+                  Page {pagination.page} of {pagination.totalPages} ({pagination.total} places)
+                </span>
+                <button
+                  type="button"
+                  disabled={pagination.page >= pagination.totalPages}
+                  onClick={() => pagination.onPageChange(pagination.page + 1)}
+                  className="rounded-lg px-3 py-1 text-body-sm text-secondary disabled:opacity-40"
+                >
+                  Next
+                </button>
               </div>
-            ))}
-          </section>
+            ) : null}
+          </>
         )}
       </main>
     </div>

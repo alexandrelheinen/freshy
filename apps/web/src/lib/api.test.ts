@@ -1,6 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  CATEGORY_PLACES_PAGE_SIZE,
   buildPlacesSearchParams,
   directionsUrl,
   formatDistance,
@@ -113,5 +114,9 @@ describe('@freshy/web api helpers', () => {
       verifiedOnly: true,
     });
     assert.equal(on.get('verifiedOnly'), 'true');
+  });
+
+  it('uses five places per page for category list defaults', () => {
+    assert.equal(CATEGORY_PLACES_PAGE_SIZE, 5);
   });
 });

@@ -118,6 +118,52 @@ export interface PlaceDetailDto extends PlaceDto {
   }>;
 }
 
+export const CATEGORY_PLACES_PAGE_SIZE = 5;
+
+export interface CategoryPlacesPageDto {
+  items: PlaceDto[];
+  total: number;
+  page: number;
+  limit: number;
+  nearbyCount: number;
+}
+
+export interface CategoryPlacesFetchParams {
+  lat: number;
+  lng: number;
+  radius: number;
+  category: string;
+  page?: number;
+  limit?: number;
+  q?: string;
+  verifiedOnly?: boolean;
+  minFreshnessLevel?: number;
+}
+
+export async function fetchCategoryPlacesPage(
+  params: CategoryPlacesFetchParams,
+): Promise<CategoryPlacesPageDto | null> {
+  const search = new URLSearchParams();
+  search.set('lat', String(params.lat));
+  search.set('lng', String(params.lng));
+  search.set('radius', String(params.radius));
+  search.set('category', params.category);
+  search.set('page', String(params.page ?? 1));
+  search.set('limit', String(params.limit ?? CATEGORY_PLACES_PAGE_SIZE));
+  if (params.q) search.set('q', params.q);
+  if (params.verifiedOnly) search.set('verifiedOnly', 'true');
+  if (params.minFreshnessLevel != null) {
+    search.set('minFreshnessLevel', String(params.minFreshnessLevel));
+  }
+
+  const res = await fetch(`${API_BASE}/places/category-list?${search.toString()}`, {
+    cache: 'no-store',
+  });
+  if (!res.ok) return null;
+  const json = (await res.json()) as { data: CategoryPlacesPageDto };
+  return json.data ?? null;
+}
+
 export async function fetchPlaces(params?: {
   lat?: number;
   lng?: number;

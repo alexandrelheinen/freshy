@@ -10,8 +10,10 @@ import {
   categoryCounts,
   featuredPlace,
   getPlaceBySlugWithReviews,
+  listCategoryPlacesPage,
   listDraftPlaces,
   listPlaces,
+  categoryPlacesQuerySchema,
   placesQuerySchema,
 } from './places';
 import { registerUserRoutes } from './user-routes';
@@ -79,6 +81,29 @@ export function createApp(): Hono<AppEnv> {
         return c.json({ error: 'Invalid query', details: parsed.error.flatten() }, 400);
       }
       const data = await listDraftPlaces(c.get('db'), parsed.data);
+      return c.json({ data });
+    } catch {
+      return c.json({ error: 'Database unavailable' }, 503);
+    }
+  });
+
+  app.get('/places/category-list', async (c) => {
+    try {
+      const parsed = categoryPlacesQuerySchema.safeParse({
+        lat: c.req.query('lat'),
+        lng: c.req.query('lng'),
+        radius: c.req.query('radius'),
+        category: c.req.query('category'),
+        page: c.req.query('page'),
+        limit: c.req.query('limit'),
+        q: c.req.query('q'),
+        verifiedOnly: c.req.query('verifiedOnly'),
+        minFreshnessLevel: c.req.query('minFreshnessLevel'),
+      });
+      if (!parsed.success) {
+        return c.json({ error: 'Invalid query', details: parsed.error.flatten() }, 400);
+      }
+      const data = await listCategoryPlacesPage(c.get('db'), parsed.data);
       return c.json({ data });
     } catch {
       return c.json({ error: 'Database unavailable' }, 503);
