@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { eq, like, or, sql, desc, inArray } from 'drizzle-orm';
-import { FRESHNESS_LEVEL_IDS, freshnessLevelScore } from '@freshy/config/freshness-levels';
+import { FRESHNESS_LEVEL_IDS } from '@freshy/config/freshness-levels';
 import { PLACE_TAG_IDS } from '@freshy/config/place-tags';
 import {
   PLACE_CATEGORIES,
@@ -16,6 +16,10 @@ import {
   users as usersTable,
 } from '@freshy/db';
 import { withResolvedPlacePhoto, serializePlaceForApi } from './places';
+import {
+  getStudioUsersByIds,
+  type StudioUserProfile,
+} from './studio-users';
 
 const DUPLICATE_RADIUS_KM = 0.05;
 
@@ -150,7 +154,39 @@ export interface StudioStats {
   totalVerified: number;
   pendingValidation: number;
   activeConflicts: number;
-  averageFreshnessScore: number | null;
+}
+
+function contributorFromProfile(profile: StudioUserProfile): StudioContributor {
+  return {
+    id: profile.id,
+    email: profile.email,
+    displayName: profile.displayName,
+    username: profile.username,
+  };
+}
+
+/** Fill contributor profiles when the join did not resolve createdById. */
+export async function attachMissingContributors(
+  db: Db,
+  items: StudioPlaceListItem[],
+): Promise<StudioPlaceListItem[]> {
+  const missingIds = [
+    ...new Set(
+      items
+        .filter((item) => item.createdById && !item.contributor)
+        .map((item) => item.createdById as string),
+    ),
+  ];
+  if (missingIds.length === 0) return items;
+
+  const profiles = await getStudioUsersByIds(db, missingIds);
+  const byId = new Map(profiles.map((profile) => [profile.id, contributorFromProfile(profile)]));
+
+  return items.map((item) => {
+    if (item.contributor || !item.createdById) return item;
+    const contributor = byId.get(item.createdById) ?? null;
+    return contributor ? { ...item, contributor } : item;
+  });
 }
 
 interface PlaceCoord {
@@ -321,7 +357,12 @@ export async function listStudioPlaces(
       );
     });
 
-  return { items, total, page: query.page, limit: query.limit };
+  return {
+    items: await attachMissingContributors(db, items),
+    total,
+    page: query.page,
+    limit: query.limit,
+  };
 }
 
 export async function getStudioStats(db: Db): Promise<StudioStats> {
@@ -339,19 +380,11 @@ export async function getStudioStats(db: Db): Promise<StudioStats> {
   const duplicateMap = detectDuplicatePlaceIds(coordRows);
   const pendingValidation = coordRows.filter((p) => p.status === 'DRAFT').length;
   const totalVerified = coordRows.filter((p) => p.status === 'PUBLISHED').length;
-  const scores = coordRows
-    .map((p) => freshnessLevelScore(p.aggregatedFreshnessLevel))
-    .filter((value): value is number => value != null);
-  const averageFreshnessScore =
-    scores.length > 0
-      ? Math.round((scores.reduce((sum, value) => sum + value, 0) / scores.length) * 10) / 10
-      : null;
 
   return {
     totalVerified,
     pendingValidation,
     activeConflicts: duplicateMap.size,
-    averageFreshnessScore,
   };
 }
 
@@ -503,5 +536,9 @@ export async function getStudioPlace(db: Db, placeId: string): Promise<StudioPla
         }
       : null;
 
-  return formatStudioPlaceListItem(row.place, duplicateOfId, contributor);
+  return (
+    await attachMissingContributors(db, [
+      formatStudioPlaceListItem(row.place, duplicateOfId, contributor),
+    ])
+  )[0]!;
 }

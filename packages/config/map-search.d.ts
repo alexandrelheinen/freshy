@@ -2,4 +2,5 @@
 export declare const MAP_SEARCH: {
   readonly maxRadiusKm: 50;
   readonly minRadiusKm: 0.1;
+  readonly categoryListUsesRadiusFilter: false;
 };

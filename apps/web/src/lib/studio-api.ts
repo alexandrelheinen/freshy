@@ -33,7 +33,6 @@ export interface StudioStatsDto {
   totalVerified: number;
   pendingValidation: number;
   activeConflicts: number;
-  averageFreshnessScore: number | null;
 }
 
 export interface UpdateStudioPlacePayload {
@@ -122,10 +121,28 @@ export async function fetchStudioPlaces(
   };
 }
 
+export async function fetchStudioUsersByIds(
+  getToken: () => Promise<string | null>,
+  userIds: string[],
+): Promise<StudioContributorDto[]> {
+  const ids = [...new Set(userIds.map((id) => id.trim()).filter(Boolean))];
+  if (ids.length === 0) return [];
+
+  const search = new URLSearchParams();
+  search.set('ids', ids.join(','));
+  const res = await studioFetch(`/studio/users/lookup?${search.toString()}`, getToken);
+  if (res.status === 404 || !res.ok) return [];
+  const json = (await res.json()) as { data: StudioContributorDto[] };
+  return json.data ?? [];
+}
+
 export async function fetchStudioUserById(
   getToken: () => Promise<string | null>,
   userId: string,
 ): Promise<StudioContributorDto | null> {
+  const [profile] = await fetchStudioUsersByIds(getToken, [userId]);
+  if (profile) return profile;
+
   const res = await studioFetch(`/studio/users/${encodeURIComponent(userId)}`, getToken);
   if (res.status === 404 || !res.ok) return null;
   const json = (await res.json()) as { data: StudioContributorDto };
@@ -267,21 +284,19 @@ export async function resolveMissingStudioContributors(
   if (missingIds.length === 0) return places;
 
   const contributorsById = new Map<string, StudioContributorDto>();
-  await Promise.all(
-    missingIds.map(async (userId) => {
-      let contributor = await fetchStudioUserById(getToken, userId);
-      if (!contributor) {
-        const matches = await fetchStudioUsers(getToken, { q: userId, limit: 1 });
-        const matched = matches.find((user) => user.id === userId) ?? matches[0] ?? null;
-        if (matched) {
-          contributor = studioContributorFromUser(matched);
-        }
-      }
-      if (contributor) {
-        contributorsById.set(userId, contributor);
-      }
-    }),
-  );
+  const batch = await fetchStudioUsersByIds(getToken, missingIds);
+  for (const profile of batch) {
+    contributorsById.set(profile.id, profile);
+  }
+
+  for (const userId of missingIds) {
+    if (contributorsById.has(userId)) continue;
+    const matches = await fetchStudioUsers(getToken, { q: userId, limit: 1 });
+    const matched = matches.find((user) => user.id === userId) ?? matches[0] ?? null;
+    if (matched) {
+      contributorsById.set(userId, studioContributorFromUser(matched));
+    }
+  }
 
   return mergeStudioPlaceContributors(places, contributorsById);
 }

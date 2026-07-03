@@ -314,7 +314,7 @@ export function StudioClient() {
         </div>
 
         <div className="p-4 md:p-8">
-          <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-3">
             <StatCard
               icon="verified"
               label="Total Verified"
@@ -332,14 +332,6 @@ export function StudioClient() {
               label="Active Conflicts"
               value={stats?.activeConflicts ?? 0}
               tone="tertiary"
-            />
-            <StatCard
-              icon="ac_unit"
-              label="Avg Freshness"
-              value={
-                stats?.averageFreshnessScore != null ? `${stats.averageFreshnessScore} / 4` : '—'
-              }
-              tone="primary"
             />
           </div>
 
@@ -425,6 +417,7 @@ export function StudioClient() {
                       <td className="px-4 py-5">{statusBadge(place.studioStatus)}</td>
                       <td className="px-4 py-5">
                         <StudioContributorCell
+                          getToken={getToken}
                           contributor={place.contributor}
                           createdById={place.createdById}
                           submittedAt={place.createdAt}
@@ -538,6 +531,7 @@ export function StudioClient() {
         <StudioPlaceEditModal
           key={editing.id}
           place={editing}
+          getToken={getToken}
           onCancel={() => setEditing(null)}
           onSave={handleSaveEdit}
         />

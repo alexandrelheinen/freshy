@@ -36,6 +36,7 @@ function initialCustomPhotoUrl(place: StudioPlaceDto): string {
 
 interface StudioPlaceEditModalProps {
   place: StudioPlaceDto;
+  getToken: () => Promise<string | null>;
   onCancel: () => void;
   onSave: (payload: {
     name: string;
@@ -50,7 +51,12 @@ interface StudioPlaceEditModalProps {
   }) => void | Promise<void>;
 }
 
-export function StudioPlaceEditModal({ place, onCancel, onSave }: StudioPlaceEditModalProps) {
+export function StudioPlaceEditModal({
+  place,
+  getToken,
+  onCancel,
+  onSave,
+}: StudioPlaceEditModalProps) {
   const category = place.category as PlaceCategory;
   const [selectedTags, setSelectedTags] = useState<PlaceTagId[]>(() =>
     normalizeStudioPlaceTags(place.tags),
@@ -192,6 +198,7 @@ export function StudioPlaceEditModal({ place, onCancel, onSave }: StudioPlaceEdi
 
         <div className="mt-4">
           <StudioContributorSummary
+            getToken={getToken}
             contributor={place.contributor}
             createdById={place.createdById}
             submittedAt={place.createdAt}

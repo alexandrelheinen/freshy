@@ -6,7 +6,7 @@ import {
   ROUTES,
   type PlaceCategory,
 } from '@freshy/ui';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PlaceListClient } from './PlaceListClient';
 import {
   CATEGORY_PLACES_PAGE_SIZE,
@@ -92,12 +92,6 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
         })
       : null;
 
-  const nearbyNotice = useMemo(() => {
-    if (!category || loading || loadError || !placesPage) return null;
-    if (placesPage.nearbyCount > 0) return null;
-    return `No ${title.toLowerCase()} found within ${searchRadiusKm} km.`;
-  }, [category, loading, loadError, placesPage, searchRadiusKm, title]);
-
   const totalPages = Math.max(1, Math.ceil((placesPage?.total ?? 0) / CATEGORY_PLACES_PAGE_SIZE));
 
   return (
@@ -111,7 +105,6 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
       navActive="cooling"
       searchPlaceholder={`Search in ${title}…`}
       emptyMessage={`No ${title.toLowerCase()} in the database yet.`}
-      listNotice={nearbyNotice}
       pagination={
         placesPage && placesPage.total > 0
           ? {

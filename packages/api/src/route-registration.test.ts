@@ -24,6 +24,11 @@ describe('route registration', () => {
     assert.notEqual(res.status, 404);
   });
 
+  it('registers GET /studio/users/lookup', async () => {
+    const res = await app.request('/studio/users/lookup');
+    assert.notEqual(res.status, 404);
+  });
+
   it('registers GET /places/category-list', async () => {
     const res = await app.request('/places/category-list');
     assert.notEqual(res.status, 404);
