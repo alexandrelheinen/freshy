@@ -45,7 +45,7 @@ function BrandLockup({
         size={iconSize}
       />
       <Text
-        className={`m-0 shrink-0 p-0 font-logo tracking-logo leading-none text-primary translate-y-[var(--font-logo-offset-y,-0.08em)] ${textClassName}`}
+        className={`m-0 shrink-0 p-0 font-logo tracking-logo leading-none text-primary wordmark-offset-y ${textClassName}`}
       >
         {BRAND_NAME}
       </Text>

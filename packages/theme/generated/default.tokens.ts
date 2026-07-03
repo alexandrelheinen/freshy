@@ -168,7 +168,7 @@ export const fonts = {
     ],
   },
   logo: {
-    family: "Cherry Bomb One",
+    family: "Lilita One",
     fallbacks: [
       "system-ui",
       "sans-serif",
@@ -176,8 +176,8 @@ export const fonts = {
     weights: [
       400,
     ],
-    letterSpacing: "-0.02em",
-    baselineOffset: "-0.08em",
+    letterSpacing: "0.00em",
+    baselineOffset: "-0.02em",
   },
 } as const;
 

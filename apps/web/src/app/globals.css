@@ -5,6 +5,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/** Brand wordmark vertical nudge; value comes from --font-logo-offset-y in @freshy/theme/css. */
+.wordmark-offset-y {
+  transform: translateY(var(--font-logo-offset-y, 0));
+}
+
 body {
   min-height: 100dvh;
 }
