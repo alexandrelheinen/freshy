@@ -190,6 +190,30 @@ export interface CreatePlaceOptions {
 
 export type CreatePlaceResult = { ok: true; slug: string } | { ok: false; error: string };
 
+export const UNKNOWN_SECRET_MESSAGE =
+  'This secret is not recognized. Contact a team member to get one.';
+
+function readApiMessage(body: unknown): string | null {
+  if (body && typeof body === 'object' && 'message' in body && typeof body.message === 'string') {
+    return body.message;
+  }
+  return null;
+}
+
+export function anonymousPlaceErrorMessage(status: number, body: unknown): string {
+  if (status === 400) {
+    const errorText =
+      body && typeof body === 'object' && 'error' in body && typeof body.error === 'string'
+        ? body.error
+        : '';
+    if (errorText === 'UNKNOWN_SECRET' || errorText === 'MISSING_SECRET') {
+      return readApiMessage(body) ?? UNKNOWN_SECRET_MESSAGE;
+    }
+    return createPlaceErrorMessage(status, body);
+  }
+  return createPlaceErrorMessage(status, body);
+}
+
 export function createPlaceErrorMessage(status: number, body: unknown): string {
   if (status === 401) {
     return 'Your session expired. Sign in again and retry.';
@@ -260,6 +284,53 @@ export async function createUserPlace(
     if (!res.ok) {
       const body = (await res.json().catch(() => ({}))) as unknown;
       return { ok: false, error: createPlaceErrorMessage(res.status, body) };
+    }
+    const json = (await res.json()) as { data: { slug: string } };
+    return { ok: true, slug: json.data.slug };
+  } catch {
+    return { ok: false, error: 'Could not reach the API. Check your connection and try again.' };
+  }
+}
+
+export async function createAnonymousPlace(
+  secret: string,
+  payload: CreatePlacePayload,
+  options?: CreatePlaceOptions,
+): Promise<CreatePlaceResult> {
+  try {
+    const photo = options?.photo ?? null;
+    const photoUrl = options?.photoUrl?.trim() || payload.photoUrl?.trim() || null;
+    let res: Response;
+
+    if (photo) {
+      const form = new FormData();
+      form.append('secret', secret.trim());
+      form.append('name', payload.name);
+      form.append('category', payload.category);
+      form.append('address', payload.address);
+      if (payload.description) form.append('description', payload.description);
+      if (payload.latitude != null) form.append('latitude', String(payload.latitude));
+      if (payload.longitude != null) form.append('longitude', String(payload.longitude));
+      form.append('aggregatedFreshnessLevel', payload.aggregatedFreshnessLevel);
+      form.append('tags', JSON.stringify(payload.tags));
+      form.append('photo', photo);
+      res = await fetch(`${API_BASE}/contributions/places`, { method: 'POST', body: form });
+    } else {
+      const body: CreatePlacePayload & { secret: string } = {
+        ...payload,
+        secret: secret.trim(),
+      };
+      if (photoUrl) body.photoUrl = photoUrl;
+      res = await fetch(`${API_BASE}/contributions/places`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+    }
+
+    if (!res.ok) {
+      const body = (await res.json().catch(() => ({}))) as unknown;
+      return { ok: false, error: anonymousPlaceErrorMessage(res.status, body) };
     }
     const json = (await res.json()) as { data: { slug: string } };
     return { ok: true, slug: json.data.slug };

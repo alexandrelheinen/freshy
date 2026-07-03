@@ -1,7 +1,8 @@
 'use client';
 
 import { useAuth, SignInButton } from '@clerk/clerk-react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, type ChangeEvent } from 'react';
 import {
   ALL_PLACE_CATEGORIES,
@@ -19,7 +20,7 @@ import {
   type FreshnessLevelId,
 } from '@freshy/ui';
 import { AppMobileHeader, AppTopNav } from './AppNav';
-import { createUserPlace } from '../lib/user-api';
+import { createAnonymousPlace, createUserPlace } from '../lib/user-api';
 import { useUserLocation } from '../lib/use-user-location';
 
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
@@ -27,7 +28,9 @@ const PLACE_SUBMITTED_KEY = 'freshy-place-submitted';
 
 export function AddPlaceClient() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { isLoaded, isSignedIn, getToken } = useAuth();
+  const anonymousMode = searchParams.get('anonymous') === '1' && !isSignedIn;
   const [name, setName] = useState('');
   const [category, setCategory] = useState<PlaceCategory>('CAFE');
   const [address, setAddress] = useState('');
@@ -44,6 +47,8 @@ export function AddPlaceClient() {
   const [photoUrl, setPhotoUrl] = useState('');
   const [photoPreviewIsObjectUrl, setPhotoPreviewIsObjectUrl] = useState(false);
   const [locationHint, setLocationHint] = useState<string | null>(null);
+  const [secret, setSecret] = useState('');
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     if (userLocation) {
@@ -157,24 +162,34 @@ export function AddPlaceClient() {
       setError('Name and address are required.');
       return;
     }
+    if (anonymousMode && !secret.trim()) {
+      setError('Enter the secret shared by your team.');
+      return;
+    }
     setSubmitting(true);
     try {
-      const result = await createUserPlace(
-        getToken,
-        {
-          name: name.trim(),
-          category,
-          address: address.trim(),
-          description: description.trim() || undefined,
-          latitude,
-          longitude,
-          aggregatedFreshnessLevel: freshnessLevel,
-          tags,
-          status: 'DRAFT',
-        },
-        { photo: photoFile, photoUrl: photoUrl.trim() || undefined },
-      );
+      const payload = {
+        name: name.trim(),
+        category,
+        address: address.trim(),
+        description: description.trim() || undefined,
+        latitude,
+        longitude,
+        aggregatedFreshnessLevel: freshnessLevel,
+        tags,
+        status: 'DRAFT' as const,
+      };
+      const options = { photo: photoFile, photoUrl: photoUrl.trim() || undefined };
+
+      const result = anonymousMode
+        ? await createAnonymousPlace(secret, payload, options)
+        : await createUserPlace(getToken, payload, options);
+
       if (result.ok) {
+        if (anonymousMode) {
+          setSubmitted(true);
+          return;
+        }
         sessionStorage.setItem(PLACE_SUBMITTED_KEY, result.slug);
         router.push(ROUTES.profile);
         return;
@@ -195,7 +210,7 @@ export function AddPlaceClient() {
     );
   }
 
-  if (!isSignedIn) {
+  if (!isSignedIn && !anonymousMode) {
     return (
       <div className="min-h-screen pb-8" data-page="add-place">
         <AppMobileHeader title="Add Place" backHref={ROUTES.profile} showBrand={false} />
@@ -207,6 +222,34 @@ export function AddPlaceClient() {
               Sign in
             </button>
           </SignInButton>
+          <Link
+            href={`${ROUTES.addPlace}?anonymous=1`}
+            className="mt-4 inline-block font-label-caps text-primary hover:underline"
+          >
+            Contribute without signing in
+          </Link>
+        </main>
+      </div>
+    );
+  }
+
+  if (submitted) {
+    return (
+      <div className="min-h-screen pb-8" data-page="add-place">
+        <AppMobileHeader title="Add Place" backHref={ROUTES.profile} showBrand={false} />
+        <AppTopNav active="profile" />
+        <main className="mx-auto mt-24 max-w-md px-margin-mobile text-center md:mt-28">
+          <h2 className="font-headline-lg-mobile text-on-surface">Place submitted for review</h2>
+          <p className="mt-3 text-on-surface-variant">
+            Thank you for contributing. Your cooling spot is pending validation and will appear on
+            the map after review.
+          </p>
+          <Link
+            href={ROUTES.explore}
+            className="mt-8 inline-flex rounded-xl bg-primary px-8 py-3 font-semibold text-on-primary shadow-lg"
+          >
+            Explore the map
+          </Link>
         </main>
       </div>
     );
@@ -214,6 +257,27 @@ export function AddPlaceClient() {
 
   const formFields = (
     <>
+      {anonymousMode ? (
+        <section className="space-y-2">
+          <label className="block font-label-caps text-on-surface-variant" htmlFor="contributor-secret">
+            Secret
+          </label>
+          <input
+            id="contributor-secret"
+            className="h-12 w-full rounded-lg border border-outline-variant bg-surface px-4 font-body-sm outline-none transition-all focus:border-primary focus:ring-1 focus:ring-primary"
+            placeholder="Paste the secret shared by your team"
+            value={secret}
+            onChange={(event) => {
+              setSecret(event.target.value);
+              if (error) setError(null);
+            }}
+            autoComplete="off"
+          />
+          <p className="text-body-sm text-on-surface-variant">
+            Ask a team member for a contributor secret if you do not have one yet.
+          </p>
+        </section>
+      ) : null}
       <section className="space-y-3">
         <label className="relative flex aspect-video w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-outline-variant bg-surface-container-high transition-all hover:border-primary/40 active:scale-[0.98]">
           {photoPreview ? (
