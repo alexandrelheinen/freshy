@@ -45,6 +45,7 @@ function userInitials(name: string): string {
 export function PlaceDetailClient({ slug }: { slug: string }) {
   const [place, setPlace] = useState<PlaceDetailDto | null>(null);
   const [loading, setLoading] = useState(true);
+  const [shareMessage, setShareMessage] = useState<string | null>(null);
 
   useEffect(() => {
     void (async () => {
@@ -69,12 +70,24 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
   async function handleShare() {
     if (!place) return;
     const url = typeof window !== 'undefined' ? window.location.href : ROUTES.place(place.slug);
-    if (navigator.share) {
-      await navigator.share({ title: place.name, url });
-      return;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: place.name, url });
+        setShareMessage('Shared.');
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      setShareMessage('Link copied.');
+    } catch {
+      setShareMessage('Could not share this place.');
     }
-    await navigator.clipboard.writeText(url);
   }
+
+  useEffect(() => {
+    if (!shareMessage) return;
+    const timer = window.setTimeout(() => setShareMessage(null), 2500);
+    return () => window.clearTimeout(timer);
+  }, [shareMessage]);
 
   if (loading) {
     return (
@@ -103,7 +116,7 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
 
   return (
     <div className="min-h-screen pb-8" data-page="place-detail">
-      <header className="fixed top-0 z-50 flex h-16 w-full items-center justify-between bg-surface/80 px-margin-mobile shadow-sm backdrop-blur-md md:hidden">
+      <header className="fixed top-0 z-50 flex h-16 w-full items-center justify-between bg-surface/80 px-margin-mobile shadow-sm backdrop-blur-md md:relative md:hidden">
         <div className="flex items-center gap-2">
           <Link
             href={ROUTES.explore}
@@ -124,10 +137,28 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
         >
           <MaterialIcon name="share" />
         </button>
+        {shareMessage ? (
+          <span className="absolute right-14 top-1/2 -translate-y-1/2 rounded-full bg-surface-container-high px-3 py-1 font-body-sm text-on-surface-variant shadow-sm">
+            {shareMessage}
+          </span>
+        ) : null}
       </header>
       <AppTopNav active="explore" />
 
       <main className="mx-auto max-w-3xl pt-16 md:max-w-4xl md:pt-24">
+        <div className="hidden items-center justify-end gap-3 px-10 pt-4 md:flex">
+          <button
+            type="button"
+            onClick={() => void handleShare()}
+            className="flex items-center gap-2 rounded-full border border-outline-variant/30 bg-surface-container-low px-4 py-2 font-label-caps text-primary transition-colors hover:bg-primary-container/20"
+          >
+            <MaterialIcon name="share" size={18} />
+            Share
+          </button>
+          {shareMessage ? (
+            <span className="font-body-sm text-on-surface-variant">{shareMessage}</span>
+          ) : null}
+        </div>
         <section className="relative h-64 w-full overflow-hidden bg-gradient-to-br from-primary-container to-secondary-container md:h-72 md:rounded-2xl">
           <img
             src={getPlacePhotoUrl(place.photoUrl, place.category as PlaceCategory)}
