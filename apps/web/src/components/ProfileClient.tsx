@@ -303,7 +303,7 @@ function ProfileWithClerk() {
               <section className="space-y-4">
                 {reviews.length === 0 ? (
                   <GlassCard className="p-4 text-on-surface-variant">
-                    No reviews yet. Visit a place and share how cool it feels inside.
+                    No reviews yet. Climate review submission is coming soon.
                   </GlassCard>
                 ) : (
                   reviews.map((review) => <ReviewRow key={review.id} review={review} />)
