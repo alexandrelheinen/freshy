@@ -1,7 +1,12 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { PILOT_CITY } from '@freshy/config/pilot-city';
-import { parseStoredTags, placesQuerySchema, publishedPlaceStatuses } from './places';
+import {
+  parseStoredTags,
+  placesQuerySchema,
+  publishedPlaceStatuses,
+  serializePlaceForApi,
+} from './places';
 
 describe('placesQuerySchema', () => {
   it('defaults search radius to the pilot city config', () => {
@@ -43,5 +48,22 @@ describe('parseStoredTags', () => {
 
   it('passes through arrays unchanged', () => {
     assert.deepEqual(parseStoredTags(['calm']), ['calm']);
+  });
+});
+
+describe('serializePlaceForApi', () => {
+  it('parses JSON-encoded tags and resolves photo URLs for API clients', () => {
+    const serialized = serializePlaceForApi({
+      id: 'p1',
+      slug: 'cafe-test',
+      name: 'Test Cafe',
+      category: 'CAFE',
+      photoUrl: null,
+      tags: '["calm","free_wifi"]',
+    } as Parameters<typeof serializePlaceForApi>[0]);
+
+    assert.deepEqual(serialized.tags, ['calm', 'free_wifi']);
+    assert.equal(typeof serialized.photoUrl, 'string');
+    assert.ok(serialized.photoUrl.length > 0);
   });
 });

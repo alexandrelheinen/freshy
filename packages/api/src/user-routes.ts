@@ -10,11 +10,12 @@ import {
   listSavedPlaces,
   listUserReviews,
   savePlace,
+  deleteUserAccount,
   syncUserFromClerk,
   unsavePlace,
 } from './users';
 import { createPlaceSchema, createUserPlace } from './create-place';
-import { withResolvedPlacePhoto } from './places';
+import { serializePlaceForApi, withResolvedPlacePhoto } from './places';
 import { parseCreatePlaceFields, resolvePlaceCoordinates } from './place-submission';
 import { uploadPlacePhoto } from './place-photo-upload';
 import { isR2Configured, r2ContextFromEnv } from './storage/r2';
@@ -98,6 +99,25 @@ export function registerUserRoutes(app: Hono<AppEnv>): void {
     }
   });
 
+  app.delete('/users/me', requireAuth, async (c) => {
+    const user = await withDbUser(c);
+    if (user instanceof Response) return user;
+    const clerkUserId = c.get('clerkUserId');
+    if (!clerkUserId) {
+      return c.json({ error: 'Unauthorized' }, 401);
+    }
+    const secretKey = c.env.CLERK_SECRET_KEY;
+    if (!secretKey) {
+      return c.json({ error: 'Auth not configured' }, 503);
+    }
+    try {
+      await deleteUserAccount(c.get('db'), user.id, clerkUserId, secretKey);
+      return c.json({ data: { deleted: true } });
+    } catch {
+      return c.json({ error: 'Could not delete account' }, 503);
+    }
+  });
+
   app.get('/users/me/reviews', requireAuth, async (c) => {
     const user = await withDbUser(c);
     if (user instanceof Response) return user;
@@ -159,7 +179,8 @@ export function registerUserRoutes(app: Hono<AppEnv>): void {
     const user = await withDbUser(c);
     if (user instanceof Response) return user;
     try {
-      const data = await listSavedPlaces(c.get('db'), user.id);
+      const places = await listSavedPlaces(c.get('db'), user.id);
+      const data = places.map(serializePlaceForApi);
       return c.json({ data });
     } catch {
       return c.json({ error: 'Database unavailable' }, 503);

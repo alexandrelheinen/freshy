@@ -1,6 +1,10 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { createPlaceErrorMessage, profileErrorMessage } from './user-api';
+import {
+  createPlaceErrorMessage,
+  deleteAccountErrorMessage,
+  profileErrorMessage,
+} from './user-api';
 
 describe('user-api profile errors', () => {
   it('maps auth failures to a sign-in message', () => {
@@ -38,5 +42,18 @@ describe('user-api create place errors', () => {
 
   it('maps network-style failures to a generic retry message', () => {
     assert.match(createPlaceErrorMessage(500, {}), /try again/i);
+  });
+});
+
+describe('user-api delete account errors', () => {
+  it('maps auth failures to a sign-in message', () => {
+    assert.match(deleteAccountErrorMessage(401, {}), /session expired/i);
+  });
+
+  it('maps delete failures to an actionable message', () => {
+    assert.match(
+      deleteAccountErrorMessage(503, { error: 'Could not delete account' }),
+      /could not delete your account/i,
+    );
   });
 });
