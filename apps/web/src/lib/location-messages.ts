@@ -9,11 +9,11 @@ export function locationStatusMessage(options: {
   const { permissionDenied, locationError, searchRadiusKm, usingGps } = options;
 
   if (permissionDenied) {
-    return `Location is blocked in your browser. Open this site's settings, allow location access, then tap Use my location again.`;
+    return 'Allow location access to discover cool places near you. Open this site in your browser settings, enable location, then tap Use my location again.';
   }
 
   if (locationError === 'timeout') {
-    return `Could not get a GPS fix. Showing results within ${searchRadiusKm} km of your last map area.`;
+    return `Could not get a GPS fix. Showing results within ${searchRadiusKm} km of your last map area. Tap Use my location to retry.`;
   }
 
   if (locationError === 'unavailable') {
@@ -21,7 +21,7 @@ export function locationStatusMessage(options: {
   }
 
   if (!usingGps) {
-    return `Showing results within ${searchRadiusKm} km of your last map area. Use my location for results near you.`;
+    return 'Allow location access to discover cool places near you, or pan the map to search another area.';
   }
 
   return null;
