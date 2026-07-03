@@ -112,11 +112,24 @@ Cooling venues on the map.
 | `photoUrl`                 | `TEXT`        | Optional, R2 URL                                                              |
 | `aggregatedFreshnessLevel` | `TEXT`        | Cooling quality tier (see [place-classification.md](place-classification.md)) |
 | `tags`                     | `TEXT`        | JSON-encoded string array, e.g. `'["wifi","outdoor"]'`                        |
-| `createdById`              | `TEXT`        | Optional FK to `User` who submitted the place                                 |
+| `createdById`              | `TEXT`        | Optional FK to `User.id` of the contributor (see below)                       |
 | `status`                   | `TEXT`        | `DRAFT` or `PUBLISHED` (public list shows `PUBLISHED` only)                   |
 | `isOpen`                   | `BOOLEAN`     | Default `true`                                                                |
 
-**Indexes:** `category`, `(latitude, longitude)`, unique `slug`.
+**Indexes:** `category`, `(latitude, longitude)`, `createdById`, unique `slug`.
+
+### Contributor attribution (`createdById`)
+
+Every user-submitted place stores the Freshy `User.id` of the contributor in `createdById`:
+
+| Submission path | How `createdById` is set |
+| --------------- | ------------------------ |
+| Signed in (`POST /users/me/places`) | Authenticated user's `User.id` |
+| Anonymous (`POST /contributions/places`) | `secret` field must match an existing `User.id` |
+
+Legacy or admin-seeded places may have `createdById = null`. Studio moderation shows **Unknown** for those rows.
+
+The anonymous **secret** is the contributor's `User.id` (UUID). Admins can look it up in Studio and share it offline with contributors who submit without signing in.
 
 ### `Review`
 
