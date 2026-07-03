@@ -3,7 +3,7 @@ import type { AppEnv } from './env';
 import { anonymousCreatePlaceSchema } from './anonymous-contribution';
 import { contributorErrorResponse, resolveContributorFromSecret } from './contributor-resolve';
 import { createUserPlace } from './create-place';
-import { withResolvedPlacePhoto } from './places';
+import { serializePlaceForApi } from './places';
 import { resolvePlaceCoordinates } from './place-submission';
 import { handleCreatePlace } from './place-create-handler';
 import { photoFromFormData } from './route-utils';
@@ -48,7 +48,7 @@ export function registerContributionRoutes(app: Hono<AppEnv>): void {
           latitude: coords.latitude,
           longitude: coords.longitude,
         });
-        return c.json({ data: withResolvedPlacePhoto(place) }, 201);
+        return c.json({ data: serializePlaceForApi(place) }, 201);
       }
 
       const formData = await c.req.formData();

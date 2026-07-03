@@ -60,10 +60,12 @@ describe('serializePlaceForApi', () => {
       category: 'CAFE',
       photoUrl: null,
       tags: '["calm","free_wifi"]',
+      createdById: 'user-hidden',
     } as Parameters<typeof serializePlaceForApi>[0]);
 
     assert.deepEqual(serialized.tags, ['calm', 'free_wifi']);
     assert.equal(typeof serialized.photoUrl, 'string');
     assert.ok(serialized.photoUrl.length > 0);
+    assert.equal('createdById' in serialized, false);
   });
 });

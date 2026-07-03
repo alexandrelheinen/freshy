@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm';
 import { places as placesTable } from '@freshy/db';
 import type { AppEnv } from './env';
 import { createUserPlace } from './create-place';
-import { withResolvedPlacePhoto } from './places';
+import { withResolvedPlacePhoto, serializePlaceForApi } from './places';
 import { parseCreatePlaceFields, resolvePlaceCoordinates } from './place-submission';
 import { uploadPlacePhoto } from './place-photo-upload';
 import { isR2Configured, r2ContextFromEnv } from './storage/r2';
@@ -46,8 +46,8 @@ export async function handleCreatePlace(
       .set({ photoUrl, updatedAt: now })
       .where(eq(placesTable.id, place.id));
     const updated = { ...place, photoUrl };
-    return c.json({ data: withResolvedPlacePhoto(updated) }, 201);
+    return c.json({ data: serializePlaceForApi(updated) }, 201);
   }
 
-  return c.json({ data: withResolvedPlacePhoto(place) }, 201);
+  return c.json({ data: serializePlaceForApi(place) }, 201);
 }
