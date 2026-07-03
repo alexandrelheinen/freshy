@@ -110,7 +110,7 @@ export function VerifiedBadge({
 function MarkerNameTooltip({ name }: { name: string }) {
   return (
     <div
-      className="pointer-events-none absolute bottom-full z-30 mb-1 whitespace-nowrap rounded-full bg-marker-label-bg px-2 py-0.5 text-[10px] font-bold text-primary opacity-0 shadow-lg backdrop-blur-sm transition-opacity group-hover:opacity-100 md:px-3 md:py-1 md:text-sm"
+      className="pointer-events-none absolute bottom-full z-map-overlay mb-1 whitespace-nowrap rounded-full bg-marker-label-bg px-2 py-0.5 text-[10px] font-bold text-primary opacity-0 shadow-lg backdrop-blur-sm transition-opacity group-hover:opacity-100 md:px-3 md:py-1 md:text-sm"
       aria-hidden
     >
       {truncatePlaceName(name)}
@@ -141,7 +141,7 @@ export function PlaceMapMarker({
         onClick={onClick}
         aria-label={place.name}
         className={`group relative flex flex-col items-center transition-transform hover:scale-110 ${
-          isSelected ? 'z-20' : 'z-10 opacity-80 hover:opacity-100'
+          isSelected ? 'z-map-overlay' : 'z-map opacity-80 hover:opacity-100'
         }`}
       >
         <MarkerNameTooltip name={place.name} />

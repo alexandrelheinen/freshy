@@ -99,14 +99,14 @@ function ThemeMenu({ variant = 'header' }: { variant?: 'header' | 'menu' }) {
         <>
           <button
             type="button"
-            className="fixed inset-0 z-40 cursor-default"
+            className="fixed inset-0 z-popover cursor-default"
             aria-label="Close theme menu"
             onClick={() => setOpen(false)}
           />
           <div
             role="listbox"
             aria-label="Theme"
-            className="absolute right-0 z-50 mt-2 min-w-36 overflow-hidden rounded-xl border border-outline-variant/20 bg-surface-container-lowest py-1 shadow-lg"
+            className="absolute right-0 z-popover mt-2 min-w-36 overflow-hidden rounded-xl border border-outline-variant/20 bg-surface-container-lowest py-1 shadow-lg"
           >
             {options.map((option) => (
               <button
@@ -277,7 +277,7 @@ function MobileNavMenu({
   if (!open) return null;
 
   return (
-    <nav className="absolute left-0 right-0 top-16 z-40 border-b border-outline-variant/20 bg-surface shadow-lg md:hidden">
+    <nav className="absolute left-0 right-0 top-16 z-nav border-b border-outline-variant/20 bg-surface shadow-lg md:hidden">
       <div className="flex flex-col gap-0.5 px-margin-mobile py-3">
         {MOBILE_MENU_NAV_ITEMS.map((item) => (
           <NavLink
@@ -333,7 +333,7 @@ export function AppTopNav({ active = 'explore' }: { active?: NavActiveId }) {
     ) : null;
 
   return (
-    <header className="fixed top-0 z-50 hidden h-16 w-full items-center justify-between bg-surface px-10 shadow-sm md:flex">
+    <header className="fixed top-0 z-nav hidden h-16 w-full items-center justify-between bg-surface px-10 shadow-sm md:flex">
       <div className="flex items-center gap-10">
         <Link href={ROUTES.explore} className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center">
@@ -415,7 +415,7 @@ export function AppMobileHeader({
   const showHeaderUtilities = Boolean(backHref);
 
   return (
-    <header className="fixed top-0 z-50 flex h-16 w-full items-center justify-between bg-surface px-margin-mobile shadow-sm md:hidden">
+    <header className="fixed top-0 z-nav flex h-16 w-full items-center justify-between bg-surface px-margin-mobile shadow-sm md:hidden">
       <div className="flex min-w-0 flex-1 items-center gap-2">
         {leading}
         {showBrand && !backHref ? (

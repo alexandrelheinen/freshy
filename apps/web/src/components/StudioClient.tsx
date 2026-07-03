@@ -240,7 +240,7 @@ export function StudioClient() {
       </aside>
 
       <main className="min-w-0 flex-1">
-        <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-outline-variant/10 bg-surface/80 px-4 backdrop-blur-md md:px-8">
+        <header className="sticky top-0 z-page-sticky flex h-16 items-center justify-between border-b border-outline-variant/10 bg-surface/80 px-4 backdrop-blur-md md:px-8">
           <div className="flex flex-1 items-center gap-4">
             <h2 className="font-headline-lg text-headline-lg text-on-surface">Establishments</h2>
             <form
@@ -323,7 +323,7 @@ export function StudioClient() {
             </p>
           ) : null}
 
-          <div className="overflow-hidden rounded-3xl border border-outline-variant/20 bg-surface-container-lowest shadow-xl shadow-primary/5">
+          <div className="overflow-x-auto rounded-3xl border border-outline-variant/20 bg-surface-container-lowest shadow-xl shadow-primary/5">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant/10 px-4 py-4 md:px-8 md:py-6">
               <h4 className="font-title-md text-on-surface">Recent Establishments</h4>
               <span className="text-body-sm text-secondary">
@@ -497,7 +497,7 @@ export function StudioClient() {
       ) : null}
 
       {toast ? (
-        <div className="fixed bottom-8 right-8 z-50 flex items-center gap-4 rounded-xl border-l-4 border-primary bg-surface-container-highest px-6 py-4 shadow-2xl">
+        <div className="fixed bottom-8 right-8 z-toast flex items-center gap-4 rounded-xl border-l-4 border-primary bg-surface-container-highest px-6 py-4 shadow-2xl">
           <MaterialIcon name="check_circle" filled className="text-primary" />
           <div>
             <p className="font-title-md text-body-sm text-on-surface">Action successful</p>
