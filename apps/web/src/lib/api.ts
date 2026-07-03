@@ -54,10 +54,7 @@ export function buildPlacesSearchParams(params: PlacesFetchParams): URLSearchPar
 }
 
 /** Merge draft rows into a published list without duplicating slugs. */
-export function mergeDraftPlacesIntoResults(
-  published: PlaceDto[],
-  drafts: PlaceDto[],
-): PlaceDto[] {
+export function mergeDraftPlacesIntoResults(published: PlaceDto[], drafts: PlaceDto[]): PlaceDto[] {
   if (drafts.length === 0) return published;
   const slugs = new Set(published.map((place) => place.slug));
   const merged = [...published];

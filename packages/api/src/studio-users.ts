@@ -64,10 +64,7 @@ export async function listStudioUsers(
   return rows.map((row) => ({ ...row, secret: row.id }));
 }
 
-export async function getStudioUser(
-  db: Db,
-  userId: string,
-): Promise<StudioUserProfile | null> {
+export async function getStudioUser(db: Db, userId: string): Promise<StudioUserProfile | null> {
   const user = await getStudioUserSecret(db, userId);
   if (!user) return null;
   const { secret: _secret, ...profile } = user;
