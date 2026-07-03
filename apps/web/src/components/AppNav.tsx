@@ -98,7 +98,9 @@ function VerifiedOnlyToggle({ onToggle }: { onToggle?: () => void }) {
         onToggle?.();
       }}
       aria-pressed={verifiedOnly}
-      aria-label={verifiedOnly ? 'Showing verified places only' : 'Show all places including unverified'}
+      aria-label={
+        verifiedOnly ? 'Showing verified places only' : 'Show all places including unverified'
+      }
       className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
         verifiedOnly
           ? 'bg-primary-container text-primary'
