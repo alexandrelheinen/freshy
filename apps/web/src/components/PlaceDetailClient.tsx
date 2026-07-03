@@ -246,14 +246,6 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
               ))}
             </div>
           )}
-          {place.reviews.length > 0 ? (
-            <button
-              type="button"
-              className="mt-6 w-full rounded-xl border-2 border-primary-container py-3 font-title-md text-primary transition-colors hover:bg-primary/5"
-            >
-              View all reviews
-            </button>
-          ) : null}
         </section>
 
         <section className="mt-10 px-margin-mobile pb-8 md:px-10">
