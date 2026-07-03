@@ -17,6 +17,13 @@ describe('@freshy/config tailwind preset', () => {
     assert.equal(freshyShadows.nav, 'var(--shadow-nav)');
   });
 
+  it('defines a shared z-index scale for UI layering', () => {
+    assert.equal(FRESHY_Z_INDEX.nav, 50);
+    assert.equal(FRESHY_Z_INDEX.popover, 60);
+    assert.equal(FRESHY_Z_INDEX.modal, 70);
+    assert.equal(FRESHY_Z_INDEX.toast, 80);
+  });
+
   it('reads spacing and typography from default theme tokens', () => {
     const tokens = getDefaultThemeTokens();
     assert.equal(freshySpacing.base, tokens.spacing.base);
