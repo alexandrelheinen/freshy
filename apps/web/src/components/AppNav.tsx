@@ -35,17 +35,17 @@ function BrandLockup({
   as?: 'span' | 'h1';
   className?: string;
 }) {
-  const wordmarkTuck = iconSize === 40 ? '-ml-2' : '-ml-1.5';
+  const wordmarkGap = iconSize === 40 ? 'gap-1' : 'gap-0.5';
 
   return (
-    <div className={`inline-flex items-center ${className}`}>
+    <div className={`inline-flex items-center ${wordmarkGap} ${className}`}>
       <MaterialIcon
         name={BRAND_ICON}
         className="shrink-0 leading-none text-primary"
         size={iconSize}
       />
       <Text
-        className={`m-0 shrink-0 p-0 font-logo tracking-logo leading-none text-primary ${wordmarkTuck} translate-y-[var(--font-logo-offset-y,-0.08em)] ${textClassName}`}
+        className={`m-0 shrink-0 p-0 font-logo tracking-logo leading-none text-primary translate-y-[var(--font-logo-offset-y,-0.08em)] ${textClassName}`}
       >
         {BRAND_NAME}
       </Text>
@@ -372,10 +372,10 @@ export function AppTopNav({ active = 'explore' }: { active?: NavActiveId }) {
         className="inline-flex shrink-0 items-center"
         aria-label={`${BRAND_NAME} home`}
       >
-        <BrandLockup iconSize={40} textClassName="text-[2.5rem]" />
+        <BrandLockup iconSize={40} textClassName="text-[2.25rem]" />
       </Link>
 
-      <nav className="ml-10 flex items-center gap-6 lg:ml-12 lg:gap-8" aria-label="Primary">
+      <nav className="ml-10 flex items-center gap-3 lg:ml-12 lg:gap-4" aria-label="Primary">
         {DESKTOP_NAV_ITEMS.map((item) => (
           <NavLink
             key={item.id}
@@ -469,7 +469,7 @@ export function AppMobileHeader({
           <BrandLockup
             as="h1"
             iconSize={32}
-            textClassName="truncate text-[2rem]"
+            textClassName="truncate text-[1.8rem]"
             className="min-w-0"
           />
         ) : title ? (

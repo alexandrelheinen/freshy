@@ -13,6 +13,7 @@ export type MaterialIconName =
   | 'celebration'
   | 'check_circle'
   | 'chevron_left'
+  | 'category_search'
   | 'climate_mini_split'
   | 'chevron_right'
   | 'close'
