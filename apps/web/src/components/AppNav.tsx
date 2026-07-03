@@ -113,13 +113,19 @@ function VerifiedOnlyToggle({ onToggle }: { onToggle?: () => void }) {
 }
 
 function ProfileAvatarLink({ className = '' }: { className?: string }) {
+  const { isSignedIn, user } = useUser();
+
   return (
     <Link
       href={ROUTES.profile}
       className={`flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-primary-container bg-primary-container/30 ${className}`}
       aria-label="Profile"
     >
-      <MaterialIcon name="digital_wellbeing" className="text-primary" />
+      {isSignedIn && user?.imageUrl ? (
+        <img src={user.imageUrl} alt="" className="h-full w-full object-cover" />
+      ) : (
+        <MaterialIcon name="digital_wellbeing" className="text-primary" />
+      )}
     </Link>
   );
 }
@@ -324,6 +330,7 @@ export function AppMobileHeader({
       </div>
       <div className="flex items-center gap-2">
         <VerifiedOnlyToggle />
+        <ThemeMenu />
         <ProfileAvatarLink />
       </div>
       {clerkEnabled ? <ClerkAdminFlag>{mobileMenu}</ClerkAdminFlag> : mobileMenu(false)}
