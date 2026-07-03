@@ -234,9 +234,6 @@ function ProfileWithClerk() {
                 ) : (
                   <div className="h-24 w-24 rounded-full bg-primary-container ring-4 ring-primary-container md:h-32 md:w-32" />
                 )}
-                <div className="absolute bottom-0 right-0 rounded-full border-2 border-surface bg-primary p-1.5 shadow-md">
-                  <MaterialIcon name="verified" filled size={16} className="text-on-primary" />
-                </div>
               </div>
               <div className="flex-1 text-center md:text-left">
                 <h2 className="font-headline-lg-mobile text-on-surface md:font-headline-lg md:text-headline-lg">
