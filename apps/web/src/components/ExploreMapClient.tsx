@@ -258,6 +258,7 @@ function NearbyListItem({
 
 export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] }) {
   const [places, setPlaces] = useState(initialPlaces);
+  const [placesLoadError, setPlacesLoadError] = useState<string | null>(null);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(initialPlaces[0]?.slug ?? null);
   const [activeCategory, setActiveCategory] = useState<PlaceCategory | undefined>();
   const {
@@ -344,7 +345,11 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       if (opts.verifiedOnly) params.set('verifiedOnly', 'true');
 
       const res = await fetch(`${API_BASE}/places?${params.toString()}`);
-      if (!res.ok) return;
+      if (!res.ok) {
+        setPlacesLoadError('Could not load places for this area. Try again in a moment.');
+        return;
+      }
+      setPlacesLoadError(null);
       const json = (await res.json()) as { data: PlaceDto[] };
       setPlaces(json.data);
       if (json.data[0] && !json.data.some((p) => p.slug === selectedSlug)) {
@@ -621,7 +626,9 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
               ) : null}
             </div>
             <div className="hide-scrollbar flex-1 space-y-2 overflow-y-auto p-2">
-              {places.length === 0 ? (
+              {placesLoadError ? (
+                <p className="p-4 text-center text-sm text-error">{placesLoadError}</p>
+              ) : places.length === 0 ? (
                 <p className="p-4 text-center text-sm text-on-surface-variant">
                   {exploreEmptyMessage(activeCategory)}
                 </p>
