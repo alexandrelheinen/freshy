@@ -46,12 +46,15 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
     });
   }, [category, searchCenter, searchRadiusKm, verifiedOnly]);
 
-  const statusMessage = locationStatusMessage({
-    permissionDenied: denied,
-    locationError,
-    searchRadiusKm,
-    usingGps,
-  });
+  const statusMessage =
+    denied || locationError
+      ? locationStatusMessage({
+          permissionDenied: denied,
+          locationError,
+          searchRadiusKm,
+          usingGps,
+        })
+      : null;
 
   return (
     <div className="min-h-screen pb-8" data-page="place-list">
