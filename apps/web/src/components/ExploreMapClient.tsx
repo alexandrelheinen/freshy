@@ -29,13 +29,14 @@ import {
   isPlaceVerified,
 } from '../lib/api';
 import { mapStyleUrl, type MapStyleId } from '../lib/map-styles';
-import { cappedSearchRadiusKm, formatSearchRadiusKm } from '../lib/map-zoom';
+import { cappedSearchRadiusKm } from '../lib/map-zoom';
 import { circlePolygonGeoJson } from '../lib/map-circle';
 import { locationStatusMessage } from '../lib/location-messages';
 import { useUserLocation } from '../lib/use-user-location';
 import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
 import { API_BASE } from '../lib/api-base';
 import { AppMobileHeader, AppTopNav } from './AppNav';
+import { SearchRadiusControl } from './SearchRadiusControl';
 import {
   PlaceMapMarker,
   UserLocationMarker,
@@ -54,6 +55,14 @@ function mapViewDiffersFromSearch(view: MapSearchAnchor, search: MapSearchAnchor
     Math.abs(view.longitude - search.longitude) > 0.0005 ||
     Math.abs(view.zoom - search.zoom) > 0.1
   );
+}
+
+function exploreEmptyMessage(category?: PlaceCategory): string {
+  if (category) {
+    const label = PLACE_CATEGORY_LABELS[category];
+    return `No ${label.toLowerCase()} with AC in this area yet. Try expanding your search radius or changing the category.`;
+  }
+  return 'No AC places in this area yet. Try expanding your search radius or changing the category.';
 }
 
 function chipIcon(category?: PlaceCategory): MaterialIconName | null {
@@ -625,28 +634,11 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         {/* Mobile: bottom overlay stack (FABs above preview card, both above bottom nav) */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex flex-col items-end gap-3 px-margin-mobile pb-4 md:hidden">
           <div className="pointer-events-auto flex items-center gap-2">
-            <div className="glass flex items-center gap-2 rounded-full border border-glass-border px-3 py-1.5 shadow-lg">
-              <MaterialIcon name="near_me" size={16} className="text-primary" />
-              <button
-                type="button"
-                onClick={decreaseSearchRadius}
-                aria-label="Decrease search radius"
-                className="text-on-surface-variant active:text-primary"
-              >
-                <MaterialIcon name="remove" size={18} />
-              </button>
-              <span className="min-w-[48px] text-center text-xs font-bold text-on-surface">
-                {formatSearchRadiusKm(displaySearchRadiusKm)}
-              </span>
-              <button
-                type="button"
-                onClick={increaseSearchRadius}
-                aria-label="Increase search radius"
-                className="text-on-surface-variant active:text-primary"
-              >
-                <MaterialIcon name="add" size={18} />
-              </button>
-            </div>
+            <SearchRadiusControl
+              radiusKm={displaySearchRadiusKm}
+              onDecrease={decreaseSearchRadius}
+              onIncrease={increaseSearchRadius}
+            />
             <div className="flex flex-col gap-2">
               <button
                 type="button"
