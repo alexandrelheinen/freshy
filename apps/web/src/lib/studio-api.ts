@@ -4,10 +4,18 @@ import { API_BASE } from './api-base';
 
 export type StudioPlaceStatus = 'verified' | 'pending' | 'duplicate';
 
+export interface StudioContributorDto {
+  id: string;
+  email: string;
+  displayName: string;
+  username: string;
+}
+
 export interface StudioPlaceDto extends PlaceDto {
   status: 'DRAFT' | 'PUBLISHED';
   studioStatus: StudioPlaceStatus;
   duplicateOfId: string | null;
+  contributor: StudioContributorDto | null;
   createdAt: string;
   updatedAt: string;
 }
