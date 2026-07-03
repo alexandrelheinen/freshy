@@ -691,64 +691,29 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
             <button
               type="button"
               onClick={recenter}
-              className="group flex flex-col items-center gap-1"
+              className="flex h-10 w-10 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:text-primary"
               aria-label="My location"
             >
-              <MaterialIcon
-                name="my_location"
-                className="text-on-surface-variant group-hover:text-primary"
-              />
-              <span className="text-[10px] font-bold uppercase text-outline-variant">Me</span>
+              <MaterialIcon name="my_location" />
             </button>
             <div className="h-6 w-px bg-outline-variant/30" />
             <button
               type="button"
               onClick={toggleMapStyle}
-              className="group flex flex-col items-center gap-1"
+              className="flex h-10 w-10 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:text-primary"
               aria-label={
                 mapStyleId === 'streets' ? 'Switch to satellite view' : 'Switch to map view'
               }
             >
-              <MaterialIcon
-                name={mapStyleId === 'streets' ? 'satellite_alt' : 'map'}
-                className="text-on-surface-variant group-hover:text-primary"
-              />
-              <span className="text-[10px] font-bold uppercase text-outline-variant">
-                {mapStyleId === 'streets' ? 'Satellite' : 'Map'}
-              </span>
+              <MaterialIcon name={mapStyleId === 'streets' ? 'satellite_alt' : 'map'} />
             </button>
             <div className="h-6 w-px bg-outline-variant/30" />
-            <div className="flex items-center gap-4">
-              <div className="group flex flex-col items-center gap-1">
-                <MaterialIcon
-                  name="near_me"
-                  className="text-on-surface-variant group-hover:text-primary"
-                />
-                <span className="text-[10px] font-bold uppercase text-outline-variant">Radius</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={decreaseSearchRadius}
-                  aria-label="Decrease search radius"
-                >
-                  <MaterialIcon
-                    name="remove"
-                    className="text-on-surface-variant hover:text-primary"
-                  />
-                </button>
-                <span className="min-w-[56px] text-center text-sm font-bold text-on-surface">
-                  {formatSearchRadiusKm(displaySearchRadiusKm)}
-                </span>
-                <button
-                  type="button"
-                  onClick={increaseSearchRadius}
-                  aria-label="Increase search radius"
-                >
-                  <MaterialIcon name="add" className="text-on-surface-variant hover:text-primary" />
-                </button>
-              </div>
-            </div>
+            <SearchRadiusControl
+              radiusKm={displaySearchRadiusKm}
+              onDecrease={decreaseSearchRadius}
+              onIncrease={increaseSearchRadius}
+              variant="panel"
+            />
           </div>
         </div>
       </main>
