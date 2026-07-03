@@ -57,6 +57,36 @@ check_api_categories() {
   echo "$body" | grep -q '"categories"' || return 1
 }
 
+route_not_missing() {
+  local method="$1"
+  local path="$2"
+  local expected_status="$3"
+  local code
+  code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 -X "${method}" "${API_URL}${path}" \
+    ${4:+-H "$4"} \
+    ${5:+-d "$5"})"
+  if [ "$code" = "404" ]; then
+    echo "Route missing: ${method} ${path} (got 404)"
+    return 1
+  fi
+  [ "$code" = "$expected_status" ] || {
+    echo "Unexpected status for ${method} ${path}: expected ${expected_status}, got ${code}"
+    return 1
+  }
+}
+
+check_contributor_secret_route() {
+  route_not_missing GET /users/me/contributor-secret 401
+}
+
+check_contributions_route() {
+  route_not_missing POST /contributions/places 400 "Content-Type: application/json" '{}'
+}
+
+check_authed_places_route() {
+  route_not_missing POST /users/me/places 401 "Content-Type: application/json" '{}'
+}
+
 check_web_page() {
   local path="$1"
   local code
@@ -109,6 +139,11 @@ retry "API /places" check_api_places
 
 step "API category metadata"
 retry "API /places/meta/categories" check_api_categories
+
+step "Contributor and place submission routes"
+retry "API /users/me/contributor-secret" check_contributor_secret_route
+retry "API /contributions/places" check_contributions_route
+retry "API /users/me/places" check_authed_places_route
 
 step "Default place photos"
 retry "default place photo" check_default_place_photo
