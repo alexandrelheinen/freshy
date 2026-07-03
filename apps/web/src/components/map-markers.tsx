@@ -194,7 +194,9 @@ export function UserLocationMarker({ variant = 'mobile' }: { variant?: 'mobile' 
       <div
         className={`marker-pulse flex items-center justify-center rounded-full border-marker-border bg-primary shadow-lg ${sizeClass}`}
       >
-        <div className={`rounded-full bg-marker-border ${variant === 'desktop' ? 'h-2 w-2' : 'h-3 w-3'}`} />
+        <div
+          className={`rounded-full bg-marker-border ${variant === 'desktop' ? 'h-2 w-2' : 'h-3 w-3'}`}
+        />
       </div>
     </div>
   );
