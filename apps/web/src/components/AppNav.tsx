@@ -269,7 +269,10 @@ export function AppMobileHeader({
           </h1>
         ) : null}
       </div>
-      <ProfileAvatarLink />
+      <div className="flex items-center gap-2">
+        <VerifiedOnlyToggle />
+        <ProfileAvatarLink />
+      </div>
       {clerkEnabled ? <ClerkAdminFlag>{mobileMenu}</ClerkAdminFlag> : mobileMenu(false)}
     </header>
   );
