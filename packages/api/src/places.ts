@@ -9,6 +9,7 @@ import {
   reviews as reviewsTable,
   users as usersTable,
   filterPlacesByRadius,
+  sortPlacesByDistanceFromCenter,
 } from '@freshy/db';
 import { PILOT_CITY } from '@freshy/config/pilot-city';
 import type { PlacePhotoCategory } from '@freshy/config/place-photos';
@@ -29,6 +30,33 @@ export const placesQuerySchema = z.object({
 });
 
 export type PlacesQuery = z.infer<typeof placesQuerySchema>;
+
+export const CATEGORY_PLACES_PAGE_SIZE = 5;
+
+export const categoryPlacesQuerySchema = z.object({
+  lat: z.coerce.number().min(-90).max(90),
+  lng: z.coerce.number().min(-180).max(180),
+  radius: z.coerce.number().min(0.1).max(50).optional().default(PILOT_CITY.defaultRadiusKm),
+  category: z.enum(PLACE_CATEGORIES),
+  page: z.coerce.number().int().min(1).optional().default(1),
+  limit: z.coerce.number().int().min(1).max(50).optional().default(CATEGORY_PLACES_PAGE_SIZE),
+  q: z.string().trim().optional(),
+  verifiedOnly: z.preprocess(
+    (value) => value === true || value === 'true' || value === '1',
+    z.boolean().optional(),
+  ),
+  minFreshnessLevel: z.coerce.number().int().min(0).max(4).optional(),
+});
+
+export type CategoryPlacesQuery = z.infer<typeof categoryPlacesQuerySchema>;
+
+export interface CategoryPlacesPage {
+  items: PlaceListItem[];
+  total: number;
+  page: number;
+  limit: number;
+  nearbyCount: number;
+}
 
 export function withResolvedPlacePhoto<T extends Pick<Place, 'photoUrl' | 'category'>>(
   place: T,
@@ -69,7 +97,9 @@ export interface PlaceListItem extends Omit<Place, 'tags' | 'createdById'> {
   distanceKm?: number;
 }
 
-export function publishedPlaceStatuses(query: PlacesQuery): Array<Place['status']> {
+export function publishedPlaceStatuses(
+  query: Pick<PlacesQuery, 'verifiedOnly'>,
+): Array<Place['status']> {
   if (query.verifiedOnly) return ['PUBLISHED'];
   return ['PUBLISHED', 'DRAFT'];
 }
@@ -188,6 +218,64 @@ export async function listPlaces(db: Db, query: PlacesQuery): Promise<PlaceListI
       distanceKm: Math.round(distanceKm * 100) / 100,
     }),
   );
+}
+
+export async function listCategoryPlacesPage(
+  db: Db,
+  query: CategoryPlacesQuery,
+): Promise<CategoryPlacesPage> {
+  const statuses = publishedPlaceStatuses({ verifiedOnly: query.verifiedOnly });
+  const conditions = [
+    inArray(placesTable.status, statuses),
+    eq(placesTable.category, query.category),
+  ];
+
+  let results: Place[];
+  if (query.q) {
+    const pattern = `%${query.q}%`;
+    results = await db
+      .select()
+      .from(placesTable)
+      .where(
+        and(
+          ...conditions,
+          or(
+            like(placesTable.name, pattern),
+            like(placesTable.address, pattern),
+            like(placesTable.description, pattern),
+          ),
+        ),
+      )
+      .orderBy(placesTable.name);
+  } else {
+    results = await db
+      .select()
+      .from(placesTable)
+      .where(and(...conditions))
+      .orderBy(placesTable.name);
+  }
+
+  const sorted = sortPlacesByDistanceFromCenter(results, query.lat, query.lng);
+  const withinFreshness = filterPlacesByMinFreshness(sorted, query.minFreshnessLevel);
+  const nearbyCount = withinFreshness.filter(({ distanceKm }) => distanceKm <= query.radius).length;
+  const total = withinFreshness.length;
+  const offset = (query.page - 1) * query.limit;
+  const pageItems = withinFreshness.slice(offset, offset + query.limit);
+
+  const items = pageItems.map(({ place, distanceKm }) =>
+    serializePlaceForApi({
+      ...place,
+      distanceKm: Math.round(distanceKm * 100) / 100,
+    }),
+  );
+
+  return {
+    items,
+    total,
+    page: query.page,
+    limit: query.limit,
+    nearbyCount,
+  };
 }
 
 export async function categoryCounts(

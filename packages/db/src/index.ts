@@ -6,6 +6,7 @@ export {
   PILOT_CITY,
   haversineDistanceKm,
   filterPlacesByRadius,
+  sortPlacesByDistanceFromCenter,
   type PlaceWithDistance,
 } from './geo';
 

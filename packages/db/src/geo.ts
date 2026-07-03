@@ -31,11 +31,21 @@ export function filterPlacesByRadius<T extends { latitude: number; longitude: nu
   centerLng: number,
   radiusKm: number,
 ): PlaceWithDistance<T>[] {
+  return sortPlacesByDistanceFromCenter(places, centerLat, centerLng).filter(
+    ({ distanceKm }) => distanceKm <= radiusKm,
+  );
+}
+
+/** Sort all places by distance (km) from a center point, nearest first. */
+export function sortPlacesByDistanceFromCenter<T extends { latitude: number; longitude: number }>(
+  places: T[],
+  centerLat: number,
+  centerLng: number,
+): PlaceWithDistance<T>[] {
   return places
     .map((place) => ({
       place,
       distanceKm: haversineDistanceKm(centerLat, centerLng, place.latitude, place.longitude),
     }))
-    .filter(({ distanceKm }) => distanceKm <= radiusKm)
     .sort((a, b) => a.distanceKm - b.distanceKm);
 }
