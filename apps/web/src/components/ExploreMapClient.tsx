@@ -288,6 +288,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     zoom: mapZoom,
   }));
   const [mapStyleId, setMapStyleId] = useState<MapStyleId>('streets');
+  const streetsMapStyle = mapStyleId === 'streets' ? resolvedTheme : 'default';
   const [searchPulse, setSearchPulse] = useState<{
     latitude: number;
     longitude: number;
@@ -454,7 +455,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         handleMapMoveEnd(evt.viewState.latitude, evt.viewState.longitude, evt.viewState.zoom)
       }
       style={{ width: '100%', height: '100%' }}
-      mapStyle={mapStyleUrl(mapStyleId)}
+      mapStyle={mapStyleUrl(mapStyleId, streetsMapStyle)}
     >
       {searchPulse ? (
         <Source
