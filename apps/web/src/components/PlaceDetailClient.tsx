@@ -45,17 +45,27 @@ function userInitials(name: string): string {
 export function PlaceDetailClient({ slug }: { slug: string }) {
   const [place, setPlace] = useState<PlaceDetailDto | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [shareMessage, setShareMessage] = useState<string | null>(null);
 
   useEffect(() => {
     void (async () => {
       setLoading(true);
-      const res = await fetch(`${API_BASE}/places/${slug}`);
-      if (res.ok) {
-        const json = (await res.json()) as { data: PlaceDetailDto };
-        setPlace(json.data);
-      } else {
+      setLoadError(null);
+      try {
+        const res = await fetch(`${API_BASE}/places/${slug}`);
+        if (res.ok) {
+          const json = (await res.json()) as { data: PlaceDetailDto };
+          setPlace(json.data);
+        } else if (res.status === 404) {
+          setPlace(null);
+        } else {
+          setPlace(null);
+          setLoadError('Could not load this place. Check your connection and try again.');
+        }
+      } catch {
         setPlace(null);
+        setLoadError('Could not reach the API. Check your connection and try again.');
       }
       setLoading(false);
     })();
@@ -100,7 +110,18 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
   if (!place) {
     return (
       <div className="flex min-h-screen items-center justify-center pb-10" data-page="place-detail">
-        <p className="text-on-surface-variant">Place not found.</p>
+        <div className="px-margin-mobile text-center">
+          <p className="text-on-surface-variant">{loadError ?? 'Place not found.'}</p>
+          {loadError ? (
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="mt-4 rounded-xl bg-primary px-6 py-3 font-label-caps text-on-primary"
+            >
+              Retry
+            </button>
+          ) : null}
+        </div>
       </div>
     );
   }
