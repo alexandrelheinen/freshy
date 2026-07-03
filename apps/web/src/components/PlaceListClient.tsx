@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { PLACE_TAGS, MaterialIcon, PLACE_CATEGORY_LABELS, type PlaceCategory } from '@freshy/ui';
+import { PLACE_CATEGORY_LABELS, type PlaceCategory } from '@freshy/ui';
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceListCard } from './PlaceListCard';
 import type { PlaceDto } from '../lib/api';
@@ -75,7 +75,9 @@ export function PlaceListClient({
   const filterChips: Array<{ id: FilterChip; label: string }> = [
     { id: 'all', label: 'All' },
     { id: 'cold', label: 'Coldest' },
-    { id: 'nearby', label: 'Within 1km' },
+    ...(places.some((place) => place.distanceKm != null)
+      ? [{ id: 'nearby' as const, label: 'Within 1km' }]
+      : []),
   ];
 
   return (
@@ -92,8 +94,7 @@ export function PlaceListClient({
             ) : null}
           </div>
 
-          <div className="flex gap-3">
-            <div className="relative flex-grow">
+          <div className="relative flex-grow">
               <MaterialIcon
                 name="search"
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-outline"
@@ -105,13 +106,6 @@ export function PlaceListClient({
                 onChange={(e) => setQuery(e.target.value)}
               />
             </div>
-            <button
-              type="button"
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-container text-on-primary-container transition-transform active:scale-95 md:rounded-full"
-              aria-label="Filter"
-            >
-              <MaterialIcon name="tune" />
-            </button>
           </div>
 
           <div className="hide-scrollbar mt-4 flex gap-2 overflow-x-auto pb-1">
@@ -132,14 +126,6 @@ export function PlaceListClient({
                 </button>
               );
             })}
-            {PLACE_TAGS.slice(0, 2).map((tag) => (
-              <span
-                key={tag.id}
-                className="shrink-0 whitespace-nowrap rounded-full bg-secondary-container px-4 py-2 font-label-caps text-label-caps text-on-secondary-container"
-              >
-                {tag.label}
-              </span>
-            ))}
           </div>
         </section>
 
