@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"secondary-fixed": "#cbe6ff", "surface-container-lowest": "#ffffff", surface: "#f3faff", "on-secondary-container": "#004c72", "on-tertiary-fixed-variant": "#1f4b64", "secondary-container": "#64beff", "secondary-fixed-dim": "#90cdff", "inverse-surface": "#293236", background: "#f3faff", "surface-container": "#e6eff5", "on-secondary-fixed-variant": "#004b71", "on-primary-container": "#0066a8", "on-primary-fixed": "#001d35", "on-tertiary-container": "#3d6781", "on-primary": "#ffffff", "surface-container-highest": "#dae4e9", "on-secondary": "#ffffff", error: "#ba1a1a", "on-error-container": "#93000a", "inverse-on-surface": "#e9f2f8", "surface-container-high": "#e0eaef", "surface-container-low": "#ecf5fb", "on-surface": "#141d21", "primary-fixed": "#d0e4ff", "on-surface-variant": "#3b4949", "on-error": "#ffffff", "on-background": "#141d21", "surface-tint": "#0062a1", "on-tertiary": "#ffffff", secondary: "#006495", "tertiary-fixed": "#c6e7ff", "tertiary-fixed-dim": "#a2cce9", "tertiary-container": "#bfe4ff", "surface-variant": "#dae4e9", "outline-variant": "#bacac9", "error-container": "#ffdad6", "on-tertiary-fixed": "#001e2e", "on-primary-fixed-variant": "#00497b", "inverse-primary": "#9dcaff", "primary-container": "#cae1ff", "on-secondary-fixed": "#001e30", "surface-bright": "#f3faff", outline: "#6b7a79", "surface-dim": "#d2dbe1", "primary-fixed-dim": "#9dcaff", primary: "#0062a1", tertiary: "#39637d"}, borderRadius: {DEFAULT: "1rem", lg: "2rem", xl: "3rem", full: "9999px"}, spacing: {base: "8px", md: "24px", xs: "4px", xl: "80px", "margin-desktop": "64px", lg: "48px", "margin-mobile": "16px", gutter: "20px", sm: "12px"}, fontFamily: {"headline-md": ["Quicksand"], "headline-lg": ["Quicksand"], "label-sm": ["Quicksand"], "label-bold": ["Quicksand"], "body-md": ["Quicksand"], "body-lg": ["Quicksand"], "headline-lg-mobile": ["Quicksand"], headline: ["Quicksand"], display: ["Quicksand"], body: ["Quicksand"], label: ["Quicksand"]}, fontSize: {"headline-md": ["28px", {lineHeight: "34px", fontWeight: "600"}], "headline-lg": ["40px", {lineHeight: "48px", letterSpacing: "-0.02em", fontWeight: "700"}], "label-sm": ["12px", {lineHeight: "16px", fontWeight: "600"}], "label-bold": ["14px", {lineHeight: "20px", fontWeight: "700"}], "body-md": ["16px", {lineHeight: "24px", fontWeight: "400"}], "body-lg": ["18px", {lineHeight: "28px", fontWeight: "500"}], "headline-lg-mobile": ["32px", {lineHeight: "38px", letterSpacing: "-0.02em", fontWeight: "700"}]}}}};</script>
+<style>
+        .glass {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .marker-pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #f3faff;
+            overflow: hidden;
+        }
+        .map-container {
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .shadow-bubbly {
+            box-shadow: 0 10px 25px -5px rgba(0, 106, 106, 0.3), 0 8px 10px -6px rgba(0, 106, 106, 0.1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-margin-mobile h-20 bg-surface/80 dark:bg-surface-container/80 backdrop-blur-md shadow-sm">
+<div class="flex items-center gap-sm">
+<img alt="Freshy Logo" class="h-10 w-10 object-contain drop-shadow-md" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+<h1 class="font-headline-md text-primary tracking-tight">Freshy</h1>
+</div>
+<div class="w-12 h-12 rounded-full overflow-hidden border-4 border-white shadow-md active:scale-95 transition-transform cursor-pointer">
+<img class="w-full h-full object-cover" data-alt="Close up portrait of a smiling user with soft lighting in a modern interior setting, reflecting a clean and professional aesthetic with cool blue and white tones consistent with the Freshy brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-uBjuXzHHkM7VeyYs4bt1BNVVh8YjcRFHr8BjSRvn_W40qtAiogQLooGwLXePRRQbznIg3EizuchacmTa9t1LtnTu2lX7iJpBw_q1x1lcQI6MyMxP85saktjAygB-aCo5LYEoOwC0WGIzgpMVzx0LqBCuF3x4EVm3ecA6M_ocHgMDSX0yjG3BgRYJZJ64h_Nx_XMgaqHo3bT74-ZH19jMxZGr5FIecU-LWdDeG5yCJ0KS0O72yN8oHw-4Y-yjOEVegB6E6qvKQ-F0"/>
+</div>
+</header>
+<!-- Main Map Canvas -->
+<main class="map-container overflow-hidden">
+<!-- Map Background -->
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center" data-alt="A high-fidelity, minimalist cartographic map of a modern metropolitan downtown area. The map uses a sophisticated color palette of soft slates, cool greys, and icy blues to represent streets and parks. Buildings are rendered as subtle 3D volumes. The overall mood is clean, refreshing, and highly legible, optimized for a thermal comfort navigation application." data-location="New York City" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCpHJG9bREhEKKoprbih3i0yWNJieGW7UqfoSxM_CKXDW9aNDxQV6KJn5Vc5pbpkBewOUVwJUKohgo7nN9Olj8fnAzYGGqBdzoMlEhUUpLlhDJ4w0WmdRYwM2wAESOPg_xE6E91obgFYM535Do1ROCINKMzT-tS1219_jgKz__PeZQJ_ULdIIVDGU-UYWEqkLUwVpnrU32dkeFQMv5qxtwbXjXAw8463C8X2Azt0s0U7y4DuR-6hdjZQmsFSIDVWdew6O_PI8XhpsU_')"></div>
+</div>
+<!-- Map Markers Overlay -->
+<div class="absolute inset-0 z-10 pointer-events-none">
+<!-- User Location Marker -->
+<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="w-10 h-10 bg-primary rounded-full border-[6px] border-white shadow-bubbly flex items-center justify-center marker-pulse">
+<div class="w-4 h-4 bg-white rounded-full"></div>
+</div>
+</div>
+<!-- AC Pins -->
+<!-- Pin 1: Frigid -->
+<div class="absolute left-[30%] top-[40%] pointer-events-auto cursor-pointer flex flex-col items-center">
+<div class="bg-primary text-white p-3 rounded-full border-2 border-white shadow-bubbly hover:scale-110 transition-transform">
+<span class="material-symbols-outlined block text-[28px]" data-icon="cyclone">cyclone</span>
+</div>
+<div class="mt-2 px-3 py-1 bg-white rounded-full shadow-lg text-primary font-label-bold text-[12px] border-2 border-primary-container">Icy Library</div>
+</div>
+<!-- Pin 2: Comfortable -->
+<div class="absolute left-[70%] top-[35%] pointer-events-auto cursor-pointer flex flex-col items-center">
+<div class="bg-secondary text-white p-3 rounded-full border-2 border-white shadow-bubbly hover:scale-110 transition-transform">
+<span class="material-symbols-outlined block text-[28px]" data-icon="restaurant">restaurant</span>
+</div>
+<div class="mt-2 px-3 py-1 bg-white rounded-full shadow-lg text-secondary font-label-bold text-[12px] border-2 border-secondary-container">Cool Cafe</div>
+</div>
+<!-- Pin 3: Lightly Cooled -->
+<div class="absolute left-[60%] top-[60%] pointer-events-auto cursor-pointer flex flex-col items-center">
+<div class="bg-tertiary text-white p-3 rounded-full border-2 border-white shadow-bubbly hover:scale-110 transition-transform">
+<span class="material-symbols-outlined block text-[28px]" data-icon="museum">museum</span>
+</div>
+<div class="mt-2 px-3 py-1 bg-white rounded-full shadow-lg text-tertiary font-label-bold text-[12px] border-2 border-tertiary-container">Public Atrium</div>
+</div>
+</div>
+<!-- Search and Filter UI Layer -->
+<div class="absolute top-24 left-0 w-full px-margin-mobile z-20 flex flex-col gap-md">
+<!-- Floating Search Bar -->
+<div class="glass flex items-center px-md py-4 rounded-full shadow-bubbly border-2 border-white">
+<span class="material-symbols-outlined text-outline text-[28px]" data-icon="search">search</span>
+<input class="ml-sm bg-transparent border-none focus:ring-0 w-full font-body-lg text-on-surface placeholder:text-outline" placeholder="Find a cool spot..." type="text"/>
+<span class="material-symbols-outlined text-primary text-[28px]" data-icon="mic">mic</span>
+</div>
+<!-- Category Chips -->
+<div class="flex gap-sm overflow-x-auto hide-scrollbar py-2 px-1">
+<button class="flex-shrink-0 flex items-center gap-xs px-md py-sm bg-primary text-white rounded-full font-label-bold shadow-bubbly border-2 border-primary hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[24px]" data-icon="local_cafe">local_cafe</span>
+<span>Cafes</span>
+</button>
+<button class="flex-shrink-0 flex items-center gap-xs px-md py-sm glass text-primary rounded-full font-label-bold shadow-md border-2 border-white hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[24px]" data-icon="restaurant">restaurant</span>
+<span>Restaurants</span>
+</button>
+<button class="flex-shrink-0 flex items-center gap-xs px-md py-sm glass text-primary rounded-full font-label-bold shadow-md border-2 border-white hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[24px]" data-icon="park">park</span>
+<span>Public Spaces</span>
+</button>
+<button class="flex-shrink-0 flex items-center gap-xs px-md py-sm glass text-primary rounded-full font-label-bold shadow-md border-2 border-white hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[24px]" data-icon="shopping_bag">shopping_bag</span>
+<span>Malls</span>
+</button>
+</div>
+</div>
+<!-- 'Freshness' Bottom Card -->
+<div class="absolute bottom-32 left-0 w-full px-margin-mobile z-20">
+<div class="glass rounded-xl shadow-bubbly border-4 border-white p-sm flex gap-sm items-center animate-in fade-in slide-in-from-bottom-4 duration-700">
+<!-- Location Image Thumbnail -->
+<div class="w-28 h-28 rounded-lg overflow-hidden flex-shrink-0 shadow-inner">
+<img class="w-full h-full object-cover" data-alt="A serene interior photograph of a minimalist cafe with floor-to-ceiling windows, light wood furniture, and lush green plants. The space is flooded with soft daylight and has a visually cool atmosphere, emphasized by a clean, airy aesthetic with sky blue accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBt_HlRQoaoY7Vn91c2FmMwvG1RFr07rF8gWZGyjt9rlKBvMKWmcI4OczDaKpgHBy3HXuORXGRK9vNvKqymbkDK5eTMrTyTHw17SJIwS5CkvFQWv4GT6k_WKI7-qT4405EAZeTAn7Ap8GHkikrXcub41K1s7ex8WX5E7hhnhlTA7fElar3we8ywmw52NRjoIhTlA1rePna7D6O6LymdhhS1T9t3ARVkGDpzE8uf9ryvUE-49Qpw9igkw5tIUQqM1bNSq9pQ5mhlTgzO"/>
+</div>
+<!-- Info Content -->
+<div class="flex-grow flex flex-col gap-xs py-xs">
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-headline-md text-on-surface leading-tight">Arctic Brew Coffee</h2>
+<p class="text-secondary font-body-md flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[18px]" data-icon="location_on">location_on</span>
+                                250m • 4 mins walk
+                            </p>
+</div>
+</div>
+<!-- AC Rating & Meta -->
+<div class="flex items-center gap-md mt-2">
+<div class="flex flex-col gap-1 flex-grow">
+<span class="text-label-sm text-primary font-bold tracking-wider">FRIGID STRENGTH</span>
+<div class="flex gap-1.5 h-2 w-full">
+<div class="flex-1 bg-primary rounded-full shadow-inner"></div>
+<div class="flex-1 bg-primary rounded-full shadow-inner"></div>
+<div class="flex-1 bg-primary rounded-full shadow-inner"></div>
+</div>
+</div>
+<div class="bg-secondary-container text-on-secondary-container px-3 py-1.5 rounded-full font-label-bold shadow-sm border border-white">QUIET ZONE</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-surface/90 backdrop-blur-lg border-t-2 border-white shadow-[0_-10px_30px_rgba(0,106,106,0.1)] rounded-t-xl">
+<!-- Explore (Active) -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-6 py-2 shadow-sm border-2 border-white active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined text-[28px]" data-icon="map" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-label-bold mt-1">Explore</span>
+</a>
+<!-- Saved -->
+<a class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-colors active:scale-90 duration-200 px-4 py-2" href="#">
+<span class="material-symbols-outlined text-[28px]" data-icon="bookmark">bookmark</span>
+<span class="font-label-bold mt-1">Saved</span>
+</a>
+<!-- Cooling -->
+<a class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-colors active:scale-90 duration-200 px-4 py-2" href="#">
+<span class="material-symbols-outlined text-[28px]" data-icon="cyclone">cyclone</span>
+<span class="font-label-bold mt-1">Cooling</span>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-secondary hover:text-primary transition-colors active:scale-90 duration-200 px-4 py-2" href="#">
+<span class="material-symbols-outlined text-[28px]" data-icon="person">person</span>
+<span class="font-label-bold mt-1">Profile</span>
+</a>
+</nav>
+<!-- Micro-interaction Scripts -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chips = document.querySelectorAll('.overflow-x-auto button');
+            chips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    chips.forEach(c => {
+                        c.classList.remove('bg-primary', 'text-white', 'border-primary', 'shadow-bubbly');
+                        c.classList.add('glass', 'text-primary', 'border-white', 'shadow-md');
+                    });
+                    chip.classList.remove('glass', 'text-primary', 'border-white', 'shadow-md');
+                    chip.classList.add('bg-primary', 'text-white', 'border-primary', 'shadow-bubbly');
+                });
+            });
+
+            const pins = document.querySelectorAll('.pointer-events-auto');
+            pins.forEach((pin, index) => {
+                pin.style.animation = `float 3s ease-in-out ${index * 0.5}s infinite`;
+            });
+        });
+
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes float {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-12px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body></html>

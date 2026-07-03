@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Freshy - Map Exploration</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Quicksand:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#def1fc",
+                        "surface-container-highest": "#d3e5f0",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#82cfff",
+                        "on-background": "#0c1e25",
+                        "primary-container": "#00aeef",
+                        "tertiary-container": "#93a6b0",
+                        "background": "#f4faff",
+                        "on-secondary-container": "#003666",
+                        "tertiary": "#4f616a",
+                        "on-tertiary-container": "#2a3c44",
+                        "surface-variant": "#d3e5f0",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed-dim": "#82cfff",
+                        "on-surface": "#0c1e25",
+                        "outline-variant": "#bdc8d1",
+                        "surface-tint": "#00658d",
+                        "on-tertiary-fixed": "#0b1e26",
+                        "tertiary-fixed-dim": "#b6c9d4",
+                        "surface": "#f4faff",
+                        "surface-dim": "#cadde7",
+                        "on-primary-container": "#003e58",
+                        "on-surface-variant": "#3e4850",
+                        "tertiary-fixed": "#d2e6f0",
+                        "primary-fixed": "#c6e7ff",
+                        "inverse-surface": "#22333b",
+                        "on-tertiary-fixed-variant": "#374952",
+                        "error-container": "#ffdad6",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#d4e3ff",
+                        "surface-container-high": "#d8ebf6",
+                        "on-secondary-fixed": "#001c3a",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#f4faff",
+                        "on-secondary-fixed-variant": "#004785",
+                        "secondary-container": "#51a0ff",
+                        "on-primary-fixed-variant": "#004c6b",
+                        "surface-container-low": "#e7f6ff",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "outline": "#6e7881",
+                        "on-primary-fixed": "#001e2d",
+                        "primary": "#00658d",
+                        "secondary": "#005fae",
+                        "secondary-fixed-dim": "#a5c8ff",
+                        "inverse-on-surface": "#e1f4fe"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "48px",
+                        "md": "24px",
+                        "sm": "12px",
+                        "xl": "80px",
+                        "margin-desktop": "64px",
+                        "xs": "4px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Quicksand"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-xl": ["Quicksand"],
+                        "headline-md": ["Quicksand"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Quicksand"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .map-bg {
+            background-color: #cadde7;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.4) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.4) 2px, transparent 2px);
+            background-size: 50px 50px;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface h-screen w-full overflow-hidden flex flex-col font-body-md">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 transition-colors">
+<div class="flex items-center gap-xs">
+<button class="p-2 text-primary active:scale-95 duration-200 ease-in-out hover:bg-surface-container-highest/50 transition-colors rounded-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">menu</span>
+</button>
+</div>
+<div class="flex-1 flex justify-center">
+<img alt="Freshy Modern Logo" class="h-8 object-contain" src="data:image/png;base64,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"/>
+</div>
+<div class="flex items-center gap-xs">
+<button class="p-2 text-primary active:scale-95 duration-200 ease-in-out hover:bg-surface-container-highest/50 transition-colors rounded-full">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+</header>
+<!-- Main Map Area -->
+<main class="flex-1 relative mt-16 pb-20 md:pb-0 w-full">
+<!-- Abstract Map Background -->
+<div class="absolute inset-0 map-bg w-full h-full" data-alt="An abstract, modern digital map interface rendered in a 'Fresh Arctic' style. The background features a subtle, frosted cyan grid pattern over a light icy blue base. There are soft, diffused geometric shapes implying city blocks and parks in pristine white and soft teal. The lighting is high-key and clean, creating a calm, professional Gen Z aesthetic."></div>
+<!-- Search Bar Overlay -->
+<div class="absolute top-md left-0 w-full px-margin-mobile md:px-margin-desktop z-10 flex flex-col gap-sm max-w-2xl mx-auto md:left-1/2 md:-translate-x-1/2">
+<div class="relative w-full shadow-lg shadow-primary/10 rounded-full">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-primary">search</span>
+</div>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-container-lowest rounded-full border border-outline-variant focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 text-on-surface placeholder:text-on-surface-variant font-body-md transition-all" placeholder="Find a cool spot..." type="text"/>
+<button class="absolute inset-y-0 right-1 my-1 px-3 bg-primary-container text-on-primary-container rounded-full font-label-md hover:bg-primary-container/90 transition-colors">
+                    Search
+                </button>
+</div>
+<!-- Category Pills -->
+<div class="flex gap-sm overflow-x-auto hide-scrollbar py-2 px-1">
+<button class="whitespace-nowrap px-4 py-2 bg-primary-container text-on-primary-container rounded-full font-label-sm border-2 border-transparent hover:scale-105 transition-transform flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">local_cafe</span> Cafes
+                </button>
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container-lowest text-on-surface-variant rounded-full font-label-sm border border-outline-variant hover:border-primary-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">local_library</span> Libraries
+                </button>
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container-lowest text-on-surface-variant rounded-full font-label-sm border border-outline-variant hover:border-primary-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">park</span> Parks
+                </button>
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container-lowest text-on-surface-variant rounded-full font-label-sm border border-outline-variant hover:border-primary-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">museum</span> Museums
+                </button>
+</div>
+</div>
+<!-- Map Markers -->
+<div class="absolute top-[40%] left-[30%] -translate-x-1/2 -translate-y-1/2 z-0">
+<div class="relative group cursor-pointer">
+<div class="w-10 h-10 bg-surface-container-lowest rounded-full shadow-lg shadow-primary/10 border-2 border-primary-container flex items-center justify-center transform transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-primary-container text-[20px]">local_cafe</span>
+</div>
+</div>
+</div>
+<div class="absolute top-[60%] left-[60%] -translate-x-1/2 -translate-y-1/2 z-0">
+<div class="relative group cursor-pointer">
+<div class="w-8 h-8 bg-surface-container-lowest rounded-full shadow-md border-2 border-outline-variant flex items-center justify-center transform transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">local_library</span>
+</div>
+</div>
+</div>
+<div class="absolute top-[25%] left-[75%] -translate-x-1/2 -translate-y-1/2 z-0">
+<div class="relative group cursor-pointer">
+<div class="w-8 h-8 bg-surface-container-lowest rounded-full shadow-md border-2 border-outline-variant flex items-center justify-center transform transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">park</span>
+</div>
+</div>
+</div>
+<!-- Featured Card Overlay (Bottom) -->
+<div class="absolute bottom-6 left-0 w-full px-margin-mobile md:px-margin-desktop z-10 flex justify-center md:hidden">
+<div class="w-full max-w-sm bg-surface-container-lowest rounded-xl shadow-lg shadow-primary/10 border border-surface-container-highest p-4 flex gap-4 items-center">
+<div class="w-20 h-20 bg-cover bg-center rounded-lg flex-shrink-0 bg-surface-variant" data-alt="A bright, modern cafe interior with frosted glass elements and light blue seating, perfectly embodying the Fresh Arctic aesthetic. The lighting is crisp and cool, casting soft shadows. The overall mood is quiet, productive, and refreshing." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCkIst-gWr0kTK-o24HbmK6CDXSIzbFihaqe64sznV3CkdsKDD8pIIG1uOBqnzJ0u5BkcJSvl8O8iLWMdTSEYaMEZR0aobYoDQnfYXW33cgbcmZsmTMqXKtRJnSWnXvCXMzda2g85HfQYbC4qGsjnlvTuxo7CgKE3Y1v5mKkXjtwxY7zQImZ9cYbFAHAUovplraJsPsQPiT3ahToMjqYGc5vBpzYtIMjR_OBDQNcR6H8qjiQl5x6ijL28XkOt4YLxuWK6Ly1yNxug')"></div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline-md text-[18px] leading-tight text-on-surface truncate">Arctic Brew</h3>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">bookmark_border</span>
+</button>
+</div>
+<p class="font-body-md text-[14px] text-on-surface-variant mb-2">0.2 mi • Cafe</p>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 bg-surface-container text-on-surface px-2 py-1 rounded-full font-label-sm">
+<span class="material-symbols-outlined text-[14px] text-primary-container">volume_mute</span> Quiet Zone
+                         </span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-4 pt-2 z-50 bg-surface-container-lowest dark:bg-surface-container-low rounded-t-lg shadow-[0_-4px_6px_-1px_rgba(0,101,141,0.1)]">
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-2 active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-label-sm mt-1">Explore</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-5 py-2 hover:text-primary dark:hover:text-primary-fixed transition-all active:scale-90 duration-150">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="font-label-sm mt-1">Saved</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-5 py-2 hover:text-primary dark:hover:text-primary-fixed transition-all active:scale-90 duration-150">
+<span class="material-symbols-outlined">ac_unit</span>
+<span class="font-label-sm mt-1">Cooling</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-5 py-2 hover:text-primary dark:hover:text-primary-fixed transition-all active:scale-90 duration-150">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm mt-1">Profile</span>
+</button>
+</nav>
+<!-- Desktop Side Panel Structure (Hidden on mobile) -->
+<aside class="hidden md:flex absolute top-16 right-0 w-96 h-[calc(100vh-64px)] bg-surface-container-lowest border-l border-surface-container-highest z-20 flex-col overflow-y-auto">
+<div class="p-gutter">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md">Featured Spots</h2>
+<div class="flex flex-col gap-sm">
+<!-- Desktop Card -->
+<div class="bg-surface border border-outline-variant rounded-xl overflow-hidden hover:-translate-y-[2px] hover:shadow-lg hover:shadow-primary/5 transition-all cursor-pointer group">
+<div class="h-32 bg-cover bg-center w-full" data-alt="A bright, modern cafe interior with frosted glass elements and light blue seating, perfectly embodying the Fresh Arctic aesthetic. The lighting is crisp and cool, casting soft shadows. The overall mood is quiet, productive, and refreshing." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCEV-Aw20sMajgPd44BzAwpaXAtP402LPrKA1gWiZ7UB6vc5KDW332sIIbwpShAQVnULKNraf1RrzQR9SaBlycDbypBjOzqtILvTE3uZC4Ndj7UTLYlsGy7WiqJ-yBNDX2UjSOJUPB4BKJXOtdDQSAkxbGN_rOG7GXiH32Xnw672EgSNFUMA5QCpzGH_lMq6Logotlfd9ASsTaooDR_VLQWf7wd-cDiep3qXB20F7fAYKTTZXBgigP2Q1jU9u6SU6pTMkLpSJ213A')"></div>
+<div class="p-4">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-md text-[20px] text-on-surface group-hover:text-primary transition-colors">Arctic Brew Coffee</h3>
+<span class="material-symbols-outlined text-outline-variant hover:text-primary transition-colors">bookmark_border</span>
+</div>
+<p class="font-body-md text-on-surface-variant mb-4">0.2 mi away • Specialty Cafe</p>
+<div class="flex gap-2">
+<span class="inline-flex items-center gap-1 bg-surface-container text-on-surface px-3 py-1 rounded-full font-label-sm">
+<span class="material-symbols-outlined text-[16px] text-primary-container">volume_mute</span> Quiet Zone
+                            </span>
+<span class="inline-flex items-center gap-1 bg-surface-container text-on-surface px-3 py-1 rounded-full font-label-sm">
+<span class="material-symbols-outlined text-[16px] text-primary-container">wifi</span> Fast Wifi
+                            </span>
+</div>
+</div>
+</div>
+<!-- Desktop Card 2 -->
+<div class="bg-surface border border-outline-variant rounded-xl overflow-hidden hover:-translate-y-[2px] hover:shadow-lg hover:shadow-primary/5 transition-all cursor-pointer group">
+<div class="h-32 bg-cover bg-center w-full" data-alt="A pristine, modern public library interior with vast white spaces, sleek shelving, and large windows letting in cool, natural light. The aesthetic is clean, minimalist, and icy blue, fitting the Fresh Arctic style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAvwxsbq5y2z_TNE6wFOnEUw6CPE1UA5hFHt45DGoVbo0ip3z4i4x-I--ZUkpHJhbOQpIfho-EcxHwvu5jkPHKoUrEGIwsqLIrqMej_p9T1WeZ2ewdi2rkwBepB-C7d38mGNOGgNJ-S7VWAOQumW6FPEWEe-4BFfqyOdh3Sz36wY4w1oUEMTmRUECmtqWiaTYchsSiwe28UmMYSBWJbcLL-oXIRdKIHsAJXJnl89TrncxXdRtkZTub-6ehzUA0-3Hemy9VLY67cow')"></div>
+<div class="p-4">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-md text-[20px] text-on-surface group-hover:text-primary transition-colors">Central Frost Library</h3>
+<span class="material-symbols-outlined text-outline-variant hover:text-primary transition-colors">bookmark_border</span>
+</div>
+<p class="font-body-md text-on-surface-variant mb-4">0.8 mi away • Public Library</p>
+<div class="flex gap-2">
+<span class="inline-flex items-center gap-1 bg-surface-container text-on-surface px-3 py-1 rounded-full font-label-sm">
+<span class="material-symbols-outlined text-[16px] text-primary-container">volume_off</span> Silent Area
+                            </span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</body></html>
