@@ -260,6 +260,7 @@ export function StudioClient() {
               />
             </form>
           </div>
+          <StudioContributorSecretsPanel getToken={getToken} onCopied={setToast} />
         </header>
 
         <div className="hide-scrollbar flex gap-2 overflow-x-auto border-b border-outline-variant/10 px-4 py-3 md:hidden">

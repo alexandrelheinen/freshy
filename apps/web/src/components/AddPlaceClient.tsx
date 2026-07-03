@@ -259,7 +259,10 @@ export function AddPlaceClient() {
     <>
       {anonymousMode ? (
         <section className="space-y-2">
-          <label className="block font-label-caps text-on-surface-variant" htmlFor="contributor-secret">
+          <label
+            className="block font-label-caps text-on-surface-variant"
+            htmlFor="contributor-secret"
+          >
             Secret
           </label>
           <input

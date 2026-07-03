@@ -37,7 +37,7 @@ export function StudioContributorCell({ contributor, submittedAt }: StudioContri
         onClick={() => setOpen((value) => !value)}
       >
         <span className="truncate">{contributor.email}</span>
-        <MaterialIcon name="info" size={16} className="shrink-0 text-secondary" />
+        <MaterialIcon name="person" size={16} className="shrink-0 text-secondary" />
       </button>
       {open ? (
         <div
@@ -56,10 +56,7 @@ export function StudioContributorCell({ contributor, submittedAt }: StudioContri
   );
 }
 
-export function StudioContributorSummary({
-  contributor,
-  submittedAt,
-}: StudioContributorCellProps) {
+export function StudioContributorSummary({ contributor, submittedAt }: StudioContributorCellProps) {
   if (!contributor) {
     return (
       <section className="rounded-xl border border-outline-variant/20 bg-surface-container-low px-4 py-3">
@@ -77,7 +74,9 @@ export function StudioContributorSummary({
       <p className="font-label-caps text-secondary">Contributor</p>
       <p className="mt-1 font-title-md text-on-surface">{contributor.displayName}</p>
       <p className="text-body-sm text-on-surface-variant">{contributor.email}</p>
-      <p className="mt-2 text-[12px] text-secondary">Submitted: {formatContributedAt(submittedAt)}</p>
+      <p className="mt-2 text-[12px] text-secondary">
+        Submitted: {formatContributedAt(submittedAt)}
+      </p>
     </section>
   );
 }

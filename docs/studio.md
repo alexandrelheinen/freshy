@@ -86,7 +86,24 @@ Studio moderation is built on the existing `PlaceStatus` enum in the Drizzle sch
 
 ### User submissions
 
-When a signed-in user submits a place at `/profile/places/new`, the API **always** saves it as `DRAFT`, regardless of what the client sends. The place stays off the map until an admin validates it in Studio.
+When a signed-in user submits a place at `/profile/places/new`, the API **always** saves it as `DRAFT` and sets `createdById` to the contributor's Freshy `User.id`.
+
+### Anonymous submissions
+
+Visitors who are not signed in can contribute at `/profile/places/new?anonymous=1`. They must include a **secret** that matches an existing `User.id` in the database. The API route is `POST /contributions/places` (no Clerk JWT). Invalid secrets return `UNKNOWN_SECRET` or `MISSING_SECRET` with a user-facing message.
+
+Signed-out visitors can also start from `/profile`, which offers **Connect or register**, **Contribute**, and **Explore**.
+
+### Contributor attribution in Studio
+
+Studio place rows include an **Added by** column:
+
+| `createdById` | Studio display                                                     |
+| ------------- | ------------------------------------------------------------------ |
+| Set           | Contributor email with hover summary (name, email, submitted date) |
+| `null`        | **Unknown** (legacy or admin-seeded places)                        |
+
+Admins can open **Contributor secrets** in the Studio header to search users and copy a contributor secret (`User.id`) for offline sharing.
 
 ### Public reads
 
@@ -122,7 +139,7 @@ Implemented in `apps/web/src/components/StudioClient.tsx`, loaded client-only vi
 | ------------ | ----------------------------------------------------------------------------- |
 | Sidebar      | Filters: **Places** (all), **Pending Validation**, **Conflicts (Merge)**      |
 | Stats cards  | Total verified, pending count, active conflicts, average freshness score      |
-| Table        | Name, location, coolness bar, status badge, row actions                       |
+| Table        | Name, location, coolness bar, status badge, **Added by**, row actions         |
 | **Validate** | Publishes a pending place (`DRAFT` → `PUBLISHED`)                             |
 | **Edit**     | Modal to change name, address, category, freshness level, status, description |
 | **Merge**    | Merges a duplicate into the older nearby place (see API below)                |
@@ -138,15 +155,19 @@ All routes require `Authorization: Bearer <clerk_session_jwt>` and admin role. N
 
 Middleware: `requireAdmin` in `packages/api/src/auth.ts`.
 
-| Method   | Path                              | Description                             |
-| -------- | --------------------------------- | --------------------------------------- |
-| `GET`    | `/studio/stats`                   | Dashboard metrics                       |
-| `GET`    | `/studio/places`                  | Paginated place list                    |
-| `GET`    | `/studio/places/:placeId`         | Single place with `studioStatus`        |
-| `PATCH`  | `/studio/places/:placeId`         | Update any editable field               |
-| `POST`   | `/studio/places/:placeId/approve` | Set `status` to `PUBLISHED`             |
-| `DELETE` | `/studio/places/:placeId`         | Delete place and cascaded reviews/saves |
-| `POST`   | `/studio/places/merge`            | Merge source into target                |
+| Method   | Path                                       | Description                               |
+| -------- | ------------------------------------------ | ----------------------------------------- |
+| `GET`    | `/studio/users`                            | Search users and list contributor secrets |
+| `GET`    | `/studio/users/:userId/contributor-secret` | Single user contributor secret            |
+| `GET`    | `/studio/stats`                            | Dashboard metrics                         |
+| `GET`    | `/studio/places`                           | Paginated place list                      |
+| `GET`    | `/studio/places/:placeId`                  | Single place with `studioStatus`          |
+| `PATCH`  | `/studio/places/:placeId`                  | Update any editable field                 |
+| `POST`   | `/studio/places/:placeId/approve`          | Set `status` to `PUBLISHED`               |
+| `DELETE` | `/studio/places/:placeId`                  | Delete place and cascaded reviews/saves   |
+| `POST`   | `/studio/places/merge`                     | Merge source into target                  |
+
+Public place responses omit `createdById`. Contributor email is returned only on `/studio/*` routes.
 
 ### `GET /studio/places` query parameters
 

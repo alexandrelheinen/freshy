@@ -47,15 +47,15 @@ export function StudioContributorSecretsPanel({
         onClick={() => setOpen((value) => !value)}
         className="inline-flex items-center gap-2 rounded-xl border border-outline-variant/30 bg-surface-container-high px-4 py-2 font-label-caps text-on-surface transition-colors hover:border-primary/40"
       >
-        <MaterialIcon name="key" size={18} />
+        <MaterialIcon name="share" size={18} />
         Contributor secrets
       </button>
       {open ? (
         <div className="absolute right-0 top-full z-30 mt-2 w-[min(24rem,calc(100vw-2rem))] rounded-2xl border border-outline-variant/20 bg-surface-container-lowest p-4 shadow-xl">
           <p className="font-title-md text-on-surface">Copy contributor secret</p>
           <p className="mt-1 text-body-sm text-on-surface-variant">
-            The secret is the user ID. Share it offline with contributors who submit without
-            signing in.
+            The secret is the user ID. Share it offline with contributors who submit without signing
+            in.
           </p>
           <form
             className="mt-4 flex gap-2"

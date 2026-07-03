@@ -122,9 +122,9 @@ Cooling venues on the map.
 
 Every user-submitted place stores the Freshy `User.id` of the contributor in `createdById`:
 
-| Submission path | How `createdById` is set |
-| --------------- | ------------------------ |
-| Signed in (`POST /users/me/places`) | Authenticated user's `User.id` |
+| Submission path                          | How `createdById` is set                        |
+| ---------------------------------------- | ----------------------------------------------- |
+| Signed in (`POST /users/me/places`)      | Authenticated user's `User.id`                  |
 | Anonymous (`POST /contributions/places`) | `secret` field must match an existing `User.id` |
 
 Legacy or admin-seeded places may have `createdById = null`. Studio moderation shows **Unknown** for those rows.

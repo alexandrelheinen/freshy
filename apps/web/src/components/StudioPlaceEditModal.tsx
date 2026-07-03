@@ -192,10 +192,7 @@ export function StudioPlaceEditModal({ place, onCancel, onSave }: StudioPlaceEdi
         <h3 className="font-headline-lg text-headline-lg text-on-surface">Edit place</h3>
 
         <div className="mt-4">
-          <StudioContributorSummary
-            contributor={place.contributor}
-            submittedAt={place.createdAt}
-          />
+          <StudioContributorSummary contributor={place.contributor} submittedAt={place.createdAt} />
         </div>
 
         <div className="mt-6 space-y-4">

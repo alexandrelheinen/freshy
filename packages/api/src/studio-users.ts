@@ -18,7 +18,10 @@ export interface StudioUserSecret {
   secret: string;
 }
 
-export async function listStudioUsers(db: Db, query: StudioUsersQuery): Promise<StudioUserSecret[]> {
+export async function listStudioUsers(
+  db: Db,
+  query: StudioUsersQuery,
+): Promise<StudioUserSecret[]> {
   const limit = query.limit ?? 25;
 
   if (query.q) {
