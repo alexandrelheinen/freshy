@@ -67,8 +67,12 @@ export async function listStudioUsers(
 export async function getStudioUser(db: Db, userId: string): Promise<StudioUserProfile | null> {
   const user = await getStudioUserSecret(db, userId);
   if (!user) return null;
-  const { secret: _secret, ...profile } = user;
-  return profile;
+  return {
+    id: user.id,
+    email: user.email,
+    displayName: user.displayName,
+    username: user.username,
+  };
 }
 
 export async function getStudioUserSecret(
