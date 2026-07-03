@@ -65,9 +65,9 @@ function mapViewDiffersFromSearch(view: MapSearchAnchor, search: MapSearchAnchor
 function exploreEmptyMessage(category?: PlaceCategory): string {
   if (category) {
     const label = PLACE_CATEGORY_LABELS[category];
-    return `No ${label.toLowerCase()} with AC in this area yet. Try expanding your search radius or changing the category.`;
+    return `No ${label.toLowerCase()} fresh enough in this area yet. Try expanding your search radius or changing the filters.`;
   }
-  return 'No AC places in this area yet. Try expanding your search radius or changing the category.';
+  return 'No fresh places in this area yet. Try expanding your search radius or changing the filters.';
 }
 
 function chipIcon(category?: PlaceCategory): MaterialIconName | null {

@@ -22,7 +22,8 @@ export {
 const defaultThemeIcons = getDefaultThemeTokens().icons;
 
 export const BRAND_NAME = 'Freshy';
-export const BRAND_TITLE = 'Freshy | Cooling Map';
+export const BRAND_TAGLINE = 'Find fresh places near you, from natural shade to cold AC.';
+export const BRAND_TITLE = 'Freshy | Fresh Places Map';
 export const BRAND_ICON = defaultThemeIcons.brand;
 
 export const TYPOGRAPHY_SCALE = [

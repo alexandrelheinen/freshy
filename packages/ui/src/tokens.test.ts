@@ -4,6 +4,7 @@ import {
   ALL_PLACE_CATEGORIES,
   BRAND_ICON,
   BRAND_NAME,
+  BRAND_TAGLINE,
   BRAND_TITLE,
   DEFAULT_PLACE_PHOTO_PATHS,
   EXPLORE_FILTER_CHIPS,
@@ -19,7 +20,8 @@ import {
 describe('@freshy/ui tokens', () => {
   it('defines brand name', () => {
     assert.equal(BRAND_NAME, 'Freshy');
-    assert.equal(BRAND_TITLE, 'Freshy | Cooling Map');
+    assert.equal(BRAND_TAGLINE, 'Find fresh places near you, from natural shade to cold AC.');
+    assert.equal(BRAND_TITLE, 'Freshy | Fresh Places Map');
     assert.equal(PILOT_CITY.name, 'Clichy');
     assert.equal(PILOT_CITY.postalCode, '92110');
   });
