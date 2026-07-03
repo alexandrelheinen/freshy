@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { BRAND_TITLE, THEME_BOOTSTRAP_SCRIPT } from '@freshy/ui';
+import { BRAND_TAGLINE, BRAND_TITLE, THEME_BOOTSTRAP_SCRIPT } from '@freshy/ui';
 import { getDefaultThemeTokens } from '@freshy/theme/tokens';
 import { FreshyClerkProvider } from '../components/FreshyClerkProvider';
 import { FreshyLocationProvider } from '../components/FreshyLocationProvider';
@@ -10,7 +10,7 @@ const defaultTheme = getDefaultThemeTokens();
 
 export const metadata: Metadata = {
   title: BRAND_TITLE,
-  description: 'Find air-conditioned refuges near you.',
+  description: BRAND_TAGLINE,
 };
 
 export const viewport: Viewport = {
