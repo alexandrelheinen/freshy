@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth, SignInButton } from '@clerk/clerk-react';
+import { useAuth, useClerk, SignInButton } from '@clerk/clerk-react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -18,6 +18,7 @@ import { AppMobileHeader, AppTopNav } from './AppNav';
 import { type PlaceDto } from '../lib/api';
 import { formatRelativeTime } from '../lib/api';
 import {
+  deleteMyAccount,
   fetchMyProfile,
   fetchMyReviews,
   fetchMySavedPlaces,
@@ -105,6 +106,58 @@ function ReviewRow({ review }: { review: UserReviewDto }) {
 }
 
 const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
+
+function ProfileAccountActions() {
+  const { signOut } = useClerk();
+  const { getToken } = useAuth();
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const handleLogout = () => {
+    void signOut({ redirectUrl: ROUTES.explore });
+  };
+
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm(
+      'Delete your Freshy account permanently? Your saved places and reviews will be removed. This cannot be undone.',
+    );
+    if (!confirmed) return;
+
+    setDeleting(true);
+    setDeleteError(null);
+    const result = await deleteMyAccount(() => getToken());
+    if (!result.ok) {
+      setDeleteError(result.error);
+      setDeleting(false);
+      return;
+    }
+    await signOut({ redirectUrl: ROUTES.explore });
+  };
+
+  return (
+    <section className="mt-12 border-t border-outline-variant pt-8">
+      <h3 className="font-label-caps text-on-surface-variant">Account</h3>
+      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="rounded-xl border border-outline-variant px-6 py-3 font-label-caps text-on-surface transition-colors hover:bg-surface-container"
+        >
+          Log out
+        </button>
+        <button
+          type="button"
+          onClick={() => void handleDeleteAccount()}
+          disabled={deleting}
+          className="rounded-xl border border-error/30 px-6 py-3 font-label-caps text-error transition-colors hover:bg-error-container/20 disabled:opacity-60"
+        >
+          {deleting ? 'Deleting account…' : 'Delete account'}
+        </button>
+      </div>
+      {deleteError ? <p className="mt-3 text-sm text-error">{deleteError}</p> : null}
+    </section>
+  );
+}
 
 function ProfileSignedOutView({ showSignIn }: { showSignIn: boolean }) {
   return (
@@ -320,6 +373,8 @@ function ProfileWithClerk() {
                 Add a new cooling spot
               </Link>
             </section>
+
+            <ProfileAccountActions />
           </>
         ) : (
           <div className="py-16 text-center">

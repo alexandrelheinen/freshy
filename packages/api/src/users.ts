@@ -197,6 +197,18 @@ export interface UserReviewItem {
   };
 }
 
+/** Remove a Freshy user and their Clerk account. Reviews and saved places cascade in D1. */
+export async function deleteUserAccount(
+  db: Db,
+  userId: string,
+  clerkUserId: string,
+  secretKey: string,
+): Promise<void> {
+  await db.delete(usersTable).where(eq(usersTable.id, userId));
+  const clerk = buildClerkClient(secretKey);
+  await clerk.users.deleteUser(clerkUserId);
+}
+
 export async function listUserReviews(db: Db, userId: string): Promise<UserReviewItem[]> {
   const rows = await db
     .select({

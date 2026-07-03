@@ -81,7 +81,40 @@ export async function fetchMySavedPlaces(
   const res = await authFetch('/users/me/saved', getToken);
   if (!res?.ok) return [];
   const json = (await res.json()) as { data: PlaceDto[] };
-  return json.data;
+  return json.data ?? [];
+}
+
+export function deleteAccountErrorMessage(status: number, body: unknown): string {
+  if (status === 401) {
+    return 'Your session expired. Sign in again and retry.';
+  }
+  if (status === 503) {
+    const errorText =
+      body && typeof body === 'object' && 'error' in body && typeof body.error === 'string'
+        ? body.error
+        : '';
+    if (errorText === 'Could not delete account') {
+      return 'Could not delete your account. Try again in a few minutes.';
+    }
+    return 'Service temporarily unavailable. Try again in a few minutes.';
+  }
+  return 'Could not delete your account. Try again.';
+}
+
+export type DeleteAccountResult = { ok: true } | { ok: false; error: string };
+
+export async function deleteMyAccount(
+  getToken: () => Promise<string | null>,
+): Promise<DeleteAccountResult> {
+  const res = await authFetch('/users/me', getToken, { method: 'DELETE' });
+  if (!res) {
+    return { ok: false, error: 'Sign in to delete your account.' };
+  }
+  if (!res.ok) {
+    const body = (await res.json().catch(() => ({}))) as unknown;
+    return { ok: false, error: deleteAccountErrorMessage(res.status, body) };
+  }
+  return { ok: true };
 }
 
 export async function fetchIsPlaceSaved(
