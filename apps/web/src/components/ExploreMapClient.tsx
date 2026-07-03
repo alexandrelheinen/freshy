@@ -596,7 +596,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         <div className="absolute inset-0">{mapContent}</div>
 
         {exploreLocationMessage ? (
-          <div className="absolute bottom-44 left-4 right-4 z-map-overlay mx-auto max-w-md rounded-xl border border-outline-variant/30 bg-surface/95 p-4 text-center shadow-lg backdrop-blur md:bottom-auto md:left-6 md:right-auto md:top-24 md:mx-0">
+          <div className="absolute left-4 right-4 top-36 z-map-overlay mx-auto max-w-md rounded-xl border border-outline-variant/30 bg-surface/95 p-4 text-center shadow-lg backdrop-blur md:bottom-auto md:left-6 md:right-auto md:top-24 md:mx-0">
             <p className="font-body-sm text-on-surface-variant">{exploreLocationMessage}</p>
             <p className="mt-2 font-body-sm text-on-surface-variant">
               You can also pan the map to search another area.
@@ -658,7 +658,9 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         </div>
 
         {/* Mobile: bottom overlay stack */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-map-overlay flex flex-col gap-3 px-margin-mobile pb-4 md:hidden">
+        <div
+          className={`pointer-events-none absolute inset-x-0 bottom-0 z-map-overlay flex flex-col gap-3 px-margin-mobile pb-4 md:hidden ${exploreLocationMessage ? 'pointer-events-none' : ''}`}
+        >
           <div className="grid grid-cols-[3rem_1fr_3rem] items-end gap-2">
             <div aria-hidden="true" />
             <div className="pointer-events-auto flex justify-center">
@@ -692,7 +694,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
               </button>
             </div>
           </div>
-          {selected ? (
+          {selected && !exploreLocationMessage ? (
             <div className="pointer-events-auto w-full">
               <ExplorePreviewCard place={selected} variant="mobile" />
             </div>
