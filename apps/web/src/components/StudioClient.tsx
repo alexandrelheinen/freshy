@@ -422,6 +422,7 @@ export function StudioClient() {
                       <td className="px-4 py-5">
                         <StudioContributorCell
                           contributor={place.contributor}
+                          createdById={place.createdById}
                           submittedAt={place.createdAt}
                         />
                       </td>

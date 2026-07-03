@@ -133,6 +133,7 @@ export interface StudioContributor {
 
 export interface StudioPlaceListItem extends Omit<Place, 'tags' | 'createdById'> {
   tags: string[];
+  createdById: string | null;
   studioStatus: StudioPlaceStatus;
   duplicateOfId: string | null;
   contributor: StudioContributor | null;
@@ -231,6 +232,7 @@ export function formatStudioPlaceListItem(
   const serialized = serializePlaceForApi(place);
   return {
     ...serialized,
+    createdById: place.createdById ?? null,
     studioStatus: studioStatusForPlace(place, duplicateOfId),
     duplicateOfId,
     contributor,

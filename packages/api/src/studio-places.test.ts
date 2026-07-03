@@ -114,6 +114,34 @@ describe('studio-places', () => {
     );
     assert.deepEqual(item.tags, ['calm', 'foodie']);
     assert.equal(item.studioStatus, 'pending');
+    assert.equal(item.createdById, null);
+  });
+
+  it('includes createdById on studio list items for client-side contributor resolution', () => {
+    const item = formatStudioPlaceListItem(
+      {
+        id: 'p1',
+        slug: 'test-cafe',
+        name: 'Test Cafe',
+        description: null,
+        category: 'CAFE',
+        latitude: 48.9,
+        longitude: 2.3,
+        address: '1 Rue Test',
+        photoUrl: null,
+        aggregatedFreshnessLevel: 'MODEST_AC',
+        tags: '[]',
+        isOpen: true,
+        createdById: 'user_a',
+        status: 'DRAFT',
+        createdAt: '2025-01-01T00:00:00.000Z',
+        updatedAt: '2025-01-01T00:00:00.000Z',
+      },
+      null,
+      null,
+    );
+    assert.equal(item.createdById, 'user_a');
+    assert.equal(item.contributor, null);
   });
 
   it('flags nearby places as duplicates', () => {
