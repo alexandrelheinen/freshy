@@ -19,6 +19,11 @@ describe('route registration', () => {
     assert.notEqual(res.status, 404);
   });
 
+  it('registers GET /places/drafts', async () => {
+    const res = await app.request('/places/drafts');
+    assert.notEqual(res.status, 404);
+  });
+
   it('registers POST /users/me/places', async () => {
     const res = await app.request('/users/me/places', {
       method: 'POST',

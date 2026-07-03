@@ -8,6 +8,7 @@ import {
   formatRelativeTime,
   formatWalkTime,
   freshnessBarState,
+  mergeDraftPlacesIntoResults,
 } from './api';
 
 describe('@freshy/web api helpers', () => {
@@ -44,6 +45,53 @@ describe('@freshy/web api helpers', () => {
   it('builds directions URL from coordinates when address is missing', () => {
     const url = directionsUrl({ latitude: 48.9042, longitude: 2.3064, address: null });
     assert.equal(url, 'https://www.google.com/maps/dir/?api=1&destination=48.9042,2.3064');
+  });
+
+  it('merges draft places without duplicating slugs already returned by the API', () => {
+    const published = [
+      {
+        id: '1',
+        slug: 'cafe-a',
+        name: 'Cafe A',
+        description: null,
+        category: 'CAFE',
+        latitude: 48.9,
+        longitude: 2.3,
+        address: null,
+        aggregatedFreshnessLevel: 'MODEST_AC' as const,
+        status: 'PUBLISHED' as const,
+      },
+    ];
+    const drafts = [
+      {
+        id: '2',
+        slug: 'cafe-draft',
+        name: 'Draft Cafe',
+        description: null,
+        category: 'CAFE',
+        latitude: 48.91,
+        longitude: 2.31,
+        address: null,
+        aggregatedFreshnessLevel: 'MODEST_AC' as const,
+        status: 'DRAFT' as const,
+      },
+      {
+        id: '3',
+        slug: 'cafe-a',
+        name: 'Cafe A Duplicate',
+        description: null,
+        category: 'CAFE',
+        latitude: 48.9,
+        longitude: 2.3,
+        address: null,
+        aggregatedFreshnessLevel: 'MODEST_AC' as const,
+        status: 'DRAFT' as const,
+      },
+    ];
+
+    const merged = mergeDraftPlacesIntoResults(published, drafts);
+    assert.equal(merged.length, 2);
+    assert.equal(merged.some((place) => place.slug === 'cafe-draft'), true);
   });
 
   it('omits verifiedOnly from places query unless the filter is enabled', () => {

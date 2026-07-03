@@ -49,6 +49,30 @@ export function buildPlacesSearchParams(params: PlacesFetchParams): URLSearchPar
   return search;
 }
 
+/** Merge draft rows into a published list without duplicating slugs. */
+export function mergeDraftPlacesIntoResults(
+  published: PlaceDto[],
+  drafts: PlaceDto[],
+): PlaceDto[] {
+  if (drafts.length === 0) return published;
+  const slugs = new Set(published.map((place) => place.slug));
+  const merged = [...published];
+  for (const draft of drafts) {
+    if (!slugs.has(draft.slug)) {
+      merged.push(draft);
+    }
+  }
+  return merged;
+}
+
+async function fetchDraftPlacesInArea(params: PlacesFetchParams): Promise<PlaceDto[]> {
+  const search = buildPlacesSearchParams({ ...params, verifiedOnly: false });
+  const res = await fetch(`${API_BASE}/places/drafts?${search.toString()}`, { cache: 'no-store' });
+  if (!res.ok) return [];
+  const json = (await res.json()) as { data: PlaceDto[] };
+  return json.data ?? [];
+}
+
 /** Client-side places fetch for map and list views (never cached). Returns null when the API fails. */
 export async function fetchPlacesClient(params: PlacesFetchParams): Promise<PlaceDto[] | null> {
   const search = buildPlacesSearchParams(params);
@@ -59,6 +83,12 @@ export async function fetchPlacesClient(params: PlacesFetchParams): Promise<Plac
   let places = json.data ?? [];
 
   if (!params.verifiedOnly) {
+    const hasDraftRows = places.some((place) => place.status === 'DRAFT');
+    if (!hasDraftRows) {
+      const drafts = await fetchDraftPlacesInArea(params);
+      places = mergeDraftPlacesIntoResults(places, drafts);
+    }
+
     places = mergePendingMapPlaces(places, {
       lat: params.lat,
       lng: params.lng,
