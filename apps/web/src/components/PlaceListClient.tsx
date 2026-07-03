@@ -19,6 +19,7 @@ export function PlaceListClient({
   navActive = 'cooling',
   searchPlaceholder = 'Search places…',
   emptyMessage = 'No places found.',
+  statusBanner,
 }: {
   title: string;
   subtitle?: string;
@@ -30,6 +31,7 @@ export function PlaceListClient({
   navActive?: 'explore' | 'saved' | 'cooling' | 'profile';
   searchPlaceholder?: string;
   emptyMessage?: string;
+  statusBanner?: React.ReactNode;
 }) {
   const [places, setPlaces] = useState<PlaceDto[]>(initialPlaces ?? []);
   const [query, setQuery] = useState('');
@@ -96,6 +98,11 @@ export function PlaceListClient({
       <AppTopNav active={navActive} />
 
       <main className="mx-auto mt-20 max-w-3xl px-margin-mobile pt-0 md:max-w-6xl md:px-10 md:pt-4">
+        {statusBanner ? (
+          <section className="mb-6 rounded-xl border border-outline-variant/20 bg-surface-container-low px-4 py-4 text-center">
+            {statusBanner}
+          </section>
+        ) : null}
         <section className="mb-6">
           <div className={`mb-4 ${backHref ? 'hidden md:block' : 'block'}`}>
             <h1
