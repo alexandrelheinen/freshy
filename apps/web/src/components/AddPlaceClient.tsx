@@ -43,6 +43,7 @@ export function AddPlaceClient() {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoUrl, setPhotoUrl] = useState('');
   const [photoPreviewIsObjectUrl, setPhotoPreviewIsObjectUrl] = useState(false);
+  const [locationHint, setLocationHint] = useState<string | null>(null);
 
   useEffect(() => {
     if (userLocation) {
@@ -130,13 +131,22 @@ export function AddPlaceClient() {
   }
 
   function useMyLocation() {
-    if (!navigator.geolocation) return;
+    if (!navigator.geolocation) {
+      setLocationHint('GPS is not available on this device.');
+      return;
+    }
+    setLocationHint('Getting your location…');
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         setLatitude(pos.coords.latitude);
         setLongitude(pos.coords.longitude);
+        setLocationHint(
+          `Using GPS: ${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`,
+        );
       },
-      () => undefined,
+      () => {
+        setLocationHint('Could not get GPS. Check location permission and try again.');
+      },
       { enableHighAccuracy: true, timeout: 8000 },
     );
   }
@@ -297,11 +307,15 @@ export function AddPlaceClient() {
               type="button"
               onClick={useMyLocation}
               className="flex h-12 items-center gap-1 rounded-lg bg-secondary-container px-4 font-label-caps text-on-secondary-container transition-opacity hover:opacity-80 active:scale-95"
+              aria-label="Use my GPS coordinates"
             >
-              <MaterialIcon name="map" size={18} />
-              MAP
+              <MaterialIcon name="my_location" size={18} />
+              GPS
             </button>
           </div>
+          {locationHint ? (
+            <p className="mt-2 font-body-sm text-on-surface-variant">{locationHint}</p>
+          ) : null}
         </div>
         <div>
           <label className="mb-2 block font-label-caps text-on-surface-variant">Description</label>
