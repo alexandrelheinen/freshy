@@ -22,7 +22,7 @@ export function PlaceListClient({
 }: {
   title: string;
   subtitle?: string;
-  backHref: string;
+  backHref?: string;
   places?: PlaceDto[];
   loadPlaces?: () => Promise<PlaceDto[]>;
   showBookmark?: boolean;
@@ -88,13 +88,25 @@ export function PlaceListClient({
 
   return (
     <div className="min-h-screen pb-8" data-page="place-list">
-      <AppMobileHeader title={title} backHref={backHref} showBrand={false} active={navActive} />
+      {backHref ? (
+        <AppMobileHeader title={title} backHref={backHref} showBrand={false} active={navActive} />
+      ) : (
+        <AppMobileHeader active={navActive} />
+      )}
       <AppTopNav active={navActive} />
 
       <main className="mx-auto mt-20 max-w-3xl px-margin-mobile pt-0 md:max-w-6xl md:px-10 md:pt-4">
         <section className="mb-6">
-          <div className="mb-4 hidden md:block">
-            <h1 className="font-headline-lg text-on-surface">{title}</h1>
+          <div className={`mb-4 ${backHref ? 'hidden md:block' : 'block'}`}>
+            <h1
+              className={
+                backHref
+                  ? 'font-headline-lg text-on-surface'
+                  : 'font-headline-lg-mobile text-headline-lg-mobile text-on-surface md:font-headline-lg'
+              }
+            >
+              {title}
+            </h1>
             {subtitle ? (
               <p className="mt-1 font-body-lg text-on-surface-variant">{subtitle}</p>
             ) : null}

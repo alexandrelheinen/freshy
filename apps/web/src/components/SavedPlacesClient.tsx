@@ -13,7 +13,7 @@ const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 function SavedPlacesSignedOutView({ showSignIn }: { showSignIn: boolean }) {
   return (
     <div className="min-h-screen pb-8" data-page="saved">
-      <AppMobileHeader title="Saved Places" backHref={ROUTES.explore} showBrand={false} />
+      <AppMobileHeader active="saved" />
       <AppTopNav active="saved" />
       <main className="mx-auto mt-20 max-w-md px-margin-mobile pt-8 text-center md:px-10">
         <h2 className="font-headline-lg-mobile text-primary">Saved Places</h2>
@@ -60,7 +60,7 @@ function SavedPlacesWithClerk() {
   if (!isLoaded) {
     return (
       <div className="min-h-screen pb-8" data-page="saved">
-        <AppMobileHeader title="Saved Places" backHref={ROUTES.explore} showBrand={false} />
+        <AppMobileHeader active="saved" />
         <p className="py-32 text-center text-on-surface-variant">Loading…</p>
       </div>
     );
@@ -75,7 +75,6 @@ function SavedPlacesWithClerk() {
       <PlaceListClient
         title="Saved Places"
         subtitle="Your personal oasis collection in the city."
-        backHref={ROUTES.explore}
         loadPlaces={loadSaved}
         showBookmark
         onUnsave={handleUnsave}
