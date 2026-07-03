@@ -142,7 +142,7 @@ function ThemeMenu({ variant = 'header' }: { variant?: 'header' | 'menu' }) {
           <div
             role="listbox"
             aria-label="Theme"
-            className="absolute right-0 z-popover mt-2 min-w-36 overflow-hidden rounded-xl border border-outline-variant/20 bg-surface-container-lowest py-1 shadow-lg"
+            className="absolute right-0 top-full z-popover mt-2 min-w-36 overflow-hidden rounded-xl border border-outline-variant/20 bg-surface-container-lowest py-1 shadow-lg"
           >
             {options.map((option) => (
               <button
