@@ -2,6 +2,7 @@ name = "freshy-api"
 main = "src/worker.ts"
 compatibility_date = "2026-06-30"
 compatibility_flags = ["nodejs_compat"]
+keep_vars = true
 
 [[d1_databases]]
 binding = "FRESHY_DB"

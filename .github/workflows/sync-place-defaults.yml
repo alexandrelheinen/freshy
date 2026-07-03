@@ -38,6 +38,8 @@ jobs:
           test -d apps/web/public/place-defaults
           ls -la apps/web/public/place-defaults/
           test "$(find apps/web/public/place-defaults -maxdepth 1 -name 'default-*.png' | wc -l)" -eq 8
+          pnpm generate:place-default-thumbs
+          test "$(find apps/web/public/place-defaults/thumbs -maxdepth 1 -name 'default-*.webp' | wc -l)" -eq 8
 
       - name: Install AWS CLI for R2 upload
         run: pip install awscli --quiet

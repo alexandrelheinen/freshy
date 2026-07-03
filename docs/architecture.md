@@ -91,12 +91,12 @@ Full guide: [local-development.md](local-development.md).
 
 ## CI/CD
 
-| Workflow               | Trigger                       | Actions                                        |
-| ---------------------- | ----------------------------- | ---------------------------------------------- |
-| `ci.yml`               | Pull request                  | Lint, typecheck, test, build, screenshots → R2 |
+| Workflow               | Trigger                      | Actions                                        |
+| ---------------------- | ---------------------------- | ---------------------------------------------- |
+| `ci.yml`               | Pull request                 | Lint, typecheck, test, build, screenshots → R2 |
 | `deploy-api.yml`       | Push to `main`               | Build, D1 migrate, Worker deploy               |
-| `migrate-database.yml` | Manual (`workflow_dispatch`) | D1 migrate only (no Worker deploy)           |
-| `release.yml`          | GitHub Release `v*`           | EAS build Android + iOS                        |
+| `migrate-database.yml` | Manual (`workflow_dispatch`) | D1 migrate only (no Worker deploy)             |
+| `release.yml`          | GitHub Release `v*`          | EAS build Android + iOS                        |
 
 ---
 

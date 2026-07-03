@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   FRESHNESS_LEVEL_LABELS,
-  GlassCard,
   MaterialIcon,
   PLACE_CATEGORY_ICONS,
   PLACE_CATEGORY_LABELS,
@@ -40,16 +39,31 @@ function categoryCount(
 function CategoryMobileCard({ category, count }: { category: PlaceCategory; count: number }) {
   const label = PLACE_CATEGORY_LABELS[category];
   const icon = PLACE_CATEGORY_ICONS[category] as MaterialIconName;
+  const photo = getPlacePhotoUrl(null, category, 'thumb');
 
   return (
     <Link href={ROUTES.categoryList(category)} className="group">
-      <GlassCard className="flex flex-col items-center p-6 text-center transition-all hover:scale-[1.02] active:scale-95">
-        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary-container/30 transition-colors group-hover:bg-primary-container/50">
-          <MaterialIcon name={icon} className="text-primary" size={32} />
+      <div className="relative h-36 overflow-hidden rounded-2xl shadow-sm transition-all active:scale-95">
+        <img
+          src={photo}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-scrim-strong via-scrim-weak to-transparent" />
+        <div className="absolute bottom-3 left-3 right-3 text-on-scrim">
+          <div className="mb-1 flex items-center gap-2">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-glass-highlight backdrop-blur-md">
+              <MaterialIcon name={icon} className="text-on-scrim" size={18} />
+            </div>
+            <span className="font-title-md text-title-md">{label}</span>
+          </div>
+          <span className="font-label-caps text-label-caps text-on-scrim/80">
+            {count} {count === 1 ? 'PLACE' : 'PLACES'}
+          </span>
         </div>
-        <span className="font-title-md text-on-surface">{label}</span>
-        <span className="mt-2 font-label-caps text-label-caps text-secondary">{count} PLACES</span>
-      </GlassCard>
+      </div>
     </Link>
   );
 }

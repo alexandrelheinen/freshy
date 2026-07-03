@@ -55,6 +55,21 @@ describe('@freshy/ui tokens', () => {
     else delete process.env.NEXT_PUBLIC_R2_PUBLIC_URL;
   });
 
+  it('resolves thumb variants for mobile cooling cards', () => {
+    assert.equal(
+      getPlacePhotoUrl(null, 'CAFE', 'thumb'),
+      '/place-defaults/thumbs/default-cafe.webp',
+    );
+    const saved = process.env.NEXT_PUBLIC_R2_PUBLIC_URL;
+    process.env.NEXT_PUBLIC_R2_PUBLIC_URL = 'https://assets.freshy.app';
+    assert.equal(
+      getPlacePhotoUrl(null, 'LIBRARY', 'thumb'),
+      'https://assets.freshy.app/places/defaults/thumbs/default-library.webp',
+    );
+    if (saved) process.env.NEXT_PUBLIC_R2_PUBLIC_URL = saved;
+    else delete process.env.NEXT_PUBLIC_R2_PUBLIC_URL;
+  });
+
   it('defines navigation and brand icons', () => {
     assert.equal(BRAND_ICON, 'nest_farsight_cool');
     assert.equal(NAV_ICONS.explore, 'explore');

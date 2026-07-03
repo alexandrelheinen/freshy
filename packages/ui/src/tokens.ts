@@ -6,6 +6,7 @@ import { getDefaultThemeTokens } from '@freshy/theme/tokens';
 import {
   defaultPlacePhotoLocalPath,
   resolvePlacePhotoUrl,
+  type PlacePhotoVariant,
   type PlacePhotoCategory,
 } from '@freshy/config/place-photos';
 export {
@@ -159,14 +160,18 @@ export const DEFAULT_PLACE_PHOTO_PATHS: Record<PlaceCategory, string> = {
   PUBLIC_SPACE: defaultPlacePhotoLocalPath('PUBLIC_SPACE'),
 };
 
+export type { PlacePhotoVariant };
+
 export function getPlacePhotoUrl(
   photoUrl: string | null | undefined,
   category: PlaceCategory,
+  variant: PlacePhotoVariant = 'full',
 ): string {
   const publicAssetBaseUrl = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? '';
   return resolvePlacePhotoUrl(
     photoUrl,
     category as PlacePhotoCategory,
     publicAssetBaseUrl || undefined,
+    variant,
   );
 }

@@ -1,14 +1,22 @@
 import { spawnSync } from 'node:child_process';
-import { access } from 'node:fs/promises';
+import { access, mkdir } from 'node:fs/promises';
 import path from 'node:path';
+import sharp from 'sharp';
 import {
+  DEFAULT_PLACE_PHOTO_THUMB_QUALITY,
+  DEFAULT_PLACE_PHOTO_THUMB_SUBDIR,
+  DEFAULT_PLACE_PHOTO_THUMB_WIDTH,
   PLACE_PHOTO_CATEGORIES,
   defaultPlacePhotoFilename,
   defaultPlacePhotoR2Key,
-} from '@freshy/config/place-photos';
-import { readR2S3Config, r2ObjectPublicUrl, r2S3Endpoint } from '@freshy/config/r2-s3';
+  defaultPlacePhotoThumbFilename,
+  defaultPlacePhotoThumbR2Key,
+  type PlacePhotoCategory,
+} from '../packages/config/place-photos';
+import { readR2S3Config, r2ObjectPublicUrl, r2S3Endpoint } from '../packages/config/r2-s3';
 
 const SOURCE_DIR = path.join(process.cwd(), 'apps/web/public/place-defaults');
+const THUMB_DIR = path.join(SOURCE_DIR, DEFAULT_PLACE_PHOTO_THUMB_SUBDIR);
 
 async function fileExists(filePath: string): Promise<boolean> {
   try {
@@ -19,10 +27,32 @@ async function fileExists(filePath: string): Promise<boolean> {
   }
 }
 
+export async function generatePlaceDefaultThumbs(sourceDir = SOURCE_DIR): Promise<void> {
+  const thumbDir = path.join(sourceDir, DEFAULT_PLACE_PHOTO_THUMB_SUBDIR);
+  await mkdir(thumbDir, { recursive: true });
+
+  for (const category of PLACE_PHOTO_CATEGORIES) {
+    const sourcePath = path.join(sourceDir, defaultPlacePhotoFilename(category));
+    const thumbPath = path.join(thumbDir, defaultPlacePhotoThumbFilename(category));
+
+    if (!(await fileExists(sourcePath))) {
+      throw new Error(`Missing default place photo asset: ${sourcePath}`);
+    }
+
+    await sharp(sourcePath)
+      .resize({ width: DEFAULT_PLACE_PHOTO_THUMB_WIDTH, withoutEnlargement: true })
+      .webp({ quality: DEFAULT_PLACE_PHOTO_THUMB_QUALITY })
+      .toFile(thumbPath);
+
+    console.log(`Generated ${path.relative(process.cwd(), thumbPath)}`);
+  }
+}
+
 function uploadObject(
   config: NonNullable<ReturnType<typeof readR2S3Config>>,
   localPath: string,
   objectKey: string,
+  contentType: string,
 ): void {
   const result = spawnSync(
     'aws',
@@ -34,7 +64,7 @@ function uploadObject(
       '--endpoint-url',
       r2S3Endpoint(config.accountId),
       '--content-type',
-      'image/png',
+      contentType,
       '--cache-control',
       'public, max-age=86400',
       '--quiet',
@@ -56,7 +86,33 @@ function uploadObject(
   }
 }
 
+async function uploadCategoryAssets(
+  config: NonNullable<ReturnType<typeof readR2S3Config>>,
+  category: PlacePhotoCategory,
+): Promise<void> {
+  const fullPath = path.join(SOURCE_DIR, defaultPlacePhotoFilename(category));
+  const thumbPath = path.join(THUMB_DIR, defaultPlacePhotoThumbFilename(category));
+  const fullKey = defaultPlacePhotoR2Key(category);
+  const thumbKey = defaultPlacePhotoThumbR2Key(category);
+
+  uploadObject(config, fullPath, fullKey, 'image/png');
+  console.log(`Uploaded ${fullKey} -> ${r2ObjectPublicUrl(config.publicUrl, fullKey)}`);
+
+  uploadObject(config, thumbPath, thumbKey, 'image/webp');
+  console.log(`Uploaded ${thumbKey} -> ${r2ObjectPublicUrl(config.publicUrl, thumbKey)}`);
+}
+
 async function main(): Promise<void> {
+  const generateOnly = process.argv.includes('--generate-only');
+
+  console.log(`Generating low-res default place photos in ${THUMB_DIR}`);
+  await generatePlaceDefaultThumbs();
+
+  if (generateOnly) {
+    console.log('Done (local thumbs only).');
+    return;
+  }
+
   const config = readR2S3Config();
   if (!config) {
     console.error(
@@ -74,16 +130,7 @@ async function main(): Promise<void> {
   console.log(`Uploading default place photos from ${SOURCE_DIR}`);
 
   for (const category of PLACE_PHOTO_CATEGORIES) {
-    const filename = defaultPlacePhotoFilename(category);
-    const filePath = path.join(SOURCE_DIR, filename);
-    const objectKey = defaultPlacePhotoR2Key(category);
-
-    if (!(await fileExists(filePath))) {
-      throw new Error(`Missing default place photo asset: ${filePath}`);
-    }
-
-    uploadObject(config, filePath, objectKey);
-    console.log(`Uploaded ${objectKey} -> ${r2ObjectPublicUrl(config.publicUrl, objectKey)}`);
+    await uploadCategoryAssets(config, category);
   }
 
   console.log('Done.');

@@ -29,11 +29,13 @@
     "smoke:web": "bash scripts/smoke-web-build.sh",
     "start:api": "pnpm --filter @freshy/api dev",
     "screenshots": "pnpm --filter @freshy/web screenshots",
-    "upload:place-defaults": "tsx scripts/upload-place-defaults.ts"
+    "upload:place-defaults": "tsx scripts/upload-place-defaults.ts",
+    "generate:place-default-thumbs": "tsx scripts/upload-place-defaults.ts --generate-only"
   },
   "devDependencies": {
     "eslint": "^9.17.0",
     "prettier": "^3.4.2",
+    "sharp": "^0.34.5",
     "tsx": "^4.19.2",
     "turbo": "^2.3.3",
     "typescript": "^5.7.2"

@@ -76,6 +76,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Generate place default thumbs
+        run: pnpm generate:place-default-thumbs
+
       - name: Build web app
         env:
           NEXT_PUBLIC_API_URL: https://freshy-api.alexandrelheinen.workers.dev

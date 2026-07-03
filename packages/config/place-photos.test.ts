@@ -5,6 +5,8 @@ import {
   defaultPlacePhotoFilename,
   defaultPlacePhotoLocalPath,
   defaultPlacePhotoR2Key,
+  defaultPlacePhotoThumbLocalPath,
+  defaultPlacePhotoThumbR2Key,
   resolvePlacePhotoUrl,
 } from './place-photos';
 
@@ -27,6 +29,22 @@ describe('@freshy/config place-photos', () => {
     assert.equal(
       resolvePlacePhotoUrl(null, 'LIBRARY', 'https://assets.freshy.app'),
       'https://assets.freshy.app/places/defaults/default-library.png',
+    );
+  });
+
+  it('resolves thumb variants for mobile category cards', () => {
+    assert.equal(defaultPlacePhotoThumbR2Key('CAFE'), 'places/defaults/thumbs/default-cafe.webp');
+    assert.equal(
+      defaultPlacePhotoThumbLocalPath('MALL'),
+      '/place-defaults/thumbs/default-mall.webp',
+    );
+    assert.equal(
+      resolvePlacePhotoUrl(null, 'BAR', 'https://assets.freshy.app', 'thumb'),
+      'https://assets.freshy.app/places/defaults/thumbs/default-bar.webp',
+    );
+    assert.equal(
+      resolvePlacePhotoUrl(null, 'MUSEUM', undefined, 'thumb'),
+      '/place-defaults/thumbs/default-museum.webp',
     );
   });
 
