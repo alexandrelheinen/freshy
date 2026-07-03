@@ -12,11 +12,11 @@ sans:
 
 # Brand wordmark font. Cherry Bomb One is a single-weight Google Font (400 only).
 logo:
-  family: Cherry Bomb One
+  family: Lilita One
   fallbacks:
     - system-ui
     - sans-serif
   weights:
     - 400
-  letterSpacing: '-0.02em'
+  letterSpacing: '-0.00em'
   baselineOffset: '-0.08em'
