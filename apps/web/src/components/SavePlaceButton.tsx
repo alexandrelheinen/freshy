@@ -9,6 +9,7 @@ export function SavePlaceButton({ placeId }: { placeId: string }) {
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -27,11 +28,14 @@ export function SavePlaceButton({ placeId }: { placeId: string }) {
 
   async function toggleSave() {
     setBusy(true);
+    setError(null);
     const ok = saved
       ? await unsavePlaceForUser(getToken, placeId)
       : await savePlaceForUser(getToken, placeId);
     if (ok) {
       setSaved(!saved);
+    } else {
+      setError('Could not update saved places. Try again.');
     }
     setBusy(false);
   }
@@ -65,6 +69,7 @@ export function SavePlaceButton({ placeId }: { placeId: string }) {
       >
         {loading ? 'Loading…' : saved ? 'Saved ✓' : 'Save place'}
       </button>
+      {error ? <p className="mt-2 text-center font-body-sm text-error">{error}</p> : null}
     </div>
   );
 }
