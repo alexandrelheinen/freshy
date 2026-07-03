@@ -115,6 +115,11 @@ export interface UserProfile {
   savedCount: number;
 }
 
+/** Anonymous contributors submit places with this value (the Freshy `User.id`). */
+export function contributorSecretForUser(user: Pick<User, 'id'>): string {
+  return user.id;
+}
+
 export async function getUserProfile(db: Db, userId: string): Promise<UserProfile> {
   const user = await db.select().from(usersTable).where(eq(usersTable.id, userId)).limit(1);
   if (!user[0]) throw new Error('User not found');

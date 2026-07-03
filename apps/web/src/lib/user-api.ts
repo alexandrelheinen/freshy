@@ -75,6 +75,15 @@ export async function fetchMyProfile(
   return { profile: json.data, error: null };
 }
 
+export async function fetchMyContributorSecret(
+  getToken: () => Promise<string | null>,
+): Promise<string | null> {
+  const res = await authFetch('/users/me/contributor-secret', getToken);
+  if (!res?.ok) return null;
+  const json = (await res.json()) as { data: { secret: string } };
+  return json.data.secret ?? null;
+}
+
 export async function fetchMySavedPlaces(
   getToken: () => Promise<string | null>,
 ): Promise<PlaceDto[]> {
