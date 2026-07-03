@@ -11,10 +11,12 @@ import {
   deleteStudioPlace,
   getStudioPlace,
   getStudioStats,
+  listStudioDuplicatePlaces,
   listStudioPlaces,
   mergePlacesSchema,
   mergeStudioPlaces,
   parseUpdateStudioPlaceFields,
+  studioDuplicatesQuerySchema,
   studioPlacesQuerySchema,
   updateStudioPlace,
   updateStudioPlaceSchema,
@@ -113,6 +115,23 @@ export function registerStudioRoutes(app: Hono<AppEnv>): void {
     }
     try {
       const data = await listStudioPlaces(c.get('db'), parsed.data);
+      return c.json({ data });
+    } catch {
+      return c.json({ error: 'Database unavailable' }, 503);
+    }
+  });
+
+  app.get('/studio/duplicates', requireAdmin, async (c) => {
+    const parsed = studioDuplicatesQuerySchema.safeParse({
+      q: c.req.query('q'),
+      page: c.req.query('page'),
+      limit: c.req.query('limit'),
+    });
+    if (!parsed.success) {
+      return c.json({ error: 'Invalid query', details: parsed.error.flatten() }, 400);
+    }
+    try {
+      const data = await listStudioDuplicatePlaces(c.get('db'), parsed.data);
       return c.json({ data });
     } catch {
       return c.json({ error: 'Database unavailable' }, 503);

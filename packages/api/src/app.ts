@@ -115,8 +115,11 @@ export function createApp(): Hono<AppEnv> {
 
   app.get('/places/meta/categories', async (c) => {
     try {
+      const verifiedOnlyRaw = c.req.query('verifiedOnly');
+      const verifiedOnly =
+        verifiedOnlyRaw === 'true' || verifiedOnlyRaw === '1' ? true : undefined;
       const [categories, featured] = await Promise.all([
-        categoryCounts(c.get('db')),
+        categoryCounts(c.get('db'), { verifiedOnly }),
         featuredPlace(c.get('db')),
       ]);
       return c.json({ data: { categories, featured } });

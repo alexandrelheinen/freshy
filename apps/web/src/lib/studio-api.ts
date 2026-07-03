@@ -56,7 +56,6 @@ export interface StudioPlacesPageDto {
 export interface StudioStatsDto {
   totalVerified: number;
   pendingValidation: number;
-  activeConflicts: number;
 }
 
 export interface UpdateStudioPlacePayload {
@@ -115,14 +114,18 @@ export async function fetchStudioStats(
   const res = await studioFetch('/studio/stats', getToken);
   if (res.status === 404) return null;
   if (!res.ok) return null;
-  const json = (await res.json()) as { data: StudioStatsDto };
-  return json.data;
+  try {
+    const json = (await res.json()) as { data?: StudioStatsDto };
+    return json.data ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export async function fetchStudioPlaces(
   getToken: () => Promise<string | null>,
   params?: {
-    status?: 'all' | 'verified' | 'pending' | 'duplicate';
+    status?: 'all' | 'verified' | 'pending';
     q?: string;
     page?: number;
     limit?: number;
@@ -137,12 +140,46 @@ export async function fetchStudioPlaces(
   const res = await studioFetch(`/studio/places?${search.toString()}`, getToken);
   if (res.status === 404) return null;
   if (!res.ok) return null;
-  const json = (await res.json()) as { data: StudioPlacesPageDto };
-  const data = json.data;
-  return {
-    ...data,
-    items: await resolveMissingStudioContributors(getToken, data.items),
-  };
+  try {
+    const json = (await res.json()) as { data?: StudioPlacesPageDto };
+    const data = json.data;
+    if (!data) return null;
+    return {
+      ...data,
+      items: await resolveMissingStudioContributors(getToken, data.items ?? []),
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function fetchStudioDuplicates(
+  getToken: () => Promise<string | null>,
+  params?: {
+    q?: string;
+    page?: number;
+    limit?: number;
+  },
+): Promise<StudioPlacesPageDto | null> {
+  const search = new URLSearchParams();
+  if (params?.q) search.set('q', params.q);
+  if (params?.page != null) search.set('page', String(params.page));
+  if (params?.limit != null) search.set('limit', String(params.limit));
+
+  const res = await studioFetch(`/studio/duplicates?${search.toString()}`, getToken);
+  if (res.status === 404) return null;
+  if (!res.ok) return null;
+  try {
+    const json = (await res.json()) as { data?: StudioPlacesPageDto };
+    const data = json.data;
+    if (!data) return null;
+    return {
+      ...data,
+      items: await resolveMissingStudioContributors(getToken, data.items ?? []),
+    };
+  } catch {
+    return null;
+  }
 }
 
 export async function fetchStudioUsersByIds(

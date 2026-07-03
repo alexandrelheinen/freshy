@@ -16,6 +16,7 @@ import { AppMobileHeader, AppTopNav } from './AppNav';
 import type { CategoryMeta } from '../lib/api';
 
 import { getApiBase } from '../lib/api-base';
+import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
 
 /** Desktop bento grid layout: category key and optional column span. */
 const DESKTOP_BENTO: Array<{ category: PlaceCategory; colSpan?: 1 | 2 }> = [
@@ -112,15 +113,21 @@ function CategoryDesktopCard({
 
 export function CoolingClient() {
   const [meta, setMeta] = useState<CategoryMeta | null>(null);
+  const { verifiedOnly } = useVerifiedOnlyFilter();
 
   useEffect(() => {
     void (async () => {
-      const res = await fetch(`${getApiBase()}/places/meta/categories`);
+      const search = new URLSearchParams();
+      if (verifiedOnly) search.set('verifiedOnly', 'true');
+      const query = search.toString();
+      const res = await fetch(
+        `${getApiBase()}/places/meta/categories${query ? `?${query}` : ''}`,
+      );
       if (!res.ok) return;
       const json = (await res.json()) as { data: CategoryMeta };
       setMeta(json.data);
     })();
-  }, []);
+  }, [verifiedOnly]);
 
   const categories = meta?.categories ?? [];
   const featured = meta?.featured;

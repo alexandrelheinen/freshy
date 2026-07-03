@@ -123,11 +123,13 @@ The API enriches each place with a `studioStatus` field for the admin table. Thi
 
 | Label                | `studioStatus` | Condition                                                       |
 | -------------------- | -------------- | --------------------------------------------------------------- |
-| **Verified** (green) | `verified`     | `status === PUBLISHED` and not flagged as duplicate             |
-| **Pending**          | `pending`      | `status === DRAFT`                                              |
-| **Duplicate** (red)  | `duplicate`    | Another place exists within **50 meters** (newer entry flagged) |
+| **Verified** (green) | `verified`     | `status === PUBLISHED`                                            |
+| **Pending**          | `pending`      | `status === DRAFT` or `IMPORTED`                                  |
+| **Duplicate** (red)  | `duplicate`    | Another place exists within **50 meters** (newer entry flagged)   |
 
 Duplicate detection uses great-circle distance (`haversineDistanceKm` in `@freshy/db`). When two places are within 50 m, the **older** record is kept as the canonical entry; the newer one is marked duplicate and offers a **Merge** action.
+
+Duplicate scans are **on demand** only (not on every Studio load). Use **Check for duplicates** in the dashboard or open **Conflicts (Merge)** and run a scan before reviewing results.
 
 ---
 
@@ -138,7 +140,8 @@ Implemented in `apps/web/src/components/StudioClient.tsx`, loaded client-only vi
 | Area         | Behavior                                                                      |
 | ------------ | ----------------------------------------------------------------------------- |
 | Sidebar      | Filters: **Places** (all), **Pending Validation**, **Conflicts (Merge)**      |
-| Stats cards  | Total verified, pending count, active conflicts, average freshness score      |
+| Stats cards  | Total verified, pending count, active conflicts (after scan), freshness         |
+| Duplicate scan | **Check for duplicates** runs `GET /studio/duplicates` on demand              |
 | Table        | Name, location, coolness bar, status badge, **Added by**, row actions         |
 | **Validate** | Publishes a pending place (`DRAFT` → `PUBLISHED`)                             |
 | **Edit**     | Modal to change name, address, category, freshness level, status, description |
@@ -160,8 +163,9 @@ Middleware: `requireAdmin` in `packages/api/src/auth.ts`.
 | `GET`    | `/users/me/contributor-secret`             | Current user's contributor secret         |
 | `GET`    | `/studio/users`                            | Search users and list contributor secrets |
 | `GET`    | `/studio/users/:userId/contributor-secret` | Single user contributor secret (admin)    |
-| `GET`    | `/studio/stats`                            | Dashboard metrics                         |
+| `GET`    | `/studio/stats`                            | Dashboard metrics (verified and pending counts) |
 | `GET`    | `/studio/places`                           | Paginated place list                      |
+| `GET`    | `/studio/duplicates`                       | On-demand duplicate scan (paginated)      |
 | `GET`    | `/studio/places/:placeId`                  | Single place with `studioStatus`          |
 | `PATCH`  | `/studio/places/:placeId`                  | Update any editable field                 |
 | `POST`   | `/studio/places/:placeId/approve`          | Set `status` to `PUBLISHED`               |
@@ -174,10 +178,20 @@ Public place responses omit `createdById`. Contributor email is returned only on
 
 | Param    | Values                                    | Default |
 | -------- | ----------------------------------------- | ------- |
-| `status` | `all`, `verified`, `pending`, `duplicate` | `all`   |
+| `status` | `all`, `verified`, `pending`              | `all`   |
 | `q`      | Search string (name, address, slug)       | —       |
 | `page`   | Page number                               | `1`     |
 | `limit`  | Page size (max 100)                       | `25`    |
+
+### `GET /studio/duplicates` query parameters
+
+Runs a full duplicate scan, then returns paginated conflict rows. Same params as `/studio/places` except `status`.
+
+| Param   | Description                         | Default |
+| ------- | ----------------------------------- | ------- |
+| `q`     | Search string (name, address, slug) | —       |
+| `page`  | Page number                         | `1`     |
+| `limit` | Page size (max 100)                 | `25`    |
 
 ### `POST /studio/places/merge` body
 

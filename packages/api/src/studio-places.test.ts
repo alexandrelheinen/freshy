@@ -6,6 +6,7 @@ import {
   mergePlacesSchema,
   parseUpdateStudioPlaceFields,
   studioContributorForPlace,
+  studioDuplicatesQuerySchema,
   studioPlacesQuerySchema,
   updateStudioPlaceSchema,
 } from './studio-places';
@@ -16,6 +17,15 @@ describe('studio-places', () => {
     assert.equal(parsed.success, true);
     if (parsed.success) {
       assert.equal(parsed.data.status, 'pending');
+    }
+  });
+
+  it('validates studio duplicate scan query', () => {
+    const parsed = studioDuplicatesQuerySchema.safeParse({ page: 2, limit: 50 });
+    assert.equal(parsed.success, true);
+    if (parsed.success) {
+      assert.equal(parsed.data.page, 2);
+      assert.equal(parsed.data.limit, 50);
     }
   });
 
@@ -154,5 +164,21 @@ describe('studio-places', () => {
     assert.deepEqual(duplicates.get('b'), 'a');
     assert.equal(duplicates.has('a'), false);
     assert.equal(duplicates.has('c'), false);
+  });
+
+  it('keeps duplicate detection fast for large place sets', () => {
+    const places = Array.from({ length: 2000 }, (_, index) => ({
+      id: `place-${index}`,
+      latitude: 48.9 + (index % 50) * 0.00001,
+      longitude: 2.3 + Math.floor(index / 50) * 0.00001,
+      createdAt: new Date(Date.UTC(2025, 0, 1, 0, 0, index)),
+    }));
+
+    const startedAt = Date.now();
+    const duplicates = detectDuplicatePlaceIds(places);
+    const elapsedMs = Date.now() - startedAt;
+
+    assert.ok(duplicates.size > 0);
+    assert.ok(elapsedMs < 2000, `duplicate scan took ${elapsedMs}ms`);
   });
 });

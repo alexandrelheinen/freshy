@@ -281,11 +281,13 @@ export async function listCategoryPlacesPage(
 
 export async function categoryCounts(
   db: Db,
+  options?: Pick<CategoryPlacesQuery, 'verifiedOnly'>,
 ): Promise<Array<{ category: PlaceCategory; count: number }>> {
+  const statuses = explorePlaceStatuses({ verifiedOnly: options?.verifiedOnly });
   const rows = await db
     .select({ category: placesTable.category, count: sql<number>`count(*)` })
     .from(placesTable)
-    .where(eq(placesTable.status, 'PUBLISHED'))
+    .where(statuses ? inArray(placesTable.status, statuses) : sql`1=1`)
     .groupBy(placesTable.category)
     .orderBy(placesTable.category);
   return rows.map((r) => ({ category: r.category, count: Number(r.count) }));
