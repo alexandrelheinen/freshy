@@ -27,6 +27,7 @@ import {
 } from '../lib/studio-api';
 import { StudioPlaceEditModal } from './StudioPlaceEditModal';
 import { StudioContributorCell } from './StudioContributorCell';
+import { StudioContributorSecretsPanel } from './StudioContributorSecretsPanel';
 import { freshnessBarState } from '../lib/api';
 
 type StudioView = 'all' | 'verified' | 'pending' | 'duplicate';

@@ -58,6 +58,14 @@ export interface UpdateStudioPlaceOptions {
   photo?: File | null;
 }
 
+export interface StudioUserSecretDto {
+  id: string;
+  email: string;
+  displayName: string;
+  username: string;
+  secret: string;
+}
+
 async function studioFetch(
   path: string,
   getToken: () => Promise<string | null>,
@@ -105,6 +113,21 @@ export async function fetchStudioPlaces(
   if (res.status === 404) return null;
   if (!res.ok) return null;
   const json = (await res.json()) as { data: StudioPlacesPageDto };
+  return json.data;
+}
+
+export async function fetchStudioUsers(
+  getToken: () => Promise<string | null>,
+  params?: { q?: string; limit?: number },
+): Promise<StudioUserSecretDto[]> {
+  const search = new URLSearchParams();
+  if (params?.q) search.set('q', params.q);
+  if (params?.limit != null) search.set('limit', String(params.limit));
+
+  const query = search.toString();
+  const res = await studioFetch(`/studio/users${query ? `?${query}` : ''}`, getToken);
+  if (res.status === 404 || !res.ok) return [];
+  const json = (await res.json()) as { data: StudioUserSecretDto[] };
   return json.data;
 }
 
