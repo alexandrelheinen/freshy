@@ -112,7 +112,7 @@ function VerifiedOnlyToggle({ onToggle }: { onToggle?: () => void }) {
   );
 }
 
-function ProfileAvatarLink({ className = '' }: { className?: string }) {
+function ClerkProfileAvatarLink({ className = '' }: { className?: string }) {
   const { isSignedIn, user } = useUser();
 
   return (
@@ -128,6 +128,22 @@ function ProfileAvatarLink({ className = '' }: { className?: string }) {
       )}
     </Link>
   );
+}
+
+function ProfileAvatarLink({ className = '' }: { className?: string }) {
+  if (!clerkEnabled) {
+    return (
+      <Link
+        href={ROUTES.profile}
+        className={`flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-primary-container bg-primary-container/30 ${className}`}
+        aria-label="Profile"
+      >
+        <MaterialIcon name="digital_wellbeing" className="text-primary" />
+      </Link>
+    );
+  }
+
+  return <ClerkProfileAvatarLink className={className} />;
 }
 
 function NavLink({
