@@ -22,7 +22,13 @@ import {
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
 import { getThemeTokens } from '@freshy/theme/tokens';
-import { freshnessBarState, directionsUrl, formatDistance, isPlaceVerified } from '../lib/api';
+import {
+  freshnessBarState,
+  directionsUrl,
+  formatDistance,
+  fetchPlacesClient,
+  isPlaceVerified,
+} from '../lib/api';
 import { formatPlaceDistanceFromUser, distanceKmFromUser } from '../lib/place-distance';
 import type { UserCoords } from '../lib/location-context';
 import { mapStyleUrl, type MapStyleId } from '../lib/map-styles';
@@ -31,7 +37,6 @@ import { circlePolygonGeoJson } from '../lib/map-circle';
 import { locationStatusMessage } from '../lib/location-messages';
 import { useUserLocation } from '../lib/use-user-location';
 import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
-import { API_BASE } from '../lib/api-base';
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import { SearchRadiusControl } from './SearchRadiusControl';
 import { PlaceMapMarker, UserLocationMarker, VerifiedBadge, freshnessLabel } from './map-markers';
@@ -342,23 +347,21 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         MAP_SEARCH.maxRadiusKm,
         MAP_SEARCH.minRadiusKm,
       );
-      const params = new URLSearchParams();
-      params.set('lat', String(opts.lat));
-      params.set('lng', String(opts.lng));
-      params.set('radius', String(radius));
-      if (opts.category) params.set('category', opts.category);
-      if (opts.verifiedOnly) params.set('verifiedOnly', 'true');
-
-      const res = await fetch(`${API_BASE}/places?${params.toString()}`);
-      if (!res.ok) {
+      const places = await fetchPlacesClient({
+        lat: opts.lat,
+        lng: opts.lng,
+        radius,
+        category: opts.category,
+        verifiedOnly: opts.verifiedOnly,
+      });
+      if (places === null) {
         setPlacesLoadError('Could not load places for this area. Try again in a moment.');
         return;
       }
       setPlacesLoadError(null);
-      const json = (await res.json()) as { data: PlaceDto[] };
-      setPlaces(json.data);
-      if (json.data[0] && !json.data.some((p) => p.slug === selectedSlug)) {
-        setSelectedSlug(json.data[0].slug);
+      setPlaces(places);
+      if (places[0] && !places.some((p) => p.slug === selectedSlug)) {
+        setSelectedSlug(places[0].slug);
       }
     },
     [selectedSlug],

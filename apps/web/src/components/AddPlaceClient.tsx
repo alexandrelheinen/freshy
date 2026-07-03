@@ -22,10 +22,50 @@ import {
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import { createAnonymousPlace, createUserPlace } from '../lib/user-api';
 import { MOBILE_FORM_FOOTER_PADDING_CLASS } from '../lib/layout';
+import { writeStoredMapCenter } from '../lib/location-storage';
+import { stagePendingMapPlace } from '../lib/pending-map-place';
+import { zoomForRadiusKm } from '../lib/map-zoom';
 import { useUserLocation } from '../lib/use-user-location';
+import { PILOT_CITY } from '@freshy/config/pilot-city';
 
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 const PLACE_SUBMITTED_KEY = 'freshy-place-submitted';
+
+function stageSubmittedPlaceOnMap(
+  slug: string,
+  payload: {
+    name: string;
+    category: PlaceCategory;
+    address: string;
+    description?: string;
+    latitude?: number;
+    longitude?: number;
+    aggregatedFreshnessLevel: FreshnessLevelId;
+    tags: PlaceTagId[];
+  },
+  photoUrl?: string | null,
+) {
+  if (payload.latitude == null || payload.longitude == null) return;
+
+  stagePendingMapPlace({
+    slug,
+    name: payload.name,
+    category: payload.category,
+    address: payload.address,
+    description: payload.description ?? null,
+    latitude: payload.latitude,
+    longitude: payload.longitude,
+    aggregatedFreshnessLevel: payload.aggregatedFreshnessLevel,
+    tags: payload.tags,
+    photoUrl: photoUrl ?? null,
+  });
+
+  writeStoredMapCenter({
+    lat: payload.latitude,
+    lng: payload.longitude,
+    zoom: zoomForRadiusKm(payload.latitude, PILOT_CITY.defaultRadiusKm),
+  });
+}
 
 export function AddPlaceClient() {
   const router = useRouter();
@@ -187,12 +227,27 @@ export function AddPlaceClient() {
         : await createUserPlace(getToken, payload, options);
 
       if (result.ok) {
+        stageSubmittedPlaceOnMap(
+          result.slug,
+          {
+            name: payload.name,
+            category: payload.category,
+            address: payload.address,
+            description: payload.description,
+            latitude: payload.latitude,
+            longitude: payload.longitude,
+            aggregatedFreshnessLevel: payload.aggregatedFreshnessLevel,
+            tags: payload.tags,
+          },
+          photoUrl.trim() || undefined,
+        );
+
         if (anonymousMode) {
           setSubmitted(true);
           return;
         }
         sessionStorage.setItem(PLACE_SUBMITTED_KEY, result.slug);
-        router.push(ROUTES.profile);
+        router.push(ROUTES.explore);
         return;
       }
       setError(result.error);

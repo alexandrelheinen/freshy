@@ -1,4 +1,5 @@
 import { API_BASE } from './api-base';
+import { mergePendingMapPlaces } from './pending-map-place';
 
 export interface PlaceDto {
   id: string;
@@ -27,6 +28,50 @@ export function isPlaceVerified(place: Pick<PlaceDto, 'status'>): boolean {
   return place.status !== 'DRAFT';
 }
 
+export interface PlacesFetchParams {
+  lat: number;
+  lng: number;
+  radius: number;
+  category?: string;
+  q?: string;
+  verifiedOnly?: boolean;
+}
+
+/** Build query params for GET /places. Sends verifiedOnly=true only when the filter is on. */
+export function buildPlacesSearchParams(params: PlacesFetchParams): URLSearchParams {
+  const search = new URLSearchParams();
+  search.set('lat', String(params.lat));
+  search.set('lng', String(params.lng));
+  search.set('radius', String(params.radius));
+  if (params.category) search.set('category', params.category);
+  if (params.q) search.set('q', params.q);
+  if (params.verifiedOnly) search.set('verifiedOnly', 'true');
+  return search;
+}
+
+/** Client-side places fetch for map and list views (never cached). Returns null when the API fails. */
+export async function fetchPlacesClient(params: PlacesFetchParams): Promise<PlaceDto[] | null> {
+  const search = buildPlacesSearchParams(params);
+  const res = await fetch(`${API_BASE}/places?${search.toString()}`, { cache: 'no-store' });
+  if (!res.ok) return null;
+
+  const json = (await res.json()) as { data: PlaceDto[] };
+  let places = json.data ?? [];
+
+  if (!params.verifiedOnly) {
+    places = mergePendingMapPlaces(places, {
+      lat: params.lat,
+      lng: params.lng,
+      radiusKm: params.radius,
+      category: params.category,
+    });
+  }
+
+  return places;
+}
+
+export { mergePendingMapPlaces };
+
 export interface CategoryMeta {
   categories: Array<{ category: string; count: number }>;
   featured: PlaceDto | null;
@@ -50,20 +95,18 @@ export async function fetchPlaces(params?: {
   q?: string;
   verifiedOnly?: boolean;
 }): Promise<PlaceDto[]> {
-  const search = new URLSearchParams();
-  if (params?.lat != null) search.set('lat', String(params.lat));
-  if (params?.lng != null) search.set('lng', String(params.lng));
-  if (params?.radius != null) search.set('radius', String(params.radius));
-  if (params?.category) search.set('category', params.category);
-  if (params?.q) search.set('q', params.q);
-  if (params?.verifiedOnly) search.set('verifiedOnly', 'true');
+  if (params?.lat == null || params?.lng == null || params?.radius == null) {
+    return [];
+  }
 
-  const res = await fetch(`${API_BASE}/places?${search.toString()}`, {
-    next: { revalidate: 30 },
-  });
-  if (!res.ok) return [];
-  const json = (await res.json()) as { data: PlaceDto[] };
-  return json.data;
+  return fetchPlacesClient({
+    lat: params.lat,
+    lng: params.lng,
+    radius: params.radius,
+    category: params.category,
+    q: params.q,
+    verifiedOnly: params.verifiedOnly,
+  }).then((places) => places ?? []);
 }
 
 export function formatDistance(km: number | undefined): string {
