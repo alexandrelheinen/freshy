@@ -343,16 +343,8 @@ function ProfileWithClerk() {
 
             {activeTab === 'saved' ? (
               <section>
-                <div className="mb-4 flex items-center justify-between">
+                <div className="mb-4">
                   <h3 className="font-title-md text-on-surface">Saved Places</h3>
-                  {savedPlaces.length > 0 ? (
-                    <Link
-                      href={ROUTES.saved}
-                      className="font-label-caps text-primary hover:underline"
-                    >
-                      See all
-                    </Link>
-                  ) : null}
                 </div>
                 {savedPlaces.length === 0 ? (
                   <GlassCard className="p-4 text-on-surface-variant">

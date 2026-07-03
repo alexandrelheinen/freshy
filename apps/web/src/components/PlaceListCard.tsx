@@ -11,7 +11,9 @@ import {
   type PlaceCategory,
 } from '@freshy/ui';
 import type { PlaceDto } from '../lib/api';
-import { freshnessBarState, formatDistanceWithWalk, isPlaceVerified } from '../lib/api';
+import { freshnessBarState, isPlaceVerified } from '../lib/api';
+import { formatPlaceDistanceFromUser } from '../lib/place-distance';
+import { useUserLocation } from '../lib/use-user-location';
 import { freshnessLabel, freshnessPowerLabel } from './map-markers';
 import { FreshnessBar } from '@freshy/ui';
 
@@ -26,10 +28,12 @@ export function PlaceListCard({
   bookmarkFilled?: boolean;
   onBookmarkClick?: () => void;
 }) {
+  const { location } = useUserLocation();
   const bar = freshnessBarState(place.aggregatedFreshnessLevel);
   const placeTags = filterValidPlaceTags(place.tags ?? []);
   const isGreen = bar.tone === 'green';
   const verified = isPlaceVerified(place);
+  const distanceLabel = formatPlaceDistanceFromUser(place, location);
 
   return (
     <Link href={ROUTES.place(place.slug)} className="group block">
@@ -86,10 +90,10 @@ export function PlaceListCard({
           <div className="mb-1 flex items-start justify-between">
             <h3 className="font-title-md text-on-surface">{place.name}</h3>
           </div>
-          {place.distanceKm != null ? (
+          {distanceLabel ? (
             <div className="mb-3 flex items-center gap-2 text-outline">
               <MaterialIcon name="distance" size={16} />
-              <span className="font-body-sm">{formatDistanceWithWalk(place.distanceKm)}</span>
+              <span className="font-body-sm">{distanceLabel}</span>
             </div>
           ) : null}
           <div className="mb-4 flex flex-wrap gap-2">
