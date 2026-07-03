@@ -579,11 +579,13 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     <button
       type="button"
       onClick={researchHere}
-      className="pointer-events-auto absolute top-full left-1/2 z-10 mt-2 -translate-x-1/2 whitespace-nowrap rounded-full bg-primary px-6 py-2.5 font-label-caps text-on-primary shadow-lg transition-opacity hover:brightness-110 active:scale-[0.98]"
+      className="pointer-events-auto absolute top-full left-1/2 z-map mt-2 -translate-x-1/2 whitespace-nowrap rounded-full bg-primary px-6 py-2.5 font-label-caps text-on-primary shadow-lg transition-opacity hover:brightness-110 active:scale-[0.98]"
     >
       Research in this area
     </button>
   ) : null;
+
+  const filterChipsContainerClassName = needsResearch ? 'relative pb-14' : 'relative';
 
   return (
     <div className="relative min-h-screen" data-page="explore">
@@ -594,7 +596,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         <div className="absolute inset-0">{mapContent}</div>
 
         {exploreLocationMessage ? (
-          <div className="absolute bottom-44 left-4 right-4 z-30 mx-auto max-w-md rounded-xl border border-outline-variant/30 bg-surface/95 p-4 text-center shadow-lg backdrop-blur md:bottom-8 md:left-10 md:right-auto">
+          <div className="absolute bottom-44 left-4 right-4 z-map-overlay mx-auto max-w-md rounded-xl border border-outline-variant/30 bg-surface/95 p-4 text-center shadow-lg backdrop-blur md:bottom-auto md:left-6 md:right-auto md:top-24 md:mx-0">
             <p className="font-body-sm text-on-surface-variant">{exploreLocationMessage}</p>
             <p className="mt-2 font-body-sm text-on-surface-variant">
               You can also pan the map to search another area.
@@ -610,22 +612,22 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         ) : null}
 
         {/* Mobile: category chips stay fixed; research CTA floats below without shifting layout */}
-        <div className="absolute left-0 top-20 z-40 w-full px-margin-mobile md:hidden">
-          <div className="relative">
+        <div className="absolute left-0 top-20 z-map-overlay w-full px-margin-mobile md:hidden">
+          <div className={filterChipsContainerClassName}>
             {filterChips}
             {researchButton}
           </div>
         </div>
 
-        {/* Desktop: left sidebar */}
-        <div className="pointer-events-none absolute left-10 top-20 z-40 hidden max-h-[calc(100vh-10rem)] w-96 flex-col gap-4 md:flex">
-          <div className="relative">
+        {/* Desktop: left sidebar (list only until xl, when detail card has its own column) */}
+        <div className="pointer-events-none absolute left-4 top-20 z-map-overlay hidden max-h-[calc(100vh-13rem)] w-[min(20rem,calc(100vw-2rem))] flex-col gap-4 md:flex lg:left-6 lg:w-80 xl:max-h-[calc(100vh-12rem)] xl:w-96">
+          <div className={filterChipsContainerClassName}>
             <div className="glass-panel pointer-events-auto rounded-xl border border-glass-border p-4 shadow-xl">
               {filterChips}
             </div>
             {researchButton}
           </div>
-          <div className="glass-panel pointer-events-auto flex flex-1 flex-col overflow-hidden rounded-xl border border-glass-border shadow-xl">
+          <div className="glass-panel pointer-events-auto flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-glass-border shadow-xl">
             <div className="flex items-center justify-between border-b border-outline-variant/20 p-4">
               <h2 className="font-title-md text-on-surface">Nearby Places</h2>
               {places.length > 0 ? (
@@ -656,7 +658,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         </div>
 
         {/* Mobile: bottom overlay stack */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex flex-col gap-3 px-margin-mobile pb-4 md:hidden">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-map-overlay flex flex-col gap-3 px-margin-mobile pb-4 md:hidden">
           <div className="grid grid-cols-[3rem_1fr_3rem] items-end gap-2">
             <div aria-hidden="true" />
             <div className="pointer-events-auto flex justify-center">
@@ -697,15 +699,15 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
           ) : null}
         </div>
 
-        {/* Desktop: right detail card */}
+        {/* Desktop: right detail card (wide screens only to avoid md/lg overlap) */}
         {selected ? (
-          <div className="pointer-events-none absolute bottom-8 right-10 z-30 hidden w-[420px] md:block">
+          <div className="pointer-events-none absolute bottom-8 right-6 z-map-overlay hidden w-[min(24rem,calc(100vw-24rem))] xl:block xl:right-8">
             <ExplorePreviewCard place={selected} variant="desktop" />
           </div>
         ) : null}
 
-        {/* Desktop: map controls (left of detail card on md-lg; centered on xl+) */}
-        <div className="absolute bottom-8 left-[27.5rem] z-30 hidden md:flex xl:left-1/2 xl:-translate-x-1/2">
+        {/* Desktop: map controls centered in the map corridor */}
+        <div className="pointer-events-none absolute bottom-8 left-1/2 z-map-overlay hidden -translate-x-1/2 md:flex">
           <div className="glass-panel flex items-center gap-4 rounded-full border border-glass-border px-6 py-3 shadow-xl">
             <button
               type="button"
