@@ -27,6 +27,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Mobile bundle smoke (EAS Android parity)
+        run: pnpm smoke:mobile
+
       - name: Setup Expo and EAS
         uses: expo/expo-github-action@v8
         with:

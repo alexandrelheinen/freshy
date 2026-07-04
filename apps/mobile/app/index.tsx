@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, StyleSheet, useColorScheme, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
-import { buildNativeThemeBridgeScript } from '@freshy/ui';
+import { buildNativeThemeBridgeScript } from '@freshy/ui/theme-bridge';
 import { resolveNativeColorScheme } from '../src/theme-bridge';
 import { readWebAppUrl } from '../src/web-app-url';
 
