@@ -349,7 +349,14 @@ pnpm exec eas login
 pnpm exec eas init          # links project; copy projectId to EAS_PROJECT_ID in .env
 ```
 
-GitHub repository secret: **`EXPO_TOKEN`** from https://expo.dev/settings/access-tokens
+After `eas init`, confirm linking with `pnpm exec eas project:info`. Step-by-step from there (tokens, builds, GitHub releases): **[mobile-setup.md](mobile-setup.md)**.
+
+GitHub repository secrets:
+
+| Secret | Value |
+| ------ | ----- |
+| **`EXPO_TOKEN`** | Token from https://expo.dev/settings/access-tokens |
+| **`EAS_PROJECT_ID`** | UUID from `eas init` (same as in `.env`) |
 
 iOS device installs use **ad hoc** signing. Register test devices:
 

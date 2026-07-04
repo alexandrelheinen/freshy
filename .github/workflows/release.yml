@@ -37,6 +37,7 @@ jobs:
         working-directory: apps/mobile
         env:
           EXPO_PUBLIC_WEB_APP_URL: https://freshy-25e.pages.dev
+          EAS_PROJECT_ID: ${{ secrets.EAS_PROJECT_ID }}
         run: |
           eas build --platform android --profile release --non-interactive --wait
           eas build --platform ios --profile release --non-interactive --wait

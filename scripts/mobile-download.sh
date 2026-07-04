@@ -14,6 +14,21 @@ if [ "${PLATFORM}" != "android" ] && [ "${PLATFORM}" != "ios" ]; then
 fi
 
 mkdir -p "${OUT_DIR}"
+
+if [ -f "${ROOT_DIR}/.env" ]; then
+  set -a
+  # shellcheck disable=SC1091
+  source "${ROOT_DIR}/.env"
+  set +a
+fi
+
+if [ -f "${ROOT_DIR}/apps/mobile/.env" ]; then
+  set -a
+  # shellcheck disable=SC1091
+  source "${ROOT_DIR}/apps/mobile/.env"
+  set +a
+fi
+
 cd "${ROOT_DIR}/apps/mobile"
 
 EXT="apk"

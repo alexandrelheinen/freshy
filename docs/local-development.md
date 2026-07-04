@@ -153,7 +153,7 @@ The native apps in `apps/mobile` are a **WebView wrapper** around the deployed w
 pnpm mobile:dev
 ```
 
-**Build installable files locally** (requires [EAS setup](platforms.md#8-expo-eas--mobile-webview-shell)):
+**Build installable files locally** (requires [EAS setup](platforms.md#8-expo-eas--mobile-webview-shell); continuation guide: [mobile-setup.md](mobile-setup.md)):
 
 ```bash
 pnpm mobile:build:android   # signed APK
