@@ -1,4 +1,5 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config';
+import { readAppVersion } from './src/read-app-version';
 
 const DEFAULT_WEB_APP_URL = 'https://freshy-25e.pages.dev';
 const DEFAULT_EAS_PROJECT_ID = 'ff3b74f8-863b-41cd-a83a-1c9f37a1dd42';
@@ -17,7 +18,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ...config,
     name: 'Freshy',
     slug: 'freshy',
-    version: '0.1.0',
+    version: readAppVersion(),
     orientation: 'portrait',
     icon: './assets/icon.png',
     scheme: 'freshy',
@@ -39,7 +40,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     android: {
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
-        backgroundColor: '#0c6780',
+        backgroundColor: '#ffffff',
       },
       package: 'app.freshy.mobile',
       permissions: ['ACCESS_COARSE_LOCATION', 'ACCESS_FINE_LOCATION'],
