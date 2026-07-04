@@ -17,6 +17,7 @@ import {
 import {
   approveStudioPlace,
   deleteStudioPlace,
+  fetchStudioDuplicates,
   fetchStudioPlaces,
   fetchStudioStats,
   mergeStudioPlaces,
@@ -28,7 +29,10 @@ import {
 import { StudioPlaceEditModal } from './StudioPlaceEditModal';
 import { StudioContributorCell } from './StudioContributorCell';
 import { StudioMyContributorSecretBar } from './StudioMyContributorSecretBar';
+import { StudioPlaceFilters } from './StudioPlaceFilters';
 import { freshnessBarState } from '../lib/api';
+import type { StudioPlaceStatusFilter } from '../lib/studio-api';
+import type { FreshnessLevelId } from '@freshy/config/freshness-levels';
 
 type StudioView = 'all' | 'verified' | 'pending' | 'duplicate';
 
@@ -76,6 +80,9 @@ export function StudioClient() {
   const [view, setView] = useState<StudioView>('all');
   const [search, setSearch] = useState('');
   const [query, setQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState<PlaceCategory | null>(null);
+  const [placeStatusFilter, setPlaceStatusFilter] = useState<StudioPlaceStatusFilter | null>(null);
+  const [freshnessFilter, setFreshnessFilter] = useState<FreshnessLevelId | null>(null);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<StudioPageSize>(10);
   const [stats, setStats] = useState<StudioStatsDto | null>(null);
@@ -86,6 +93,9 @@ export function StudioClient() {
     limit: number;
   } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [duplicatesScanned, setDuplicatesScanned] = useState(false);
+  const [duplicateScanCount, setDuplicateScanCount] = useState<number | null>(null);
+  const [scanningDuplicates, setScanningDuplicates] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [editing, setEditing] = useState<StudioPlaceDto | null>(null);
@@ -97,23 +107,125 @@ export function StudioClient() {
     );
   }, [user]);
 
+  const hasActiveFilters =
+    query.length > 0 ||
+    categoryFilter != null ||
+    placeStatusFilter != null ||
+    freshnessFilter != null;
+
+  const invalidateDuplicateScan = useCallback(() => {
+    setDuplicatesScanned(false);
+    setDuplicateScanCount(null);
+  }, []);
+
+  const applySearch = useCallback(() => {
+    setQuery(search.trim());
+    setPage(1);
+    invalidateDuplicateScan();
+  }, [search, invalidateDuplicateScan]);
+
+  const clearSearch = useCallback(() => {
+    setSearch('');
+    setQuery('');
+    setPage(1);
+    invalidateDuplicateScan();
+  }, [invalidateDuplicateScan]);
+
+  const clearFilters = useCallback(() => {
+    setSearch('');
+    setQuery('');
+    setCategoryFilter(null);
+    setPlaceStatusFilter(null);
+    setFreshnessFilter(null);
+    setPage(1);
+  }, []);
+
+  const listFetchParams = useMemo(
+    () => ({
+      q: query || undefined,
+      category: categoryFilter ?? undefined,
+      placeStatus: placeStatusFilter ?? undefined,
+      freshnessLevel: freshnessFilter ?? undefined,
+      page,
+      limit: pageSize,
+    }),
+    [categoryFilter, freshnessFilter, page, pageSize, placeStatusFilter, query],
+  );
+
   const loadData = useCallback(async () => {
     setLoading(true);
     setActionError(null);
     try {
-      const status = view === 'all' ? 'all' : view;
+      if (view === 'duplicate' && !duplicatesScanned) {
+        const nextStats = await fetchStudioStats(getToken);
+        if (nextStats === null) {
+          setActionError('Could not load studio data. Try again in a moment.');
+          setStats(null);
+          setPlacesPage(null);
+          return;
+        }
+        setStats(nextStats);
+        setPlacesPage(null);
+        return;
+      }
+
+      const listParams = listFetchParams;
       const [nextStats, nextPlaces] = await Promise.all([
         fetchStudioStats(getToken),
-        fetchStudioPlaces(getToken, { status, q: query || undefined, page, limit: pageSize }),
+        view === 'duplicate'
+          ? fetchStudioDuplicates(getToken, listParams)
+          : fetchStudioPlaces(getToken, {
+              status: view === 'all' ? 'all' : view,
+              ...listParams,
+            }),
       ]);
+      if (nextStats === null || nextPlaces === null) {
+        setActionError('Could not load studio data. Try again in a moment.');
+        setStats(nextStats);
+        setPlacesPage(nextPlaces);
+        return;
+      }
       setStats(nextStats);
       setPlacesPage(nextPlaces);
+      if (view === 'duplicate') {
+        setDuplicateScanCount(nextPlaces.total);
+      }
     } catch {
       setActionError('Could not load studio data. Try signing in again.');
     } finally {
       setLoading(false);
     }
-  }, [getToken, page, pageSize, query, view]);
+  }, [duplicatesScanned, getToken, listFetchParams, view]);
+
+  const scanForDuplicates = useCallback(async () => {
+    setScanningDuplicates(true);
+    setActionError(null);
+    try {
+      const result = await fetchStudioDuplicates(getToken, {
+        ...listFetchParams,
+        page: 1,
+      });
+      if (result === null) {
+        setActionError('Could not scan for duplicates. Try again in a moment.');
+        return;
+      }
+      setDuplicatesScanned(true);
+      setDuplicateScanCount(result.total);
+      setPage(1);
+      if (view === 'duplicate') {
+        setPlacesPage(result);
+      }
+      setToast(
+        result.total === 0
+          ? 'No nearby duplicates found.'
+          : `Found ${result.total} conflict${result.total === 1 ? '' : 's'}.`,
+      );
+    } catch {
+      setActionError('Could not scan for duplicates. Try signing in again.');
+    } finally {
+      setScanningDuplicates(false);
+    }
+  }, [getToken, listFetchParams, view]);
 
   useEffect(() => {
     void loadData();
@@ -148,6 +260,7 @@ export function StudioClient() {
         return;
       }
       setToast('Place deleted.');
+      invalidateDuplicateScan();
       await loadData();
     } catch {
       setActionError('Could not delete place. Try signing in again.');
@@ -162,6 +275,7 @@ export function StudioClient() {
         return;
       }
       setToast('Places merged successfully.');
+      invalidateDuplicateScan();
       await loadData();
     } catch {
       setActionError('Could not merge places. Try signing in again.');
@@ -216,11 +330,17 @@ export function StudioClient() {
     <div className="min-h-screen bg-surface-container-low/30 md:flex" data-page="studio">
       <aside className="hidden w-72 shrink-0 flex-col border-r border-outline-variant/30 bg-surface-container-lowest md:sticky md:top-0 md:flex md:h-screen">
         <div className="px-8 py-8">
-          <Link href={ROUTES.explore} className="flex items-center gap-3">
-            <MaterialIcon name={BRAND_ICON} filled size={32} className="text-primary" />
-            <span className="font-logo tracking-logo text-headline-lg text-primary">
-              {BRAND_NAME}
-            </span>
+          <Link href={ROUTES.explore} className="inline-flex shrink-0 items-center">
+            <div className="inline-flex items-center gap-0.5">
+              <MaterialIcon
+                name={BRAND_ICON}
+                className="shrink-0 leading-none text-primary"
+                size={32}
+              />
+              <span className="m-0 shrink-0 p-0 font-logo tracking-logo leading-none text-primary wordmark-offset-y text-[2.25rem]">
+                {BRAND_NAME}
+              </span>
+            </div>
           </Link>
           <p className="mt-2 font-label-caps text-secondary opacity-60">PLACE STUDIO</p>
         </div>
@@ -235,6 +355,9 @@ export function StudioClient() {
                 onClick={() => {
                   setView(item.id);
                   setPage(1);
+                  if (item.id !== 'duplicate') {
+                    invalidateDuplicateScan();
+                  }
                 }}
                 className={`flex w-full items-center gap-4 rounded-xl px-4 py-3 transition-all ${
                   active
@@ -267,27 +390,41 @@ export function StudioClient() {
       </aside>
 
       <main className="min-w-0 flex-1">
-        <header className="sticky top-0 z-page-sticky flex h-16 items-center justify-between border-b border-outline-variant/10 bg-surface/80 px-4 backdrop-blur-md md:px-8">
-          <div className="flex flex-1 items-center gap-4">
-            <h2 className="font-headline-lg text-headline-lg text-on-surface">Establishments</h2>
-            <form
-              className="flex flex-1 items-center gap-2 rounded-full border border-outline-variant/20 bg-surface-container px-4 py-1.5 md:max-w-xs"
-              onSubmit={(event) => {
-                event.preventDefault();
-                setQuery(search.trim());
-                setPage(1);
-              }}
-            >
-              <MaterialIcon name="search" size={18} className="text-secondary" />
-              <input
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                className="w-48 border-none bg-transparent p-0 text-body-sm focus:ring-0"
-                placeholder="Search by name or ID…"
-              />
-            </form>
-          </div>
+        <header className="sticky top-0 z-page-sticky flex h-16 items-center border-b border-outline-variant/10 bg-surface/80 px-4 backdrop-blur-md md:px-8">
+          <h2 className="font-headline-lg text-headline-lg text-on-surface">Establishments</h2>
         </header>
+
+        <StudioPlaceFilters
+          values={{
+            search,
+            category: categoryFilter,
+            placeStatus: placeStatusFilter,
+            freshnessLevel: freshnessFilter,
+          }}
+          onSearchChange={setSearch}
+          onApplySearch={applySearch}
+          onClearSearch={clearSearch}
+          onCategoryChange={(value) => {
+            setCategoryFilter(value);
+            setPage(1);
+            invalidateDuplicateScan();
+          }}
+          onPlaceStatusChange={(value) => {
+            setPlaceStatusFilter(value);
+            setPage(1);
+            invalidateDuplicateScan();
+          }}
+          onFreshnessChange={(value) => {
+            setFreshnessFilter(value);
+            setPage(1);
+            invalidateDuplicateScan();
+          }}
+          onClear={() => {
+            clearFilters();
+            invalidateDuplicateScan();
+          }}
+          hasActiveFilters={hasActiveFilters}
+        />
 
         <StudioMyContributorSecretBar getToken={getToken} onCopied={setToast} />
 
@@ -301,6 +438,9 @@ export function StudioClient() {
                 onClick={() => {
                   setView(item.id);
                   setPage(1);
+                  if (item.id !== 'duplicate') {
+                    invalidateDuplicateScan();
+                  }
                 }}
                 className={`flex shrink-0 items-center gap-2 rounded-full px-4 py-2 font-label-caps transition-colors ${
                   active
@@ -329,12 +469,21 @@ export function StudioClient() {
               value={stats?.pendingValidation ?? 0}
               tone="secondary"
             />
-            <StatCard
-              icon="warning"
-              label="Active Conflicts"
-              value={stats?.activeConflicts ?? 0}
-              tone="tertiary"
-            />
+            <div className="rounded-3xl border border-outline-variant/20 bg-surface-container-lowest p-4 md:p-6">
+              <div className="mb-4 inline-flex rounded-xl bg-tertiary-container/30 p-2 text-tertiary">
+                <MaterialIcon name="warning" />
+              </div>
+              <p className="mb-1 font-label-caps text-secondary">Active Conflicts</p>
+              <h3 className="font-headline-lg text-headline-lg">{duplicateScanCount ?? '—'}</h3>
+              <button
+                type="button"
+                onClick={() => void scanForDuplicates()}
+                disabled={scanningDuplicates}
+                className="mt-4 rounded-xl bg-tertiary px-4 py-2 font-label-caps text-[11px] text-on-tertiary transition-colors hover:bg-tertiary/90 disabled:opacity-60"
+              >
+                {scanningDuplicates ? 'Checking…' : 'Check for duplicates'}
+              </button>
+            </div>
           </div>
 
           {actionError ? (
@@ -345,7 +494,9 @@ export function StudioClient() {
 
           <div className="overflow-x-auto rounded-3xl border border-outline-variant/20 bg-surface-container-lowest shadow-xl shadow-primary/5">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant/10 px-4 py-4 md:px-8 md:py-6">
-              <h4 className="font-title-md text-on-surface">Recent Establishments</h4>
+              <h4 className="font-title-md text-on-surface">
+                {hasActiveFilters ? 'Filtered results' : 'Recent establishments'}
+              </h4>
               <span className="text-body-sm text-secondary">
                 {loading ? 'Loading…' : `Showing ${items.length} of ${total}`}
               </span>
@@ -473,7 +624,22 @@ export function StudioClient() {
                       </td>
                     </tr>
                   ))}
-                  {!loading && items.length === 0 ? (
+                  {!loading && view === 'duplicate' && !duplicatesScanned ? (
+                    <tr>
+                      <td colSpan={6} className="px-8 py-12 text-center text-secondary">
+                        <p>Run a duplicate check to find nearby places within 50 meters.</p>
+                        <button
+                          type="button"
+                          onClick={() => void scanForDuplicates()}
+                          disabled={scanningDuplicates}
+                          className="mt-4 rounded-xl bg-tertiary px-4 py-2 font-label-caps text-[11px] text-on-tertiary transition-colors hover:bg-tertiary/90 disabled:opacity-60"
+                        >
+                          {scanningDuplicates ? 'Checking…' : 'Check for duplicates'}
+                        </button>
+                      </td>
+                    </tr>
+                  ) : null}
+                  {!loading && items.length === 0 && (view !== 'duplicate' || duplicatesScanned) ? (
                     <tr>
                       <td colSpan={6} className="px-8 py-12 text-center text-secondary">
                         No places match this view.

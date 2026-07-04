@@ -30,6 +30,11 @@ export function isPlaceVerified(place: Pick<PlaceDto, 'status'>): boolean {
   return place.status === 'PUBLISHED';
 }
 
+export function filterPlacesByVerifiedOnly(places: PlaceDto[], verifiedOnly?: boolean): PlaceDto[] {
+  if (!verifiedOnly) return places;
+  return places.filter(isPlaceVerified);
+}
+
 export interface PlacesFetchParams {
   lat: number;
   lng: number;
@@ -194,7 +199,12 @@ export async function fetchCategoryPlacesPage(
   });
   if (res.ok) {
     const json = (await res.json()) as { data: CategoryPlacesPageDto };
-    if (json.data) return json.data;
+    if (json.data) {
+      return {
+        ...json.data,
+        items: filterPlacesByVerifiedOnly(json.data.items, params.verifiedOnly),
+      };
+    }
   }
 
   const places = await fetchPlacesClient({
@@ -208,7 +218,10 @@ export async function fetchCategoryPlacesPage(
   });
   if (places === null) return null;
 
-  const categoryPlaces = places.filter((place) => place.category === params.category);
+  const categoryPlaces = filterPlacesByVerifiedOnly(
+    places.filter((place) => place.category === params.category),
+    params.verifiedOnly,
+  );
   return buildCategoryPlacesPageFromList(categoryPlaces, {
     page,
     limit,

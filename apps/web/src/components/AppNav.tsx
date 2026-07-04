@@ -45,7 +45,7 @@ function BrandLockup({
         size={iconSize}
       />
       <Text
-        className={`m-0 shrink-0 p-0 font-logo tracking-logo leading-none text-primary translate-y-[var(--font-logo-offset-y,-0.08em)] ${textClassName}`}
+        className={`m-0 shrink-0 p-0 font-logo tracking-logo leading-none text-primary wordmark-offset-y ${textClassName}`}
       >
         {BRAND_NAME}
       </Text>
@@ -142,7 +142,7 @@ function ThemeMenu({ variant = 'header' }: { variant?: 'header' | 'menu' }) {
           <div
             role="listbox"
             aria-label="Theme"
-            className="absolute right-0 z-popover mt-2 min-w-36 overflow-hidden rounded-xl border border-outline-variant/20 bg-surface-container-lowest py-1 shadow-lg"
+            className="absolute right-0 top-full z-popover mt-2 min-w-36 overflow-hidden rounded-xl border border-outline-variant/20 bg-surface-container-lowest py-1 shadow-lg"
           >
             {options.map((option) => (
               <button
@@ -325,7 +325,7 @@ function MobileNavMenu({
   if (!open) return null;
 
   return (
-    <nav className="absolute left-0 right-0 top-16 z-nav border-b border-outline-variant/20 bg-surface shadow-lg md:hidden">
+    <nav className="absolute left-0 right-0 top-full z-nav border-b border-outline-variant/20 bg-surface shadow-lg md:hidden">
       <div className="flex flex-col gap-0.5 px-margin-mobile py-3">
         {MOBILE_MENU_NAV_ITEMS.map((item) => (
           <NavLink
@@ -366,47 +366,49 @@ function MobileNavMenu({
 
 export function AppTopNav({ active = 'explore' }: { active?: NavActiveId }) {
   return (
-    <header className="fixed top-0 z-nav hidden h-16 w-full items-center bg-surface px-10 shadow-sm md:flex">
-      <Link
-        href={ROUTES.explore}
-        className="inline-flex shrink-0 items-center"
-        aria-label={`${BRAND_NAME} home`}
-      >
-        <BrandLockup iconSize={40} textClassName="text-[2.25rem]" />
-      </Link>
+    <header className="safe-area-top fixed top-0 z-nav hidden w-full items-center bg-surface px-10 shadow-sm md:flex">
+      <div className="flex h-16 w-full items-center">
+        <Link
+          href={ROUTES.explore}
+          className="inline-flex shrink-0 items-center"
+          aria-label={`${BRAND_NAME} home`}
+        >
+          <BrandLockup iconSize={40} textClassName="text-[2.25rem]" />
+        </Link>
 
-      <nav className="ml-10 flex items-center gap-3 lg:ml-12 lg:gap-4" aria-label="Primary">
-        {DESKTOP_NAV_ITEMS.map((item) => (
-          <NavLink
-            key={item.id}
-            href={item.href}
-            label={item.label}
-            iconName={NAV_ICONS[item.id] as MaterialIconName}
-            isActive={active === item.id}
-            variant="bar"
-          />
-        ))}
-        {clerkEnabled ? (
-          <ClerkAdminFlag>
-            {(isAdmin) =>
-              isAdmin ? (
-                <NavLink
-                  href={ROUTES.studio}
-                  label="Studio"
-                  iconName="dashboard_2_edit"
-                  isActive={active === 'studio'}
-                  variant="bar"
-                />
-              ) : null
-            }
-          </ClerkAdminFlag>
-        ) : null}
-      </nav>
+        <nav className="ml-10 flex items-center gap-3 lg:ml-12 lg:gap-4" aria-label="Primary">
+          {DESKTOP_NAV_ITEMS.map((item) => (
+            <NavLink
+              key={item.id}
+              href={item.href}
+              label={item.label}
+              iconName={NAV_ICONS[item.id] as MaterialIconName}
+              isActive={active === item.id}
+              variant="bar"
+            />
+          ))}
+          {clerkEnabled ? (
+            <ClerkAdminFlag>
+              {(isAdmin) =>
+                isAdmin ? (
+                  <NavLink
+                    href={ROUTES.studio}
+                    label="Studio"
+                    iconName="dashboard_2_edit"
+                    isActive={active === 'studio'}
+                    variant="bar"
+                  />
+                ) : null
+              }
+            </ClerkAdminFlag>
+          ) : null}
+        </nav>
 
-      <div className="ml-auto flex h-10 shrink-0 items-center gap-3">
-        <VerifiedOnlyToggle />
-        <ThemeMenu />
-        <ProfileAvatarLink />
+        <div className="ml-auto flex h-10 shrink-0 items-center gap-3">
+          <VerifiedOnlyToggle />
+          <ThemeMenu />
+          <ProfileAvatarLink />
+        </div>
       </div>
     </header>
   );
@@ -462,32 +464,34 @@ export function AppMobileHeader({
   const showHeaderUtilities = Boolean(backHref);
 
   return (
-    <header className="fixed top-0 z-nav flex h-16 w-full items-center justify-between bg-surface px-margin-mobile shadow-sm md:hidden">
-      <div className="flex min-w-0 flex-1 items-center gap-2">
-        {leading}
-        {showBrand && !backHref ? (
-          <BrandLockup
-            as="h1"
-            iconSize={32}
-            textClassName="truncate text-[1.8rem]"
-            className="min-w-0"
-          />
-        ) : title ? (
-          <h1 className="truncate font-headline-lg-mobile text-headline-lg-mobile tracking-tight text-primary">
-            {title}
-          </h1>
-        ) : null}
+    <header className="safe-area-top fixed top-0 z-nav w-full bg-surface shadow-sm md:hidden">
+      <div className="relative flex h-16 w-full items-center justify-between px-margin-mobile">
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          {leading}
+          {showBrand && !backHref ? (
+            <BrandLockup
+              as="h1"
+              iconSize={32}
+              textClassName="truncate text-[1.8rem]"
+              className="min-w-0"
+            />
+          ) : title ? (
+            <h1 className="truncate font-headline-lg-mobile text-headline-lg-mobile tracking-tight text-primary">
+              {title}
+            </h1>
+          ) : null}
+        </div>
+        <div className={`flex shrink-0 items-center gap-2 ${HEADER_CONTROL_CLASS}`}>
+          {showHeaderUtilities ? (
+            <>
+              <VerifiedOnlyToggle />
+              <ThemeMenu />
+            </>
+          ) : null}
+          <ProfileAvatarLink />
+        </div>
+        {clerkEnabled ? <ClerkAdminFlag>{mobileMenu}</ClerkAdminFlag> : mobileMenu(false)}
       </div>
-      <div className={`flex shrink-0 items-center gap-2 ${HEADER_CONTROL_CLASS}`}>
-        {showHeaderUtilities ? (
-          <>
-            <VerifiedOnlyToggle />
-            <ThemeMenu />
-          </>
-        ) : null}
-        <ProfileAvatarLink />
-      </div>
-      {clerkEnabled ? <ClerkAdminFlag>{mobileMenu}</ClerkAdminFlag> : mobileMenu(false)}
     </header>
   );
 }

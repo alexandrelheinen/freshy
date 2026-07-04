@@ -4,6 +4,27 @@ Freshy classifies every place with two independent systems: **tags** (what the s
 
 ---
 
+## Place categories
+
+**API and database keyword:** each place stores a `category` enum value (for example `MUSEUM`).
+
+**UI labels and icons:** the web app reads display copy from `@freshy/ui` (`PLACE_CATEGORY_LABELS`, `PLACE_CATEGORY_ICONS`). Labels and icons can differ from the stored keyword when the product name is broader than the legacy enum.
+
+| Keyword (`Place.category`) | UI label         | UI icon          | Notes                                                                                                                |
+| -------------------------- | ---------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `CAFE`                     | Cafés & Bakeries | (theme)          |                                                                                                                      |
+| `RESTAURANT`               | Restaurants      | (theme)          |                                                                                                                      |
+| `BAR`                      | Bars             | (theme)          |                                                                                                                      |
+| `LIBRARY`                  | Libraries        | (theme)          |                                                                                                                      |
+| `MALL`                     | Malls & Shops    | (theme)          |                                                                                                                      |
+| `MUSEUM`                   | Arts & Culture   | `theater_comedy` | Historical keyword. The category covers museums, galleries, theaters, and similar cultural venues, not only museums. |
+| `COWORKING`                | Coworking        | (theme)          |                                                                                                                      |
+| `PUBLIC_SPACE`             | Public Spaces    | (theme)          |                                                                                                                      |
+
+When adding a category, update the Drizzle enum, API validation, seed mappers, and `@freshy/ui` labels. Change UI copy in `packages/ui/src/tokens.ts` only unless the stored keyword also changes.
+
+---
+
 ## Tags
 
 **Config file:** [`packages/config/place-tags.yaml`](../packages/config/place-tags.yaml)

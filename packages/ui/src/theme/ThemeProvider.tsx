@@ -12,9 +12,11 @@ import {
 import { getThemeTokens, type ThemeId } from '@freshy/theme/tokens';
 import {
   readThemePreference,
+  readNativeColorScheme,
   resolveThemeId,
   systemPrefersDark,
   writeThemePreference,
+  NATIVE_COLOR_SCHEME_EVENT,
   type ResolvedThemeId,
   type ThemePreference,
 } from './theme-storage';
@@ -54,9 +56,20 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-color-scheme: dark)');
-    const handler = (event: MediaQueryListEvent) => setPrefersDark(event.matches);
-    media.addEventListener('change', handler);
-    return () => media.removeEventListener('change', handler);
+    const onMediaChange = (event: MediaQueryListEvent) => {
+      if (readNativeColorScheme() !== null) return;
+      setPrefersDark(event.matches);
+    };
+    const onNativeScheme = (event: Event) => {
+      const scheme = (event as CustomEvent<'light' | 'dark'>).detail;
+      setPrefersDark(scheme === 'dark');
+    };
+    media.addEventListener('change', onMediaChange);
+    window.addEventListener(NATIVE_COLOR_SCHEME_EVENT, onNativeScheme);
+    return () => {
+      media.removeEventListener('change', onMediaChange);
+      window.removeEventListener(NATIVE_COLOR_SCHEME_EVENT, onNativeScheme);
+    };
   }, []);
 
   const setTheme = useCallback((nextPreference: ThemePreference) => {

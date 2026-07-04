@@ -153,16 +153,16 @@ Stored as `TEXT` in SQLite. Defined in [`packages/db/src/schema.ts`](../packages
 
 ### `PlaceCategory`
 
-| Value          | UI label (English) |
-| -------------- | ------------------ |
-| `CAFE`         | Cafés & Bakeries   |
-| `RESTAURANT`   | Restaurants        |
-| `BAR`          | Bars               |
-| `LIBRARY`      | Libraries          |
-| `MALL`         | Malls & Shops      |
-| `MUSEUM`       | Museums            |
-| `COWORKING`    | Coworking          |
-| `PUBLIC_SPACE` | Public Spaces      |
+| Value          | UI label (English)                          |
+| -------------- | ------------------------------------------- |
+| `CAFE`         | Cafés & Bakeries                            |
+| `RESTAURANT`   | Restaurants                                 |
+| `BAR`          | Bars                                        |
+| `LIBRARY`      | Libraries                                   |
+| `MALL`         | Malls & Shops                               |
+| `MUSEUM`       | Arts & Culture (UI; keyword stays `MUSEUM`) |
+| `COWORKING`    | Coworking                                   |
+| `PUBLIC_SPACE` | Public Spaces                               |
 
 ### `FreshnessLevel`
 

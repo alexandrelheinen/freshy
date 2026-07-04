@@ -76,5 +76,7 @@ export { ThemeProvider, useTheme, useResolvedThemeId } from './theme/ThemeProvid
 export {
   themePreferenceLabel,
   THEME_BOOTSTRAP_SCRIPT,
+  buildNativeThemeBridgeScript,
   type ThemePreference,
+  type NativeColorScheme,
 } from './theme/theme-storage';

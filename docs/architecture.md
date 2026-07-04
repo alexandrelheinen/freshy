@@ -12,7 +12,7 @@ Freshy is a **pnpm monorepo** managed with **Turborepo**. Each sub-project lives
 freshy/
 ├── apps/
 │   ├── web/                 # @freshy/web — Next.js PWA → Cloudflare Pages
-│   └── mobile/              # @freshy/mobile — Expo (Android/iOS) → EAS
+│   └── mobile/              # @freshy/mobile — Expo WebView shell → EAS (APK/IPA)
 ├── packages/
 │   ├── api/                 # @freshy/api — Hono Worker → freshy-api
 │   ├── db/                  # @freshy/db — Drizzle schema + D1 migrations

@@ -1,14 +1,14 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function RootLayout() {
   return (
-    <>
-      <StatusBar style="dark" />
+    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+      <StatusBar style="auto" />
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="places/[slug]" options={{ presentation: 'card' }} />
+        <Stack.Screen name="index" />
       </Stack>
-    </>
+    </SafeAreaProvider>
   );
 }

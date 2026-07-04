@@ -14,6 +14,7 @@ import {
   PILOT_CITY,
   PLACE_CATEGORY_CHIP_LABELS,
   PLACE_CATEGORY_ICONS,
+  PLACE_CATEGORY_LABELS,
   ROUTES,
   TYPOGRAPHY_SCALE,
 } from './tokens';
@@ -73,15 +74,18 @@ describe('@freshy/ui tokens', () => {
 
   it('defines navigation and brand icons', () => {
     assert.equal(BRAND_ICON, 'nest_farsight_cool');
-    assert.equal(LOGO_FONT, 'Cherry Bomb One');
+    assert.equal(LOGO_FONT, 'Lilita One');
     assert.equal(NAV_ICONS.explore, 'explore');
     assert.equal(NAV_ICONS.saved, 'bookmark_heart');
     assert.equal(NAV_ICONS.cooling, 'category_search');
     assert.equal(NAV_ICONS.profile, 'digital_wellbeing');
     assert.equal(PLACE_CATEGORY_ICONS.PUBLIC_SPACE, 'nature');
+    assert.equal(PLACE_CATEGORY_ICONS.MUSEUM, 'theater_comedy');
   });
 
-  it('derives explore filter chips from every place category', () => {
+  it('labels MUSEUM as Arts & Culture in the UI while the API keyword stays MUSEUM', () => {
+    assert.equal(PLACE_CATEGORY_LABELS.MUSEUM, 'Arts & Culture');
+    assert.equal(PLACE_CATEGORY_CHIP_LABELS.MUSEUM, 'Arts & Culture');
     assert.equal(EXPLORE_FILTER_CHIPS.length, ALL_PLACE_CATEGORIES.length);
     for (const category of ALL_PLACE_CATEGORIES) {
       assert.equal(PLACE_CATEGORY_CHIP_LABELS[category].length > 0, true);

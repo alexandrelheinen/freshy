@@ -331,13 +331,68 @@ Local: same variables in root `.env`.
 
 ---
 
-## 8. Expo EAS | mobile builds (future)
+## 8. Expo EAS | mobile WebView shell
 
-| Item          | Value                                               |
-| ------------- | --------------------------------------------------- |
-| **Dashboard** | https://expo.dev                                    |
-| **Role**      | Android/iOS builds triggered by GitHub Release tags |
-| **Status**    | Scaffold in `apps/mobile`; not required for web v0  |
+| Item          | Value                                                           |
+| ------------- | --------------------------------------------------------------- |
+| **App**       | `apps/mobile` — native shell loading `EXPO_PUBLIC_WEB_APP_URL`  |
+| **Dashboard** | https://expo.dev                                                |
+| **CI**        | `.github/workflows/release.yml` on GitHub **Release published** |
+| **Outputs**   | Android `.apk` on GitHub Release (iOS `.ipa` and stores: [mobile-publishing.md](mobile-publishing.md)) |
+
+### One-time setup
+
+```bash
+pnpm install
+cd apps/mobile
+pnpm exec eas login
+pnpm exec eas init          # links project; copy projectId to EAS_PROJECT_ID in .env
+```
+
+After `eas init`, confirm linking with `pnpm exec eas project:info`. Step-by-step from there (tokens, builds, GitHub releases): **[mobile-setup.md](mobile-setup.md)**. Full store and sideload publishing paths (Play, App Store, TestFlight): **[mobile-publishing.md](mobile-publishing.md)**.
+
+GitHub repository secrets:
+
+| Secret               | Value                                              |
+| -------------------- | -------------------------------------------------- |
+| **`EXPO_TOKEN`**     | Token from https://expo.dev/settings/access-tokens |
+| **`EAS_PROJECT_ID`** | UUID from `eas init` (same as in `.env`)           |
+
+iOS device installs use **ad hoc** signing. Register test devices:
+
+```bash
+cd apps/mobile
+pnpm exec eas device:create
+```
+
+Apple Developer Program membership is required for iOS builds.
+
+### Local commands (from repository root)
+
+| Command                        | Result                                      |
+| ------------------------------ | ------------------------------------------- |
+| `pnpm mobile:dev`              | Expo dev server (WebView shell)             |
+| `pnpm mobile:build:android`    | EAS build → signed APK                      |
+| `pnpm mobile:build:ios`        | EAS build → signed IPA (registered devices) |
+| `pnpm mobile:build`            | Both platforms                              |
+| `pnpm mobile:download:android` | Download latest APK to `dist/mobile/`       |
+| `pnpm mobile:download:ios`     | Download latest IPA to `dist/mobile/`       |
+
+Optional override for staging:
+
+```bash
+EXPO_PUBLIC_WEB_APP_URL=https://freshy-25e.pages.dev pnpm mobile:build:android
+```
+
+### Release automation
+
+Publishing a GitHub release (tag `v*`) runs EAS with profile **`release`**, downloads the Android APK, and attaches:
+
+- `freshy-<tag>-android.apk`
+
+iOS builds are deferred until Apple Developer credentials are configured.
+
+Manual dry run: **Actions → Release | Mobile builds → Run workflow** (uploads the APK as a workflow artifact without a release).
 
 ---
 
@@ -377,7 +432,7 @@ sequenceDiagram
 - [ ] **GitHub secrets**: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
 - [ ] **Verify**: `/health` db ok + auth configured, `/explore` shows map, `/profile` sign-in, save place works
 - [ ] **(Optional) R2 + GitHub secrets**: PR screenshot previews
-- [ ] **(Optional) EAS**: mobile releases
+- [ ] **(Optional) EAS**: `EXPO_TOKEN`, `EAS_PROJECT_ID`, `pnpm mobile:build`
 
 ---
 

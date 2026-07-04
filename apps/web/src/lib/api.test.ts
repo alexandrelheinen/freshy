@@ -6,6 +6,7 @@ import {
   buildPlacesSearchParams,
   directionsUrl,
   filterPlacesByMinFreshnessLevel,
+  filterPlacesByVerifiedOnly,
   formatDistance,
   formatDistanceWithWalk,
   formatRelativeTime,
@@ -75,6 +76,39 @@ describe('@freshy/web api helpers', () => {
     assert.equal(isPlaceVerified({ status: 'DRAFT' }), false);
     assert.equal(isPlaceVerified({ status: 'IMPORTED' }), false);
     assert.equal(isPlaceVerified({}), false);
+  });
+
+  it('filters category list results when verified-only is enabled', () => {
+    const places = [
+      {
+        id: '1',
+        slug: 'published-cafe',
+        name: 'Published Cafe',
+        description: null,
+        category: 'CAFE',
+        latitude: 48.9,
+        longitude: 2.3,
+        address: null,
+        aggregatedFreshnessLevel: 'MODEST_AC' as const,
+        status: 'PUBLISHED' as const,
+      },
+      {
+        id: '2',
+        slug: 'imported-cafe',
+        name: 'Imported Cafe',
+        description: null,
+        category: 'CAFE',
+        latitude: 48.9,
+        longitude: 2.3,
+        address: null,
+        aggregatedFreshnessLevel: 'MODEST_AC' as const,
+        status: 'IMPORTED' as const,
+      },
+    ];
+
+    const filtered = filterPlacesByVerifiedOnly(places, true);
+    assert.equal(filtered.length, 1);
+    assert.equal(filtered[0]?.slug, 'published-cafe');
   });
 
   it('merges draft places without duplicating slugs already returned by the API', () => {

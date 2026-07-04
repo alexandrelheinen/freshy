@@ -56,7 +56,29 @@ export interface StudioPlacesPageDto {
 export interface StudioStatsDto {
   totalVerified: number;
   pendingValidation: number;
-  activeConflicts: number;
+}
+
+export type StudioPlaceStatusFilter = 'DRAFT' | 'PUBLISHED' | 'IMPORTED';
+
+export interface StudioListFetchParams {
+  q?: string;
+  category?: string;
+  placeStatus?: StudioPlaceStatusFilter;
+  freshnessLevel?: string;
+  page?: number;
+  limit?: number;
+}
+
+function appendStudioListSearchParams(
+  search: URLSearchParams,
+  params?: StudioListFetchParams,
+): void {
+  if (params?.q) search.set('q', params.q);
+  if (params?.category) search.set('category', params.category);
+  if (params?.placeStatus) search.set('placeStatus', params.placeStatus);
+  if (params?.freshnessLevel) search.set('freshnessLevel', params.freshnessLevel);
+  if (params?.page != null) search.set('page', String(params.page));
+  if (params?.limit != null) search.set('limit', String(params.limit));
 }
 
 export interface UpdateStudioPlacePayload {
@@ -115,34 +137,61 @@ export async function fetchStudioStats(
   const res = await studioFetch('/studio/stats', getToken);
   if (res.status === 404) return null;
   if (!res.ok) return null;
-  const json = (await res.json()) as { data: StudioStatsDto };
-  return json.data;
+  try {
+    const json = (await res.json()) as { data?: StudioStatsDto };
+    return json.data ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export async function fetchStudioPlaces(
   getToken: () => Promise<string | null>,
-  params?: {
-    status?: 'all' | 'verified' | 'pending' | 'duplicate';
-    q?: string;
-    page?: number;
-    limit?: number;
+  params?: StudioListFetchParams & {
+    status?: 'all' | 'verified' | 'pending';
   },
 ): Promise<StudioPlacesPageDto | null> {
   const search = new URLSearchParams();
   if (params?.status) search.set('status', params.status);
-  if (params?.q) search.set('q', params.q);
-  if (params?.page != null) search.set('page', String(params.page));
-  if (params?.limit != null) search.set('limit', String(params.limit));
+  appendStudioListSearchParams(search, params);
 
   const res = await studioFetch(`/studio/places?${search.toString()}`, getToken);
   if (res.status === 404) return null;
   if (!res.ok) return null;
-  const json = (await res.json()) as { data: StudioPlacesPageDto };
-  const data = json.data;
-  return {
-    ...data,
-    items: await resolveMissingStudioContributors(getToken, data.items),
-  };
+  try {
+    const json = (await res.json()) as { data?: StudioPlacesPageDto };
+    const data = json.data;
+    if (!data) return null;
+    return {
+      ...data,
+      items: await resolveMissingStudioContributors(getToken, data.items ?? []),
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function fetchStudioDuplicates(
+  getToken: () => Promise<string | null>,
+  params?: StudioListFetchParams,
+): Promise<StudioPlacesPageDto | null> {
+  const search = new URLSearchParams();
+  appendStudioListSearchParams(search, params);
+
+  const res = await studioFetch(`/studio/duplicates?${search.toString()}`, getToken);
+  if (res.status === 404) return null;
+  if (!res.ok) return null;
+  try {
+    const json = (await res.json()) as { data?: StudioPlacesPageDto };
+    const data = json.data;
+    if (!data) return null;
+    return {
+      ...data,
+      items: await resolveMissingStudioContributors(getToken, data.items ?? []),
+    };
+  } catch {
+    return null;
+  }
 }
 
 export async function fetchStudioUsersByIds(

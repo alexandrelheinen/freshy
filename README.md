@@ -110,6 +110,7 @@ Full layout: [docs/architecture.md](docs/architecture.md).
 | [docs/infrastructure.md](docs/infrastructure.md)             | Cloudflare services, bindings, R2 layout                |
 | [docs/database.md](docs/database.md)                         | D1 schema, migrations, Drizzle                          |
 | [docs/architecture.md](docs/architecture.md)                 | Monorepo layout, data flow, CI                          |
+| [docs/mobile-publishing.md](docs/mobile-publishing.md)       | Android and iOS builds, stores, GitHub releases       |
 | [docs/studio.md](docs/studio.md)                             | Admin Studio: Clerk role, moderation API                |
 | [docs/place-classification.md](docs/place-classification.md) | Tags and freshness level catalogs                       |
 | [docs/quality-standards.md](docs/quality-standards.md)       | Per-language quality rules                              |

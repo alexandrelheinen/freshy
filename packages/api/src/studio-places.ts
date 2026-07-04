@@ -1,9 +1,10 @@
 import { z } from 'zod';
-import { eq, like, or, sql, desc } from 'drizzle-orm';
+import { and, eq, like, or, sql, desc } from 'drizzle-orm';
 import { FRESHNESS_LEVEL_IDS } from '@freshy/config/freshness-levels';
 import { PLACE_TAG_IDS } from '@freshy/config/place-tags';
 import {
   PLACE_CATEGORIES,
+  PLACE_STATUSES,
   type Place,
   type FreshnessLevel,
   type Db,
@@ -23,14 +24,29 @@ import {
 
 const DUPLICATE_RADIUS_KM = 0.05;
 
-export const studioPlacesQuerySchema = z.object({
-  status: z.enum(['all', 'verified', 'pending', 'duplicate']).optional().default('all'),
+const studioListFiltersSchema = z.object({
   q: z.string().trim().optional(),
+  category: z.enum(PLACE_CATEGORIES).optional(),
+  placeStatus: z.enum(PLACE_STATUSES).optional(),
+  freshnessLevel: z.enum(FRESHNESS_LEVEL_IDS as [string, ...string[]]).optional(),
   page: z.coerce.number().int().min(1).optional().default(1),
   limit: z.coerce.number().int().min(1).max(100).optional().default(25),
 });
 
+export type StudioListFilters = Pick<
+  z.infer<typeof studioListFiltersSchema>,
+  'q' | 'category' | 'placeStatus' | 'freshnessLevel'
+>;
+
+export const studioPlacesQuerySchema = studioListFiltersSchema.extend({
+  status: z.enum(['all', 'verified', 'pending']).optional().default('all'),
+});
+
 export type StudioPlacesQuery = z.infer<typeof studioPlacesQuerySchema>;
+
+export const studioDuplicatesQuerySchema = studioListFiltersSchema;
+
+export type StudioDuplicatesQuery = z.infer<typeof studioDuplicatesQuerySchema>;
 
 export const updateStudioPlaceSchema = z
   .object({
@@ -148,7 +164,6 @@ export interface StudioPlacesPage {
 export interface StudioStats {
   totalVerified: number;
   pendingValidation: number;
-  activeConflicts: number;
 }
 
 /** Fill contributor profiles when list items are missing contributor data. */
@@ -184,15 +199,43 @@ function createdAtMs(value: string | Date): number {
   return new Date(value).getTime();
 }
 
+/** Grid cell size in degrees (~50 m at mid-latitudes). */
+const DUPLICATE_GRID_CELL_DEG = 0.00045;
+
+function duplicateGridKey(latitude: number, longitude: number): string {
+  const row = Math.floor(latitude / DUPLICATE_GRID_CELL_DEG);
+  const col = Math.floor(longitude / DUPLICATE_GRID_CELL_DEG);
+  return `${row}:${col}`;
+}
+
+function duplicateNeighborGridKeys(latitude: number, longitude: number): string[] {
+  const row = Math.floor(latitude / DUPLICATE_GRID_CELL_DEG);
+  const col = Math.floor(longitude / DUPLICATE_GRID_CELL_DEG);
+  const keys: string[] = [];
+  for (let rowOffset = -1; rowOffset <= 1; rowOffset += 1) {
+    for (let colOffset = -1; colOffset <= 1; colOffset += 1) {
+      keys.push(`${row + rowOffset}:${col + colOffset}`);
+    }
+  }
+  return keys;
+}
+
 /** Mark newer nearby places as duplicates of the oldest place in each cluster. */
 export function detectDuplicatePlaceIds(places: PlaceCoord[]): Map<string, string> {
   const sorted = [...places].sort((a, b) => createdAtMs(a.createdAt) - createdAtMs(b.createdAt));
   const duplicates = new Map<string, string>();
+  const buckets = new Map<string, PlaceCoord[]>();
 
-  for (let i = 0; i < sorted.length; i += 1) {
-    const current = sorted[i]!;
-    for (let j = 0; j < i; j += 1) {
-      const earlier = sorted[j]!;
+  for (const current of sorted) {
+    const candidates: PlaceCoord[] = [];
+    for (const key of duplicateNeighborGridKeys(current.latitude, current.longitude)) {
+      const bucket = buckets.get(key);
+      if (bucket) candidates.push(...bucket);
+    }
+
+    candidates.sort((left, right) => createdAtMs(left.createdAt) - createdAtMs(right.createdAt));
+
+    for (const earlier of candidates) {
       const distanceKm = haversineDistanceKm(
         current.latitude,
         current.longitude,
@@ -204,6 +247,11 @@ export function detectDuplicatePlaceIds(places: PlaceCoord[]): Map<string, strin
         break;
       }
     }
+
+    const bucketKey = duplicateGridKey(current.latitude, current.longitude);
+    const bucket = buckets.get(bucketKey) ?? [];
+    bucket.push(current);
+    buckets.set(bucketKey, bucket);
   }
 
   return duplicates;
@@ -257,7 +305,7 @@ interface PlaceIndexRow {
   status: Place['status'];
 }
 
-async function loadPlaceIndexRows(db: Db, q?: string): Promise<PlaceIndexRow[]> {
+async function loadPlaceIndexRows(db: Db, filters: StudioListFilters): Promise<PlaceIndexRow[]> {
   const columns = {
     id: placesTable.id,
     latitude: placesTable.latitude,
@@ -266,35 +314,59 @@ async function loadPlaceIndexRows(db: Db, q?: string): Promise<PlaceIndexRow[]> 
     status: placesTable.status,
   };
 
-  if (q) {
-    const pattern = `%${q}%`;
-    return db
-      .select(columns)
-      .from(placesTable)
-      .where(
-        or(
-          like(placesTable.name, pattern),
-          like(placesTable.address, pattern),
-          like(placesTable.slug, pattern),
-        ),
-      )
-      .orderBy(desc(placesTable.createdAt));
+  const conditions = [];
+  if (filters.category) {
+    conditions.push(eq(placesTable.category, filters.category));
+  }
+  if (filters.placeStatus) {
+    conditions.push(eq(placesTable.status, filters.placeStatus));
+  }
+  if (filters.freshnessLevel) {
+    conditions.push(
+      eq(placesTable.aggregatedFreshnessLevel, filters.freshnessLevel as FreshnessLevel),
+    );
+  }
+  if (filters.q) {
+    const pattern = `%${filters.q}%`;
+    conditions.push(
+      or(
+        like(placesTable.name, pattern),
+        like(placesTable.address, pattern),
+        like(placesTable.slug, pattern),
+        like(placesTable.id, pattern),
+      ),
+    );
   }
 
-  return db.select(columns).from(placesTable).orderBy(desc(placesTable.createdAt));
+  const whereClause = conditions.length > 0 ? and(...conditions) : sql`1=1`;
+
+  return db
+    .select(columns)
+    .from(placesTable)
+    .where(whereClause)
+    .orderBy(desc(placesTable.createdAt));
+}
+
+function listFiltersFromPlacesQuery(
+  query: StudioPlacesQuery | StudioDuplicatesQuery,
+): StudioListFilters {
+  return {
+    q: query.q,
+    category: query.category,
+    placeStatus: query.placeStatus,
+    freshnessLevel: query.freshnessLevel,
+  };
 }
 
 export async function listStudioPlaces(
   db: Db,
   query: StudioPlacesQuery,
 ): Promise<StudioPlacesPage> {
-  const indexRows = await loadPlaceIndexRows(db, query.q);
-  const duplicateMap = detectDuplicatePlaceIds(indexRows);
+  const indexRows = await loadPlaceIndexRows(db, listFiltersFromPlacesQuery(query));
 
   const filteredIds: string[] = [];
   for (const row of indexRows) {
-    const duplicateOfId = duplicateMap.get(row.id) ?? null;
-    const studioStatus = studioStatusForPlace(row as Place, duplicateOfId);
+    const studioStatus = studioStatusForPlace(row as Place, null);
     if (matchesStudioStatusFilter(studioStatus, query.status)) {
       filteredIds.push(row.id);
     }
@@ -314,6 +386,38 @@ export async function listStudioPlaces(
   const items = pageIds
     .map((id) => rowsById.get(id))
     .filter((row): row is (typeof pageRows)[number] => row != null)
+    .map((row) => formatStudioPlaceListItem(row.place, null, row.contributor));
+
+  return {
+    items,
+    total,
+    page: query.page,
+    limit: query.limit,
+  };
+}
+
+export async function listStudioDuplicatePlaces(
+  db: Db,
+  query: StudioDuplicatesQuery,
+): Promise<StudioPlacesPage> {
+  const indexRows = await loadPlaceIndexRows(db, listFiltersFromPlacesQuery(query));
+  const duplicateMap = detectDuplicatePlaceIds(indexRows);
+
+  const duplicateIds = indexRows.filter((row) => duplicateMap.has(row.id)).map((row) => row.id);
+
+  const total = duplicateIds.length;
+  const offset = (query.page - 1) * query.limit;
+  const pageIds = duplicateIds.slice(offset, offset + query.limit);
+
+  if (pageIds.length === 0) {
+    return { items: [], total, page: query.page, limit: query.limit };
+  }
+
+  const pageRows = await loadStudioPlacesWithContributors(db, pageIds);
+  const rowsById = new Map(pageRows.map((row) => [row.place.id, row]));
+  const items = pageIds
+    .map((id) => rowsById.get(id))
+    .filter((row): row is (typeof pageRows)[number] => row != null)
     .map((row) =>
       formatStudioPlaceListItem(row.place, duplicateMap.get(row.place.id) ?? null, row.contributor),
     );
@@ -327,25 +431,25 @@ export async function listStudioPlaces(
 }
 
 export async function getStudioStats(db: Db): Promise<StudioStats> {
-  const coordRows = await db
+  const countRows = await db
     .select({
-      id: placesTable.id,
-      latitude: placesTable.latitude,
-      longitude: placesTable.longitude,
-      createdAt: placesTable.createdAt,
       status: placesTable.status,
-      aggregatedFreshnessLevel: placesTable.aggregatedFreshnessLevel,
+      count: sql<number>`count(*)`,
     })
-    .from(placesTable);
+    .from(placesTable)
+    .groupBy(placesTable.status);
 
-  const duplicateMap = detectDuplicatePlaceIds(coordRows);
-  const pendingValidation = coordRows.filter((p) => p.status === 'DRAFT').length;
-  const totalVerified = coordRows.filter((p) => p.status === 'PUBLISHED').length;
+  let totalVerified = 0;
+  let pendingValidation = 0;
+  for (const row of countRows) {
+    const count = Number(row.count);
+    if (row.status === 'PUBLISHED') totalVerified += count;
+    if (row.status === 'DRAFT') pendingValidation += count;
+  }
 
   return {
     totalVerified,
     pendingValidation,
-    activeConflicts: duplicateMap.size,
   };
 }
 
@@ -467,17 +571,8 @@ export async function getStudioPlace(db: Db, placeId: string): Promise<StudioPla
   const place = rows[0];
   if (!place) return null;
 
-  const allPlaces = await db
-    .select({
-      id: placesTable.id,
-      latitude: placesTable.latitude,
-      longitude: placesTable.longitude,
-      createdAt: placesTable.createdAt,
-    })
-    .from(placesTable);
-  const duplicateOfId = detectDuplicatePlaceIds(allPlaces).get(place.id) ?? null;
   const [loaded] = await loadStudioPlacesWithContributors(db, [place.id]);
   const contributor = loaded?.contributor ?? null;
 
-  return formatStudioPlaceListItem(place, duplicateOfId, contributor);
+  return formatStudioPlaceListItem(place, null, contributor);
 }
