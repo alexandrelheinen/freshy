@@ -677,7 +677,12 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     </div>
   ) : null;
 
-  const mobileFilterChipsContainerClassName = needsResearch ? 'relative pb-14' : 'relative';
+  const mobileFilterSection = (
+    <div className="space-y-1.5">
+      {filterChips}
+      {mobileResearchButton}
+    </div>
+  );
 
   return (
     <div className="relative h-dvh overflow-hidden" data-page="explore">
@@ -721,10 +726,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
 
         {/* Mobile: category chips stay fixed; research CTA floats below without shifting layout */}
         <div className="top-below-app-header absolute left-0 z-map-overlay w-full px-margin-mobile md:hidden">
-          <div className={mobileFilterChipsContainerClassName}>
-            {filterChips}
-            {mobileResearchButton}
-          </div>
+          {mobileFilterSection}
         </div>
 
         {/* Desktop: left sidebar; detail card lives here on md-lg, floats right on xl+ */}

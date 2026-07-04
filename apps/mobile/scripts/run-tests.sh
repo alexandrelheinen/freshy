@@ -5,7 +5,7 @@ set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 shopt -s globstar nullglob
-mapfile -t test_files < <(compgen -G "src/**/*.test.ts" || true)
+mapfile -t test_files < <(compgen -G "src/**/*.test.ts" || true; compgen -G "read-app-version.test.ts" || true)
 
 if [ "${#test_files[@]}" -eq 0 ]; then
   echo "No test files under src/**/*.test.ts"

@@ -1,6 +1,11 @@
 import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
 import { afterEach, describe, it } from 'node:test';
-import { readAppVersion } from './read-app-version';
+
+const require = createRequire(import.meta.url);
+const { readAppVersion } = require('./read-app-version.cjs') as {
+  readAppVersion: () => string;
+};
 
 describe('readAppVersion', () => {
   const original = process.env.FRESHY_RELEASE_VERSION;

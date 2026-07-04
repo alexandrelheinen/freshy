@@ -1,21 +1,19 @@
-import { execSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+const { execSync } = require('node:child_process');
+const { readFileSync } = require('node:fs');
+const { join } = require('node:path');
 
-const packageJson = JSON.parse(
-  readFileSync(join(dirname(fileURLToPath(import.meta.url)), '../package.json'), 'utf8'),
-) as { version: string };
+/** @type {{ version: string }} */
+const packageJson = JSON.parse(readFileSync(join(process.cwd(), 'package.json'), 'utf8'));
 
-function normalizeReleaseVersion(raw: string): string {
+function normalizeReleaseVersion(raw) {
   return raw.trim().replace(/^v/i, '');
 }
 
-function readPackageVersion(): string {
+function readPackageVersion() {
   return packageJson.version;
 }
 
-function readLatestGitTag(): string | null {
+function readLatestGitTag() {
   try {
     const tag = execSync('git describe --tags --abbrev=0', {
       encoding: 'utf8',
@@ -27,7 +25,7 @@ function readLatestGitTag(): string | null {
   }
 }
 
-export function readAppVersion(): string {
+function readAppVersion() {
   const fromEnv = process.env.FRESHY_RELEASE_VERSION?.trim();
   if (fromEnv) return normalizeReleaseVersion(fromEnv);
 
@@ -36,3 +34,5 @@ export function readAppVersion(): string {
 
   return readLatestGitTag() ?? '0.0.0';
 }
+
+module.exports = { readAppVersion };
