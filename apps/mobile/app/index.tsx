@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, StyleSheet, useColorScheme, View } from 'react-native';
+import { ActivityIndicator, Platform, StyleSheet, useColorScheme, View } from 'react-native';
+import Constants from 'expo-constants';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
 import { getDefaultThemeTokens, getThemeTokens } from '@freshy/theme/tokens';
 import { buildNativeThemeBridgeScript } from '@freshy/ui/theme-bridge';
 import { buildNativeSafeAreaScript } from '../src/safe-area-bridge';
+import { buildWebViewSafeAreaInsets, resolveTopInset } from '../src/resolve-safe-area-insets';
 import { resolveNativeColorScheme } from '../src/theme-bridge';
 import { readWebAppUrl } from '../src/web-app-url';
 
@@ -18,10 +20,12 @@ export default function FreshyWebAppScreen() {
   const webViewRef = useRef<WebView>(null);
   const webAppUrl = readWebAppUrl();
   const insets = useSafeAreaInsets();
+  const topInset = resolveTopInset(insets.top, Platform.OS, Constants.statusBarHeight);
   const nativeScheme = resolveNativeColorScheme(useColorScheme());
   const chromeColor = nativeScheme === 'dark' ? DARK_CHROME : LIGHT_CHROME;
   const themeBridgeScript = buildNativeThemeBridgeScript(nativeScheme);
-  const safeAreaScript = useMemo(() => buildNativeSafeAreaScript(insets), [insets]);
+  const webInsets = useMemo(() => buildWebViewSafeAreaInsets(insets), [insets]);
+  const safeAreaScript = useMemo(() => buildNativeSafeAreaScript(webInsets), [webInsets]);
   const bootstrapScript = `${themeBridgeScript}${safeAreaScript}`;
 
   useEffect(() => {
@@ -29,7 +33,10 @@ export default function FreshyWebAppScreen() {
   }, [bootstrapScript]);
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: chromeColor }]} edges={['bottom']}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: chromeColor, paddingTop: topInset }]}
+      edges={['bottom']}
+    >
       <WebView
         ref={webViewRef}
         source={{ uri: webAppUrl }}

@@ -10,4 +10,11 @@ describe('buildNativeSafeAreaScript', () => {
     assert.match(script, /--safe-area-inset-bottom','34px/);
     assert.match(script, /document\.documentElement/);
   });
+
+  it('injects zero top inset when the native shell owns the status bar offset', () => {
+    const script = buildNativeSafeAreaScript({ top: 0, right: 0, bottom: 0, left: 0 });
+
+    assert.match(script, /--safe-area-inset-top','0px/);
+    assert.match(script, /--safe-area-inset-bottom','0px/);
+  });
 });
