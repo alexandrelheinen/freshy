@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, StyleSheet, useColorScheme, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
 import { buildNativeThemeBridgeScript } from '@freshy/ui/theme-bridge';
+import { buildNativeSafeAreaScript } from '../src/safe-area-bridge';
 import { resolveNativeColorScheme } from '../src/theme-bridge';
 import { readWebAppUrl } from '../src/web-app-url';
 
@@ -13,16 +14,19 @@ export default function FreshyWebAppScreen() {
   const [loading, setLoading] = useState(true);
   const webViewRef = useRef<WebView>(null);
   const webAppUrl = readWebAppUrl();
+  const insets = useSafeAreaInsets();
   const nativeScheme = resolveNativeColorScheme(useColorScheme());
   const chromeColor = nativeScheme === 'dark' ? DARK_CHROME : LIGHT_CHROME;
   const themeBridgeScript = buildNativeThemeBridgeScript(nativeScheme);
+  const safeAreaScript = useMemo(() => buildNativeSafeAreaScript(insets), [insets]);
+  const bootstrapScript = `${themeBridgeScript}${safeAreaScript}`;
 
   useEffect(() => {
-    webViewRef.current?.injectJavaScript(themeBridgeScript);
-  }, [themeBridgeScript]);
+    webViewRef.current?.injectJavaScript(bootstrapScript);
+  }, [bootstrapScript]);
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: chromeColor }]} edges={['top', 'bottom']}>
+    <SafeAreaView style={[styles.container, { backgroundColor: chromeColor }]} edges={['bottom']}>
       <WebView
         ref={webViewRef}
         source={{ uri: webAppUrl }}
@@ -30,7 +34,7 @@ export default function FreshyWebAppScreen() {
         geolocationEnabled
         allowsBackForwardNavigationGestures
         setSupportMultipleWindows={false}
-        injectedJavaScriptBeforeContentLoaded={themeBridgeScript}
+        injectedJavaScriptBeforeContentLoaded={bootstrapScript}
         onLoadEnd={() => setLoading(false)}
         testID="freshy-webview"
       />
