@@ -59,7 +59,7 @@ docs/              → platforms, architecture, stitch designs
 ## Releases
 
 - Tag format: `v0.1.0`, `v1.0.0` (semver)
-- Publishing a GitHub **Release** runs `.github/workflows/release.yml`: EAS builds a signed Android APK and iOS IPA, then attaches them to the release assets
+- Publishing a GitHub **Release** runs `.github/workflows/release.yml`: EAS builds a signed Android APK and attaches it to the release assets. iOS and store publishing: [mobile-publishing.md](mobile-publishing.md).
 - Local builds: `pnpm mobile:build:android`, `pnpm mobile:build:ios` (see [platforms.md](platforms.md))
 - Release notes should list user-facing changes
 

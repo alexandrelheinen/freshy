@@ -9,6 +9,7 @@ import { buildNativeSafeAreaScript } from '../src/safe-area-bridge';
 import { buildWebViewSafeAreaInsets, resolveTopInset } from '../src/resolve-safe-area-insets';
 import { resolveNativeColorScheme } from '../src/theme-bridge';
 import { readWebAppUrl } from '../src/web-app-url';
+import { useExternalOAuthNavigation } from '../src/use-external-oauth-navigation';
 
 const defaultTheme = getDefaultThemeTokens();
 const darkTheme = getThemeTokens('dark');
@@ -19,6 +20,7 @@ export default function FreshyWebAppScreen() {
   const [loading, setLoading] = useState(true);
   const webViewRef = useRef<WebView>(null);
   const webAppUrl = readWebAppUrl();
+  const { onShouldStartLoadWithRequest } = useExternalOAuthNavigation(webViewRef, webAppUrl);
   const insets = useSafeAreaInsets();
   const topInset = resolveTopInset(insets.top, Platform.OS, Constants.statusBarHeight);
   const nativeScheme = resolveNativeColorScheme(useColorScheme());
@@ -44,7 +46,10 @@ export default function FreshyWebAppScreen() {
         geolocationEnabled
         allowsBackForwardNavigationGestures
         setSupportMultipleWindows={false}
+        thirdPartyCookiesEnabled
+        sharedCookiesEnabled
         injectedJavaScriptBeforeContentLoaded={bootstrapScript}
+        onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
         onLoadEnd={() => setLoading(false)}
         testID="freshy-webview"
       />

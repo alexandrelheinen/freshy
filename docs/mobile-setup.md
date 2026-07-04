@@ -178,17 +178,14 @@ After Step 3 (both secrets set):
 3. Title e.g. `Freshy v0.1.0`
 4. Click **Publish release**
 
-What happens:
+What happens today:
 
 1. Workflow **Release | Mobile builds** runs ( **Actions** tab )
-2. EAS builds Android APK and iOS IPA
-3. When green, the release page shows:
-   - `freshy-v0.1.0-android.apk`
-   - `freshy-v0.1.0-ios.ipa`
+2. EAS builds an Android APK and attaches `freshy-<tag>-android.apk`
 
 **Dry run without a release:** **Actions** → **Release | Mobile builds** → **Run workflow** → download **Artifacts** from that run.
 
-iOS will fail in CI until Apple credentials and registered devices are configured. Android can succeed on its own.
+For iOS on the same tag, Play Store, TestFlight, and App Store paths, see [mobile-publishing.md](mobile-publishing.md).
 
 ---
 
@@ -244,5 +241,6 @@ You usually do not need a separate mobile origin for this WebView setup.
 
 ## Related
 
+- [mobile-publishing.md](mobile-publishing.md) | full Android and iOS publishing reference (stores, TestFlight, GitHub releases)
 - [platforms.md](platforms.md#8-expo-eas--mobile-webview-shell) | platform checklist
 - [local-development.md](local-development.md#mobile-shell-optional) | local commands

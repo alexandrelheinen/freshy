@@ -162,7 +162,7 @@ pnpm mobile:download:android
 pnpm mobile:download:ios    # saves under dist/mobile/
 ```
 
-GitHub **Release published** events attach the same APK and IPA to the release automatically when `EXPO_TOKEN` is configured.
+GitHub **Release published** events attach the Android APK to the release automatically when `EXPO_TOKEN` is configured. iOS and store paths: [mobile-publishing.md](mobile-publishing.md).
 
 ---
 

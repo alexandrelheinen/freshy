@@ -338,7 +338,7 @@ Local: same variables in root `.env`.
 | **App**       | `apps/mobile` — native shell loading `EXPO_PUBLIC_WEB_APP_URL`  |
 | **Dashboard** | https://expo.dev                                                |
 | **CI**        | `.github/workflows/release.yml` on GitHub **Release published** |
-| **Outputs**   | Android `.apk` + iOS `.ipa` attached to the release             |
+| **Outputs**   | Android `.apk` on GitHub Release (iOS `.ipa` and stores: [mobile-publishing.md](mobile-publishing.md)) |
 
 ### One-time setup
 
@@ -349,7 +349,7 @@ pnpm exec eas login
 pnpm exec eas init          # links project; copy projectId to EAS_PROJECT_ID in .env
 ```
 
-After `eas init`, confirm linking with `pnpm exec eas project:info`. Step-by-step from there (tokens, builds, GitHub releases): **[mobile-setup.md](mobile-setup.md)**.
+After `eas init`, confirm linking with `pnpm exec eas project:info`. Step-by-step from there (tokens, builds, GitHub releases): **[mobile-setup.md](mobile-setup.md)**. Full store and sideload publishing paths (Play, App Store, TestFlight): **[mobile-publishing.md](mobile-publishing.md)**.
 
 GitHub repository secrets:
 
