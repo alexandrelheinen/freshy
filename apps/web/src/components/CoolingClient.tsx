@@ -13,6 +13,12 @@ import {
 } from '@freshy/ui';
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import type { CategoryMeta } from '../lib/api';
+import {
+  CATEGORY_THUMB_GRADIENT_CLASS,
+  CATEGORY_THUMB_IMAGE_CLASS,
+  CATEGORY_THUMB_SCRIM_CLASS,
+  formatCategoryPlaceCount,
+} from '../lib/category-card';
 
 import { getApiBase } from '../lib/api-base';
 import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
@@ -36,78 +42,70 @@ function categoryCount(
   return categories.find((c) => c.category === cat)?.count ?? 0;
 }
 
-function CategoryMobileCard({ category, count }: { category: PlaceCategory; count: number }) {
-  const label = PLACE_CATEGORY_LABELS[category];
-  const icon = PLACE_CATEGORY_ICONS[category] as MaterialIconName;
-  const photo = getPlacePhotoUrl(null, category, 'thumb');
-
-  return (
-    <Link href={ROUTES.categoryList(category)} className="group">
-      <div className="relative h-36 overflow-hidden rounded-2xl shadow-sm transition-all active:scale-95">
-        <img
-          src={photo}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-0 h-full w-full object-cover brightness-[0.72] contrast-[1.15] saturate-[1.02]"
-        />
-        <div className="absolute inset-0 bg-black/20" />
-        <div className="absolute inset-0 bg-gradient-to-b from-scrim-strong/75 via-scrim-weak/25 to-scrim-strong" />
-        <div className="absolute top-3 left-3 right-3 text-on-scrim">
-          <div className="mb-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-glass-highlight backdrop-blur-md">
-            <MaterialIcon name={icon} className="text-on-scrim" size={18} />
-          </div>
-          <span className="block max-w-[10rem] font-title-md text-title-md leading-tight">
-            {label}
-          </span>
-        </div>
-        <div className="absolute bottom-3 left-3 right-3">
-          <span className="font-label-caps text-label-caps text-on-scrim">
-            {count} {count === 1 ? 'PLACE' : 'PLACES'}
-          </span>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-function CategoryDesktopCard({
+function CategoryCard({
   category,
   count,
   colSpan = 1,
+  variant,
 }: {
   category: PlaceCategory;
   count: number;
   colSpan?: 1 | 2;
+  variant: 'mobile' | 'desktop';
 }) {
   const label = PLACE_CATEGORY_LABELS[category];
   const icon = PLACE_CATEGORY_ICONS[category] as MaterialIconName;
-  const photo = getPlacePhotoUrl(null, category);
+  const photo = getPlacePhotoUrl(null, category, 'thumb');
+  const countLabel = formatCategoryPlaceCount(count);
+  const isDesktop = variant === 'desktop';
 
   return (
     <Link
       href={ROUTES.categoryList(category)}
-      className={`group ${colSpan === 2 ? 'md:col-span-2' : ''}`}
+      className={`group ${isDesktop && colSpan === 2 ? 'md:col-span-2' : ''}`}
     >
-      <div className="relative h-64 overflow-hidden rounded-3xl shadow-sm transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl">
+      <div
+        className={
+          isDesktop
+            ? 'relative h-64 overflow-hidden rounded-3xl shadow-sm transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl'
+            : 'relative h-36 overflow-hidden rounded-2xl shadow-sm transition-all active:scale-95'
+        }
+      >
         <img
           src={photo}
           alt=""
-          className="absolute inset-0 h-full w-full object-cover brightness-[0.72] contrast-[1.15] saturate-[1.02] transition-transform duration-700 group-hover:scale-105"
+          loading={isDesktop ? undefined : 'lazy'}
+          decoding={isDesktop ? undefined : 'async'}
+          className={`${CATEGORY_THUMB_IMAGE_CLASS}${isDesktop ? ' transition-transform duration-700 group-hover:scale-105' : ''}`}
         />
-        <div className="absolute inset-0 bg-black/20" />
-        <div className="absolute inset-0 bg-gradient-to-t from-scrim-strong via-scrim-weak/55 to-scrim-weak/15" />
-        <div className="absolute bottom-6 left-6 text-on-scrim">
-          <div className={`flex items-center gap-3 ${colSpan === 2 ? 'mb-2' : 'mb-3'}`}>
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-glass-highlight backdrop-blur-md">
-              <MaterialIcon name={icon} className="text-on-scrim" size={22} />
-            </div>
-            {colSpan === 2 ? <span className="font-title-md text-title-md">{label}</span> : null}
+        <div className={CATEGORY_THUMB_SCRIM_CLASS} />
+        <div className={CATEGORY_THUMB_GRADIENT_CLASS} />
+        <div
+          className={
+            isDesktop
+              ? 'absolute top-6 left-6 right-6 text-on-scrim'
+              : 'absolute top-3 left-3 right-3 text-on-scrim'
+          }
+        >
+          <div
+            className={
+              isDesktop
+                ? 'mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-glass-highlight backdrop-blur-md'
+                : 'mb-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-glass-highlight backdrop-blur-md'
+            }
+          >
+            <MaterialIcon name={icon} className="text-on-scrim" size={isDesktop ? 22 : 18} />
           </div>
-          {colSpan !== 2 ? <p className="font-title-md text-title-md">{label}</p> : null}
-          <p className="font-body-sm text-on-scrim">
-            {count} {count === 1 ? 'place' : 'places'} available
-          </p>
+          <span className="block font-title-md text-title-md leading-tight">{label}</span>
+        </div>
+        <div
+          className={
+            isDesktop
+              ? 'absolute bottom-6 left-6 right-6 text-left'
+              : 'absolute bottom-3 left-3 right-3 text-left'
+          }
+        >
+          <span className="font-body-sm text-on-scrim">{countLabel}</span>
         </div>
       </div>
     </Link>
@@ -158,10 +156,11 @@ export function CoolingClient() {
         {/* Mobile category grid */}
         <div className="grid grid-cols-2 gap-4 md:hidden">
           {DESKTOP_BENTO.map(({ category }) => (
-            <CategoryMobileCard
+            <CategoryCard
               key={category}
               category={category}
               count={categoryCount(categories, category)}
+              variant="mobile"
             />
           ))}
         </div>
@@ -179,11 +178,12 @@ export function CoolingClient() {
           </div>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
             {DESKTOP_BENTO.map(({ category, colSpan }) => (
-              <CategoryDesktopCard
+              <CategoryCard
                 key={category}
                 category={category}
                 count={categoryCount(categories, category)}
                 colSpan={colSpan}
+                variant="desktop"
               />
             ))}
           </div>
