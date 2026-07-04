@@ -56,7 +56,9 @@ function CategoryMobileCard({ category, count }: { category: PlaceCategory; coun
           <div className="mb-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-glass-highlight backdrop-blur-md">
             <MaterialIcon name={icon} className="text-on-scrim" size={18} />
           </div>
-          <span className="block max-w-[10rem] font-title-md text-title-md leading-tight">{label}</span>
+          <span className="block max-w-[10rem] font-title-md text-title-md leading-tight">
+            {label}
+          </span>
         </div>
         <div className="absolute bottom-3 left-3 right-3">
           <span className="font-label-caps text-label-caps text-on-scrim/80">
@@ -119,9 +121,7 @@ export function CoolingClient() {
       const search = new URLSearchParams();
       if (verifiedOnly) search.set('verifiedOnly', 'true');
       const query = search.toString();
-      const res = await fetch(
-        `${getApiBase()}/places/meta/categories${query ? `?${query}` : ''}`,
-      );
+      const res = await fetch(`${getApiBase()}/places/meta/categories${query ? `?${query}` : ''}`);
       if (!res.ok) return;
       const json = (await res.json()) as { data: CategoryMeta };
       setMeta(json.data);
