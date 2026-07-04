@@ -6,22 +6,30 @@
     "./css": "./generated/themes.css",
     "./tokens": {
       "types": "./generated/index.ts",
+      "react-native": "./generated/index.ts",
       "import": "./generated/index.ts",
+      "require": "./generated/index.ts",
       "default": "./generated/index.ts"
     },
     "./tokens/default": {
       "types": "./generated/default.tokens.ts",
+      "react-native": "./generated/default.tokens.ts",
       "import": "./generated/default.tokens.ts",
+      "require": "./generated/default.tokens.ts",
       "default": "./generated/default.tokens.ts"
     },
     "./roles": {
       "types": "./src/roles.ts",
+      "react-native": "./src/roles.ts",
       "import": "./src/roles.ts",
+      "require": "./src/roles.ts",
       "default": "./src/roles.ts"
     },
     "./fonts": {
       "types": "./src/fonts.ts",
+      "react-native": "./src/fonts.ts",
       "import": "./src/fonts.ts",
+      "require": "./src/fonts.ts",
       "default": "./src/fonts.ts"
     }
   },
