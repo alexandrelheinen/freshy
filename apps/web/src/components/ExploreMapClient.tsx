@@ -654,13 +654,15 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       : null;
 
   const mobileResearchButton = needsResearch ? (
-    <button
-      type="button"
-      onClick={researchHere}
-      className="pointer-events-auto absolute top-full left-1/2 z-map mt-2 -translate-x-1/2 whitespace-nowrap rounded-full bg-primary px-6 py-2.5 font-label-caps text-on-primary shadow-lg transition-opacity hover:brightness-110 active:scale-[0.98]"
-    >
-      Research in this area
-    </button>
+    <div className="flex justify-center pt-1">
+      <button
+        type="button"
+        onClick={researchHere}
+        className="pointer-events-auto whitespace-nowrap rounded-full bg-primary px-6 py-2.5 font-label-caps text-on-primary shadow-lg transition-opacity hover:brightness-110 active:scale-[0.98]"
+      >
+        Research in this area
+      </button>
+    </div>
   ) : null;
 
   const desktopResearchButton = needsResearch ? (
