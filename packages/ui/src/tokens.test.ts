@@ -73,7 +73,7 @@ describe('@freshy/ui tokens', () => {
 
   it('defines navigation and brand icons', () => {
     assert.equal(BRAND_ICON, 'nest_farsight_cool');
-    assert.equal(LOGO_FONT, 'Cherry Bomb One');
+    assert.equal(LOGO_FONT, 'Lilita One');
     assert.equal(NAV_ICONS.explore, 'explore');
     assert.equal(NAV_ICONS.saved, 'bookmark_heart');
     assert.equal(NAV_ICONS.cooling, 'category_search');

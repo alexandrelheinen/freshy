@@ -13,7 +13,7 @@
     "download:ios": "bash ../../scripts/mobile-download.sh ios",
     "lint": "eslint app src --config ../../eslint.config.mjs --max-warnings 0",
     "typecheck": "tsc --noEmit",
-    "test": "bash ../../scripts/run-ts-tests.sh src"
+    "test": "bash scripts/run-tests.sh"
   },
   "dependencies": {
     "@babel/runtime": "^7.26.0",
