@@ -57,7 +57,7 @@ function SavedPlaceCard({ place }: { place: PlaceDto }) {
           {place.address ? (
             <p className="mt-1 flex items-center gap-1 font-body-sm text-on-surface-variant">
               <MaterialIcon name="location_on" size={16} />
-              <span className="truncate">{place.address.split(',')[0]}</span>
+              <span className="truncate">{place.address}</span>
             </p>
           ) : null}
         </div>
