@@ -66,6 +66,7 @@ export type MaterialIconName =
   | 'shopping_bag'
   | 'star'
   | 'sync'
+  | 'theater_comedy'
   | 'thermometer'
   | 'thermostat'
   | 'tune'

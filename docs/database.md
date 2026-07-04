@@ -160,7 +160,7 @@ Stored as `TEXT` in SQLite. Defined in [`packages/db/src/schema.ts`](../packages
 | `BAR`          | Bars               |
 | `LIBRARY`      | Libraries          |
 | `MALL`         | Malls & Shops      |
-| `MUSEUM`       | Museums            |
+| `MUSEUM`       | Arts & Culture (UI; keyword stays `MUSEUM`) |
 | `COWORKING`    | Coworking          |
 | `PUBLIC_SPACE` | Public Spaces      |
 

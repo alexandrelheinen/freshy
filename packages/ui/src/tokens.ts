@@ -65,7 +65,7 @@ export const PLACE_CATEGORY_ICONS: Record<PlaceCategory, string> = {
   BAR: defaultThemeIcons.category.bar,
   LIBRARY: defaultThemeIcons.category.library,
   MALL: defaultThemeIcons.category.mall,
-  MUSEUM: defaultThemeIcons.category.museum,
+  MUSEUM: 'theater_comedy',
   COWORKING: defaultThemeIcons.category.coworking,
   PUBLIC_SPACE: defaultThemeIcons.category.public_space,
 };
@@ -86,7 +86,7 @@ export const PLACE_CATEGORY_LABELS: Record<
   BAR: 'Bars',
   LIBRARY: 'Libraries',
   MALL: 'Malls & Shops',
-  MUSEUM: 'Museums',
+  MUSEUM: 'Arts & Culture',
   COWORKING: 'Coworking',
   PUBLIC_SPACE: 'Public Spaces',
 };
@@ -130,7 +130,7 @@ export const PLACE_CATEGORY_CHIP_LABELS: Record<PlaceCategory, string> = {
   BAR: 'Bars',
   LIBRARY: 'Libraries',
   MALL: 'Malls',
-  MUSEUM: 'Museums',
+  MUSEUM: 'Arts & Culture',
   COWORKING: 'Coworking',
   PUBLIC_SPACE: 'Public Spaces',
 };
