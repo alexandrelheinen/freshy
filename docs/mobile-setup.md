@@ -15,12 +15,12 @@ The pnpm `overrides` warning and the eas-cli upgrade notice are harmless. You ca
 
 ## What you are building
 
-| Thing | What it is |
-| ----- | ---------- |
-| **Web app** | Live at https://freshy-25e.pages.dev |
-| **Mobile app** | Native shell that loads that site in a WebView |
-| **EAS** | Expo cloud builds: signed **APK** (Android) and **IPA** (iOS) |
-| **EXPO_TOKEN** | API key so your machine and GitHub can talk to EAS |
+| Thing              | What it is                                                         |
+| ------------------ | ------------------------------------------------------------------ |
+| **Web app**        | Live at https://freshy-25e.pages.dev                               |
+| **Mobile app**     | Native shell that loads that site in a WebView                     |
+| **EAS**            | Expo cloud builds: signed **APK** (Android) and **IPA** (iOS)      |
+| **EXPO_TOKEN**     | API key so your machine and GitHub can talk to EAS                 |
 | **EAS_PROJECT_ID** | Expo project UUID (default in `app.config.ts`; optional in `.env`) |
 
 You do not need a Mac to build iOS. EAS builds in the cloud.
@@ -71,9 +71,9 @@ This is the same value you will use for GitHub Actions in Step 3.
 1. Open https://github.com/alexandrelheinen/freshy/settings/secrets/actions
 2. Click **New repository secret** for each row:
 
-| Secret name | Value |
-| ----------- | ----- |
-| `EXPO_TOKEN` | Token from Step 2 |
+| Secret name      | Value                                               |
+| ---------------- | --------------------------------------------------- |
+| `EXPO_TOKEN`     | Token from Step 2                                   |
 | `EAS_PROJECT_ID` | Optional. Default is in `apps/mobile/app.config.ts` |
 
 CI requires **`EXPO_TOKEN`**. The Expo project ID is committed in `app.config.ts`, so `EAS_PROJECT_ID` is only needed if you override it.
@@ -206,15 +206,15 @@ You usually do not need a separate mobile origin for this WebView setup.
 
 ## Cheat sheet
 
-| I want to… | Do this |
-| ---------- | ------- |
-| Confirm Expo link | `cd apps/mobile && pnpm exec eas project:info` |
-| Preview quickly | `pnpm mobile:dev` + Expo Go |
-| Build Android | `pnpm mobile:build:android` → `pnpm mobile:download:android` |
-| Build iOS | Register devices → `pnpm mobile:build:ios` → `pnpm mobile:download:ios` |
-| Attach both to a release | Publish GitHub Release + both GitHub secrets |
-| Watch builds | https://expo.dev/accounts/alexandrelheinen/projects/freshy/builds |
-| Change loaded site | Set `EXPO_PUBLIC_WEB_APP_URL` in `.env`, then rebuild |
+| I want to…               | Do this                                                                 |
+| ------------------------ | ----------------------------------------------------------------------- |
+| Confirm Expo link        | `cd apps/mobile && pnpm exec eas project:info`                          |
+| Preview quickly          | `pnpm mobile:dev` + Expo Go                                             |
+| Build Android            | `pnpm mobile:build:android` → `pnpm mobile:download:android`            |
+| Build iOS                | Register devices → `pnpm mobile:build:ios` → `pnpm mobile:download:ios` |
+| Attach both to a release | Publish GitHub Release + both GitHub secrets                            |
+| Watch builds             | https://expo.dev/accounts/alexandrelheinen/projects/freshy/builds       |
+| Change loaded site       | Set `EXPO_PUBLIC_WEB_APP_URL` in `.env`, then rebuild                   |
 
 ---
 
@@ -229,16 +229,16 @@ You usually do not need a separate mobile origin for this WebView setup.
 
 ## If something breaks
 
-| Problem | Likely fix |
-| ------- | ---------- |
-| `EAS_PROJECT_ID is not set` | Add UUID to root `.env` (Step 1) |
-| `Generating a new Keystore is not supported in --non-interactive mode` | Run `pnpm mobile:build:android` locally once (not in CI) and choose **Let Expo handle it** |
-| `@babel/runtime/helpers/interopRequireDefault` on EAS | Pull latest `apps/mobile` deps + `.npmrc`; run `pnpm install`; rebuild |
-| Gradle fails on `expo-asset cannot be found` | Ensure `expo-asset` and `expo-linking` are in `apps/mobile` dependencies; run `pnpm install` |
-| GitHub workflow fails on env | Add both `EXPO_TOKEN` and `EAS_PROJECT_ID` secrets |
-| iOS build fails | Apple Developer account + `eas device:create` + rebuild |
-| App blank / white screen | Open `EXPO_PUBLIC_WEB_APP_URL` in the phone browser |
-| Sign-in fails in app | Clerk authorized parties include `freshy-25e.pages.dev` |
+| Problem                                                                | Likely fix                                                                                   |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `EAS_PROJECT_ID is not set`                                            | Add UUID to root `.env` (Step 1)                                                             |
+| `Generating a new Keystore is not supported in --non-interactive mode` | Run `pnpm mobile:build:android` locally once (not in CI) and choose **Let Expo handle it**   |
+| `@babel/runtime/helpers/interopRequireDefault` on EAS                  | Pull latest `apps/mobile` deps + `.npmrc`; run `pnpm install`; rebuild                       |
+| Gradle fails on `expo-asset cannot be found`                           | Ensure `expo-asset` and `expo-linking` are in `apps/mobile` dependencies; run `pnpm install` |
+| GitHub workflow fails on env                                           | Add both `EXPO_TOKEN` and `EAS_PROJECT_ID` secrets                                           |
+| iOS build fails                                                        | Apple Developer account + `eas device:create` + rebuild                                      |
+| App blank / white screen                                               | Open `EXPO_PUBLIC_WEB_APP_URL` in the phone browser                                          |
+| Sign-in fails in app                                                   | Clerk authorized parties include `freshy-25e.pages.dev`                                      |
 
 ---
 

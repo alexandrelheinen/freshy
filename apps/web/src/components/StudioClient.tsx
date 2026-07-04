@@ -474,9 +474,7 @@ export function StudioClient() {
                 <MaterialIcon name="warning" />
               </div>
               <p className="mb-1 font-label-caps text-secondary">Active Conflicts</p>
-              <h3 className="font-headline-lg text-headline-lg">
-                {duplicateScanCount ?? '—'}
-              </h3>
+              <h3 className="font-headline-lg text-headline-lg">{duplicateScanCount ?? '—'}</h3>
               <button
                 type="button"
                 onClick={() => void scanForDuplicates()}

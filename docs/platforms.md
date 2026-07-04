@@ -333,12 +333,12 @@ Local: same variables in root `.env`.
 
 ## 8. Expo EAS | mobile WebView shell
 
-| Item          | Value                                                                 |
-| ------------- | --------------------------------------------------------------------- |
-| **App**       | `apps/mobile` — native shell loading `EXPO_PUBLIC_WEB_APP_URL`        |
-| **Dashboard** | https://expo.dev                                                      |
-| **CI**        | `.github/workflows/release.yml` on GitHub **Release published**      |
-| **Outputs**   | Android `.apk` + iOS `.ipa` attached to the release                 |
+| Item          | Value                                                           |
+| ------------- | --------------------------------------------------------------- |
+| **App**       | `apps/mobile` — native shell loading `EXPO_PUBLIC_WEB_APP_URL`  |
+| **Dashboard** | https://expo.dev                                                |
+| **CI**        | `.github/workflows/release.yml` on GitHub **Release published** |
+| **Outputs**   | Android `.apk` + iOS `.ipa` attached to the release             |
 
 ### One-time setup
 
@@ -353,10 +353,10 @@ After `eas init`, confirm linking with `pnpm exec eas project:info`. Step-by-ste
 
 GitHub repository secrets:
 
-| Secret | Value |
-| ------ | ----- |
-| **`EXPO_TOKEN`** | Token from https://expo.dev/settings/access-tokens |
-| **`EAS_PROJECT_ID`** | UUID from `eas init` (same as in `.env`) |
+| Secret               | Value                                              |
+| -------------------- | -------------------------------------------------- |
+| **`EXPO_TOKEN`**     | Token from https://expo.dev/settings/access-tokens |
+| **`EAS_PROJECT_ID`** | UUID from `eas init` (same as in `.env`)           |
 
 iOS device installs use **ad hoc** signing. Register test devices:
 
@@ -369,14 +369,14 @@ Apple Developer Program membership is required for iOS builds.
 
 ### Local commands (from repository root)
 
-| Command | Result |
-| ------- | ------ |
-| `pnpm mobile:dev` | Expo dev server (WebView shell) |
-| `pnpm mobile:build:android` | EAS build → signed APK |
-| `pnpm mobile:build:ios` | EAS build → signed IPA (registered devices) |
-| `pnpm mobile:build` | Both platforms |
-| `pnpm mobile:download:android` | Download latest APK to `dist/mobile/` |
-| `pnpm mobile:download:ios` | Download latest IPA to `dist/mobile/` |
+| Command                        | Result                                      |
+| ------------------------------ | ------------------------------------------- |
+| `pnpm mobile:dev`              | Expo dev server (WebView shell)             |
+| `pnpm mobile:build:android`    | EAS build → signed APK                      |
+| `pnpm mobile:build:ios`        | EAS build → signed IPA (registered devices) |
+| `pnpm mobile:build`            | Both platforms                              |
+| `pnpm mobile:download:android` | Download latest APK to `dist/mobile/`       |
+| `pnpm mobile:download:ios`     | Download latest IPA to `dist/mobile/`       |
 
 Optional override for staging:
 

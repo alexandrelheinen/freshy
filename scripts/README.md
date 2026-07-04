@@ -12,7 +12,7 @@
 | `smoke-production.sh`               | Post-deploy checks against live Worker and Pages             |
 | `smoke-api-start.sh`                | Build API and verify Worker `/health` locally                |
 | `mobile-build.sh`                   | EAS build for Android/iOS/all (`release` profile)            |
-| `mobile-download.sh`                | Download latest APK/IPA from EAS to `dist/mobile/`          |
+| `mobile-download.sh`                | Download latest APK/IPA from EAS to `dist/mobile/`           |
 
 | Script (Python)    | Usage                                                        |
 | ------------------ | ------------------------------------------------------------ |

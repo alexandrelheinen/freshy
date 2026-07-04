@@ -29,8 +29,8 @@ describe('default theme parity', () => {
   it('exports sans and logo font roles', () => {
     const tokens = getDefaultThemeTokens();
     assert.equal(tokens.fonts.sans.family, 'Quicksand');
-    assert.equal(tokens.fonts.logo.family, 'Cherry Bomb One');
+    assert.equal(tokens.fonts.logo.family, 'Lilita One');
     assert.equal(tokens.fonts.logo.weights[0], 400);
-    assert.equal(tokens.fonts.logo.letterSpacing, '-0.02em');
+    assert.equal(tokens.fonts.logo.letterSpacing, '0.00em');
   });
 });

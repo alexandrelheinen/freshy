@@ -322,7 +322,9 @@ async function loadPlaceIndexRows(db: Db, filters: StudioListFilters): Promise<P
     conditions.push(eq(placesTable.status, filters.placeStatus));
   }
   if (filters.freshnessLevel) {
-    conditions.push(eq(placesTable.aggregatedFreshnessLevel, filters.freshnessLevel as FreshnessLevel));
+    conditions.push(
+      eq(placesTable.aggregatedFreshnessLevel, filters.freshnessLevel as FreshnessLevel),
+    );
   }
   if (filters.q) {
     const pattern = `%${filters.q}%`;
@@ -338,7 +340,11 @@ async function loadPlaceIndexRows(db: Db, filters: StudioListFilters): Promise<P
 
   const whereClause = conditions.length > 0 ? and(...conditions) : sql`1=1`;
 
-  return db.select(columns).from(placesTable).where(whereClause).orderBy(desc(placesTable.createdAt));
+  return db
+    .select(columns)
+    .from(placesTable)
+    .where(whereClause)
+    .orderBy(desc(placesTable.createdAt));
 }
 
 function listFiltersFromPlacesQuery(
@@ -397,9 +403,7 @@ export async function listStudioDuplicatePlaces(
   const indexRows = await loadPlaceIndexRows(db, listFiltersFromPlacesQuery(query));
   const duplicateMap = detectDuplicatePlaceIds(indexRows);
 
-  const duplicateIds = indexRows
-    .filter((row) => duplicateMap.has(row.id))
-    .map((row) => row.id);
+  const duplicateIds = indexRows.filter((row) => duplicateMap.has(row.id)).map((row) => row.id);
 
   const total = duplicateIds.length;
   const offset = (query.page - 1) * query.limit;
@@ -415,11 +419,7 @@ export async function listStudioDuplicatePlaces(
     .map((id) => rowsById.get(id))
     .filter((row): row is (typeof pageRows)[number] => row != null)
     .map((row) =>
-      formatStudioPlaceListItem(
-        row.place,
-        duplicateMap.get(row.place.id) ?? null,
-        row.contributor,
-      ),
+      formatStudioPlaceListItem(row.place, duplicateMap.get(row.place.id) ?? null, row.contributor),
     );
 
   return {
