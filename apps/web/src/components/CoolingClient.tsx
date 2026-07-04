@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
-  FRESHNESS_LEVEL_LABELS,
   MaterialIcon,
   PLACE_CATEGORY_ICONS,
   PLACE_CATEGORY_LABELS,
@@ -130,7 +129,6 @@ export function CoolingClient() {
   }, [verifiedOnly]);
 
   const categories = meta?.categories ?? [];
-  const featured = meta?.featured;
 
   return (
     <div className="min-h-screen pb-8" data-page="cooling">
@@ -188,42 +186,6 @@ export function CoolingClient() {
             ))}
           </div>
         </section>
-
-        {featured ? (
-          <section className="mt-8 md:mt-10">
-            <h3 className="mb-4 font-title-md text-on-surface">Today&apos;s Highlight</h3>
-            <Link href={ROUTES.place(featured.slug)} className="group block">
-              <div className="relative h-48 overflow-hidden rounded-xl shadow-lg md:h-56 md:rounded-2xl">
-                <img
-                  src={getPlacePhotoUrl(featured.photoUrl, featured.category as PlaceCategory)}
-                  alt=""
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-scrim-strong to-transparent" />
-                <div className="absolute bottom-0 flex flex-col justify-end p-4 md:p-6">
-                  <span className="mb-2 font-label-caps text-label-caps text-on-scrim/90">
-                    COLDEST PICK NEARBY
-                  </span>
-                  <h4 className="font-headline-lg-mobile text-headline-lg-mobile text-on-scrim md:font-headline-lg md:text-headline-lg">
-                    {featured.name}
-                  </h4>
-                  <div className="mt-2 flex items-center gap-2">
-                    <div className="flex gap-0.5">
-                      {[1, 2, 3].map((i) => (
-                        <div key={i} className="h-1.5 w-4 rounded-full bg-primary" />
-                      ))}
-                    </div>
-                    <span className="text-[10px] font-bold text-on-scrim/80">
-                      {featured.aggregatedFreshnessLevel
-                        ? FRESHNESS_LEVEL_LABELS[featured.aggregatedFreshnessLevel].toUpperCase()
-                        : ''}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          </section>
-        ) : null}
       </main>
     </div>
   );
