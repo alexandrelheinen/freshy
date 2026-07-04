@@ -1,5 +1,10 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config';
-import { readAppVersion } from './src/read-app-version';
+
+// Expo evaluates app.config with Node require(); keep version logic in CJS.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { readAppVersion } = require('./read-app-version.cjs') as {
+  readAppVersion: () => string;
+};
 
 const DEFAULT_WEB_APP_URL = 'https://freshy-25e.pages.dev';
 const DEFAULT_EAS_PROJECT_ID = 'ff3b74f8-863b-41cd-a83a-1c9f37a1dd42';

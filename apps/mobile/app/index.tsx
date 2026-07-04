@@ -2,13 +2,16 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, StyleSheet, useColorScheme, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
+import { getDefaultThemeTokens, getThemeTokens } from '@freshy/theme/tokens';
 import { buildNativeThemeBridgeScript } from '@freshy/ui/theme-bridge';
 import { buildNativeSafeAreaScript } from '../src/safe-area-bridge';
 import { resolveNativeColorScheme } from '../src/theme-bridge';
 import { readWebAppUrl } from '../src/web-app-url';
 
-const LIGHT_CHROME = '#f7f9fb';
-const DARK_CHROME = '#0f1419';
+const defaultTheme = getDefaultThemeTokens();
+const darkTheme = getThemeTokens('dark');
+const LIGHT_CHROME = defaultTheme.colors.background;
+const DARK_CHROME = darkTheme.colors.background;
 
 export default function FreshyWebAppScreen() {
   const [loading, setLoading] = useState(true);
@@ -43,7 +46,11 @@ export default function FreshyWebAppScreen() {
           style={[styles.loadingOverlay, { backgroundColor: chromeColor }]}
           pointerEvents="none"
         >
-          <ActivityIndicator size="large" color="#0c6780" accessibilityLabel="Loading Freshy" />
+          <ActivityIndicator
+            size="large"
+            color={defaultTheme.colors.primary}
+            accessibilityLabel="Loading Freshy"
+          />
         </View>
       ) : null}
     </SafeAreaView>
