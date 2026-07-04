@@ -41,6 +41,7 @@ jobs:
         env:
           EXPO_PUBLIC_WEB_APP_URL: https://freshy-25e.pages.dev
           EAS_PROJECT_ID: ${{ secrets.EAS_PROJECT_ID }}
+          FRESHY_RELEASE_VERSION: ${{ github.event.release.tag_name }}
         run: |
           eas build --platform android --profile release --non-interactive --wait
 
