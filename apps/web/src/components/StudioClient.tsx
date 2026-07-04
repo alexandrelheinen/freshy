@@ -548,7 +548,7 @@ export function StudioClient() {
                       </td>
                       <td className="px-4 py-5">
                         <p className="text-body-sm text-on-surface-variant">
-                          {place.address?.split(',')[0] ?? 'No address'}
+                          {place.address ?? 'No address'}
                         </p>
                         {place.duplicateOfId ? (
                           <p className="text-[12px] text-secondary">Duplicate detected via GPS</p>
