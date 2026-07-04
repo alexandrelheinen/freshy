@@ -30,10 +30,7 @@ export function isPlaceVerified(place: Pick<PlaceDto, 'status'>): boolean {
   return place.status === 'PUBLISHED';
 }
 
-export function filterPlacesByVerifiedOnly(
-  places: PlaceDto[],
-  verifiedOnly?: boolean,
-): PlaceDto[] {
+export function filterPlacesByVerifiedOnly(places: PlaceDto[], verifiedOnly?: boolean): PlaceDto[] {
   if (!verifiedOnly) return places;
   return places.filter(isPlaceVerified);
 }

@@ -10,7 +10,7 @@ describe('theme fonts', () => {
 
     assert.match(href, /^https:\/\/fonts\.googleapis\.com\/css2\?/);
     assert.match(href, /family=Quicksand:wght@400;500;600;700/);
-    assert.match(href, /family=Cherry\+Bomb\+One:wght@400/);
+    assert.match(href, /family=Lilita\+One:wght@400/);
     assert.match(href, /display=swap$/);
   });
 
@@ -55,11 +55,11 @@ describe('theme fonts', () => {
 
   it('builds CSS font stacks from YAML definitions', () => {
     const stack = fontStack(getDefaultThemeTokens().fonts.logo);
-    assert.deepEqual(stack, ['"Cherry Bomb One"', 'system-ui', 'sans-serif']);
+    assert.deepEqual(stack, ['"Lilita One"', 'system-ui', 'sans-serif']);
   });
 
   it('quotes multi-word family names for valid CSS font-family values', () => {
-    assert.equal(quoteFontFamily('Cherry Bomb One'), '"Cherry Bomb One"');
+    assert.equal(quoteFontFamily('Lilita One'), '"Lilita One"');
     assert.equal(quoteFontFamily('Quicksand'), 'Quicksand');
   });
 });

@@ -184,14 +184,14 @@ Repository → **Settings → Secrets and variables → Actions**:
 
 ### CD workflows on `main`
 
-| Workflow                                                                         | Trigger                     | Action                             |
-| -------------------------------------------------------------------------------- | --------------------------- | ---------------------------------- |
-| `pnpm deploy:api`                                                                | Local / CI                  | Build and deploy Worker            |
+| Workflow                                                                         | Trigger                      | Action                             |
+| -------------------------------------------------------------------------------- | ---------------------------- | ---------------------------------- |
+| `pnpm deploy:api`                                                                | Local / CI                   | Build and deploy Worker            |
 | [migrate-database.yml](../../.github/workflows/migrate-database.yml)             | Manual (`workflow_dispatch`) | Remote D1 migrations only          |
-| [migrate-database.yml](../../.github/workflows/migrate-database.yml)             | Manual only                 | D1 migrate only (no Worker deploy) |
-| [sync-place-defaults.yml](../../.github/workflows/sync-place-defaults.yml)       | Default place images change | `pnpm upload:place-defaults`       |
-| [production-screenshots.yml](../../.github/workflows/production-screenshots.yml) | Web or UI change            | Live Pages screenshots → R2        |
-| [smoke-production.yml](../../.github/workflows/smoke-production.yml)             | Every `main` push           | API + web health checks            |
+| [migrate-database.yml](../../.github/workflows/migrate-database.yml)             | Manual only                  | D1 migrate only (no Worker deploy) |
+| [sync-place-defaults.yml](../../.github/workflows/sync-place-defaults.yml)       | Default place images change  | `pnpm upload:place-defaults`       |
+| [production-screenshots.yml](../../.github/workflows/production-screenshots.yml) | Web or UI change             | Live Pages screenshots → R2        |
+| [smoke-production.yml](../../.github/workflows/smoke-production.yml)             | Every `main` push            | API + web health checks            |
 
 ---
 

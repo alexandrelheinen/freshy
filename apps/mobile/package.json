@@ -40,7 +40,9 @@
   },
   "expo": {
     "install": {
-      "exclude": ["@types/react"]
+      "exclude": [
+        "@types/react"
+      ]
     }
   }
 }

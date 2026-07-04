@@ -69,7 +69,10 @@ export interface StudioListFetchParams {
   limit?: number;
 }
 
-function appendStudioListSearchParams(search: URLSearchParams, params?: StudioListFetchParams): void {
+function appendStudioListSearchParams(
+  search: URLSearchParams,
+  params?: StudioListFetchParams,
+): void {
   if (params?.q) search.set('q', params.q);
   if (params?.category) search.set('category', params.category);
   if (params?.placeStatus) search.set('placeStatus', params.placeStatus);

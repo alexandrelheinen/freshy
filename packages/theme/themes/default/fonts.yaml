@@ -10,7 +10,7 @@ sans:
     - 600
     - 700
 
-# Brand wordmark font. Cherry Bomb One is a single-weight Google Font (400 only).
+# Brand wordmark font. Lilita One is a single-weight Google Font (400 only).
 logo:
   family: Lilita One
   fallbacks:

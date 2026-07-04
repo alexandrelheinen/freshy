@@ -50,14 +50,14 @@ describe('compile-themes', () => {
 
   it('writes logo font letter-spacing variable', () => {
     const css = fs.readFileSync(path.join(GENERATED_DIR, 'default.css'), 'utf8');
-    assert.match(css, /--font-logo-letter-spacing: -0\.02em;/);
+    assert.match(css, /--font-logo-letter-spacing: 0\.00em;/);
   });
 
   it('writes logo font baseline offset variable', () => {
     const css = fs.readFileSync(path.join(GENERATED_DIR, 'default.css'), 'utf8');
-    assert.match(css, /--font-logo-offset-y: -0\.08em;/);
+    assert.match(css, /--font-logo-offset-y: -0\.02em;/);
     const darkCss = fs.readFileSync(path.join(GENERATED_DIR, 'dark.css'), 'utf8');
-    assert.match(darkCss, /--font-logo-offset-y: -0\.11em;/);
+    assert.match(darkCss, /--font-logo-offset-y: -0\.02em;/);
   });
 
   it('fails when a required color role is missing', () => {
