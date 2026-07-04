@@ -58,6 +58,26 @@ export interface StudioStatsDto {
   pendingValidation: number;
 }
 
+export type StudioPlaceStatusFilter = 'DRAFT' | 'PUBLISHED' | 'IMPORTED';
+
+export interface StudioListFetchParams {
+  q?: string;
+  category?: string;
+  placeStatus?: StudioPlaceStatusFilter;
+  freshnessLevel?: string;
+  page?: number;
+  limit?: number;
+}
+
+function appendStudioListSearchParams(search: URLSearchParams, params?: StudioListFetchParams): void {
+  if (params?.q) search.set('q', params.q);
+  if (params?.category) search.set('category', params.category);
+  if (params?.placeStatus) search.set('placeStatus', params.placeStatus);
+  if (params?.freshnessLevel) search.set('freshnessLevel', params.freshnessLevel);
+  if (params?.page != null) search.set('page', String(params.page));
+  if (params?.limit != null) search.set('limit', String(params.limit));
+}
+
 export interface UpdateStudioPlacePayload {
   name?: string;
   description?: string | null;
@@ -124,18 +144,13 @@ export async function fetchStudioStats(
 
 export async function fetchStudioPlaces(
   getToken: () => Promise<string | null>,
-  params?: {
+  params?: StudioListFetchParams & {
     status?: 'all' | 'verified' | 'pending';
-    q?: string;
-    page?: number;
-    limit?: number;
   },
 ): Promise<StudioPlacesPageDto | null> {
   const search = new URLSearchParams();
   if (params?.status) search.set('status', params.status);
-  if (params?.q) search.set('q', params.q);
-  if (params?.page != null) search.set('page', String(params.page));
-  if (params?.limit != null) search.set('limit', String(params.limit));
+  appendStudioListSearchParams(search, params);
 
   const res = await studioFetch(`/studio/places?${search.toString()}`, getToken);
   if (res.status === 404) return null;
@@ -155,16 +170,10 @@ export async function fetchStudioPlaces(
 
 export async function fetchStudioDuplicates(
   getToken: () => Promise<string | null>,
-  params?: {
-    q?: string;
-    page?: number;
-    limit?: number;
-  },
+  params?: StudioListFetchParams,
 ): Promise<StudioPlacesPageDto | null> {
   const search = new URLSearchParams();
-  if (params?.q) search.set('q', params.q);
-  if (params?.page != null) search.set('page', String(params.page));
-  if (params?.limit != null) search.set('limit', String(params.limit));
+  appendStudioListSearchParams(search, params);
 
   const res = await studioFetch(`/studio/duplicates?${search.toString()}`, getToken);
   if (res.status === 404) return null;

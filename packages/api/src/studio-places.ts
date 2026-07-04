@@ -1,9 +1,10 @@
 import { z } from 'zod';
-import { eq, like, or, sql, desc } from 'drizzle-orm';
+import { and, eq, like, or, sql, desc } from 'drizzle-orm';
 import { FRESHNESS_LEVEL_IDS } from '@freshy/config/freshness-levels';
 import { PLACE_TAG_IDS } from '@freshy/config/place-tags';
 import {
   PLACE_CATEGORIES,
+  PLACE_STATUSES,
   type Place,
   type FreshnessLevel,
   type Db,
@@ -23,20 +24,27 @@ import {
 
 const DUPLICATE_RADIUS_KM = 0.05;
 
-export const studioPlacesQuerySchema = z.object({
-  status: z.enum(['all', 'verified', 'pending']).optional().default('all'),
+const studioListFiltersSchema = z.object({
   q: z.string().trim().optional(),
+  category: z.enum(PLACE_CATEGORIES).optional(),
+  placeStatus: z.enum(PLACE_STATUSES).optional(),
+  freshnessLevel: z.enum(FRESHNESS_LEVEL_IDS as [string, ...string[]]).optional(),
   page: z.coerce.number().int().min(1).optional().default(1),
   limit: z.coerce.number().int().min(1).max(100).optional().default(25),
+});
+
+export type StudioListFilters = Pick<
+  z.infer<typeof studioListFiltersSchema>,
+  'q' | 'category' | 'placeStatus' | 'freshnessLevel'
+>;
+
+export const studioPlacesQuerySchema = studioListFiltersSchema.extend({
+  status: z.enum(['all', 'verified', 'pending']).optional().default('all'),
 });
 
 export type StudioPlacesQuery = z.infer<typeof studioPlacesQuerySchema>;
 
-export const studioDuplicatesQuerySchema = z.object({
-  q: z.string().trim().optional(),
-  page: z.coerce.number().int().min(1).optional().default(1),
-  limit: z.coerce.number().int().min(1).max(100).optional().default(25),
-});
+export const studioDuplicatesQuerySchema = studioListFiltersSchema;
 
 export type StudioDuplicatesQuery = z.infer<typeof studioDuplicatesQuerySchema>;
 
@@ -297,7 +305,7 @@ interface PlaceIndexRow {
   status: Place['status'];
 }
 
-async function loadPlaceIndexRows(db: Db, q?: string): Promise<PlaceIndexRow[]> {
+async function loadPlaceIndexRows(db: Db, filters: StudioListFilters): Promise<PlaceIndexRow[]> {
   const columns = {
     id: placesTable.id,
     latitude: placesTable.latitude,
@@ -306,29 +314,49 @@ async function loadPlaceIndexRows(db: Db, q?: string): Promise<PlaceIndexRow[]> 
     status: placesTable.status,
   };
 
-  if (q) {
-    const pattern = `%${q}%`;
-    return db
-      .select(columns)
-      .from(placesTable)
-      .where(
-        or(
-          like(placesTable.name, pattern),
-          like(placesTable.address, pattern),
-          like(placesTable.slug, pattern),
-        ),
-      )
-      .orderBy(desc(placesTable.createdAt));
+  const conditions = [];
+  if (filters.category) {
+    conditions.push(eq(placesTable.category, filters.category));
+  }
+  if (filters.placeStatus) {
+    conditions.push(eq(placesTable.status, filters.placeStatus));
+  }
+  if (filters.freshnessLevel) {
+    conditions.push(eq(placesTable.aggregatedFreshnessLevel, filters.freshnessLevel as FreshnessLevel));
+  }
+  if (filters.q) {
+    const pattern = `%${filters.q}%`;
+    conditions.push(
+      or(
+        like(placesTable.name, pattern),
+        like(placesTable.address, pattern),
+        like(placesTable.slug, pattern),
+        like(placesTable.id, pattern),
+      ),
+    );
   }
 
-  return db.select(columns).from(placesTable).orderBy(desc(placesTable.createdAt));
+  const whereClause = conditions.length > 0 ? and(...conditions) : sql`1=1`;
+
+  return db.select(columns).from(placesTable).where(whereClause).orderBy(desc(placesTable.createdAt));
+}
+
+function listFiltersFromPlacesQuery(
+  query: StudioPlacesQuery | StudioDuplicatesQuery,
+): StudioListFilters {
+  return {
+    q: query.q,
+    category: query.category,
+    placeStatus: query.placeStatus,
+    freshnessLevel: query.freshnessLevel,
+  };
 }
 
 export async function listStudioPlaces(
   db: Db,
   query: StudioPlacesQuery,
 ): Promise<StudioPlacesPage> {
-  const indexRows = await loadPlaceIndexRows(db, query.q);
+  const indexRows = await loadPlaceIndexRows(db, listFiltersFromPlacesQuery(query));
 
   const filteredIds: string[] = [];
   for (const row of indexRows) {
@@ -366,7 +394,7 @@ export async function listStudioDuplicatePlaces(
   db: Db,
   query: StudioDuplicatesQuery,
 ): Promise<StudioPlacesPage> {
-  const indexRows = await loadPlaceIndexRows(db, query.q);
+  const indexRows = await loadPlaceIndexRows(db, listFiltersFromPlacesQuery(query));
   const duplicateMap = detectDuplicatePlaceIds(indexRows);
 
   const duplicateIds = indexRows

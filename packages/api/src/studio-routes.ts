@@ -107,6 +107,9 @@ export function registerStudioRoutes(app: Hono<AppEnv>): void {
     const parsed = studioPlacesQuerySchema.safeParse({
       status: c.req.query('status'),
       q: c.req.query('q'),
+      category: c.req.query('category'),
+      placeStatus: c.req.query('placeStatus'),
+      freshnessLevel: c.req.query('freshnessLevel'),
       page: c.req.query('page'),
       limit: c.req.query('limit'),
     });
@@ -124,6 +127,9 @@ export function registerStudioRoutes(app: Hono<AppEnv>): void {
   app.get('/studio/duplicates', requireAdmin, async (c) => {
     const parsed = studioDuplicatesQuerySchema.safeParse({
       q: c.req.query('q'),
+      category: c.req.query('category'),
+      placeStatus: c.req.query('placeStatus'),
+      freshnessLevel: c.req.query('freshnessLevel'),
       page: c.req.query('page'),
       limit: c.req.query('limit'),
     });

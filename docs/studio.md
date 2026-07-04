@@ -143,6 +143,7 @@ Implemented in `apps/web/src/components/StudioClient.tsx`, loaded client-only vi
 | Stats cards  | Total verified, pending count, active conflicts (after scan), freshness         |
 | Duplicate scan | **Check for duplicates** runs `GET /studio/duplicates` on demand              |
 | Table        | Name, location, coolness bar, status badge, **Added by**, row actions         |
+| Filters      | Search, category chips, DB status chips, freshness chips (same patterns as Explore) |
 | **Validate** | Publishes a pending place (`DRAFT` → `PUBLISHED`)                             |
 | **Edit**     | Modal to change name, address, category, freshness level, status, description |
 | **Merge**    | Merges a duplicate into the older nearby place (see API below)                |
@@ -179,7 +180,10 @@ Public place responses omit `createdById`. Contributor email is returned only on
 | Param    | Values                                    | Default |
 | -------- | ----------------------------------------- | ------- |
 | `status` | `all`, `verified`, `pending`              | `all`   |
-| `q`      | Search string (name, address, slug)       | —       |
+| `q`      | Search string (name, address, slug, id)   | —       |
+| `category` | Place category (`CAFE`, `MUSEUM`, …)    | —       |
+| `placeStatus` | Database status (`DRAFT`, `PUBLISHED`, `IMPORTED`) | — |
+| `freshnessLevel` | Freshness level id (`VERY_COLD_AC`, …) | —       |
 | `page`   | Page number                               | `1`     |
 | `limit`  | Page size (max 100)                       | `25`    |
 
@@ -189,7 +193,10 @@ Runs a full duplicate scan, then returns paginated conflict rows. Same params as
 
 | Param   | Description                         | Default |
 | ------- | ----------------------------------- | ------- |
-| `q`     | Search string (name, address, slug) | —       |
+| `q`     | Search string (name, address, slug, id) | —   |
+| `category` | Place category                   | —       |
+| `placeStatus` | Database status               | —       |
+| `freshnessLevel` | Freshness level id         | —       |
 | `page`  | Page number                         | `1`     |
 | `limit` | Page size (max 100)                 | `25`    |
 

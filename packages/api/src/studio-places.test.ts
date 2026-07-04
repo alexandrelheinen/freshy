@@ -29,6 +29,24 @@ describe('studio-places', () => {
     }
   });
 
+  it('validates studio list filters for category, status, and freshness', () => {
+    const parsed = studioPlacesQuerySchema.safeParse({
+      status: 'pending',
+      q: 'cafe',
+      category: 'CAFE',
+      placeStatus: 'IMPORTED',
+      freshnessLevel: 'VERY_COLD_AC',
+      page: 1,
+      limit: 25,
+    });
+    assert.equal(parsed.success, true);
+    if (parsed.success) {
+      assert.equal(parsed.data.category, 'CAFE');
+      assert.equal(parsed.data.placeStatus, 'IMPORTED');
+      assert.equal(parsed.data.freshnessLevel, 'VERY_COLD_AC');
+    }
+  });
+
   it('validates studio update payload', () => {
     const parsed = updateStudioPlaceSchema.safeParse({
       name: 'Cool Library',
