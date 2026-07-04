@@ -50,16 +50,16 @@ function CategoryMobileCard({ category, count }: { category: PlaceCategory; coun
           alt=""
           loading="lazy"
           decoding="async"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover brightness-[0.84] contrast-[1.12] saturate-[1.05]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-scrim-strong via-scrim-weak to-transparent" />
-        <div className="absolute bottom-3 left-3 right-3 text-on-scrim">
-          <div className="mb-1 flex items-center gap-2">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-glass-highlight backdrop-blur-md">
-              <MaterialIcon name={icon} className="text-on-scrim" size={18} />
-            </div>
-            <span className="font-title-md text-title-md">{label}</span>
+        <div className="absolute inset-0 bg-gradient-to-b from-scrim-strong/75 via-scrim-weak/25 to-scrim-strong" />
+        <div className="absolute top-3 left-3 right-3 text-on-scrim">
+          <div className="mb-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-glass-highlight backdrop-blur-md">
+            <MaterialIcon name={icon} className="text-on-scrim" size={18} />
           </div>
+          <span className="block max-w-[10rem] font-title-md text-title-md leading-tight">{label}</span>
+        </div>
+        <div className="absolute bottom-3 left-3 right-3">
           <span className="font-label-caps text-label-caps text-on-scrim/80">
             {count} {count === 1 ? 'PLACE' : 'PLACES'}
           </span>
