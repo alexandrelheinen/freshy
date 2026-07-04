@@ -49,9 +49,10 @@ function CategoryMobileCard({ category, count }: { category: PlaceCategory; coun
           alt=""
           loading="lazy"
           decoding="async"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover brightness-[0.72] contrast-[1.15] saturate-[1.02]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-scrim-strong via-scrim-weak to-transparent" />
+        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-scrim-strong via-scrim-weak/55 to-scrim-weak/15" />
         <div className="absolute bottom-3 left-3 right-3 text-on-scrim">
           <div className="mb-1 flex items-center gap-2">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-glass-highlight backdrop-blur-md">
@@ -59,7 +60,7 @@ function CategoryMobileCard({ category, count }: { category: PlaceCategory; coun
             </div>
             <span className="font-title-md text-title-md">{label}</span>
           </div>
-          <span className="font-label-caps text-label-caps text-on-scrim/80">
+          <span className="font-label-caps text-label-caps text-on-scrim">
             {count} {count === 1 ? 'PLACE' : 'PLACES'}
           </span>
         </div>
@@ -90,9 +91,10 @@ function CategoryDesktopCard({
         <img
           src={photo}
           alt=""
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="absolute inset-0 h-full w-full object-cover brightness-[0.72] contrast-[1.15] saturate-[1.02] transition-transform duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-scrim-strong via-scrim-weak to-transparent" />
+        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-scrim-strong via-scrim-weak/55 to-scrim-weak/15" />
         <div className="absolute bottom-6 left-6 text-on-scrim">
           <div className={`flex items-center gap-3 ${colSpan === 2 ? 'mb-2' : 'mb-3'}`}>
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-glass-highlight backdrop-blur-md">
@@ -101,7 +103,7 @@ function CategoryDesktopCard({
             {colSpan === 2 ? <span className="font-title-md text-title-md">{label}</span> : null}
           </div>
           {colSpan !== 2 ? <p className="font-title-md text-title-md">{label}</p> : null}
-          <p className="font-body-sm text-on-scrim/80">
+          <p className="font-body-sm text-on-scrim">
             {count} {count === 1 ? 'place' : 'places'} available
           </p>
         </div>
