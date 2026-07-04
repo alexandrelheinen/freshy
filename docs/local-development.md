@@ -143,4 +143,27 @@ Deploy steps: [platforms.md](platforms.md).
 
 ---
 
+## Mobile shell (optional)
+
+The native apps in `apps/mobile` are a **WebView wrapper** around the deployed web app (default: `https://freshy-25e.pages.dev`). No separate mobile UI to maintain.
+
+**Preview in Expo Go or a simulator:**
+
+```bash
+pnpm mobile:dev
+```
+
+**Build installable files locally** (requires [EAS setup](platforms.md#8-expo-eas--mobile-webview-shell)):
+
+```bash
+pnpm mobile:build:android   # signed APK
+pnpm mobile:build:ios       # signed IPA (registered test devices)
+pnpm mobile:download:android
+pnpm mobile:download:ios    # saves under dist/mobile/
+```
+
+GitHub **Release published** events attach the same APK and IPA to the release automatically when `EXPO_TOKEN` is configured.
+
+---
+
 _Last updated: June 2026_

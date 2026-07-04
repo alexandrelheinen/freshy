@@ -29,7 +29,13 @@
     "start:api": "pnpm --filter @freshy/api dev",
     "screenshots": "pnpm --filter @freshy/web screenshots",
     "upload:place-defaults": "tsx scripts/upload-place-defaults.ts",
-    "generate:place-default-thumbs": "tsx scripts/upload-place-defaults.ts --generate-only"
+    "generate:place-default-thumbs": "tsx scripts/upload-place-defaults.ts --generate-only",
+    "mobile:dev": "pnpm --filter @freshy/mobile dev",
+    "mobile:build": "bash scripts/mobile-build.sh all release",
+    "mobile:build:android": "bash scripts/mobile-build.sh android release",
+    "mobile:build:ios": "bash scripts/mobile-build.sh ios release",
+    "mobile:download:android": "bash scripts/mobile-download.sh android",
+    "mobile:download:ios": "bash scripts/mobile-download.sh ios"
   },
   "devDependencies": {
     "eslint": "^9.17.0",

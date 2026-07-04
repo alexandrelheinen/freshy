@@ -6,28 +6,33 @@
   "scripts": {
     "dev": "expo start",
     "build": "tsc --noEmit",
-    "build:android": "eas build --platform android --non-interactive",
-    "build:ios": "eas build --platform ios --non-interactive",
+    "build:android": "bash ../../scripts/mobile-build.sh android release",
+    "build:ios": "bash ../../scripts/mobile-build.sh ios release",
+    "build:release": "bash ../../scripts/mobile-build.sh all release",
+    "download:android": "bash ../../scripts/mobile-download.sh android",
+    "download:ios": "bash ../../scripts/mobile-download.sh ios",
     "lint": "eslint app src --config ../../eslint.config.mjs --max-warnings 0",
     "typecheck": "tsc --noEmit",
-    "test": "pnpm --filter @freshy/theme build && bash ../../scripts/run-ts-tests.sh src"
+    "test": "bash ../../scripts/run-ts-tests.sh src"
   },
   "dependencies": {
     "@freshy/ui": "workspace:*",
-    "@freshy/theme": "workspace:*",
     "expo": "~52.0.23",
+    "expo-constants": "~17.0.8",
     "expo-router": "~4.0.15",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",
     "react-native": "0.76.5",
     "react-native-safe-area-context": "4.12.0",
-    "react-native-screens": "~4.4.0"
+    "react-native-screens": "~4.4.0",
+    "react-native-webview": "13.12.5"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
     "@freshy/config": "workspace:*",
     "@types/node": "^22.10.2",
     "@types/react": "~18.3.12",
+    "eas-cli": "^16.3.2",
     "eslint": "^9.17.0",
     "typescript": "^5.7.2"
   }
