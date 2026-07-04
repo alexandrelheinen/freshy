@@ -13,8 +13,14 @@ import {
 } from '@freshy/ui';
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import type { CategoryMeta } from '../lib/api';
-
 import { getApiBase } from '../lib/api-base';
+import {
+  CATEGORY_CARD_FLAT_SCRIM,
+  CATEGORY_CARD_GRADIENT_SCRIM,
+  CATEGORY_CARD_IMAGE_BASE,
+  CATEGORY_CARD_IMAGE_FILTER,
+  formatCategoryPlaceCount,
+} from '../lib/category-card';
 import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
 
 /** Desktop bento grid layout: category key and optional column span. */
@@ -36,76 +42,65 @@ function categoryCount(
   return categories.find((c) => c.category === cat)?.count ?? 0;
 }
 
-function CategoryMobileCard({ category, count }: { category: PlaceCategory; count: number }) {
-  const label = PLACE_CATEGORY_LABELS[category];
-  const icon = PLACE_CATEGORY_ICONS[category] as MaterialIconName;
-  const photo = getPlacePhotoUrl(null, category, 'thumb');
-
-  return (
-    <Link href={ROUTES.categoryList(category)} className="group">
-      <div className="relative h-36 overflow-hidden rounded-2xl shadow-sm transition-all active:scale-95">
-        <img
-          src={photo}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-0 h-full w-full object-cover brightness-[0.84] contrast-[1.12] saturate-[1.05]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-scrim-strong/75 via-scrim-weak/25 to-scrim-strong" />
-        <div className="absolute top-3 left-3 right-3 text-on-scrim">
-          <div className="mb-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-glass-highlight backdrop-blur-md">
-            <MaterialIcon name={icon} className="text-on-scrim" size={18} />
-          </div>
-          <span className="block max-w-[10rem] font-title-md text-title-md leading-tight">
-            {label}
-          </span>
-        </div>
-        <div className="absolute bottom-3 left-3 right-3">
-          <span className="font-label-caps text-label-caps text-on-scrim/80">
-            {count} {count === 1 ? 'PLACE' : 'PLACES'}
-          </span>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-function CategoryDesktopCard({
+function CategoryCard({
   category,
   count,
+  variant,
   colSpan = 1,
 }: {
   category: PlaceCategory;
   count: number;
+  variant: 'mobile' | 'desktop';
   colSpan?: 1 | 2;
 }) {
   const label = PLACE_CATEGORY_LABELS[category];
   const icon = PLACE_CATEGORY_ICONS[category] as MaterialIconName;
-  const photo = getPlacePhotoUrl(null, category);
+  const photo = getPlacePhotoUrl(null, category, 'thumb');
+  const isDesktop = variant === 'desktop';
 
   return (
     <Link
       href={ROUTES.categoryList(category)}
-      className={`group ${colSpan === 2 ? 'md:col-span-2' : ''}`}
+      className={`group ${isDesktop && colSpan === 2 ? 'md:col-span-2' : ''}`}
     >
-      <div className="relative h-64 overflow-hidden rounded-3xl shadow-sm transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl">
+      <div
+        className={`relative overflow-hidden shadow-sm ${
+          isDesktop
+            ? 'h-64 rounded-3xl transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl'
+            : 'h-36 rounded-2xl transition-all active:scale-95'
+        }`}
+      >
         <img
           src={photo}
           alt=""
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          loading={isDesktop ? undefined : 'lazy'}
+          decoding={isDesktop ? undefined : 'async'}
+          className={`${CATEGORY_CARD_IMAGE_BASE} ${CATEGORY_CARD_IMAGE_FILTER} ${
+            isDesktop ? 'transition-transform duration-700 group-hover:scale-105' : ''
+          }`}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-scrim-strong via-scrim-weak to-transparent" />
-        <div className="absolute bottom-6 left-6 text-on-scrim">
-          <div className={`flex items-center gap-3 ${colSpan === 2 ? 'mb-2' : 'mb-3'}`}>
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-glass-highlight backdrop-blur-md">
-              <MaterialIcon name={icon} className="text-on-scrim" size={22} />
-            </div>
-            {colSpan === 2 ? <span className="font-title-md text-title-md">{label}</span> : null}
+        <div className={CATEGORY_CARD_FLAT_SCRIM} />
+        <div className={CATEGORY_CARD_GRADIENT_SCRIM} />
+        <div
+          className={`absolute text-on-scrim ${
+            isDesktop ? 'top-6 left-6 right-6' : 'top-3 left-3 right-3'
+          }`}
+        >
+          <div
+            className={`mb-1.5 flex items-center justify-center rounded-full bg-glass-highlight backdrop-blur-md ${
+              isDesktop ? 'h-10 w-10' : 'h-8 w-8'
+            }`}
+          >
+            <MaterialIcon name={icon} className="text-on-scrim" size={isDesktop ? 22 : 18} />
           </div>
-          {colSpan !== 2 ? <p className="font-title-md text-title-md">{label}</p> : null}
-          <p className="font-body-sm text-on-scrim/80">
-            {count} {count === 1 ? 'place' : 'places'} available
-          </p>
+          <span className="block font-title-md text-title-md leading-tight">{label}</span>
+        </div>
+        <div
+          className={`absolute text-on-scrim ${
+            isDesktop ? 'bottom-6 left-6 right-6' : 'bottom-3 left-3 right-3'
+          }`}
+        >
+          <span className="font-body-sm text-on-scrim">{formatCategoryPlaceCount(count)}</span>
         </div>
       </div>
     </Link>
@@ -156,10 +151,11 @@ export function CoolingClient() {
         {/* Mobile category grid */}
         <div className="grid grid-cols-2 gap-4 md:hidden">
           {DESKTOP_BENTO.map(({ category }) => (
-            <CategoryMobileCard
+            <CategoryCard
               key={category}
               category={category}
               count={categoryCount(categories, category)}
+              variant="mobile"
             />
           ))}
         </div>
@@ -177,10 +173,11 @@ export function CoolingClient() {
           </div>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
             {DESKTOP_BENTO.map(({ category, colSpan }) => (
-              <CategoryDesktopCard
+              <CategoryCard
                 key={category}
                 category={category}
                 count={categoryCount(categories, category)}
+                variant="desktop"
                 colSpan={colSpan}
               />
             ))}
