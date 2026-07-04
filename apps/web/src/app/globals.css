@@ -39,10 +39,8 @@ body {
   padding-bottom: var(--safe-area-inset-bottom);
 }
 
-.h-app-viewport {
-  height: 100dvh;
-  height: 100vh;
-  height: 100dvh;
+.top-below-app-header {
+  top: calc(var(--app-header-offset) + 1rem);
 }
 
 .glass {
