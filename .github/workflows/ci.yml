@@ -53,6 +53,9 @@ jobs:
       - name: Web deploy smoke (Cloudflare Pages parity)
         run: pnpm smoke:web
 
+      - name: Mobile bundle smoke (EAS Android parity)
+        run: pnpm smoke:mobile
+
   screenshots:
     name: Page screenshots
     runs-on: ubuntu-latest
@@ -144,6 +147,7 @@ jobs:
             | Build | ${{ needs.quality.result == 'success' && '✅' || '❌' }} |
             | API deploy smoke | ${{ needs.quality.result == 'success' && '✅' || '❌' }} |
             | Web deploy smoke | ${{ needs.quality.result == 'success' && '✅' || '❌' }} |
+            | Mobile bundle smoke | ${{ needs.quality.result == 'success' && '✅' || '❌' }} |
             | Screenshots | ${{ needs.screenshots.result == 'success' && '✅' || needs.screenshots.result == 'skipped' && '⏭️' || '❌' }} |
 
             **Languages:** TypeScript (web, api, mobile, db, ui)

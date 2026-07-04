@@ -9,6 +9,13 @@
       "types": "./src/index.tsx",
       "default": "./src/index.tsx"
     },
+    "./theme-bridge": {
+      "types": "./src/theme/theme-storage.ts",
+      "react-native": "./src/theme/theme-storage.ts",
+      "import": "./src/theme/theme-storage.ts",
+      "require": "./src/theme/theme-storage.ts",
+      "default": "./src/theme/theme-storage.ts"
+    },
     "./tokens": {
       "types": "./src/tokens.ts",
       "default": "./src/tokens.ts"
