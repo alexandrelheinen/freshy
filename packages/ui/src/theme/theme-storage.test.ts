@@ -1,6 +1,13 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { resolveThemeId, themePreferenceLabel, isThemePreference } from './theme-storage';
+import {
+  resolveThemeId,
+  themePreferenceLabel,
+  isThemePreference,
+  buildNativeThemeBridgeScript,
+  NATIVE_COLOR_SCHEME_EVENT,
+  THEME_STORAGE_KEY,
+} from './theme-storage';
 
 describe('theme-storage', () => {
   it('resolves explicit light and dark preferences', () => {
@@ -25,5 +32,13 @@ describe('theme-storage', () => {
     assert.equal(isThemePreference('system'), true);
     assert.equal(isThemePreference('light'), false);
     assert.equal(isThemePreference(null), false);
+  });
+
+  it('builds a native bridge script that publishes the OS color scheme', () => {
+    const script = buildNativeThemeBridgeScript('dark');
+    assert.match(script, /__FRESHY_NATIVE_COLOR_SCHEME__='dark'/);
+    assert.match(script, new RegExp(NATIVE_COLOR_SCHEME_EVENT));
+    assert.match(script, new RegExp(THEME_STORAGE_KEY));
+    assert.match(script, /;true;$/);
   });
 });
