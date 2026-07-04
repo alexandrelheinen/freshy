@@ -21,7 +21,7 @@ The pnpm `overrides` warning and the eas-cli upgrade notice are harmless. You ca
 | **Mobile app** | Native shell that loads that site in a WebView |
 | **EAS** | Expo cloud builds: signed **APK** (Android) and **IPA** (iOS) |
 | **EXPO_TOKEN** | API key so your machine and GitHub can talk to EAS |
-| **EAS_PROJECT_ID** | Links this repo to `@alexandrelheinen/freshy` on expo.dev |
+| **EAS_PROJECT_ID** | Expo project UUID (default in `app.config.ts`; optional in `.env`) |
 
 You do not need a Mac to build iOS. EAS builds in the cloud.
 
@@ -74,9 +74,9 @@ This is the same value you will use for GitHub Actions in Step 3.
 | Secret name | Value |
 | ----------- | ----- |
 | `EXPO_TOKEN` | Token from Step 2 |
-| `EAS_PROJECT_ID` | `ff3b74f8-863b-41cd-a83a-1c9f37a1dd42` |
+| `EAS_PROJECT_ID` | Optional. Default is in `apps/mobile/app.config.ts` |
 
-CI needs both. Without `EAS_PROJECT_ID`, the dynamic `app.config.ts` cannot link the build to your Expo project.
+CI requires **`EXPO_TOKEN`**. The Expo project ID is committed in `app.config.ts`, so `EAS_PROJECT_ID` is only needed if you override it.
 
 ---
 
@@ -233,6 +233,8 @@ You usually do not need a separate mobile origin for this WebView setup.
 | ------- | ---------- |
 | `EAS_PROJECT_ID is not set` | Add UUID to root `.env` (Step 1) |
 | `Generating a new Keystore is not supported in --non-interactive mode` | Run `pnpm mobile:build:android` locally once (not in CI) and choose **Let Expo handle it** |
+| `@babel/runtime/helpers/interopRequireDefault` on EAS | Pull latest `apps/mobile` deps + `.npmrc`; run `pnpm install`; rebuild |
+| Gradle fails on `expo-asset cannot be found` | Ensure `expo-asset` and `expo-linking` are in `apps/mobile` dependencies; run `pnpm install` |
 | GitHub workflow fails on env | Add both `EXPO_TOKEN` and `EAS_PROJECT_ID` secrets |
 | iOS build fails | Apple Developer account + `eas device:create` + rebuild |
 | App blank / white screen | Open `EXPO_PUBLIC_WEB_APP_URL` in the phone browser |

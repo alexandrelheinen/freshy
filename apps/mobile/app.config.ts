@@ -1,12 +1,13 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config';
 
 const DEFAULT_WEB_APP_URL = 'https://freshy-25e.pages.dev';
+const DEFAULT_EAS_PROJECT_ID = 'ff3b74f8-863b-41cd-a83a-1c9f37a1dd42';
 const PLACEHOLDER_EAS_PROJECT_ID = 'REPLACE_WITH_EAS_PROJECT_ID';
 
-function readEasProjectId(): string | undefined {
+function readEasProjectId(): string {
   const raw = process.env.EAS_PROJECT_ID?.trim();
-  if (!raw || raw === PLACEHOLDER_EAS_PROJECT_ID) return undefined;
-  return raw;
+  if (raw && raw !== PLACEHOLDER_EAS_PROJECT_ID) return raw;
+  return DEFAULT_EAS_PROJECT_ID;
 }
 
 export default ({ config }: ConfigContext): ExpoConfig => {
@@ -49,7 +50,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     extra: {
       webAppUrl: process.env.EXPO_PUBLIC_WEB_APP_URL ?? DEFAULT_WEB_APP_URL,
-      ...(easProjectId ? { eas: { projectId: easProjectId } } : {}),
+      eas: { projectId: easProjectId },
     },
   };
 };

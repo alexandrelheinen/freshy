@@ -386,12 +386,13 @@ EXPO_PUBLIC_WEB_APP_URL=https://freshy-25e.pages.dev pnpm mobile:build:android
 
 ### Release automation
 
-Publishing a GitHub release (tag `v*`) runs EAS with profile **`release`**, downloads artifacts, and attaches:
+Publishing a GitHub release (tag `v*`) runs EAS with profile **`release`**, downloads the Android APK, and attaches:
 
 - `freshy-<tag>-android.apk`
-- `freshy-<tag>-ios.ipa`
 
-Manual dry run: **Actions → Release \| Mobile builds → Run workflow** (uploads artifacts without a release).
+iOS builds are deferred until Apple Developer credentials are configured.
+
+Manual dry run: **Actions → Release | Mobile builds → Run workflow** (uploads the APK as a workflow artifact without a release).
 
 ---
 

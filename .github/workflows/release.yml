@@ -33,35 +33,35 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Build Android and iOS release binaries
+      - name: Build Android release APK
         working-directory: apps/mobile
         env:
           EXPO_PUBLIC_WEB_APP_URL: https://freshy-25e.pages.dev
           EAS_PROJECT_ID: ${{ secrets.EAS_PROJECT_ID }}
         run: |
           eas build --platform android --profile release --non-interactive --wait
-          eas build --platform ios --profile release --non-interactive --wait
 
-      - name: Download install artifacts
+      - name: Download Android APK
         working-directory: apps/mobile
+        env:
+          EAS_PROJECT_ID: ${{ secrets.EAS_PROJECT_ID }}
         run: |
           mkdir -p ../../dist/mobile
           TAG="${{ github.event.release.tag_name || github.sha }}"
-          eas build:download --platform android --latest --output "../../dist/mobile/freshy-${TAG}-android.apk"
-          eas build:download --platform ios --latest --output "../../dist/mobile/freshy-${TAG}-ios.ipa"
+          BUILD_ID="$(eas build:list --platform android --status finished --build-profile release --limit 1 --json --non-interactive 2>&1 | node -e "const raw=require('fs').readFileSync(0,'utf8'); const s=raw.search(/[\[{]/); if(s===-1)process.exit(1); const d=JSON.parse(raw.slice(s)); if(!d[0]?.id)process.exit(1); process.stdout.write(d[0].id)")"
+          ARTIFACT_URL="$(eas build:view "${BUILD_ID}" --json 2>&1 | node -e "const raw=require('fs').readFileSync(0,'utf8'); const s=raw.search(/[\[{]/); if(s===-1)process.exit(1); const d=JSON.parse(raw.slice(s)); const url=d.artifacts?.buildUrl ?? d.artifacts?.applicationArchiveUrl; if(!url)process.exit(1); process.stdout.write(url)")"
+          curl -fsSL "${ARTIFACT_URL}" -o "../../dist/mobile/freshy-${TAG}-android.apk"
 
-      - name: Attach APK and IPA to GitHub release
+      - name: Attach APK to GitHub release
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
           append_body: true
           body: |
-            ### Mobile install files
+            ### Mobile install file
             - `freshy-*-android.apk`: sideload on Android (enable unknown sources if needed)
-            - `freshy-*-ios.ipa`: install on registered iOS test devices (ad hoc). Register devices with `eas device:create`.
           files: |
             dist/mobile/*.apk
-            dist/mobile/*.ipa
 
       - name: Upload workflow artifacts (manual runs)
         if: github.event_name == 'workflow_dispatch'

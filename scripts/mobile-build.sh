@@ -8,6 +8,8 @@ PLATFORM="${1:-all}"
 PROFILE="${2:-release}"
 
 export EXPO_PUBLIC_WEB_APP_URL="${EXPO_PUBLIC_WEB_APP_URL:-https://freshy-25e.pages.dev}"
+DEFAULT_EAS_PROJECT_ID="ff3b74f8-863b-41cd-a83a-1c9f37a1dd42"
+MOBILE_DIR="${ROOT_DIR}/apps/mobile"
 
 if [ -f "${ROOT_DIR}/.env" ]; then
   set -a
@@ -23,14 +25,11 @@ if [ -f "${ROOT_DIR}/apps/mobile/.env" ]; then
   set +a
 fi
 
-if [ -z "${EAS_PROJECT_ID:-}" ]; then
-  echo "ERROR: EAS_PROJECT_ID is not set. Add it to .env after running eas init." >&2
-  exit 1
-fi
+export EAS_PROJECT_ID="${EAS_PROJECT_ID:-${DEFAULT_EAS_PROJECT_ID}}"
 
-cd "${ROOT_DIR}/apps/mobile"
+cd "${MOBILE_DIR}"
 
-if ! pnpm exec eas --version >/dev/null 2>&1; then
+if ! pnpm --dir "${MOBILE_DIR}" exec eas --version >/dev/null 2>&1; then
   echo "ERROR: eas-cli is missing. Run pnpm install from the repository root." >&2
   exit 1
 fi
@@ -46,7 +45,7 @@ else
   echo "Choose \"Let Expo handle it\" when asked. Later builds can use CI (--non-interactive)."
 fi
 
-pnpm exec eas build "${BUILD_ARGS[@]}"
+pnpm --dir "${MOBILE_DIR}" exec eas build "${BUILD_ARGS[@]}"
 
 echo "Build finished. Download install files with:"
 echo "  pnpm mobile:download:android"
