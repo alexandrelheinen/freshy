@@ -11,6 +11,8 @@ from freshy.cleaner.duplicates import find_nearby_duplicate
 from freshy.cleaner.junk import is_auto_generated_import_placeholder, is_blank_address, place_delete_reason
 from freshy.cleaner.models import PlaceRow
 from freshy.cleaner.osm_enrich import OsmPoiMatch, lookup_nearby_poi
+from freshy.mapper.cinema import is_cinema_signal
+from freshy.mapper.restaurant_chain import is_restaurant_chain_signal
 from freshy.mapper.category import slugify_name
 from freshy.mapper.supermarket import is_supermarket_signal, normalize_match_text
 from freshy.seeder.builder import unique_slug
@@ -45,6 +47,8 @@ HOTEL_NAME_KEYWORDS: tuple[str, ...] = (
 )
 
 HOTEL_TARGET_CATEGORY = "RESTAURANT"
+CINEMA_TARGET_CATEGORY = "MUSEUM"
+RESTAURANT_CHAIN_TARGET_CATEGORY = "RESTAURANT"
 DATAGOUV_PROVIDER_ID = "datagouv"
 PLACEHOLDER_DELETE_REASON = "auto-generated import placeholder without an address"
 
@@ -90,6 +94,14 @@ class CleanPlan:
 
 def is_supermarket_place(name: str, description: str | None = None) -> bool:
     return is_supermarket_signal(name, description)
+
+
+def is_cinema_place(name: str, description: str | None = None) -> bool:
+    return is_cinema_signal(name, description)
+
+
+def is_restaurant_chain_place(name: str, description: str | None = None) -> bool:
+    return is_restaurant_chain_signal(name, description)
 
 
 def is_hotel_place(name: str, description: str | None = None) -> bool:
@@ -207,6 +219,25 @@ def plan_place_cleanup(
             action="reclassify",
             reason="French supermarket or grocery chain mapped to MALL",
             new_category="MALL",
+        )
+
+    if is_cinema_place(place.name, place.description) and place.category != CINEMA_TARGET_CATEGORY:
+        return CleanAction(
+            place=place,
+            action="reclassify",
+            reason="cinema mapped to MUSEUM (Arts and Culture)",
+            new_category=CINEMA_TARGET_CATEGORY,
+        )
+
+    if (
+        is_restaurant_chain_place(place.name, place.description)
+        and place.category != RESTAURANT_CHAIN_TARGET_CATEGORY
+    ):
+        return CleanAction(
+            place=place,
+            action="reclassify",
+            reason="known restaurant or fast-food chain mapped to RESTAURANT",
+            new_category=RESTAURANT_CHAIN_TARGET_CATEGORY,
         )
 
     if (

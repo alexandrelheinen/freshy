@@ -6,6 +6,8 @@ import re
 import unicodedata
 from typing import Any
 
+from freshy.mapper.cinema import is_cinema_signal
+from freshy.mapper.restaurant_chain import is_restaurant_chain_signal
 from freshy.mapper.supermarket import is_supermarket_signal, normalize_match_text
 
 PLACE_CATEGORIES = (
@@ -33,14 +35,15 @@ def infer_category(tags: dict[str, Any]) -> str:
 
     mapping = {
         "library": "LIBRARY",
-        "cinema": "PUBLIC_SPACE",
-        "theatre": "PUBLIC_SPACE",
+        "cinema": "MUSEUM",
+        "theatre": "MUSEUM",
         "community_centre": "PUBLIC_SPACE",
         "townhall": "PUBLIC_SPACE",
         "museum": "MUSEUM",
         "gallery": "MUSEUM",
         "cafe": "CAFE",
         "restaurant": "RESTAURANT",
+        "fast_food": "RESTAURANT",
         "bar": "BAR",
         "pub": "BAR",
         "mall": "MALL",
@@ -67,8 +70,10 @@ def infer_category(tags: dict[str, Any]) -> str:
         return "LIBRARY"
     if "musée" in combined or "musee" in combined:
         return "MUSEUM"
-    if "cinéma" in combined or "cinema" in combined:
-        return "PUBLIC_SPACE"
+    if is_cinema_signal(combined):
+        return "MUSEUM"
+    if is_restaurant_chain_signal(combined):
+        return "RESTAURANT"
     if _looks_like_supermarket(combined):
         return "MALL"
     if _looks_like_hotel(combined):

@@ -102,17 +102,23 @@ Removes useless imported rows and fixes misclassified supermarkets and hotels in
 
 **Rules:**
 
-**Delete** (requires **no address**, plus one of the conditions below):
+**Delete**:
 
 | Condition | Examples |
 | --------- | -------- |
-| Name too short | fewer than 2 characters after trim |
-| Invalid coordinates | `(0, 0)`, out of WGS84 range, or non-finite values |
-| Import outside France | `createdById` is `osm` or `datagouv` and point is outside metropolitan France |
-| English unknown-style name | `Unknown`, `Unknown Facility`, `Unnamed`, `No name`, `N/A` |
-| French placeholder name | `Inconnu`, `Sans nom`, `Sans titre`, `Lieu inconnu`, `Anonyme`, `Non nommé` |
-| Auto-generated import title | `Cooling space (dataset title…)` from data.gouv fallback |
-| Empty or punctuation-only name | blank, `.`, `-` |
+| Import without an address | `createdById` is `osm` or `datagouv` and address is null or blank (Studio shows this as **No address**) |
+| Placeholder address text | address stored as `No address`, `Sans adresse`, `Adresse inconnue`, `N/A`, … |
+| Name too short | fewer than 2 characters after trim (empty address only) |
+| Invalid coordinates | `(0, 0)`, out of WGS84 range, or non-finite values (empty address only) |
+| Import outside France | `createdById` is `osm` or `datagouv` and point is outside metropolitan France (empty address only) |
+| English unknown-style name | `Unknown`, `Unknown Facility`, … (empty address only) |
+| French placeholder name | `Inconnu`, `Sans nom`, … (empty address only) |
+| Auto-generated import title | `Cooling space (dataset title…)` from data.gouv fallback (empty address only) |
+| Empty or punctuation-only name | blank, `.`, `-` (empty address only) |
+
+Studio renders `{place.address ?? 'No address'}`: a null address in D1 displays as **No address** in the UI but is not the literal string unless it was saved that way.
+
+Rows with a real street address are **kept**. Manual submissions (`createdById` not `osm`/`datagouv`) without an address are also **kept** unless another rule matches.
 
 Places with a valid address are **kept** even when the name, coordinates, or provider look wrong (manual cleanup in Studio).
 
@@ -120,7 +126,9 @@ Places with a valid address are **kept** even when the name, coordinates, or pro
 
 **Reclassify to `MALL`:** whole-word match on major French grocery chains (Carrefour, E.Leclerc, Auchan, Intermarché, Monoprix, Franprix, Match, …) or explicit `shop: supermarket` / `shop: convenience` in the import description. Substrings like `ed` in *médiathèque* or `match` in *Matchplay* must **not** match.
 
-**Reclassify to `RESTAURANT`:** hotels (Freshy has no `HOTEL` category). Pass `--skip-hotels` to leave hotel rows unchanged.
+**Reclassify to `MUSEUM` (Arts and Culture):** cinemas (Pathé, Gaumont, UGC, MK2, CGR, …), `amenity=cinema` in import metadata, or names containing *cinéma* / *cinema*.
+
+**Reclassify to `RESTAURANT`:** known fast-food and restaurant chains (McDonald's, Burger King, KFC, Quick, Subway, …), `amenity=fast_food` in import metadata, and hotels (Freshy has no `HOTEL` category). Pass `--skip-hotels` to leave hotel rows unchanged.
 
 ```bash
 # Preview actions against local D1

@@ -130,6 +130,34 @@ class JunkUnknownPlaceTests(unittest.TestCase):
         action = plan_place_cleanup(place)
         self.assertEqual(action.action, "keep")
 
+    def test_deletes_named_osm_import_with_null_address(self) -> None:
+        place = _place(
+            name="La Petite Carrière du Château",
+            address=None,
+            created_by_id="osm",
+            place_id="osm:n109",
+        )
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "delete")
+        self.assertIn("import without an address", action.reason.casefold())
+
+    def test_deletes_named_osm_import_with_placeholder_address(self) -> None:
+        place = _place(
+            name="Hubsy République",
+            address="No address",
+            created_by_id="osm",
+            place_id="osm:n489",
+        )
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "delete")
+        self.assertIn("placeholder address", action.reason.casefold())
+
+    def test_deletes_french_placeholder_address(self) -> None:
+        place = _place(name="Hubsy République", address="Sans adresse")
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "delete")
+        self.assertIn("placeholder address", action.reason.casefold())
+
     def test_keeps_named_places_without_address(self) -> None:
         place = _place(name="Carrefour City", address=None, category="MALL")
         action = plan_place_cleanup(place)
@@ -251,6 +279,35 @@ class SupermarketClassificationTests(unittest.TestCase):
         )
         action = plan_place_cleanup(place)
         self.assertEqual(action.action, "keep")
+
+
+class CinemaCleanupTests(unittest.TestCase):
+    def test_reclassifies_cinema_to_museum(self) -> None:
+        place = _place(name="Pathé République", category="PUBLIC_SPACE")
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "reclassify")
+        self.assertEqual(action.new_category, "MUSEUM")
+        self.assertIn("cinema", action.reason.casefold())
+
+    def test_keeps_cinema_already_in_museum(self) -> None:
+        place = _place(name="UGC Ciné Cité", category="MUSEUM")
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "keep")
+
+
+class RestaurantChainCleanupTests(unittest.TestCase):
+    def test_reclassifies_mcdonalds_to_restaurant(self) -> None:
+        place = _place(name="McDonald's République", category="PUBLIC_SPACE")
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "reclassify")
+        self.assertEqual(action.new_category, "RESTAURANT")
+        self.assertIn("restaurant", action.reason.casefold())
+
+    def test_reclassifies_burger_king_to_restaurant(self) -> None:
+        place = _place(name="Burger King Paris", category="MALL")
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "reclassify")
+        self.assertEqual(action.new_category, "RESTAURANT")
 
 
 class HotelCleanupTests(unittest.TestCase):

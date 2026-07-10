@@ -63,9 +63,54 @@ JUNK_NAME_PATTERNS: tuple[re.Pattern[str], ...] = (
     re.compile(r"^espace rafraîchi \(.+\)$"),
 )
 
+# Stored address strings that mean "no real address" and should trigger delete.
+PLACEHOLDER_ADDRESS_EXACT: frozenset[str] = frozenset(
+    {
+        # English
+        "no address",
+        "unknown address",
+        "address unknown",
+        "not available",
+        "not known",
+        "n/a",
+        "na",
+        "none",
+        "null",
+        # French
+        "sans adresse",
+        "adresse inconnue",
+        "adresse non renseignee",
+        "adresse non renseignée",
+        "pas d adresse",
+        "pas d'adresse",
+        "aucune adresse",
+        "non renseigne",
+        "non renseignee",
+        "non renseigné",
+        "non renseignée",
+    }
+)
+
+
+def is_empty_address(address: str | None) -> bool:
+    return address is None or not str(address).strip()
+
+
+def is_placeholder_address(address: str | None) -> bool:
+    """True when the address field contains a known placeholder sentence."""
+    if is_empty_address(address):
+        return False
+    normalized = normalize_match_text(str(address).strip())
+    return normalized in PLACEHOLDER_ADDRESS_EXACT
+
 
 def is_blank_address(address: str | None) -> bool:
-    return address is None or not str(address).strip()
+    """True when the row has no usable address (empty or placeholder text)."""
+    return is_empty_address(address) or is_placeholder_address(address)
+
+
+def has_real_address(address: str | None) -> bool:
+    return not is_blank_address(address)
 
 
 def is_auto_generated_import_placeholder(name: str) -> bool:
@@ -139,9 +184,12 @@ def place_delete_reason(
     """
     Return a delete reason when a row should be removed, else None.
 
-    All delete rules require a blank or missing address.
+    Delete rules apply when the address is empty or a known placeholder string.
     """
-    if not is_blank_address(address):
+    if is_placeholder_address(address):
+        return "placeholder address text"
+
+    if not is_empty_address(address):
         return None
 
     stripped = name.strip()
@@ -159,7 +207,14 @@ def place_delete_reason(
     ):
         return "import provider place outside France without an address"
 
-    return _junk_name_delete_reason(name)
+    junk_reason = _junk_name_delete_reason(name)
+    if junk_reason is not None:
+        return junk_reason
+
+    if created_by_id in SEEDER_PROVIDER_USER_IDS:
+        return "import without an address"
+
+    return None
 
 
 def junk_delete_reason(name: str, address: str | None) -> str | None:
