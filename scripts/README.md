@@ -14,9 +14,9 @@
 | `mobile-build.sh`                   | EAS build for Android/iOS/all (`release` profile)            |
 | `mobile-download.sh`                | Download latest APK/IPA from EAS to `dist/mobile/`           |
 
-| Script (Python)         | Usage                                                        |
-| ----------------------- | ------------------------------------------------------------ |
-| `freshy_seeder.py`      | Scrape French cooling places (OSM, data.gouv) and sync to D1 |
+| Script (Python)           | Usage                                                        |
+| ------------------------- | ------------------------------------------------------------ |
+| `freshy_seeder.py`        | Scrape French cooling places (OSM, data.gouv) and sync to D1 |
 | `freshy_place_cleaner.py` | Remove junk imports and fix supermarket classification in D1 |
 
 ## freshy-seeder (Python)

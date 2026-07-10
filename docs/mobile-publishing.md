@@ -9,41 +9,41 @@ Reference for building and shipping Freshy on **Android** and **iOS**. The mobil
 
 ## Distribution options at a glance
 
-| Goal | Platform | Output | Account cost | Freshy EAS profile | Typical channel |
-| ---- | -------- | ------ | ------------ | ------------------ | --------------- |
-| Sideload to testers | Android | `.apk` | Free | `release` | GitHub Release asset |
-| Public store | Android | `.aab` | Google Play **$25 once** | `production` | Google Play Console |
-| Sideload to registered iPhones | iOS | `.ipa` (ad hoc) | Apple Developer **~$99/year** | `release` | GitHub Release asset |
-| Beta testers (no UDID list) | iOS | `.ipa` | Apple Developer **~$99/year** | `production` | TestFlight |
-| Public store | iOS | `.ipa` | Apple Developer **~$99/year** | `production` | App Store Connect |
+| Goal                           | Platform | Output          | Account cost                  | Freshy EAS profile | Typical channel      |
+| ------------------------------ | -------- | --------------- | ----------------------------- | ------------------ | -------------------- |
+| Sideload to testers            | Android  | `.apk`          | Free                          | `release`          | GitHub Release asset |
+| Public store                   | Android  | `.aab`          | Google Play **$25 once**      | `production`       | Google Play Console  |
+| Sideload to registered iPhones | iOS      | `.ipa` (ad hoc) | Apple Developer **~$99/year** | `release`          | GitHub Release asset |
+| Beta testers (no UDID list)    | iOS      | `.ipa`          | Apple Developer **~$99/year** | `production`       | TestFlight           |
+| Public store                   | iOS      | `.ipa`          | Apple Developer **~$99/year** | `production`       | App Store Connect    |
 
 Profiles live in `apps/mobile/eas.json`:
 
-| Profile | `distribution` | Android | iOS |
-| ------- | -------------- | ------- | --- |
-| `release` | `internal` | APK (sideload) | Ad hoc IPA (registered devices) |
-| `production` | store default | App Bundle (`.aab`) | App Store / TestFlight build |
+| Profile      | `distribution` | Android             | iOS                             |
+| ------------ | -------------- | ------------------- | ------------------------------- |
+| `release`    | `internal`     | APK (sideload)      | Ad hoc IPA (registered devices) |
+| `production` | store default  | App Bundle (`.aab`) | App Store / TestFlight build    |
 
 ---
 
 ## Accounts and dashboards
 
-| Service | URL | Purpose |
-| ------- | --- | ------- |
-| Expo / EAS | https://expo.dev/accounts/alexandrelheinen/projects/freshy | Cloud builds, credentials, build history |
-| GitHub Actions | https://github.com/alexandrelheinen/freshy/actions | Release workflow (APK today) |
-| Google Play Console | https://play.google.com/console | Android store listing and rollout |
-| Apple Developer | https://developer.apple.com/account | iOS signing, devices, certificates |
-| App Store Connect | https://appstoreconnect.apple.com | TestFlight, App Store metadata, review |
-| Clerk | https://dashboard.clerk.com | Sign-in inside the WebView shell |
+| Service             | URL                                                        | Purpose                                  |
+| ------------------- | ---------------------------------------------------------- | ---------------------------------------- |
+| Expo / EAS          | https://expo.dev/accounts/alexandrelheinen/projects/freshy | Cloud builds, credentials, build history |
+| GitHub Actions      | https://github.com/alexandrelheinen/freshy/actions         | Release workflow (APK today)             |
+| Google Play Console | https://play.google.com/console                            | Android store listing and rollout        |
+| Apple Developer     | https://developer.apple.com/account                        | iOS signing, devices, certificates       |
+| App Store Connect   | https://appstoreconnect.apple.com                          | TestFlight, App Store metadata, review   |
+| Clerk               | https://dashboard.clerk.com                                | Sign-in inside the WebView shell         |
 
 **Native identifiers** (from `apps/mobile/app.config.ts`):
 
-| Platform | Identifier |
-| -------- | ---------- |
-| Android package | `app.freshy.mobile` |
-| iOS bundle ID | `app.freshy.mobile` |
-| EAS project ID | `ff3b74f8-863b-41cd-a83a-1c9f37a1dd42` |
+| Platform        | Identifier                             |
+| --------------- | -------------------------------------- |
+| Android package | `app.freshy.mobile`                    |
+| iOS bundle ID   | `app.freshy.mobile`                    |
+| EAS project ID  | `ff3b74f8-863b-41cd-a83a-1c9f37a1dd42` |
 
 ---
 
@@ -72,19 +72,19 @@ EXPO_PUBLIC_WEB_APP_URL=https://freshy-25e.pages.dev
 
 https://github.com/alexandrelheinen/freshy/settings/secrets/actions
 
-| Secret | Required for | Value |
-| ------ | ------------ | ----- |
-| `EXPO_TOKEN` | EAS builds in CI | https://expo.dev/settings/access-tokens |
+| Secret           | Required for      | Value                                              |
+| ---------------- | ----------------- | -------------------------------------------------- |
+| `EXPO_TOKEN`     | EAS builds in CI  | https://expo.dev/settings/access-tokens            |
 | `EAS_PROJECT_ID` | Optional override | Same UUID as above (default is in `app.config.ts`) |
 
 For **iOS ad hoc in CI** (when enabled), also add App Store Connect API key secrets so EAS can refresh provisioning profiles non-interactively:
 
-| Secret | Value |
-| ------ | ----- |
-| `EXPO_ASC_KEY_ID` | App Store Connect API key ID |
-| `EXPO_ASC_ISSUER_ID` | App Store Connect issuer ID |
-| `EXPO_APPLE_TEAM_ID` | Apple Team ID |
-| `EXPO_ASC_API_KEY` | Contents of the `.p8` key file |
+| Secret               | Value                          |
+| -------------------- | ------------------------------ |
+| `EXPO_ASC_KEY_ID`    | App Store Connect API key ID   |
+| `EXPO_ASC_ISSUER_ID` | App Store Connect issuer ID    |
+| `EXPO_APPLE_TEAM_ID` | Apple Team ID                  |
+| `EXPO_ASC_API_KEY`   | Contents of the `.p8` key file |
 
 Create the API key in App Store Connect → **Users and Access** → **Integrations** → **App Store Connect API**.
 
@@ -217,11 +217,11 @@ pnpm mobile:download:ios
 
 **3. Install on iPhone**
 
-| Method | Notes |
-| ------ | ----- |
-| Mac + Xcode → **Window** → **Devices and Simulators** → **+** | Most reliable for ad hoc |
-| Diawi or similar | Upload IPA; link works only on registered devices |
-| TestFlight | See Path B; easier for many testers |
+| Method                                                        | Notes                                             |
+| ------------------------------------------------------------- | ------------------------------------------------- |
+| Mac + Xcode → **Window** → **Devices and Simulators** → **+** | Most reliable for ad hoc                          |
+| Diawi or similar                                              | Upload IPA; link works only on registered devices |
+| TestFlight                                                    | See Path B; easier for many testers               |
 
 If install fails, the device UDID was likely not registered **before** the build. Run `eas device:create`, then rebuild.
 
@@ -278,10 +278,10 @@ Apple **Guideline 4.8**: if you offer Google sign-in, you must also offer **Sign
 
 ## CI automation reference
 
-| Trigger | Workflow | Current behavior | Target (both platforms on same tag) |
-| ------- | -------- | ---------------- | ------------------------------------- |
-| GitHub Release published | `Release \| Mobile builds` | EAS `release` → Android APK → attach to release | Add iOS `release` build + IPA asset |
-| Manual | Same workflow, **Run workflow** | APK as workflow artifact | Both APK and IPA as artifacts |
+| Trigger                  | Workflow                        | Current behavior                                | Target (both platforms on same tag) |
+| ------------------------ | ------------------------------- | ----------------------------------------------- | ----------------------------------- |
+| GitHub Release published | `Release \| Mobile builds`      | EAS `release` → Android APK → attach to release | Add iOS `release` build + IPA asset |
+| Manual                   | Same workflow, **Run workflow** | APK as workflow artifact                        | Both APK and IPA as artifacts       |
 
 Workflow file: `.github/workflows/release.yml`.
 
@@ -291,11 +291,11 @@ Store releases (Play / App Store) are **not** fully automated in CI today; use `
 
 ## Versioning
 
-| Source | Used for |
-| ------ | -------- |
+| Source                               | Used for                                                            |
+| ------------------------------------ | ------------------------------------------------------------------- |
 | `apps/mobile/package.json` `version` | User-visible app version (`read-app-version.cjs` → `app.config.ts`) |
-| Git tag (e.g. `v0.3.3`) | GitHub Release name and APK filename `freshy-v0.3.3-android.apk` |
-| EAS remote (`production`) | Auto-incremented Android `versionCode` / iOS build number |
+| Git tag (e.g. `v0.3.3`)              | GitHub Release name and APK filename `freshy-v0.3.3-android.apk`    |
+| EAS remote (`production`)            | Auto-incremented Android `versionCode` / iOS build number           |
 
 Align tag, `package.json` version, and store listing version before a public store release.
 
@@ -334,17 +334,17 @@ Align tag, `package.json` version, and store listing version before a public sto
 
 ## Command cheat sheet
 
-| Task | Command |
-| ---- | ------- |
-| Dev preview (Expo Go) | `pnpm mobile:dev` |
-| Android sideload APK | `pnpm mobile:build:android` → `pnpm mobile:download:android` |
-| iOS ad hoc IPA | `pnpm mobile:build:ios` → `pnpm mobile:download:ios` |
-| Both sideload builds | `pnpm mobile:build` |
-| Android store bundle | `cd apps/mobile && pnpm exec eas build -p android --profile production` |
-| iOS store build | `cd apps/mobile && pnpm exec eas build -p ios --profile production` |
-| Submit to Play / App Store Connect | `cd apps/mobile && pnpm exec eas submit --profile production` |
-| Register iOS test device | `cd apps/mobile && pnpm exec eas device:create` |
-| Watch builds | https://expo.dev/accounts/alexandrelheinen/projects/freshy/builds |
+| Task                               | Command                                                                 |
+| ---------------------------------- | ----------------------------------------------------------------------- |
+| Dev preview (Expo Go)              | `pnpm mobile:dev`                                                       |
+| Android sideload APK               | `pnpm mobile:build:android` → `pnpm mobile:download:android`            |
+| iOS ad hoc IPA                     | `pnpm mobile:build:ios` → `pnpm mobile:download:ios`                    |
+| Both sideload builds               | `pnpm mobile:build`                                                     |
+| Android store bundle               | `cd apps/mobile && pnpm exec eas build -p android --profile production` |
+| iOS store build                    | `cd apps/mobile && pnpm exec eas build -p ios --profile production`     |
+| Submit to Play / App Store Connect | `cd apps/mobile && pnpm exec eas submit --profile production`           |
+| Register iOS test device           | `cd apps/mobile && pnpm exec eas device:create`                         |
+| Watch builds                       | https://expo.dev/accounts/alexandrelheinen/projects/freshy/builds       |
 
 ---
 
