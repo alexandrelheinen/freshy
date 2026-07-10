@@ -6,6 +6,7 @@ Installable Python package for seeding, mapping, and cleaning cooling-place data
 | ---------------- | ---------------- | --------------------------------------------------------------------- |
 | `freshy-seeder`  | `freshy.seeder`  | Scrape French cooling places (OSM, data.gouv) and sync to D1          |
 | `freshy-cleaner` | `freshy.cleaner` | Remove junk imports and fix supermarket or hotel classification in D1 |
+| `freshy-images`  | `freshy.images`  | Find free venue image URLs and update D1                            |
 
 ## Setup
 
@@ -154,6 +155,29 @@ freshy-cleaner apply --database="freshy-db" --remote
 
 Options: `--skip-hotels`, `--enrich-osm`, `--enrich-osm-categories`, `--json`, `-v`. Cleanup rules live in `freshy.cleaner`; import-time category mapping lives in `freshy.mapper`.
 
+## freshy-images
+
+Finds **free-licensed** venue images for places that still use the category default (`photoUrl` is null in D1). Sources: OSM `image` / `wikimedia_commons` / `wikidata` tags, Wikidata P18, and optional Wikimedia Commons name search.
+
+**Default behavior:** store the external Wikimedia URL in D1 (`photoUrl`). Freshy serves it as-is when set. No R2 upload, no download.
+
+**Optional `--upload-r2`:** download and mirror into R2 (uses bucket storage; requires `pip install freshy[r2]` and R2 env vars).
+
+**Trade-offs:** external URLs depend on Wikimedia uptime and stable links; R2 mirroring is more durable but costs storage.
+
+```bash
+# Preview matches (tqdm progress bar)
+freshy-images plan --database="freshy-db" --remote
+
+# Apply external URLs to D1
+freshy-images apply --database="freshy-db" --remote
+
+# Mirror to R2 instead (optional)
+freshy-images apply --database="freshy-db" --remote --upload-r2
+```
+
+Options: `--limit`, `--min-confidence`, `--no-commons-search`, `--upload-r2`, `--json`, `-v`. No Google or paid APIs.
+
 ## Tests
 
 ```bash
@@ -174,9 +198,11 @@ python/
 │   ├── d1/                # shared wrangler helpers
 │   ├── mapper/            # freshy.mapper: category inference
 │   ├── seeder/            # freshy.seeder: scrape and sync
-│   └── cleaner/           # freshy.cleaner: D1 cleanup
+│   ├── cleaner/           # freshy.cleaner: D1 cleanup
+│   └── images/            # freshy.images: free image lookup and R2 upload
 └── tests/
     ├── mapper/
     ├── seeder/
-    └── cleaner/
+    ├── cleaner/
+    └── images/
 ```

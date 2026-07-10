@@ -24,11 +24,15 @@ documentation = "https://alexandrelheinen.pages.dev/projects/freshy"
 [project.scripts]
 freshy-seeder = "freshy.seeder.cli:main"
 freshy-cleaner = "freshy.cleaner.cli:main"
+freshy-images = "freshy.images.cli:main"
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.4",
     "ruff>=0.14",
+]
+r2 = [
+    "boto3>=1.35.0",
 ]
 
 [tool.setuptools]

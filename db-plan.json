@@ -1,0 +1,5629 @@
+{
+  "totals": {
+    "places": 2033,
+    "delete": 874,
+    "rename": 0,
+    "reclassify": 53,
+    "keep": 1106
+  },
+  "delete": [
+    {
+      "id": "osm:n10004844386",
+      "name": "Partage",
+      "category": "BAR",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10048915767",
+      "name": "C.D.I",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10068830267",
+      "name": "Ma-Shi-Ta",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10106067054",
+      "name": "Musée Intercommunal d'Étampes",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10161573877",
+      "name": "Quick Sushi",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10174735527",
+      "name": "New Thaï",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10174735529",
+      "name": "Crep'Way",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10174735535",
+      "name": "Club Yearling",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10180211102",
+      "name": "Le mal est fait",
+      "category": "BAR",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10181547561",
+      "name": "Albert Ross",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10202455461",
+      "name": "Ramen Wang",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1021202232",
+      "name": "Vin & Compagnie",
+      "category": "BAR",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10225603441",
+      "name": "Medef de l’Est Parisien",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10251484596",
+      "name": "Cantine Libanaise",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1030705871",
+      "name": "Le Cinq",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1033227628",
+      "name": "Bibliothèque des Sciences et de l'Industrie",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1044767617",
+      "name": "Le 14 Juillet",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10567963525",
+      "name": "La Banque Postale",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10589759707",
+      "name": "CROUS RU L’Expérimental",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10603442120",
+      "name": "Yoshikawa",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10655363010",
+      "name": "Bibliothèque Mathématiques et Informatique",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10657252715",
+      "name": "BU Saint-Germain-des-Prés",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1069658607",
+      "name": "Bibliothèque Gérard Philipe",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10701269980",
+      "name": "Pret A Manger",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10743459260",
+      "name": "Bloom café",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10749540482",
+      "name": "Nawab",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10781539857",
+      "name": "Bibliothèque pour tous",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10791197366",
+      "name": "Aux Brochettes",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10804295705",
+      "name": "Lounge Air France",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10827395663",
+      "name": "Bleu de Grenelle",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10883135862",
+      "name": "Starbucks",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10883135870",
+      "name": "Caviar House & Prunier",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10883135879",
+      "name": "Yo Sushi",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10883135888",
+      "name": "Exki",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10883135894",
+      "name": "Pret A Manger",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10897713630",
+      "name": "Bibliothèque Charléty",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10915679047",
+      "name": "La Petite Carrière du Château",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10949233558",
+      "name": "Crêpe Touch",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n10979191797",
+      "name": "bistronome, le comptoir du Gâtinais",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11062190844",
+      "name": "Five Guys",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11080258224",
+      "name": "Paname Brewing Company",
+      "category": "BAR",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11121500041",
+      "name": "La Croissanterie",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11125490221",
+      "name": "Franprix",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11155615555",
+      "name": "Gontran Cherrier",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11222479941",
+      "name": "Octopus",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11231341872",
+      "name": "Le 129 ter",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1125142006",
+      "name": "La Coupole",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11259580512",
+      "name": "Musée Curie",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11271482260",
+      "name": "Zara",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11362551137",
+      "name": "Musée de la Ballonnière et du Jamboree de 1947",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11373294066",
+      "name": "Edo Sushi",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11377609742",
+      "name": "La Bib' de l'Espace jeunes",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1142933435",
+      "name": "Musée du Service de Santé des Armées",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11459251769",
+      "name": "Planet' Asia",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11500246109",
+      "name": "Léon",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11500252525",
+      "name": "Kinepolis Servon",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11522231903",
+      "name": "Seafood Bar - Caviar House & Prunier",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1152866652",
+      "name": "Espace Philippe Noiret",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1154378843",
+      "name": "Bibliothèque Municipale",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11564346636",
+      "name": "Bibliothèque Est Denis-Diderot",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11570087380",
+      "name": "Bibliothèque de la Barbacane",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1163826965",
+      "name": "Le Confidence",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11704031710",
+      "name": "Médiathèque Bellini",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11732348135",
+      "name": "Centro de recursos didácticos de París",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11755336917",
+      "name": "Les Frères Bretons",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11762192319",
+      "name": "Mediathèque de St Germain lès Arpajon",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11848235680",
+      "name": "Médiathèque Billancourt",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1185035363",
+      "name": "Bibliothèque Alphonse Daudet",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1186352936",
+      "name": "Bibliothèque Dumont",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1190736295",
+      "name": "Ciné 7",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11920110773",
+      "name": "Le Filippo",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11941090998",
+      "name": "Bibliothèque de l'Institut Jean Nicod",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n11975908593",
+      "name": "Auchan",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12030781640",
+      "name": "Super U",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12063848615",
+      "name": "Mus'X",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12093136896",
+      "name": "Bristo Mejo",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12103959485",
+      "name": "Museé-jardin Bourdelle",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12205188895",
+      "name": "Musée des beaux-arts André Malraux",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12247110433",
+      "name": "Espace Nature",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12318640273",
+      "name": "Bibliothèque Universitaire IUT",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1234516648",
+      "name": "My Little Warung",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12353958674",
+      "name": "Médiathèque Joséphine Baker",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12357759270",
+      "name": "La poste",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1236532818",
+      "name": "Bibliothèque Turgot",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12367885506",
+      "name": "Burger King",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1238614807",
+      "name": "Médiathèque Elsa Triolet",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12424706488",
+      "name": "Musée départemental de la Seine-et-Marne",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12424709143",
+      "name": "Musée de la Vie d'Autrefois",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12424711713",
+      "name": "Musée du Trot",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12424735435",
+      "name": "Musée Grataloup",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12424738430",
+      "name": "Musée de la Ville de Saint-Quentin-en-Yvelines",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12424756643",
+      "name": "Musée d'Art et d'Histoire de la Psychiatrie",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12424785136",
+      "name": "Musée du Costume Militaire",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12424785629",
+      "name": "Musée Agricole de Bois Blanc",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12424789818",
+      "name": "Musée Paysan de la ferme de Godefroy",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12424824553",
+      "name": "Musée de la Civilisation Paysanne",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12424871813",
+      "name": "Musée William Thornley",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12424873849",
+      "name": "Maison d'Auguste Comte",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12424875969",
+      "name": "Musée du Conservatoire des Plantes",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12424875980",
+      "name": "Musée de Bouray et son Histoire",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12424900383",
+      "name": "Musée Paul Delouvrier",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12424953141",
+      "name": "Musée André Dunoyer de Ségonzac",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12456146657",
+      "name": "Médiathèque Jean d'Ormesson",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12518363759",
+      "name": "Bibliothèque Robert Desnos",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1253177342",
+      "name": "Maison de Banlieue et de l'Architecture",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12609792912",
+      "name": "Mediathèque - Les Muses",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12629899601",
+      "name": "Bibliothèque municipale",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12719009902",
+      "name": "Bibliothèque Charcot",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12753433333",
+      "name": "Bibliothèque de SciencesPo",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12766701247",
+      "name": "Bibliothèque d'architecture contemporaine",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12768107722",
+      "name": "Médiathèque Henri Michaux",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12775836918",
+      "name": "Médiatheque Le Petit Princ",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12782079808",
+      "name": "Médiathèque musicale de Paris",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12805837190",
+      "name": "abcd",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12810826196",
+      "name": "Megarama La Lanterne",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12810859933",
+      "name": "Le Parterre",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12810859934",
+      "name": "My Ciné",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12860327570",
+      "name": "Burger King",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12920079632",
+      "name": "Break and home",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1292063071",
+      "name": "Bibliothèque Agustina Bessa-Luis",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12945544787",
+      "name": "Maison Albar - Le Vendome",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12957281496",
+      "name": "Médiathèque Virginia Woolf",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12966392156",
+      "name": "Centre de documentation Économie - Finances",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1296754169",
+      "name": "Musée de la Marine",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12983261143",
+      "name": "Muji",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1298881170",
+      "name": "Bibliothèque Pour Tous",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1298911177",
+      "name": "Jokei",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n12992087255",
+      "name": "Pergame",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13004296734",
+      "name": "Galerie des Sculptures et des Moulages",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13007142159",
+      "name": "Pathé Conflans",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13015555474",
+      "name": "Bibliothèque Centre Documentaire de l'École Saint Thomas Becket",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13019255901",
+      "name": "Pierres d'Histoire - Le Domaine de Fleury",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13092919950",
+      "name": "Emile Zola",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13107824309",
+      "name": "Espace Krajcberg",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13132341944",
+      "name": "Musée Zola-Dreyfus",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13146015444",
+      "name": "Maison de l'Imprimerie - Musée de la Typographie",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13180569635",
+      "name": "Bibliothèque du Campus Centre",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13198281470",
+      "name": "Média-ludothèque du Palais",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13204281042",
+      "name": "L'empire",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13207581421",
+      "name": "Bibliothèque universitaire de santé",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13232394792",
+      "name": "Appartement-atelier de Le Corbusier",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13248628775",
+      "name": "Médiathèque Alphonse Daudet",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13254249276",
+      "name": "Centre de Documentation et d'Information",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13269947032",
+      "name": "Médiathèque Montgolfier",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13284777561",
+      "name": "Bibliothèque du CNAM",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13289917825",
+      "name": "CNAM, bibliothèque Gay-Lussac",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13302282273",
+      "name": "Bibliothèque d’économie, gestion et urbanisme",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13307982937",
+      "name": "Burger King",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13363158734",
+      "name": "Bibliothèque Municipale Jeanne Denis",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13424095308",
+      "name": "Bibliothèque de Louan-Villegruis-Fontaine",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13507391080",
+      "name": "Médiathèque Relais Village",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1351126044",
+      "name": "Cinéma Le Cratère",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1359954338",
+      "name": "Chambre de Van Gogh",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13605894656",
+      "name": "Médiathèque des Bleuets",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1361695560",
+      "name": "Médiathèque des Cités Unies",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13621054863",
+      "name": "La Passion du Rouge - Écomusée des Pompiers",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13623368583",
+      "name": "Médiathèque Jean d’Ormesson",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13632886634",
+      "name": "Musée des Transmissions",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13648698214",
+      "name": "Centre d’exposition historique de Savigny-sur-Orge",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13652232433",
+      "name": "Arkose Cantine",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1367996793",
+      "name": "Espace des Sciences Pierre-Gilles de Gennes",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13687265801",
+      "name": "G20",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13687279488",
+      "name": "Médiathèque Odette Dubarry",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13689072534",
+      "name": "Médiathèque Pierre Amouroux",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13692378074",
+      "name": "Bibliothèque Smith-Lesouëf",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13819020164",
+      "name": "Bibliothèque de l’INSPÉ",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13871025610",
+      "name": "Musée de la Toile de Jouy",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13875966997",
+      "name": "Bibliothèque Louis Aragon",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13879106712",
+      "name": "Cha-Cha Wonton",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13885503100",
+      "name": "Médiathèque de la Croix des Mèches",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13933772173",
+      "name": "Bibliothèque Gaston Miron",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13965683520",
+      "name": "Jasmine Délices",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n13972479804",
+      "name": "Uniqlo",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1411497669",
+      "name": "Médiathèque du Petit Nanterre",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1426245253",
+      "name": "Musée Moissan",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1427838202",
+      "name": "L'Épée de Bois",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1427978194",
+      "name": "Saint-André des Arts",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1428007259",
+      "name": "5 Caumartin",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1428020597",
+      "name": "Le Brady",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1428020599",
+      "name": "L'Archipel",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1428083261",
+      "name": "Cinema Mac Mahon",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1428083267",
+      "name": "Majestic Passy",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1482437177",
+      "name": "Musée Lambinet",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1486313938",
+      "name": "Ohayō",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1518215330",
+      "name": "Pizza Roma",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1526144658",
+      "name": "Médiathèque Municipale Louis Pergault",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1538655461",
+      "name": "Médiathèque Le Phare",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1545172979",
+      "name": "McDonald's",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1579618645",
+      "name": "Dost Grill",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1579618654",
+      "name": "Les Vendanges",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1579642945",
+      "name": "Brasserie Zeyer",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1579646872",
+      "name": "Le Bouquet d'Alésia",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1579656828",
+      "name": "Burger King",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1579665766",
+      "name": "Auto Passion",
+      "category": "BAR",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1601728657",
+      "name": "Médiathèque François-Rabelais",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1635487898",
+      "name": "Médiathèque Georges Brassens",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1637095702",
+      "name": "Le Carves",
+      "category": "BAR",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1657625389",
+      "name": "Golden Fried Chicken",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1666250453",
+      "name": "Médiathèque Émile Bernard",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1670553026",
+      "name": "Hkook",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1674038403",
+      "name": "Médiathèque Louis-Aragon",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1702410893",
+      "name": "Médiathèque Claude Pasquier",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1717774498",
+      "name": "Arya Bhavan",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1721601620",
+      "name": "Le Renaissance",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1722575244",
+      "name": "Maison des associations",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1744499755",
+      "name": "Earn Time Sushi",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1749503512",
+      "name": "Salle Jacques Prévert",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1763253414",
+      "name": "Bibliothèque Pierre Bourdan",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1765177764",
+      "name": "Hippopotamus",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1765192715",
+      "name": "Bibliothèque associative Maison Pour Tous",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1770022652",
+      "name": "UGC",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1772931612",
+      "name": "Médiathèque Lucie Aubrac",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1779444212",
+      "name": "Comptoir du Marché",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1787802255",
+      "name": "Carrefour",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1795132690",
+      "name": "Ciné-SEL",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1798131768",
+      "name": "Chez Tony",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1806106282",
+      "name": "Musée de l’Histoire de France",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n181290564",
+      "name": "Mercure",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1818590748",
+      "name": "Musée de la Renaissance",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1821967200",
+      "name": "Holiday Inn Paris Opéra",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1836870626",
+      "name": "Bibliothèque Valeyre",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1866349495",
+      "name": "Bibliothèque Jacqueline de Romilly",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1875819752",
+      "name": "Clichy's Tavern",
+      "category": "BAR",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1882370345",
+      "name": "Centre Culturel Aragon Triolet",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1883286420",
+      "name": "Bibliothèque Albert Camus",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1901078409",
+      "name": "Culture et Bibliothèques pour Tous",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1902307637",
+      "name": "Médiathèque du Carré d'Art",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1906098441",
+      "name": "Bibliothèque du Lycée François-Joseph Talma",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1913411918",
+      "name": "Trésor de Notre-Dame",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1915653894",
+      "name": "Bibliothèque des Grands Moulins",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1916695536",
+      "name": "Musée Départemental des Sapeurs-Pompiers du Val-d'Oise",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1917797913",
+      "name": "Médiathèque Fontenay-aux-Roses",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1931492402",
+      "name": "Le petit plaisir",
+      "category": "BAR",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1940144968",
+      "name": "Médiathèque municipale George Sand",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1947350754",
+      "name": "Bibliothèque La Frégate",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1955109823",
+      "name": "Naturalia",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1966984372",
+      "name": "Colonel-Fabien",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1966986475",
+      "name": "Daniel-Renoult",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n1967475686",
+      "name": "Monoprix",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2003145957",
+      "name": "Land&Monkeys",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2008355939",
+      "name": "Méga CGR Torcy Bay 1",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2012783152",
+      "name": "Rose Bily",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2026672306",
+      "name": "Rubeo Monte",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2034698945",
+      "name": "Citadines Apart'Hotel",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2036555199",
+      "name": "Étoile Cosmos",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2043815062",
+      "name": "Bibliothèque Sud Alfred-de-Vigny",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2051840405",
+      "name": "Mag Presse",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n206125584",
+      "name": "Cyrano",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2061997122",
+      "name": "Le Grenier de Bougival",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2062140812",
+      "name": "Bibliothèque Municipale Emile Richebourg",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n207559366",
+      "name": "Crédit Agricole",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2086399161",
+      "name": "Hôtel Berkeley",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2089326349",
+      "name": "Médiathèque L'Écho",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2119466913",
+      "name": "Hypnose",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2123575192",
+      "name": "Médiathèque de L'Europe",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2134892096",
+      "name": "Monoprix",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2151917022",
+      "name": "Sushi Ajisen",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2151917025",
+      "name": "Café du Théâtre",
+      "category": "BAR",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2158902067",
+      "name": "Centre de documentation",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2177750355",
+      "name": "Château-Musée de Nemours",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2194080389",
+      "name": "Médiatheque de Draveil",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2194583506",
+      "name": "Pizza Caravelle",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2194776645",
+      "name": "Hôtel Max",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2197417205",
+      "name": "Le Bardinet",
+      "category": "BAR",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2219805359",
+      "name": "Paris Orléans",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2260145097",
+      "name": "Les Cinoches RN7",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2271538532",
+      "name": "Bibliothèque des Amis de l'instruction",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2273079447",
+      "name": "Hôtel Virgina",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2273101046",
+      "name": "Hôtel Montsouris Orléans",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2273130246",
+      "name": "Glam's Hotel",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2279711292",
+      "name": "Primaprix La Chapelle",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2281192328",
+      "name": "Médiathèque Alain Peyrefitte",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2281215620",
+      "name": "Maison Romane - Musée de Provins",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2296500921",
+      "name": "Azabu",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2299687513",
+      "name": "Médiathèque et Conservatoire de Musique",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2301505857",
+      "name": "Bibliothèque Marguerite Durand",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n232928765",
+      "name": "Pathé Aquaboulevard",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n233174548",
+      "name": "Caisse d'Épargne",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2354755471",
+      "name": "Pathé Dammarie",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2394097512",
+      "name": "Service historique de la Défense",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2394774261",
+      "name": "Amiral",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n241110355",
+      "name": "Bibliothèque Vaugirard",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2420048480",
+      "name": "Médiathèque de l'Economie",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2428313043",
+      "name": "Bibliothèque Municipale",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2428529964",
+      "name": "Sephora",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n242922187",
+      "name": "Médiathèque de Sartrouville",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n243074474",
+      "name": "Médiathèque Louis Aragon",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2442519040",
+      "name": "Médiathèque municipale Elsa Triolet",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2448397328",
+      "name": "Bibliothèque Marguerite Audoux",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2460475973",
+      "name": "Bibliothèque Glacière - Marina Tsvetaïeva",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2474624810",
+      "name": "Médiathèque du Château",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2486263630",
+      "name": "Les Fleurs Arctiques",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2486352415",
+      "name": "Art Ludique - Le Musée",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2493496614",
+      "name": "Bibliothèque François Villon",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n250853632",
+      "name": "La Fauvette",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2511594625",
+      "name": "Pathé Aéroville",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2515692123",
+      "name": "Le M@rque-Page",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2521507814",
+      "name": "Médiathèque du Moustier",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2526898729",
+      "name": "Collection des minéraux",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2575207495",
+      "name": "Bibliothèque Heure Joyeuse",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2581213779",
+      "name": "Espace Culturel du Parc",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2584777625",
+      "name": "Musée d'Art et d'Histoire Louis Senlecq",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n259439940",
+      "name": "UGC Rotonde",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n259440483",
+      "name": "Pathé Montparnos",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2606045504",
+      "name": "Bibliothèque Maryse Condé",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2618513402",
+      "name": "La Quincaillerie Générale",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2618653043",
+      "name": "OPS Pizza",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2625311124",
+      "name": "La Petite Cantine",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n263262712",
+      "name": "Bibliothèque Buffon",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2682063936",
+      "name": "Médiathèque Bois de Groslay",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2701950008",
+      "name": "Bibliothèque de l'IUT",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2719066031",
+      "name": "Bibliothèque Naguib Mahfouz",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n275414707",
+      "name": "Le Casino",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2788471674",
+      "name": "Bibliothèque Mohammed Arkoun",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2820541879",
+      "name": "Chez La'",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2820541880",
+      "name": "Hôtel Atlantide",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2822387802",
+      "name": "Five Guys",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n282895495",
+      "name": "Médiathèque Anne Fontaine",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2859074515",
+      "name": "Musée des équipages",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2881072731",
+      "name": "Résidence Orfea Paris Magenta",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n288357648",
+      "name": "Médiathèque Elsa Triolet - Aragon",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2884911015",
+      "name": "Bibliothèque Oscar Wilde",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2907887080",
+      "name": "La Grange",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2912901437",
+      "name": "Mercato",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2924747801",
+      "name": "Les Templitudes De Versailles Résidence Services",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2924747901",
+      "name": "Résidences Services Seniors Le Saint-Germain",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2924755001",
+      "name": "Alliance ESDB",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2939830892",
+      "name": "Bibliothèque paroissiale",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n297701386",
+      "name": "Monop'",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2980389658",
+      "name": "Binet BD",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2984480810",
+      "name": "Le Voltaire",
+      "category": "BAR",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2990854919",
+      "name": "Bibliothèque des Batignolles",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2996091936",
+      "name": "Kazoku",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n2997913292",
+      "name": "Bibliothèque Colette Vivier",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n301864359",
+      "name": "Bibliothèque municipale Aimé Césaire",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3024753268",
+      "name": "Bibliothèque du Saulchoir",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n307707948",
+      "name": "Bibliothèque de Menucourt",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3093663100",
+      "name": "Les Mots Passants",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3109085232",
+      "name": "UGC Opéra",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3172251267",
+      "name": "Ristorante Del Arte",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3172254963",
+      "name": "Ristorante Del Arte",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3209219964",
+      "name": "A L'O 1905",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n320952619",
+      "name": "Le Champo",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n321012070",
+      "name": "Pathé Les Fauvettes",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3212440611",
+      "name": "Villiers-le-Bâcle",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n322020025",
+      "name": "MK2 Odéon (côté Saint-Germain)",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3254769225",
+      "name": "Le Musée Vivant du Chemin de Fer",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3273870671",
+      "name": "Médiathèque Colette",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3282899979",
+      "name": "Au Duc d'Orléans",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n333247927",
+      "name": "Bibliothèque Municipale de Longpont-sur-Orge",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3371230463",
+      "name": "Amore e Gusto",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3381683470",
+      "name": "Bibliothèque du Parchamp",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3381694110",
+      "name": "Bibliothèque Point du Jour",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3401358188",
+      "name": "Le Rajasthan",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3405331001",
+      "name": "Médiathèque - Archives",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3415691369",
+      "name": "Musée Louis Braille",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3429929584",
+      "name": "Brioche Dorée",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3447284938",
+      "name": "Caisse d'Épargne",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3450191946",
+      "name": "Médiathèque Don Quichotte",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3450405605",
+      "name": "Médiathèque Aladin",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3501719726",
+      "name": "Ajumma 아주마",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3503991625",
+      "name": "Bibliothèque Municipale",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3512324893",
+      "name": "B&B Hôtel",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3561231094",
+      "name": "Au Temps Passé",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3561245293",
+      "name": "Istanbul Grill",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n361379719",
+      "name": "Médiathèque Pierre Seghers",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3624904293",
+      "name": "Memphis Coffee",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3635672938",
+      "name": "Bibliothèque Les Mazurières",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3638720093",
+      "name": "Énergie Forme Pantin",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3643864795",
+      "name": "Restaurant Dishny",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3656454103",
+      "name": "Asia Room",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3657229929",
+      "name": "Le 17.45 Ramey",
+      "category": "BAR",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3677785830",
+      "name": "Bibliothèque Annie et Jean Philbert",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3688065150",
+      "name": "Bistrot Renaissance",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3693423611",
+      "name": "Médiathèque Germaine Tillion",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n369875671",
+      "name": "Henri Langlois",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n370791455",
+      "name": "Monterosso",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n373741165",
+      "name": "Le Bistrot des Plantes",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3752720447",
+      "name": "Musée de la lumière et de la matière",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3812297801",
+      "name": "Musée du Vexin français",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3812680963",
+      "name": "Tribe Paris 17 Batignolles",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3819054377",
+      "name": "Médiathèque Monmousseau",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3839026069",
+      "name": "Ristorante Del Arte",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3867491140",
+      "name": "Dream Sushi",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3867553104",
+      "name": "Le Monti",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n388501796",
+      "name": "Maison des activités culturelles",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3905019666",
+      "name": "Cojean",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n3929104779",
+      "name": "Campanile Suresnes",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4004690170",
+      "name": "Comédie Bastille",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4013618082",
+      "name": "Petit Bao",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n410272989",
+      "name": "Cité des Enfants (5-12 ans)",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n416374347",
+      "name": "Médiathèque Roger Gouhier",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n416548854",
+      "name": "Franprix",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4193385089",
+      "name": "Bibliothèque La Plaine",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4193385092",
+      "name": "Bibliothèque Lamartine",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4246917191",
+      "name": "Burger King",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4249899936",
+      "name": "Musée en Herbe",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n428037980",
+      "name": "Saint-Éloi",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n428038496",
+      "name": "Bibliothèque Diderot",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n428059039",
+      "name": "Bibliothèque Forney",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n428141439",
+      "name": "L'Orient d'Or",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4286215037",
+      "name": "Mille Pages",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4287763614",
+      "name": "Bibliothèque familiale",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4292615730",
+      "name": "McDonald's",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n429418989",
+      "name": "Le Kosmos",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4319376750",
+      "name": "Hoppy Corner",
+      "category": "BAR",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4407011414",
+      "name": "Bibliothèque universitaire Pierre Mendès France",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n441163562",
+      "name": "Cinéma Marcel Pagnol",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n441388754",
+      "name": "Cinéma Jeanne Moreau",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4459265327",
+      "name": "Musée Jean-Jacques Rousseau",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4462604024",
+      "name": "Les Jardins Contini",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n447116856",
+      "name": "CinéPal",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4475371712",
+      "name": "Bibliothèque Le Forum",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4556939396",
+      "name": "Bibliothèque de l'Institut national d'histoire de l'art (INHA)",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4559016982",
+      "name": "Bibliothèque Municipale Aimé-Césaire",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n457090434",
+      "name": "La Filmothèque du Quartier latin",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n463218479",
+      "name": "Cin'Hoche",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n470895266",
+      "name": "Les 4 Vents",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n472351943",
+      "name": "Hôtel de la Porte Dorée",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4754199364",
+      "name": "Bouquin'Stop",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n476293890",
+      "name": "Bibliothèque André Malraux",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n477419918",
+      "name": "Médiathèque de Bagnolet",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4778590442",
+      "name": "Exki",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4810311389",
+      "name": "Bibliothèque historique des Postes et des Télécommunications",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4810326726",
+      "name": "Hôtel Saphir",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4841744448",
+      "name": "Médiathèque Le Vieux Moulin",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n485613795",
+      "name": "Médiathèque Centre-Ville",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4876879722",
+      "name": "L'Empire Paris",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4891510499",
+      "name": "La Maison des Pains",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4896872321",
+      "name": "Hubsy République",
+      "category": "COWORKING",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4921659221",
+      "name": "Hoki Sushi",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n494637303",
+      "name": "Le Café Chineur",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4946794224",
+      "name": "Au Vieux Campeur",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n4970697338",
+      "name": "Le Hasard Ludique",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5048783669",
+      "name": "Médiathèque de Bourg-la-Reine",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5051993224",
+      "name": "Doddy's Coffee",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5061161575",
+      "name": "Médiathèque municipale George Sand",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5064539923",
+      "name": "Le Dodo",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n508588036",
+      "name": "Monoprix",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n508588102",
+      "name": "Carrefour City",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n512460299",
+      "name": "Médiathèque Musidora",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5137238077",
+      "name": "Bibliothèque Assia Djebar",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5148522992",
+      "name": "Médiathèque Les Lavandières",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5155817573",
+      "name": "Kim Yang",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5196445692",
+      "name": "Bibliothèque Ouest - Christine-De-Pisan",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5247471046",
+      "name": "Maison des seniors",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5260521220",
+      "name": "Bud's Deli",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5286151322",
+      "name": "Hôtel de Buci",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5286157221",
+      "name": "Madison Hotel",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5302335586",
+      "name": "O Food Asia",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n530273787",
+      "name": "MK2 Bastille (côté Faubourg Saint-Antoine)",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5315384656",
+      "name": "Bibliothèque du Centre",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5363368107",
+      "name": "Biocoop",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n536515303",
+      "name": "Assanabel",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5418672745",
+      "name": "Médiathèque L'Île aux Trésors",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5426858447",
+      "name": "Bibliothèque Elsa Triolet",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n542795175",
+      "name": "Méga CGR",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5443518900",
+      "name": "Maison Ming",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5451913296",
+      "name": "Aux Delices Du Marché",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n546922441",
+      "name": "Cinéma des Cinéastes",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5520932754",
+      "name": "Bibliothèque Berthe Morisot",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5552880649",
+      "name": "Médiathèque du Moustier",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5570678448",
+      "name": "Cinéma de l'Espace Bernard Mantienne",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5615202434",
+      "name": "Médiathèque Jacques Prévert",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5663863512",
+      "name": "Anciennes Carrières",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5683585751",
+      "name": "Bibliothèque de Croissy",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5723816446",
+      "name": "Le Milton",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5764393936",
+      "name": "Bibliothèque Anna Langfus",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n577287841",
+      "name": "Voyage au Temps des impressionnistes",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5822132533",
+      "name": "Naked",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5838312265",
+      "name": "Médiathèque Marguerite Duras",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5858256885",
+      "name": "Starbucks",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5880925982",
+      "name": "Musée du papillon",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5892749170",
+      "name": "Wok Viroflay",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5903399695",
+      "name": "Jacques Prévert",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5908178876",
+      "name": "Pain de Sucre",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5931832899",
+      "name": "O'112",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5960047869",
+      "name": "Jasmin",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5962825744",
+      "name": "Médiathèque - Espace Jeunesse Francis Huster",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n5981509813",
+      "name": "Médiathèque Chenonceau",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n600738912",
+      "name": "Médiathèque de Gif-sur-Yvette",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6064780759",
+      "name": "Biocoop",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6115496991",
+      "name": "Mama Roasta",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6126980228",
+      "name": "Boucherie Lallier",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n616289962",
+      "name": "Le Cyrano",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6223076214",
+      "name": "Équinoxe",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6259595172",
+      "name": "La Ferme du Buisson",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6260715266",
+      "name": "Bibliothèque de l'Astrolabe",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n632214644",
+      "name": "Salle Lino Ventura",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6341949930",
+      "name": "Espace des Arts",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6382672433",
+      "name": "Franprix",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n639619634",
+      "name": "Villa Firenze",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6469235288",
+      "name": "Paris Boutik",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n650088652",
+      "name": "Café Hyperion",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6528392566",
+      "name": "Bellota-Bellota",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6538757629",
+      "name": "Exki",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6538894205",
+      "name": "Starbucks",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6538894210",
+      "name": "I Love Paris by Guy Martin",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6556858078",
+      "name": "CDI",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6557909528",
+      "name": "Stéphane Jacquet",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6576684299",
+      "name": "Club de l'Étoile",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n664200426",
+      "name": "Mon P'ti Ciné",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n664205446",
+      "name": "BM Herblay",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n665668640",
+      "name": "annexe bibliothèque",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6661620349",
+      "name": "Ibis Budget",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n667338348",
+      "name": "Sushi Alésia",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n671387524",
+      "name": "Médiathèque Théodore Monod",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6759391823",
+      "name": "Médiathèque Paul Valéry",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6777593930",
+      "name": "McDonald's",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n677967806",
+      "name": "McDonald's",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n677981959",
+      "name": "Quick",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6796824258",
+      "name": "Médiathèque Louis Aragon",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6860970815",
+      "name": "Le Musée du Fumeur",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n689486848",
+      "name": "Les causeurs",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6904757447",
+      "name": "Il Macchiato",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6912695772",
+      "name": "Les Grands Gamins",
+      "category": "BAR",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n6945843341",
+      "name": "Labriz'Café",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7050527685",
+      "name": "Le Comptoir Des Résistants",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7076549761",
+      "name": "Bibliothèque Jacqueline de Romilly",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7127961384",
+      "name": "Musée Adrien Mentienne",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7146872585",
+      "name": "Studio 31",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7169363186",
+      "name": "La Cantine Libanaise",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7169363196",
+      "name": "Blue Monkey Cà Phê",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7236725134",
+      "name": "Bibliothèque municipale",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n725283191",
+      "name": "Bibliothèque Astrid Lindgren",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7256721985",
+      "name": "McDonald's",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n727779861",
+      "name": "Bibliothèque André Malraux",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7292150888",
+      "name": "Laouz",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7340232962",
+      "name": "P'tit Choux",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7370579288",
+      "name": "Paristanbul",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7374660970",
+      "name": "CONSTANT Opticiens",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7491680785",
+      "name": "slow",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7502681689",
+      "name": "Le Sawa",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7517733353",
+      "name": "Sébastien Gaudard - Le Grand Café",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7557019427",
+      "name": "Musée municipal d’Histoire et d’Archéologie de Longjumeau",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7644807264",
+      "name": "CinÉtampes",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7686942748",
+      "name": "Le Méliès",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7694789746",
+      "name": "Societé Christophe Dunette",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7710142477",
+      "name": "Ciné220",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7766440322",
+      "name": "Marguerite-Yourcenar",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7768900435",
+      "name": "Pathé Wepler (côté place)",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7823594528",
+      "name": "Médiathèque Paul Eluard",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7836063536",
+      "name": "CDI du lycèe François-Ier",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7855054314",
+      "name": "Boui-Boui",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n7947643912",
+      "name": "Galerie des Carrosses",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n802009153",
+      "name": "Pathé Boulogne",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8035687457",
+      "name": "Salle Serge Gainsbourg",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8077247956",
+      "name": "Médiathèque de l'Orangerie",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8157789874",
+      "name": "Bibliothèque municipale Micheline Brinon",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n818844102",
+      "name": "Bibliothèque Marmottan",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8214178099",
+      "name": "Les Variétés",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8228568037",
+      "name": "Médiathèque de la Courée",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8231315573",
+      "name": "Louis Aragon",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8235215013",
+      "name": "Don Yoku",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8242915121",
+      "name": "Médiathèque Lire à Montévrain",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8244883939",
+      "name": "Médiathèque de Chessy",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8247375920",
+      "name": "L'Orangerie",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n828728729",
+      "name": "Hélia",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n829202986",
+      "name": "Le Lincoln",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n833440435",
+      "name": "Le Conti",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8354594252",
+      "name": "Médiathèque de Sainte-Geneviève-des-Bois",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8377201276",
+      "name": "Century 21 Immo Conseil",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n843860898",
+      "name": "Bibliothèque Eugène Flachat",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8442579368",
+      "name": "Médiathèque Serge Regiani",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8464442555",
+      "name": "Musée de l'aviation",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8614950847",
+      "name": "Paris Didot",
+      "category": "BAR",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8615582798",
+      "name": "P'tite Bougnate",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n863509181",
+      "name": "Istanbul Gourmand",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8691051440",
+      "name": "Les Bords de Scènes",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n869371341",
+      "name": "Cinéma François Truffaut",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n877226291",
+      "name": "Médiathèque Albert Camus",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n877958898",
+      "name": "Bharath",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8805135842",
+      "name": "Salle André Malraux",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8815216665",
+      "name": "Maison du Livre",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8828047002",
+      "name": "Médiathèque de Bailly-Romainvillier",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8863733049",
+      "name": "Médiathèque annexe des Hautes-Garennes",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8874826223",
+      "name": "La Sablière",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8990393534",
+      "name": "Fric-Frac",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n8999402818",
+      "name": "Cinéma en plein air de La Villette",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9061203985",
+      "name": "Bibliothèque Municipal de Noisy-le-Roi",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9083837451",
+      "name": "LCL",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9146738810",
+      "name": "Jargon libre",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n915607737",
+      "name": "Médiathèque Albert Camus",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9182022018",
+      "name": "Bibliothèque Gernet-Glotz",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9197572747",
+      "name": "Médiathèque La Ruche",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9226664409",
+      "name": "Guichet Transilien",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9291191226",
+      "name": "Maison du Combattant et du Citoyen",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n929916801",
+      "name": "UGC Odéon",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9304930517",
+      "name": "19",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9455171488",
+      "name": "Ibis",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9464215625",
+      "name": "McDonald's",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n952053744",
+      "name": "Cinéma Louis Lumière",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9549557072",
+      "name": "Bibimjoa",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9555164628",
+      "name": "ECPAD",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9559153964",
+      "name": "Médiathèque Glarner",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9569632670",
+      "name": "Studio des Ursulines",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n957322468",
+      "name": "Bibliothèque pour Tous",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9597749766",
+      "name": "Val Parisis Médiathèque",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9631120572",
+      "name": "Brioche Dorée",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9631120573",
+      "name": "Brioche Dorée",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9685319988",
+      "name": "Bibliothèque des Bernardins",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9721654498",
+      "name": "Musée 14-18",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9734634875",
+      "name": "À table",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9742019217",
+      "name": "Médiathèque Jean Farges",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9743541437",
+      "name": "CIC",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9780876699",
+      "name": "Café Cayo",
+      "category": "BAR",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9798472867",
+      "name": "Bibliothèque Arts du spectacle",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9798472870",
+      "name": "Bibliothèque Sciences économiques - Gestion - Mathématiques - Informatique",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9798472871",
+      "name": "Bibliothèque Droit - Science politique",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9798472872",
+      "name": "Bibliothèque Histoire et Histoire de l'art",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9798472873",
+      "name": "Bibliothèque AES - Sociologie",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9798472876",
+      "name": "Bibliothèque Sciences psychologiques et Sciences de l'éducation",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9798472877",
+      "name": "Bibliothèque Langues et cultures étrangères",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9798472878",
+      "name": "Centre de documentation - UFR STAPS",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9811192196",
+      "name": "BNP Paribas",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9848227281",
+      "name": "Maison de l'Environnement et du Développement Durable",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9869127874",
+      "name": "Louise",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n986921159",
+      "name": "Aux Artistes",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9885730384",
+      "name": "Médiathèque Tomi Ungerer",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9910684048",
+      "name": "Magical Hot Dog",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9943726088",
+      "name": "Ibis Styles Paris Romainville",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9992820306",
+      "name": "Bibliothèque Jean-Marie Rouart",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:n9996876065",
+      "name": "Monsieur Georges Hôtel & Spa",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:r1004404",
+      "name": "Faculté de Pharmacie de Paris",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:r11724480",
+      "name": "Le Petit Trianon",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:r12142599",
+      "name": "Transilien L : Nanterre-Université → Paris Saint-Lazare",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:r123674",
+      "name": "Ligne 5 : Bobigny-Pablo Picasso → Place d'Italie",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:r123737",
+      "name": "Ligne 14 : Saint-Denis – Pleyel → Aéroport d’Orly",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:r123782",
+      "name": "Ligne 9 : Pont de Sèvres → Mairie de Montreuil",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:r123784",
+      "name": "Ligne 1 : Château de Vincennes → La Défense (Grande Arche)",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:r123917",
+      "name": "Ligne 2 : Nation → Porte Dauphine",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:r12426409",
+      "name": "Le Grand Trianon",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:r13611998",
+      "name": "Muséum national d'histoire naturelle",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:r14140604",
+      "name": "Musée de l'Outil",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:r2343643",
+      "name": "Médiathèque Germaine Tillion",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:r2405955",
+      "name": "Musée Carnavalet",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:r403146",
+      "name": "Hôtel de Sully",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:r6841704",
+      "name": "SNCF - Campus Rimbaud",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:r931378",
+      "name": "Bibliothèque Centrale du Service de Santé des Armées",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w101684458",
+      "name": "Médiathèque Jacques Duhamel",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w102467911",
+      "name": "E. Leclerc",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w102587906",
+      "name": "Au plaisir de lire",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w102971120",
+      "name": "Hôtel de Ville",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w102992905",
+      "name": "Café de la Place",
+      "category": "CAFE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w103207192",
+      "name": "Médiathèque de Lardy",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w103350249",
+      "name": "Médiathèque Marguerite Duras",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w103351769",
+      "name": "Bibliothèque municipale",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w103730004",
+      "name": "Médiathèque Les Temps Modernes",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w1071097840",
+      "name": "Château de Rambouillet",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w1084917455",
+      "name": "Le Kinétorium",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w109255751",
+      "name": "Médiathèque Albert Camus",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w109520626",
+      "name": "Musée de la Résistance Nationale",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w1096491804",
+      "name": "Boulangerie Ange",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w111020806",
+      "name": "Musée des transports urbains, interurbains et ruraux",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w112363320",
+      "name": "Astrolabe",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w113226425",
+      "name": "Médiathèque George Sand de Cesson",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w113398762",
+      "name": "Musée de la Rose (ancienne gare de Grisy-Suisnes)",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w113488450",
+      "name": "Bibliothèque Marguerite Yourcenar",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w113731341",
+      "name": "Espace Saint-Quentin",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w113731605",
+      "name": "Espace Saint-Quentin",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w113732050",
+      "name": "Espace Saint-Quentin",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w113732224",
+      "name": "Espace Saint-Quentin",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w113732983",
+      "name": "Espace Saint-Quentin",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w114154761",
+      "name": "Musée Safran",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w115155960",
+      "name": "Musée Hippolyte Henry",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w115175813",
+      "name": "Espace Culturel Paul Bédu",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w1153053258",
+      "name": "Bibliothèque Rainer Maria Rilke",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w1153990754",
+      "name": "Restaurant inter-entreprises",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w1155244208",
+      "name": "Bibliothèque de la Maison Paris Nature",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w116090939",
+      "name": "Médiathèque Samuel-Beckett / Espace Condé",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w116091676",
+      "name": "Musée André Planson",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w116188375",
+      "name": "Médiathèque de la Ferme des Communes",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w116188461",
+      "name": "Médiathèque du Val d'Europe",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w116241991",
+      "name": "Bibliothèque",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w1163424389",
+      "name": "Médiathèque Annie-Ernaux",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w120421846",
+      "name": "Hôtel Coignard",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w120856493",
+      "name": "Château de Réghat, Musée de Maisons-Alfort",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w1236950476",
+      "name": "Mémorial de Bobigny",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w124052479",
+      "name": "Mémorial de la Shoah",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w1258712635",
+      "name": "Bob",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w1259317930",
+      "name": "Le Bijou",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w128925665",
+      "name": "Château de Monte-Cristo",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w129454734",
+      "name": "Château de Thierry",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w130921984",
+      "name": "Musée Rambolitrain",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w132492756",
+      "name": "mediatheque",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w132584430",
+      "name": "Bibliothèque municipale Emile Littré",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w133607107",
+      "name": "Jacques Prévert",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w1356862694",
+      "name": "Médiathèque et centre municipal de santé",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w1363634930",
+      "name": "Médiathèque Musidora",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w137214515",
+      "name": "Médiathèque Meudon Centre",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w137311935",
+      "name": "Atelier",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w139575638",
+      "name": "Bibliothèque Nelson Mandela",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w143340351",
+      "name": "Bibliothèque Départementale du Val d'Oise",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w143438382",
+      "name": "Médiathèque de Wissous",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w1434494079",
+      "name": "Bibliothèque du Jardin Parisien",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w143693485",
+      "name": "Médiathèque Marie Curie",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w144165293",
+      "name": "Musée de l'Histoire de Rosny-sous-Bois",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w145134117",
+      "name": "Musée technique des Poudres de l'Armement René Amiable",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w145134436",
+      "name": "Cinéma Yves-Montand",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w145283649",
+      "name": "Musée des métiers",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w145489251",
+      "name": "Musée Movie Cars Central",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w146016206",
+      "name": "Maison du Patrimoine",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w146090090",
+      "name": "Salle Jean Montaru",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w146092176",
+      "name": "Médiathèque Léo Ferré",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w146206027",
+      "name": "Bibliothèque Jacques Prévert",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w146288184",
+      "name": "Maison des Jardies",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w146559833",
+      "name": "Musée Davout",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w146734132",
+      "name": "Eden",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w146884568",
+      "name": "Fouquet's",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w1469287324",
+      "name": "Mégarama",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w147404141",
+      "name": "Bibliothèque municipale des mille Pages",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w147525141",
+      "name": "Maison-atelier de Daubigny",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w149387895",
+      "name": "Médiathèque Eugène Delacroix",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w149685857",
+      "name": "Maison de l'environnement",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w150018582",
+      "name": "G20",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w151074455",
+      "name": "Maison de la Culture du Japon",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w157441495",
+      "name": "Norauto",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w160235038",
+      "name": "Maison Fournaise",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w161174900",
+      "name": "Moulin de Dannemois",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w162847981",
+      "name": "Pathé Belle Épine",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w164014446",
+      "name": "Médiatheque Annexe du Guichet",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w16928638",
+      "name": "Bibliothèque Georges Brassens",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w170226810",
+      "name": "Musée du Luxembourg",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w172674926",
+      "name": "Bibliothèque Louise Walser-Gaillard",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w173318676",
+      "name": "Maison Louis Carré",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w176430796",
+      "name": "Cinéma Confluences",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w182503958",
+      "name": "Médiathèque Georges Pompidou",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w19106693",
+      "name": "Théâtre Sarah Bernhardt",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w197548514",
+      "name": "Médiathèque de Buthiers",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w216269727",
+      "name": "Médiathèque Arthur Rimbaud",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w216650478",
+      "name": "Bibliothèque universitaire de l'UFR des Sciences",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w219510103",
+      "name": "Médiathèque Albert Camus",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w21999238",
+      "name": "Bibliothèque centrale du Muséum",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w21999357",
+      "name": "Galerie de Minéralogie et de Géologie",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w21999403",
+      "name": "Galerie de Botanique",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w21999454",
+      "name": "Galeries de Paléontologie et d'Anatomie comparée",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w221457651",
+      "name": "Médiathèque Andrée Chedid",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w223471965",
+      "name": "Musée de la Moisson",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w223557649",
+      "name": "Maison-Musée Maurice Ravel",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w22870791",
+      "name": "Institut du Monde arabe",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w235052167",
+      "name": "Burger King",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w23644147",
+      "name": "Jardin Tino Rossi - Musée de la Sculpture en Plein Air",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w244081955",
+      "name": "UGC",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w249312019",
+      "name": "Musée Stéphane-Mallarmé",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w25296650",
+      "name": "Musée du Sucre d'Orge des Religieuses de Moret",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w263891551",
+      "name": "C&A",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w263891570",
+      "name": "Crêpe by Crêpe",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w263891655",
+      "name": "Intimissi",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w264430341",
+      "name": "IKEA Restaurant",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w27470092",
+      "name": "Médiathèque François Mauriac",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w278627453",
+      "name": "Salle André Pasquier",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w286921452",
+      "name": "Petit Moulin des Vaux de Cernay",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w304437711",
+      "name": "Bibliothèque d'Archéologie",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w326832121",
+      "name": "Pathé Convention",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w327059384",
+      "name": "Closerie Falbala",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w340665060",
+      "name": "Fondation de Coubertin",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w344652154",
+      "name": "Médiathèque André Cancelier",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w345053177",
+      "name": "Médiathèque Municipale d'Osny (MéMO)",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w346298082",
+      "name": "Bibliothèque Aimé Césaire",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w355311196",
+      "name": "Bibliothèque Intercommunale Anna Langfus",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w355607317",
+      "name": "Mamma Napoli",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w369393201",
+      "name": "Médiathèque municipale Joseph Kessel",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w382036346",
+      "name": "Bibliothèque multimédi@ domaine Berson",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w395785603",
+      "name": "Musée national Eugène Delacroix",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w402891669",
+      "name": "CDI",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w42160095",
+      "name": "Bibliothèque Montesquieu",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w422510701",
+      "name": "Maison de la Meunerie",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w43389727",
+      "name": "Le Carré Patrimoine",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w44687600",
+      "name": "CDI / Prieuré",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w450763282",
+      "name": "Disney Hotel Cheyenne®",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w478732927",
+      "name": "CDI",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w48357736",
+      "name": "Muséum national d'histoire naturelle",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w48357739",
+      "name": "Muséum national d'histoire naturelle",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w48514685",
+      "name": "B&B Hotel",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w491889215",
+      "name": "McDonald's Saint-Ouen-l'Aumône Épluches",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w53396302",
+      "name": "Beaugrenelle - Magnetic",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w541473683",
+      "name": "Géoroom",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w54188994",
+      "name": "Jeu de Paume",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w545875329",
+      "name": "Megarama Les Ulis",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w55353478",
+      "name": "Hôtel Saint-Christophe",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w55353485",
+      "name": "Bibliothèque Sainte-Barbe - Université Sorbonne-Nouvelle",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w55366375",
+      "name": "Les bulles de Paris",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w55697735",
+      "name": "Salle du Jeu de Paume",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w56185523",
+      "name": "Grand Palais",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w56217774",
+      "name": "Bibliothèque de l'Arsenal",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w56687783",
+      "name": "Musée d'Art et d'Histoire du Judaïsme",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w576462282",
+      "name": "Pathé Levallois",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w58169110",
+      "name": "Argonaute",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w628583346",
+      "name": "Decathlon",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w63178814",
+      "name": "Médiathèque Pierre Seghers",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w63198697",
+      "name": "Le Louxor",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w63203093",
+      "name": "Mercure Paris Opera Grands Boulevards",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w63203149",
+      "name": "Palais des glaces",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w63203316",
+      "name": "La Planque",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w63212513",
+      "name": "Médiathèque James Baldwin",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w63243833",
+      "name": "Bibliothèque Jacqueline Dreyfus-Weill",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w63359528",
+      "name": "Médiathèque Jean d'Ormesson",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w63649501",
+      "name": "Le Général",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w63654510",
+      "name": "Centre de Documentation",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w63756586",
+      "name": "Bibliothèque Départementale",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w63829282",
+      "name": "Médiathèque Raymond Queneau",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w63977976",
+      "name": "Ibis Budget",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w63978066",
+      "name": "Médiathèque Gulliver",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w63979170",
+      "name": "Bibliothèque universitaire",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w63982295",
+      "name": "Médiathèque Ulysse",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w63982775",
+      "name": "Musée d'art et d'histoire de Saint-Denis",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w63992928",
+      "name": "Les Réserves du Musée des Arts et Métiers",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w64623149",
+      "name": "Hôtel Mercure Paris Pont de Levallois Neuilly",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w64624042",
+      "name": "Maison de la Pêche et de la Nature",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w67176322",
+      "name": "Médiathèque John Lennon",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w67829547",
+      "name": "Mégarama Villeneuve",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w681114661",
+      "name": "Médiathèque Antoine de Saint-Exupéry",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w68152901",
+      "name": "Médiathèque municipale",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w68353844",
+      "name": "Musée Nissim de Camondo",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w68804399",
+      "name": "Musée Jacquemart-André",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w68853448",
+      "name": "Musée De Dion-Bouton",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w69103161",
+      "name": "Monoprix",
+      "category": "MALL",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w69221119",
+      "name": "Pathé Palace",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w69226411",
+      "name": "Paris Story",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w692817231",
+      "name": "Musée des Moulages",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w694100516",
+      "name": "KFC",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w69562752",
+      "name": "Théâtre La Bruyère",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w69562973",
+      "name": "Hôtel Touraine Opera",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w70150588",
+      "name": "MK2 Gambetta",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w70170919",
+      "name": "Bibliothèque Albert Camus",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w70172485",
+      "name": "Méga CGR",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w70174138",
+      "name": "Mendès-France",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w70224004",
+      "name": "Decathlon",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w70778007",
+      "name": "Musée Louis-Vuitton",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w70966376",
+      "name": "Musée de la colombophilie militaire",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w71346704",
+      "name": "Médiathèque George Sand",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w71352224",
+      "name": "Médiathèque - Annexe du Pileu",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w71355945",
+      "name": "Christophe Coiffure",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w73622072",
+      "name": "Médiathèque Romain Rolland",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w73626851",
+      "name": "Le Trianon",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w73842599",
+      "name": "Espace 1789",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w73891361",
+      "name": "Bibliothèque pour Tous",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w75729303",
+      "name": "Médiathèque Maupassant",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w77679836",
+      "name": "Musée Paul-Belmondo",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w78006800",
+      "name": "Médiathèque Hélène Berr",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w78055141",
+      "name": "Le 209",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w78148829",
+      "name": "Le Marceau Bastille",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w78407170",
+      "name": "Galerie des Gobelins",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w78534890",
+      "name": "Hôtel Mercure",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w78534914",
+      "name": "Fondation Jérôme Seydoux-Pathé",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w78817128",
+      "name": "Centre Culturel Sydney Bechet",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w79069414",
+      "name": "Courtyard by Mariott Paris-Colombes",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w79219238",
+      "name": "Musée Yves Saint Laurent",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w79219351",
+      "name": "Palais de Tokyo",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w79575406",
+      "name": "Musée d'Art et d'Histoire",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w79718440",
+      "name": "Hôtel Montparnasse Alésia",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w79719355",
+      "name": "Ibis Paris Alésia Montparnasse",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w802565530",
+      "name": "Pandora",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w80472886",
+      "name": "La Rotonde",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w80489106",
+      "name": "Bibliothèque Municipale",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w80848762",
+      "name": "Musée d'Ennery",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w81287833",
+      "name": "Bibliothèque Elsa Triolet",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w81767364",
+      "name": "Centre Tignous d'Art Contemporain",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w81848809",
+      "name": "Bibliothèque centrale Robert-Desnos",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w818865319",
+      "name": "Médiathèque Le Temps des Cerises",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w83233476",
+      "name": "Ciné Montrouge",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w83817143",
+      "name": "Médiathèque Cœur de Ville",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w83976060",
+      "name": "Laboratoire de Marie Curie",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w84183377",
+      "name": "Bibliothèque Mariama Bâ",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w84464208",
+      "name": "Médiathèque Georges Brassens",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w87391575",
+      "name": "Cinéma Jacques Kahn",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w87393045",
+      "name": "Résidence Charlotte Monfort",
+      "category": "PUBLIC_SPACE",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w89439702",
+      "name": "Hôtel Mercure Porte d'Orléans",
+      "category": "RESTAURANT",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w89674813",
+      "name": "Médiathèque de Châtenay-Malabry",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w951204355",
+      "name": "Les Étincelles du Palais de la Découverte",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w958855335",
+      "name": "Musée de l'Air et de l'Espace",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w96939061",
+      "name": "Villa Médicis",
+      "category": "MUSEUM",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w985529225",
+      "name": "Centre culturel Nelson Mandela",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    },
+    {
+      "id": "osm:w99503885",
+      "name": "Bibliothèque Émile Zola",
+      "category": "LIBRARY",
+      "reason": "import without an address"
+    }
+  ],
+  "rename": [],
+  "reclassify": [
+    {
+      "id": "osm:n10040456547",
+      "name": "Pret A Manger",
+      "from": "CAFE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n1028573132",
+      "name": "Bibliothèque du cinéma François-Truffaut",
+      "from": "LIBRARY",
+      "to": "MUSEUM",
+      "reason": "cinema mapped to MUSEUM (Arts and Culture)"
+    },
+    {
+      "id": "osm:n11374230712",
+      "name": "La Granola",
+      "from": "CAFE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n12213409369",
+      "name": "Maison Léon Blum",
+      "from": "MUSEUM",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n3407049227",
+      "name": "Sürpriz Berliner Kebab",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n3654838881",
+      "name": "Domino's",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n3672098133",
+      "name": "Leader Sushi",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n4132454389",
+      "name": "Alesia Food",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n418140404",
+      "name": "Comédie des 3 bornes",
+      "from": "PUBLIC_SPACE",
+      "to": "MUSEUM",
+      "reason": "cinema mapped to MUSEUM (Arts and Culture)"
+    },
+    {
+      "id": "osm:n4390108451",
+      "name": "Le Méliès",
+      "from": "PUBLIC_SPACE",
+      "to": "MUSEUM",
+      "reason": "cinema mapped to MUSEUM (Arts and Culture)"
+    },
+    {
+      "id": "osm:n5839111311",
+      "name": "Pizza Time",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n599514506",
+      "name": "Luminor Hôtel de ville",
+      "from": "RESTAURANT",
+      "to": "MUSEUM",
+      "reason": "cinema mapped to MUSEUM (Arts and Culture)"
+    },
+    {
+      "id": "osm:n614732862",
+      "name": "McDonald's",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n6151864109",
+      "name": "McDonald's",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n616949403",
+      "name": "Burger King",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n6470577093",
+      "name": "O'Tacos",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n6575275585",
+      "name": "Shikka Kebab",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n6575572304",
+      "name": "Burger King",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n687044630",
+      "name": "Pathé BNP Paribas",
+      "from": "PUBLIC_SPACE",
+      "to": "MUSEUM",
+      "reason": "cinema mapped to MUSEUM (Arts and Culture)"
+    },
+    {
+      "id": "osm:n7030037655",
+      "name": "Pret A Manger",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n707701009",
+      "name": "KFC",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n7242916434",
+      "name": "Les 7 Batignolles",
+      "from": "PUBLIC_SPACE",
+      "to": "MUSEUM",
+      "reason": "cinema mapped to MUSEUM (Arts and Culture)"
+    },
+    {
+      "id": "osm:n726579050",
+      "name": "McDonald's",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n9048658256",
+      "name": "FIKA Bar - Bistro Suédois",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n9056160534",
+      "name": "Restaurant Oukla 91",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n911471367",
+      "name": "Burger King",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n9186964540",
+      "name": "Théâtre de Passy",
+      "from": "PUBLIC_SPACE",
+      "to": "MUSEUM",
+      "reason": "cinema mapped to MUSEUM (Arts and Culture)"
+    },
+    {
+      "id": "osm:n947026143",
+      "name": "Cinéma Omar Sy",
+      "from": "PUBLIC_SPACE",
+      "to": "MUSEUM",
+      "reason": "cinema mapped to MUSEUM (Arts and Culture)"
+    },
+    {
+      "id": "osm:n9731280754",
+      "name": "Chic’n Burger",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n9801852562",
+      "name": "La Pomme d'Or",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n9811847581",
+      "name": "Sushi Shop",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n9877641947",
+      "name": "Burger King",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n9974705835",
+      "name": "Kaslik",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n9984753788",
+      "name": "By Day",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n9984753790",
+      "name": "Itaglio",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:n9991634164",
+      "name": "Aux Délices d'Alésia",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:w109537515",
+      "name": "Studio 66",
+      "from": "PUBLIC_SPACE",
+      "to": "MUSEUM",
+      "reason": "cinema mapped to MUSEUM (Arts and Culture)"
+    },
+    {
+      "id": "osm:w1242464927",
+      "name": "Pathé La Villette",
+      "from": "PUBLIC_SPACE",
+      "to": "MUSEUM",
+      "reason": "cinema mapped to MUSEUM (Arts and Culture)"
+    },
+    {
+      "id": "osm:w136116904",
+      "name": "UGC",
+      "from": "PUBLIC_SPACE",
+      "to": "MUSEUM",
+      "reason": "cinema mapped to MUSEUM (Arts and Culture)"
+    },
+    {
+      "id": "osm:w1412979992",
+      "name": "Cinéma L'atalante",
+      "from": "PUBLIC_SPACE",
+      "to": "MUSEUM",
+      "reason": "cinema mapped to MUSEUM (Arts and Culture)"
+    },
+    {
+      "id": "osm:w150377637",
+      "name": "L'Onde – Théâtre et Centre d'art",
+      "from": "PUBLIC_SPACE",
+      "to": "MUSEUM",
+      "reason": "cinema mapped to MUSEUM (Arts and Culture)"
+    },
+    {
+      "id": "osm:w175450775",
+      "name": "Théâtre de Saint-Maur",
+      "from": "PUBLIC_SPACE",
+      "to": "MUSEUM",
+      "reason": "cinema mapped to MUSEUM (Arts and Culture)"
+    },
+    {
+      "id": "osm:w318176885",
+      "name": "Burger King",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:w43791355",
+      "name": "Le Calypso",
+      "from": "PUBLIC_SPACE",
+      "to": "MUSEUM",
+      "reason": "cinema mapped to MUSEUM (Arts and Culture)"
+    },
+    {
+      "id": "osm:w442189345",
+      "name": "McDonald's",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:w62379531",
+      "name": "MK2 Bibliothèque",
+      "from": "PUBLIC_SPACE",
+      "to": "MUSEUM",
+      "reason": "cinema mapped to MUSEUM (Arts and Culture)"
+    },
+    {
+      "id": "osm:w625044548",
+      "name": "McDonald's Vélizy Usine",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:w628583328",
+      "name": "Cojean",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:w67185082",
+      "name": "Cinéma L'étoile",
+      "from": "PUBLIC_SPACE",
+      "to": "MUSEUM",
+      "reason": "cinema mapped to MUSEUM (Arts and Culture)"
+    },
+    {
+      "id": "osm:w703023957",
+      "name": "Burger King",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:w78271296",
+      "name": "UGC",
+      "from": "PUBLIC_SPACE",
+      "to": "MUSEUM",
+      "reason": "cinema mapped to MUSEUM (Arts and Culture)"
+    },
+    {
+      "id": "osm:w79389766",
+      "name": "McDonald's",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    },
+    {
+      "id": "osm:w957891936",
+      "name": "La Croissanterie",
+      "from": "PUBLIC_SPACE",
+      "to": "RESTAURANT",
+      "reason": "known restaurant or fast-food chain mapped to RESTAURANT"
+    }
+  ]
+}

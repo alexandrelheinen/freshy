@@ -17,7 +17,7 @@ Freshy classifies every place with two independent systems: **tags** (what the s
 | `BAR`                      | Bars             | (theme)          |                                                                                                                      |
 | `LIBRARY`                  | Libraries        | (theme)          |                                                                                                                      |
 | `MALL`                     | Malls & Shops    | (theme)          |                                                                                                                      |
-| `MUSEUM`                   | Arts & Culture   | `theater_comedy` | Historical keyword. The category covers museums, galleries, theaters, and similar cultural venues, not only museums. |
+| `MUSEUM`                   | Arts & Culture   | `theater_comedy` | Historical keyword. The category covers museums, galleries, theaters, cinemas, and similar cultural venues, not only museums. |
 | `COWORKING`                | Coworking        | (theme)          |                                                                                                                      |
 | `PUBLIC_SPACE`             | Public Spaces    | (theme)          |                                                                                                                      |
 | _(import heuristic)_       | Restaurants      | (theme)          | Hotels without a dedicated category are imported and cleaned as `RESTAURANT` (public dining areas).                  |
