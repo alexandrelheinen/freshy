@@ -3,75 +3,15 @@
 from __future__ import annotations
 
 import re
-import unicodedata
 from dataclasses import dataclass
 from typing import Any, Literal
 
+from freshy.cleaner.junk import junk_delete_reason
+from freshy.mapper.supermarket import is_supermarket_signal, normalize_match_text
+
 CleanActionKind = Literal["delete", "reclassify", "keep"]
 
-# English junk names produced by imports or bad submissions (no address required).
-UNKNOWN_NAME_VALUES = frozenset(
-    {
-        "unknown",
-        "unknown facility",
-        "unknown place",
-        "unnamed",
-        "unnamed place",
-        "no name",
-        "n/a",
-        "na",
-    }
-)
-
-# Major French supermarket and hypermarket chains (accent-insensitive substring match).
-FRENCH_SUPERMARKET_BRANDS = (
-    "auchan",
-    "carrefour",
-    "casino",
-    "cora",
-    "franprix",
-    "geant",
-    "géant",
-    "intermarche",
-    "intermarché",
-    "leclerc",
-    "lidl",
-    "aldi",
-    "monoprix",
-    "netto",
-    "simply market",
-    "super u",
-    "hyper u",
-    "u express",
-    "match",
-    "spar",
-    "proxi",
-    "proxy",
-    "grand frais",
-    "biocoop",
-    "naturalia",
-    "picard",
-    "ed",
-    "e.leclerc",
-    "e leclerc",
-)
-
-SUPERMARKET_NAME_KEYWORDS = (
-    "supermarche",
-    "supermarché",
-    "hypermarche",
-    "hypermarché",
-    "superette",
-    "supérette",
-    "epicerie",
-    "épicerie",
-    "grocery",
-    "supermarket",
-    "hypermarket",
-)
-
-# Hotel brands and name cues. Freshy has no HOTEL category; map to RESTAURANT.
-HOTEL_NAME_KEYWORDS = (
+HOTEL_NAME_KEYWORDS: tuple[str, ...] = (
     "hotel",
     "hôtel",
     "motel",
@@ -99,6 +39,11 @@ HOTEL_NAME_KEYWORDS = (
 )
 
 HOTEL_TARGET_CATEGORY = "RESTAURANT"
+
+_HOTEL_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
+    re.compile(rf"(?<![a-z0-9]){re.escape(token)}(?![a-z0-9])")
+    for token in HOTEL_NAME_KEYWORDS
+)
 
 
 @dataclass(frozen=True)
@@ -136,59 +81,26 @@ class CleanPlan:
         return tuple(action for action in self.actions if action.action == "keep")
 
 
-def normalize_text(value: str) -> str:
-    """Lowercase, strip accents, and collapse whitespace for fuzzy matching."""
-    normalized = unicodedata.normalize("NFKD", value)
-    ascii_text = normalized.encode("ascii", "ignore").decode("ascii")
-    return re.sub(r"\s+", " ", ascii_text.strip().casefold())
-
-
-def is_blank_address(address: str | None) -> bool:
-    return address is None or not str(address).strip()
-
-
-def is_unknown_junk_name(name: str) -> bool:
-    normalized = normalize_text(name)
-    if normalized in UNKNOWN_NAME_VALUES:
-        return True
-    return normalized.startswith("unknown ") or normalized.endswith(" unknown")
-
-
-def is_junk_unknown_place(name: str, address: str | None) -> bool:
-    """True when the place has an unknown-style English name and no address."""
-    return is_blank_address(address) and is_unknown_junk_name(name)
-
-
-def _contains_any(haystack: str, needles: tuple[str, ...]) -> bool:
-    return any(needle in haystack for needle in needles)
-
-
 def is_supermarket_place(name: str, description: str | None = None) -> bool:
-    normalized_name = normalize_text(name)
-    if _contains_any(normalized_name, FRENCH_SUPERMARKET_BRANDS):
-        return True
-    if _contains_any(normalized_name, SUPERMARKET_NAME_KEYWORDS):
-        return True
-    if description:
-        normalized_description = normalize_text(description)
-        if "shop: supermarket" in normalized_description or "shop: convenience" in normalized_description:
-            return True
-        if "shop:supermarket" in normalized_description or "shop:convenience" in normalized_description:
-            return True
-    return False
+    return is_supermarket_signal(name, description)
 
 
 def is_hotel_place(name: str, description: str | None = None) -> bool:
-    normalized_name = normalize_text(name)
-    if _contains_any(normalized_name, HOTEL_NAME_KEYWORDS):
+    normalized_name = normalize_match_text(name)
+    if any(pattern.search(normalized_name) for pattern in _HOTEL_PATTERNS):
         return True
     if description:
-        normalized_description = normalize_text(description)
+        normalized_description = normalize_match_text(description)
         if "tourism: hotel" in normalized_description or "tourism: motel" in normalized_description:
             return True
         if "tourism:hotel" in normalized_description or "tourism:motel" in normalized_description:
             return True
     return False
+
+
+def is_junk_unknown_place(name: str, address: str | None) -> bool:
+    """True when the place should be deleted as database pollution."""
+    return junk_delete_reason(name, address) is not None
 
 
 def plan_place_cleanup(
@@ -197,11 +109,12 @@ def plan_place_cleanup(
     reclassify_hotels: bool = True,
 ) -> CleanAction:
     """Return the cleanup action for a single place row."""
-    if is_junk_unknown_place(place.name, place.address):
+    delete_reason = junk_delete_reason(place.name, place.address)
+    if delete_reason is not None:
         return CleanAction(
             place=place,
             action="delete",
-            reason="unknown English name without an address",
+            reason=delete_reason,
         )
 
     if is_supermarket_place(place.name, place.description) and place.category != "MALL":

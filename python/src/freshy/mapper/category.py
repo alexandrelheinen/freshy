@@ -6,6 +6,8 @@ import re
 import unicodedata
 from typing import Any
 
+from freshy.mapper.supermarket import is_supermarket_signal, normalize_match_text
+
 PLACE_CATEGORIES = (
     "CAFE",
     "RESTAURANT",
@@ -89,30 +91,15 @@ def _looks_like_hotel(text: str) -> bool:
         "campanile",
         "kyriad",
     )
-    normalized = text.casefold()
-    return any(token in normalized for token in keywords)
+    normalized = normalize_match_text(text)
+    return any(
+        re.search(rf"(?<![a-z0-9]){re.escape(token)}(?![a-z0-9])", normalized) for token in keywords
+    )
 
 
 def _looks_like_supermarket(text: str) -> bool:
     """Detect major French supermarket chains from OSM name or brand tags."""
-    brands = (
-        "carrefour",
-        "leclerc",
-        "auchan",
-        "intermarche",
-        "intermarché",
-        "monoprix",
-        "franprix",
-        "casino",
-        "lidl",
-        "aldi",
-        "cora",
-        "super u",
-        "hyper u",
-    )
-    keywords = ("supermarche", "supermarché", "hypermarche", "hypermarché", "supermarket")
-    normalized = text.casefold()
-    return any(token in normalized for token in brands + keywords)
+    return is_supermarket_signal(text)
 
 
 def slugify_name(name: str) -> str:

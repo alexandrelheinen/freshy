@@ -29,6 +29,9 @@ class CategoryMapperTests(unittest.TestCase):
     def test_maps_ibis_name_to_restaurant(self) -> None:
         self.assertEqual(infer_category({"name": "Ibis Budget Clichy"}), "RESTAURANT")
 
+    def test_does_not_map_mediathèque_to_mall(self) -> None:
+        self.assertEqual(infer_category({"name": "Médiathèque"}), "PUBLIC_SPACE")
+
 
 if __name__ == "__main__":
     unittest.main()

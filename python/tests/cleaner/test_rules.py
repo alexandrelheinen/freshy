@@ -39,12 +39,29 @@ class JunkUnknownPlaceTests(unittest.TestCase):
         place = _place(name="Unknown", address=None)
         action = plan_place_cleanup(place)
         self.assertEqual(action.action, "delete")
-        self.assertIn("unknown", action.reason)
+        self.assertIn("unknown", action.reason.casefold())
 
     def test_deletes_unknown_facility_without_address(self) -> None:
         place = _place(name="Unknown Facility", address="")
         action = plan_place_cleanup(place)
         self.assertEqual(action.action, "delete")
+
+    def test_deletes_french_sans_nom_without_address(self) -> None:
+        place = _place(name="Sans nom", address=None)
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "delete")
+        self.assertIn("french", action.reason.casefold())
+
+    def test_deletes_french_inconnu_without_address(self) -> None:
+        place = _place(name="Lieu inconnu", address=None)
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "delete")
+
+    def test_deletes_datagouv_placeholder_without_address(self) -> None:
+        place = _place(name="Cooling space (Lieux climatisés de Paris)", address=None)
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "delete")
+        self.assertIn("placeholder", action.reason.casefold())
 
     def test_keeps_unknown_name_when_address_exists(self) -> None:
         place = _place(name="Unknown", address="10 Rue Martre, 92110 Clichy")
@@ -88,6 +105,24 @@ class SupermarketClassificationTests(unittest.TestCase):
                 "OpenStreetMap tags: shop: supermarket, air conditioning tagged on OpenStreetMap.",
             )
         )
+
+    def test_keeps_mediathèque(self) -> None:
+        place = _place(name="Médiathèque", category="LIBRARY")
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "keep")
+
+    def test_keeps_matchplay_bar(self) -> None:
+        place = _place(name="Matchplay Society", category="BAR")
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "keep")
+
+    def test_keeps_bibliotheque_multimedia(self) -> None:
+        place = _place(
+            name="Bibliothèque Arts et multimédia",
+            category="LIBRARY",
+        )
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "keep")
 
 
 class HotelCleanupTests(unittest.TestCase):

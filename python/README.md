@@ -102,9 +102,20 @@ Removes useless imported rows and fixes misclassified supermarkets and hotels in
 
 **Rules:**
 
-1. **Delete** places whose English name is unknown-style (`Unknown`, `Unknown Facility`, `Unnamed`, and similar) and that have no address.
-2. **Reclassify** major French supermarket and grocery chains from `PUBLIC_SPACE` (or any non-`MALL` category) to `MALL`.
-3. **Reclassify** hotels to `RESTAURANT`. Freshy has no `HOTEL` category; hotel lobbies and dining areas fit Restaurants better than Public Spaces. Pass `--skip-hotels` to leave hotel rows unchanged.
+**Delete** (requires **both** no address and a junk name):
+
+| Condition | Examples |
+| --------- | -------- |
+| English unknown-style name | `Unknown`, `Unknown Facility`, `Unnamed`, `No name`, `N/A` |
+| French placeholder name | `Inconnu`, `Sans nom`, `Sans titre`, `Lieu inconnu`, `Anonyme`, `Non nommé` |
+| Auto-generated import title | `Cooling space (dataset title…)` from data.gouv fallback |
+| Empty or punctuation-only name | blank, `.`, `-` |
+
+Places with a valid address are **kept** even when the name looks odd (manual cleanup in Studio).
+
+**Reclassify to `MALL`:** whole-word match on major French grocery chains (Carrefour, E.Leclerc, Auchan, Intermarché, Monoprix, Franprix, Match, …) or explicit `shop: supermarket` / `shop: convenience` in the import description. Substrings like `ed` in *médiathèque* or `match` in *Matchplay* must **not** match.
+
+**Reclassify to `RESTAURANT`:** hotels (Freshy has no `HOTEL` category). Pass `--skip-hotels` to leave hotel rows unchanged.
 
 ```bash
 # Preview actions against local D1
