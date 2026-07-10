@@ -86,6 +86,14 @@ FRANCE_REGIONS: dict[str, dict[str, str]] = {
 # Known provider dummy user ids (must exist in remote D1 User table before sync).
 SEEDER_PROVIDER_USER_IDS = ("osm", "datagouv")
 
+# Metropolitan France WGS84 bounding box (matches seeder region scope).
+FRANCE_METRO_BBOX: dict[str, float] = {
+    "min_lat": 41.15,
+    "max_lat": 51.25,
+    "min_lon": -5.35,
+    "max_lon": 9.85,
+}
+
 LOCAL_PLACES_SCHEMA = """
 CREATE TABLE IF NOT EXISTS "Place" (
     "id" TEXT NOT NULL PRIMARY KEY,

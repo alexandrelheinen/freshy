@@ -26,7 +26,7 @@ def fetch_all_places(database: str, remote: bool) -> list[PlaceRow]:
         "--yes",
         "--json",
         "--command",
-        'SELECT id, slug, name, category, address, description FROM "Place";',
+        'SELECT id, slug, name, category, address, description, latitude, longitude, createdById FROM "Place";',
     ]
     if remote:
         args.append("--remote")
@@ -45,6 +45,14 @@ def fetch_all_places(database: str, remote: bool) -> list[PlaceRow]:
         category = item.get("category")
         if not place_id or not slug or not name or not category:
             continue
+        try:
+            latitude = float(item["latitude"])
+            longitude = float(item["longitude"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        created_by_id = item.get("createdById")
+        if not created_by_id:
+            continue
         rows.append(
             PlaceRow(
                 id=str(place_id),
@@ -52,6 +60,9 @@ def fetch_all_places(database: str, remote: bool) -> list[PlaceRow]:
                 name=str(name),
                 category=str(category),
                 address=str(item["address"]).strip() if item.get("address") else None,
+                latitude=latitude,
+                longitude=longitude,
+                created_by_id=str(created_by_id),
                 description=str(item["description"]) if item.get("description") else None,
             )
         )

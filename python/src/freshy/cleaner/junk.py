@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import re
-import unicodedata
 
+from freshy.config import SEEDER_PROVIDER_USER_IDS
+from freshy.geo import is_in_france_metropolitan, is_invalid_wgs84_coordinates
 from freshy.mapper.supermarket import normalize_match_text
 
 # Exact normalized names (English and French) that indicate junk when there is no address.
@@ -92,16 +93,8 @@ def is_junk_name(name: str) -> bool:
     return False
 
 
-def junk_delete_reason(name: str, address: str | None) -> str | None:
-    """
-    Return a delete reason when a row should be removed, else None.
-
-    Delete policy (all conditions required):
-    - Blank or missing address, AND
-    - Name is junk (see is_junk_name)
-    """
-    if not is_blank_address(address):
-        return None
+def _junk_name_delete_reason(name: str) -> str | None:
+    """Return a delete reason for junk names when address is already known blank."""
     if not is_junk_name(name):
         return None
 
@@ -127,3 +120,48 @@ def junk_delete_reason(name: str, address: str | None) -> str | None:
         return "unknown English name without an address"
 
     return "invalid placeholder name without an address"
+
+
+def place_delete_reason(
+    *,
+    name: str,
+    address: str | None,
+    latitude: float,
+    longitude: float,
+    created_by_id: str,
+) -> str | None:
+    """
+    Return a delete reason when a row should be removed, else None.
+
+    All delete rules require a blank or missing address.
+    """
+    if not is_blank_address(address):
+        return None
+
+    stripped = name.strip()
+    if len(stripped) < 2:
+        if not stripped:
+            return "empty name without an address"
+        return "name too short without an address"
+
+    if is_invalid_wgs84_coordinates(latitude, longitude):
+        return "invalid coordinates without an address"
+
+    if (
+        created_by_id in SEEDER_PROVIDER_USER_IDS
+        and not is_in_france_metropolitan(latitude, longitude)
+    ):
+        return "import provider place outside France without an address"
+
+    return _junk_name_delete_reason(name)
+
+
+def junk_delete_reason(name: str, address: str | None) -> str | None:
+    """
+    Return a delete reason for junk-name-only checks (legacy signature).
+
+    Prefer place_delete_reason when latitude, longitude, and created_by_id are available.
+    """
+    if not is_blank_address(address):
+        return None
+    return _junk_name_delete_reason(name)

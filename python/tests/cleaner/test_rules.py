@@ -23,6 +23,9 @@ def _place(
     address: str | None = "1 Rue Example, 92110 Clichy",
     description: str | None = None,
     place_id: str = "place-1",
+    latitude: float = 48.9042,
+    longitude: float = 2.3064,
+    created_by_id: str = "user-manual",
 ) -> PlaceRow:
     return PlaceRow(
         id=place_id,
@@ -30,6 +33,9 @@ def _place(
         name=name,
         category=category,
         address=address,
+        latitude=latitude,
+        longitude=longitude,
+        created_by_id=created_by_id,
         description=description,
     )
 
@@ -72,6 +78,72 @@ class JunkUnknownPlaceTests(unittest.TestCase):
         place = _place(name="Carrefour City", address=None, category="MALL")
         action = plan_place_cleanup(place)
         self.assertNotEqual(action.action, "delete")
+
+
+class NoAddressDeleteRuleTests(unittest.TestCase):
+    def test_deletes_single_character_name_without_address(self) -> None:
+        place = _place(name="X", address=None)
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "delete")
+        self.assertIn("too short", action.reason.casefold())
+
+    def test_deletes_null_island_without_address(self) -> None:
+        place = _place(name="Cool Library", address=None, latitude=0.0, longitude=0.0)
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "delete")
+        self.assertIn("invalid coordinates", action.reason.casefold())
+
+    def test_deletes_out_of_range_coordinates_without_address(self) -> None:
+        place = _place(name="Cool Library", address=None, latitude=95.0, longitude=2.0)
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "delete")
+        self.assertIn("invalid coordinates", action.reason.casefold())
+
+    def test_deletes_osm_import_outside_france_without_address(self) -> None:
+        place = _place(
+            name="Cool Library",
+            address=None,
+            latitude=40.7128,
+            longitude=-74.0060,
+            created_by_id="osm",
+        )
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "delete")
+        self.assertIn("outside france", action.reason.casefold())
+
+    def test_deletes_datagouv_import_outside_france_without_address(self) -> None:
+        place = _place(
+            name="Cool Library",
+            address=None,
+            latitude=52.52,
+            longitude=13.405,
+            created_by_id="datagouv",
+        )
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "delete")
+        self.assertIn("outside france", action.reason.casefold())
+
+    def test_keeps_osm_import_outside_france_when_address_exists(self) -> None:
+        place = _place(
+            name="Cool Library",
+            address="10 Rue Example",
+            latitude=40.7128,
+            longitude=-74.0060,
+            created_by_id="osm",
+        )
+        action = plan_place_cleanup(place)
+        self.assertNotEqual(action.action, "delete")
+
+    def test_keeps_manual_place_outside_france_without_address(self) -> None:
+        place = _place(
+            name="Cool Library",
+            address=None,
+            latitude=40.7128,
+            longitude=-74.0060,
+            created_by_id="user-manual",
+        )
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "keep")
 
 
 class SupermarketClassificationTests(unittest.TestCase):
@@ -178,10 +250,12 @@ class CleanPlanTests(unittest.TestCase):
 
 
 class MatcherUnitTests(unittest.TestCase):
-    def test_is_junk_unknown_place_requires_both_conditions(self) -> None:
-        self.assertTrue(is_junk_unknown_place("unknown", None))
-        self.assertFalse(is_junk_unknown_place("Carrefour", None))
-        self.assertFalse(is_junk_unknown_place("unknown", "1 Rue Example"))
+    def test_is_junk_unknown_place_detects_delete_candidates(self) -> None:
+        self.assertTrue(is_junk_unknown_place(_place(name="unknown", address=None)))
+        self.assertFalse(is_junk_unknown_place(_place(name="Carrefour", address=None)))
+        self.assertFalse(
+            is_junk_unknown_place(_place(name="unknown", address="1 Rue Example"))
+        )
 
 
 if __name__ == "__main__":

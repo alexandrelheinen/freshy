@@ -6,7 +6,7 @@ import re
 from dataclasses import dataclass
 from typing import Any, Literal
 
-from freshy.cleaner.junk import junk_delete_reason
+from freshy.cleaner.junk import place_delete_reason
 from freshy.mapper.supermarket import is_supermarket_signal, normalize_match_text
 
 CleanActionKind = Literal["delete", "reclassify", "keep"]
@@ -53,6 +53,9 @@ class PlaceRow:
     name: str
     category: str
     address: str | None
+    latitude: float
+    longitude: float
+    created_by_id: str
     description: str | None = None
 
 
@@ -98,9 +101,15 @@ def is_hotel_place(name: str, description: str | None = None) -> bool:
     return False
 
 
-def is_junk_unknown_place(name: str, address: str | None) -> bool:
+def is_junk_unknown_place(place: PlaceRow) -> bool:
     """True when the place should be deleted as database pollution."""
-    return junk_delete_reason(name, address) is not None
+    return place_delete_reason(
+        name=place.name,
+        address=place.address,
+        latitude=place.latitude,
+        longitude=place.longitude,
+        created_by_id=place.created_by_id,
+    ) is not None
 
 
 def plan_place_cleanup(
@@ -109,7 +118,13 @@ def plan_place_cleanup(
     reclassify_hotels: bool = True,
 ) -> CleanAction:
     """Return the cleanup action for a single place row."""
-    delete_reason = junk_delete_reason(place.name, place.address)
+    delete_reason = place_delete_reason(
+        name=place.name,
+        address=place.address,
+        latitude=place.latitude,
+        longitude=place.longitude,
+        created_by_id=place.created_by_id,
+    )
     if delete_reason is not None:
         return CleanAction(
             place=place,

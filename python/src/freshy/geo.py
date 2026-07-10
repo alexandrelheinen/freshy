@@ -9,9 +9,32 @@ from typing import Iterable
 
 from pyproj import Transformer
 
+from freshy.config import FRANCE_METRO_BBOX
+
 logger = logging.getLogger(__name__)
 
 _LAMBERT93_TO_WGS84 = Transformer.from_crs("EPSG:2154", "EPSG:4326", always_xy=True)
+
+
+def is_invalid_wgs84_coordinates(lat: float, lon: float) -> bool:
+    """True for null island, out-of-range, or non-finite WGS84 coordinates."""
+    if math.isnan(lat) or math.isnan(lon) or math.isinf(lat) or math.isinf(lon):
+        return True
+    if lat == 0.0 and lon == 0.0:
+        return True
+    if not -90.0 <= lat <= 90.0:
+        return True
+    if not -180.0 <= lon <= 180.0:
+        return True
+    return False
+
+
+def is_in_france_metropolitan(lat: float, lon: float) -> bool:
+    """True when a WGS84 point falls inside metropolitan France."""
+    return (
+        FRANCE_METRO_BBOX["min_lat"] <= lat <= FRANCE_METRO_BBOX["max_lat"]
+        and FRANCE_METRO_BBOX["min_lon"] <= lon <= FRANCE_METRO_BBOX["max_lon"]
+    )
 
 
 def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:

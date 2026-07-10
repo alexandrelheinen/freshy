@@ -102,16 +102,19 @@ Removes useless imported rows and fixes misclassified supermarkets and hotels in
 
 **Rules:**
 
-**Delete** (requires **both** no address and a junk name):
+**Delete** (requires **no address**, plus one of the conditions below):
 
 | Condition | Examples |
 | --------- | -------- |
+| Name too short | fewer than 2 characters after trim |
+| Invalid coordinates | `(0, 0)`, out of WGS84 range, or non-finite values |
+| Import outside France | `createdById` is `osm` or `datagouv` and point is outside metropolitan France |
 | English unknown-style name | `Unknown`, `Unknown Facility`, `Unnamed`, `No name`, `N/A` |
 | French placeholder name | `Inconnu`, `Sans nom`, `Sans titre`, `Lieu inconnu`, `Anonyme`, `Non nommé` |
 | Auto-generated import title | `Cooling space (dataset title…)` from data.gouv fallback |
 | Empty or punctuation-only name | blank, `.`, `-` |
 
-Places with a valid address are **kept** even when the name looks odd (manual cleanup in Studio).
+Places with a valid address are **kept** even when the name, coordinates, or provider look wrong (manual cleanup in Studio).
 
 **Reclassify to `MALL`:** whole-word match on major French grocery chains (Carrefour, E.Leclerc, Auchan, Intermarché, Monoprix, Franprix, Match, …) or explicit `shop: supermarket` / `shop: convenience` in the import description. Substrings like `ed` in *médiathèque* or `match` in *Matchplay* must **not** match.
 
