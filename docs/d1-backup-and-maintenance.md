@@ -38,8 +38,10 @@ D1 **Time Travel** is always on for production databases. It keeps point-in-time
 cd packages/api
 
 # Capture the current bookmark before you change anything
-npx wrangler d1 time-travel info freshy-db --remote
+npx wrangler d1 time-travel info freshy-db
 ```
+
+This command always targets **remote** production D1 (no `--remote` flag).
 
 Copy the bookmark from the output, for example:
 
@@ -113,14 +115,14 @@ Restore **overwrites** the live database in place. Wrangler asks for confirmatio
 ```bash
 cd packages/api
 
-npx wrangler d1 time-travel restore freshy-db --remote \
+npx wrangler d1 time-travel restore freshy-db \
   --bookmark=YOUR_SAVED_BOOKMARK
 ```
 
 ### By timestamp
 
 ```bash
-npx wrangler d1 time-travel restore freshy-db --remote \
+npx wrangler d1 time-travel restore freshy-db \
   --timestamp=1720612800
 ```
 
@@ -134,7 +136,7 @@ After restore, wrangler prints a `previous_bookmark`. You can use it to undo the
 cd packages/api
 
 # 1. Restore point
-npx wrangler d1 time-travel info freshy-db --remote
+npx wrangler d1 time-travel info freshy-db
 # → save bookmark
 
 # 2. Optional export
@@ -153,7 +155,7 @@ freshy-cleaner apply --database="freshy-db" --remote
 
 # 5. Roll back only if needed
 # cd packages/api
-# npx wrangler d1 time-travel restore freshy-db --remote --bookmark=...
+# npx wrangler d1 time-travel restore freshy-db --bookmark=...
 ```
 
 ---
@@ -174,6 +176,6 @@ freshy-cleaner apply --database="freshy-db" --remote
 
 - [Database schema](database.md)
 - [Platforms | D1 section](platforms.md)
-- [Scripts | freshy-place-cleaner](../scripts/README.md)
+- [Python tooling | freshy-seeder and freshy-cleaner](../python/README.md)
 - [Cloudflare D1 Time Travel](https://developers.cloudflare.com/d1/reference/time-travel/)
 - [Cloudflare D1 import and export](https://developers.cloudflare.com/d1/best-practices/import-export-data/)

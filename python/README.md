@@ -37,8 +37,10 @@ Run from `packages/api` with `wrangler login` or `CLOUDFLARE_API_TOKEN` set.
 
 ```bash
 cd packages/api
-npx wrangler d1 time-travel info freshy-db --remote
+npx wrangler d1 time-travel info freshy-db
 ```
+
+This command always targets **remote** production D1 (no `--remote` flag).
 
 2. Copy the bookmark from the output, for example:
 
@@ -65,11 +67,11 @@ freshy-cleaner apply --database="freshy-db" --remote
 
 ```bash
 cd packages/api
-npx wrangler d1 time-travel restore freshy-db --remote \
+npx wrangler d1 time-travel restore freshy-db \
   --bookmark=YOUR_SAVED_BOOKMARK
 ```
 
-For **local** wrangler D1, swap `--remote` for `--local` in the `time-travel` and Python CLI commands above.
+Time Travel is **remote only**. For local wrangler D1, use `--local` on the Python CLI (`freshy-seeder`, `freshy-cleaner`) only; there is no Time Travel rollback for local databases.
 
 ## freshy-seeder
 
