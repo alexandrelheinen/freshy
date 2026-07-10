@@ -3,13 +3,19 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, Literal
 
-from freshy.cleaner.junk import place_delete_reason
+from freshy.cleaner.duplicates import find_nearby_duplicate
+from freshy.cleaner.junk import is_auto_generated_import_placeholder, is_blank_address, place_delete_reason
+from freshy.cleaner.models import PlaceRow
+from freshy.cleaner.osm_enrich import OsmPoiMatch, lookup_nearby_poi
+from freshy.mapper.category import slugify_name
 from freshy.mapper.supermarket import is_supermarket_signal, normalize_match_text
+from freshy.seeder.builder import unique_slug
 
-CleanActionKind = Literal["delete", "reclassify", "keep"]
+CleanActionKind = Literal["delete", "reclassify", "rename", "keep"]
 
 HOTEL_NAME_KEYWORDS: tuple[str, ...] = (
     "hotel",
@@ -39,24 +45,15 @@ HOTEL_NAME_KEYWORDS: tuple[str, ...] = (
 )
 
 HOTEL_TARGET_CATEGORY = "RESTAURANT"
+DATAGOUV_PROVIDER_ID = "datagouv"
+PLACEHOLDER_DELETE_REASON = "auto-generated import placeholder without an address"
 
 _HOTEL_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
     re.compile(rf"(?<![a-z0-9]){re.escape(token)}(?![a-z0-9])")
     for token in HOTEL_NAME_KEYWORDS
 )
 
-
-@dataclass(frozen=True)
-class PlaceRow:
-    id: str
-    slug: str
-    name: str
-    category: str
-    address: str | None
-    latitude: float
-    longitude: float
-    created_by_id: str
-    description: str | None = None
+OsmLookup = Callable[[float, float], OsmPoiMatch | None]
 
 
 @dataclass(frozen=True)
@@ -65,6 +62,9 @@ class CleanAction:
     action: CleanActionKind
     reason: str
     new_category: str | None = None
+    new_name: str | None = None
+    new_slug: str | None = None
+    new_address: str | None = None
 
 
 @dataclass(frozen=True)
@@ -74,6 +74,10 @@ class CleanPlan:
     @property
     def deletes(self) -> tuple[CleanAction, ...]:
         return tuple(action for action in self.actions if action.action == "delete")
+
+    @property
+    def renames(self) -> tuple[CleanAction, ...]:
+        return tuple(action for action in self.actions if action.action == "rename")
 
     @property
     def reclassifies(self) -> tuple[CleanAction, ...]:
@@ -112,10 +116,59 @@ def is_junk_unknown_place(place: PlaceRow) -> bool:
     ) is not None
 
 
+def is_osm_enrich_candidate(place: PlaceRow, delete_reason: str) -> bool:
+    """True when a datagouv placeholder may be recovered via OSM before deletion."""
+    return (
+        place.created_by_id == DATAGOUV_PROVIDER_ID
+        and is_blank_address(place.address)
+        and is_auto_generated_import_placeholder(place.name)
+        and delete_reason == PLACEHOLDER_DELETE_REASON
+    )
+
+
+def _resolve_placeholder_with_osm(
+    place: PlaceRow,
+    *,
+    all_places: list[PlaceRow],
+    reserved_slugs: set[str],
+    osm_lookup: OsmLookup,
+) -> CleanAction | None:
+    duplicate = find_nearby_duplicate(place, all_places)
+    if duplicate is not None:
+        return CleanAction(
+            place=place,
+            action="delete",
+            reason=f"duplicate of nearby place {duplicate.name} ({duplicate.id})",
+        )
+
+    match = osm_lookup(place.latitude, place.longitude)
+    if match is None:
+        return None
+
+    new_slug = unique_slug(slugify_name(match.name), reserved_slugs)
+    new_category = match.category if match.category != place.category else None
+    return CleanAction(
+        place=place,
+        action="rename",
+        reason=(
+            f"OSM nearby match ({match.osm_type}{match.osm_id}) "
+            f"for datagouv placeholder without an address"
+        ),
+        new_name=match.name,
+        new_slug=new_slug,
+        new_address=match.address,
+        new_category=new_category,
+    )
+
+
 def plan_place_cleanup(
     place: PlaceRow,
     *,
     reclassify_hotels: bool = True,
+    enrich_osm: bool = False,
+    all_places: list[PlaceRow] | None = None,
+    reserved_slugs: set[str] | None = None,
+    osm_lookup: OsmLookup | None = None,
 ) -> CleanAction:
     """Return the cleanup action for a single place row."""
     delete_reason = place_delete_reason(
@@ -126,6 +179,22 @@ def plan_place_cleanup(
         created_by_id=place.created_by_id,
     )
     if delete_reason is not None:
+        if (
+            enrich_osm
+            and is_osm_enrich_candidate(place, delete_reason)
+            and all_places is not None
+            and reserved_slugs is not None
+            and osm_lookup is not None
+        ):
+            enriched = _resolve_placeholder_with_osm(
+                place,
+                all_places=all_places,
+                reserved_slugs=reserved_slugs,
+                osm_lookup=osm_lookup,
+            )
+            if enriched is not None:
+                return enriched
+
         return CleanAction(
             place=place,
             action="delete",
@@ -159,11 +228,34 @@ def build_clean_plan(
     places: list[PlaceRow],
     *,
     reclassify_hotels: bool = True,
+    enrich_osm: bool = False,
+    osm_lookup: OsmLookup | None = None,
 ) -> CleanPlan:
-    actions = tuple(
-        plan_place_cleanup(place, reclassify_hotels=reclassify_hotels) for place in places
-    )
-    return CleanPlan(actions=actions)
+    slug_registry = {place.slug for place in places}
+    lookup_cache: dict[str, OsmPoiMatch | None] = {}
+    lookup_fn = osm_lookup or lookup_nearby_poi
+
+    def cached_lookup(lat: float, lon: float) -> OsmPoiMatch | None:
+        cache_key = f"{lat:.5f},{lon:.5f}"
+        if cache_key not in lookup_cache:
+            lookup_cache[cache_key] = lookup_fn(lat, lon)
+        return lookup_cache[cache_key]
+
+    actions: list[CleanAction] = []
+    for place in places:
+        action = plan_place_cleanup(
+            place,
+            reclassify_hotels=reclassify_hotels,
+            enrich_osm=enrich_osm,
+            all_places=places if enrich_osm else None,
+            reserved_slugs=slug_registry if enrich_osm else None,
+            osm_lookup=cached_lookup if enrich_osm else None,
+        )
+        if action.action == "rename" and action.new_slug:
+            slug_registry.add(action.new_slug)
+        actions.append(action)
+
+    return CleanPlan(actions=tuple(actions))
 
 
 def summarize_plan(plan: CleanPlan) -> dict[str, Any]:
@@ -172,6 +264,7 @@ def summarize_plan(plan: CleanPlan) -> dict[str, Any]:
         "totals": {
             "places": len(plan.actions),
             "delete": len(plan.deletes),
+            "rename": len(plan.renames),
             "reclassify": len(plan.reclassifies),
             "keep": len(plan.keeps),
         },
@@ -183,6 +276,18 @@ def summarize_plan(plan: CleanPlan) -> dict[str, Any]:
                 "reason": action.reason,
             }
             for action in plan.deletes
+        ],
+        "rename": [
+            {
+                "id": action.place.id,
+                "from_name": action.place.name,
+                "to_name": action.new_name,
+                "to_slug": action.new_slug,
+                "to_address": action.new_address,
+                "to_category": action.new_category,
+                "reason": action.reason,
+            }
+            for action in plan.renames
         ],
         "reclassify": [
             {

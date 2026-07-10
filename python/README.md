@@ -116,6 +116,8 @@ Removes useless imported rows and fixes misclassified supermarkets and hotels in
 
 Places with a valid address are **kept** even when the name, coordinates, or provider look wrong (manual cleanup in Studio).
 
+**Rename (opt-in with `--enrich-osm`):** for datagouv `Cooling space (...)` placeholders without an address, the cleaner queries Overpass for a nearby named POI before deleting. If a nearby named place already exists in D1, the placeholder is deleted as a duplicate instead. When OSM returns a match, the row is renamed (and optionally gets address or category updates from OSM tags).
+
 **Reclassify to `MALL`:** whole-word match on major French grocery chains (Carrefour, E.Leclerc, Auchan, Intermarché, Monoprix, Franprix, Match, …) or explicit `shop: supermarket` / `shop: convenience` in the import description. Substrings like `ed` in *médiathèque* or `match` in *Matchplay* must **not** match.
 
 **Reclassify to `RESTAURANT`:** hotels (Freshy has no `HOTEL` category). Pass `--skip-hotels` to leave hotel rows unchanged.
@@ -123,6 +125,9 @@ Places with a valid address are **kept** even when the name, coordinates, or pro
 ```bash
 # Preview actions against local D1
 freshy-cleaner plan --database="freshy-db"
+
+# Preview with OSM rename-before-delete for datagouv placeholders
+freshy-cleaner plan --database="freshy-db" --enrich-osm
 
 # Dry run apply (no writes)
 freshy-cleaner apply --database="freshy-db" --dry-run
@@ -134,7 +139,7 @@ freshy-cleaner apply --database="freshy-db"
 freshy-cleaner apply --database="freshy-db" --remote
 ```
 
-Options: `--skip-hotels`, `--json`, `-v`. Cleanup rules live in `freshy.cleaner`; import-time category mapping lives in `freshy.mapper`.
+Options: `--skip-hotels`, `--enrich-osm`, `--json`, `-v`. Cleanup rules live in `freshy.cleaner`; import-time category mapping lives in `freshy.mapper`.
 
 ## Tests
 

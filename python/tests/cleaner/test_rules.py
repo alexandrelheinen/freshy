@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import unittest
 
+from freshy.cleaner.models import PlaceRow
+from freshy.cleaner.osm_enrich import OsmPoiMatch
 from freshy.cleaner.rules import (
     CleanPlan,
-    PlaceRow,
     build_clean_plan,
     is_hotel_place,
     is_junk_unknown_place,
@@ -67,7 +68,62 @@ class JunkUnknownPlaceTests(unittest.TestCase):
         place = _place(name="Cooling space (Lieux climatisés de Paris)", address=None)
         action = plan_place_cleanup(place)
         self.assertEqual(action.action, "delete")
-        self.assertIn("placeholder", action.reason.casefold())
+
+    def test_renames_datagouv_placeholder_when_osm_match_found(self) -> None:
+        place = _place(
+            name="Cooling space (Lieux climatisés de Paris)",
+            address=None,
+            created_by_id="datagouv",
+            place_id="datagouv:abc:1",
+        )
+
+        def fake_lookup(lat: float, lon: float) -> OsmPoiMatch:
+            self.assertAlmostEqual(lat, 48.9042)
+            self.assertAlmostEqual(lon, 2.3064)
+            return OsmPoiMatch(
+                name="Bibliothèque Victor Hugo",
+                address="1 Rue Example, 92110 Clichy",
+                category="LIBRARY",
+                osm_type="node",
+                osm_id=42,
+                distance_km=0.01,
+            )
+
+        action = plan_place_cleanup(
+            place,
+            enrich_osm=True,
+            all_places=[place],
+            reserved_slugs={place.slug},
+            osm_lookup=fake_lookup,
+        )
+        self.assertEqual(action.action, "rename")
+        self.assertEqual(action.new_name, "Bibliothèque Victor Hugo")
+        self.assertEqual(action.new_slug, "bibliotheque-victor-hugo")
+        self.assertEqual(action.new_address, "1 Rue Example, 92110 Clichy")
+        self.assertEqual(action.new_category, "LIBRARY")
+
+    def test_deletes_datagouv_placeholder_as_duplicate_of_nearby_osm_row(self) -> None:
+        placeholder = _place(
+            name="Cooling space (Lieux climatisés de Paris)",
+            address=None,
+            created_by_id="datagouv",
+            place_id="datagouv:abc:1",
+        )
+        existing = _place(
+            name="Bibliothèque municipale",
+            address=None,
+            created_by_id="osm",
+            place_id="osm:n123",
+        )
+        action = plan_place_cleanup(
+            placeholder,
+            enrich_osm=True,
+            all_places=[placeholder, existing],
+            reserved_slugs={placeholder.slug, existing.slug},
+            osm_lookup=lambda lat, lon: None,
+        )
+        self.assertEqual(action.action, "delete")
+        self.assertIn("duplicate", action.reason.casefold())
 
     def test_keeps_unknown_name_when_address_exists(self) -> None:
         place = _place(name="Unknown", address="10 Rue Martre, 92110 Clichy")

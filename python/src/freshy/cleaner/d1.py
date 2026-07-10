@@ -7,7 +7,8 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
-from freshy.cleaner.rules import CleanAction, CleanPlan, PlaceRow
+from freshy.cleaner.models import PlaceRow
+from freshy.cleaner.rules import CleanAction, CleanPlan
 from freshy.d1.wrangler import parse_wrangler_json, run_wrangler, sql_literal
 
 logger = logging.getLogger(__name__)
@@ -77,6 +78,31 @@ def _build_delete_statements(place_ids: list[str]) -> list[str]:
     return [f'DELETE FROM "Place" WHERE id IN ({literals});']
 
 
+def _build_rename_statements(actions: list[CleanAction]) -> list[str]:
+    statements: list[str] = []
+    updated_at = _utc_now()
+    for action in actions:
+        if action.new_name is None or action.new_slug is None:
+            continue
+
+        assignments = [
+            f'name = {sql_literal(action.new_name)}',
+            f'slug = {sql_literal(action.new_slug)}',
+        ]
+        if action.new_category:
+            assignments.append(f'category = {sql_literal(action.new_category)}')
+        if action.new_address:
+            assignments.append(f'address = {sql_literal(action.new_address)}')
+        assignments.append(f'updatedAt = {sql_literal(updated_at)}')
+
+        statements.append(
+            'UPDATE "Place" SET '
+            + ", ".join(assignments)
+            + f' WHERE id = {sql_literal(action.place.id)};'
+        )
+    return statements
+
+
 def _build_reclassify_statements(actions: list[CleanAction]) -> list[str]:
     statements: list[str] = []
     updated_at = _utc_now()
@@ -99,21 +125,26 @@ def apply_clean_plan(
     remote: bool,
     dry_run: bool = False,
 ) -> dict[str, int]:
-    """Apply delete and reclassify actions to D1."""
+    """Apply delete, rename, and reclassify actions to D1."""
     delete_ids = [action.place.id for action in plan.deletes]
+    rename_actions = list(plan.renames)
     reclassify_actions = list(plan.reclassifies)
-    statements = _build_delete_statements(delete_ids) + _build_reclassify_statements(
-        reclassify_actions
+    statements = (
+        _build_delete_statements(delete_ids)
+        + _build_rename_statements(rename_actions)
+        + _build_reclassify_statements(reclassify_actions)
     )
 
     if dry_run:
         logger.info(
-            "[Cleaner] Dry run: would delete %d and reclassify %d places",
+            "[Cleaner] Dry run: would delete %d, rename %d, and reclassify %d places",
             len(delete_ids),
+            len(rename_actions),
             len(reclassify_actions),
         )
         return {
             "deleted": len(delete_ids),
+            "renamed": len(rename_actions),
             "reclassified": len(reclassify_actions),
             "kept": len(plan.keeps),
             "batches": 0,
@@ -123,6 +154,7 @@ def apply_clean_plan(
         logger.info("[Cleaner] Nothing to apply")
         return {
             "deleted": 0,
+            "renamed": 0,
             "reclassified": 0,
             "kept": len(plan.keeps),
             "batches": 0,
@@ -145,12 +177,14 @@ def apply_clean_plan(
         raise RuntimeError("wrangler d1 execute apply failed")
 
     logger.info(
-        "[Cleaner] Applied %d deletes and %d reclassifications",
+        "[Cleaner] Applied %d deletes, %d renames, and %d reclassifications",
         len(delete_ids),
+        len(rename_actions),
         len(reclassify_actions),
     )
     return {
         "deleted": len(delete_ids),
+        "renamed": len(rename_actions),
         "reclassified": len(reclassify_actions),
         "kept": len(plan.keeps),
         "batches": 1,

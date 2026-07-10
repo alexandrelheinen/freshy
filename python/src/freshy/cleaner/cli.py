@@ -22,12 +22,17 @@ def _load_places(args: argparse.Namespace):
 def cmd_plan(args: argparse.Namespace) -> int:
     try:
         places = _load_places(args)
-        plan = build_clean_plan(places, reclassify_hotels=not args.skip_hotels)
+        plan = build_clean_plan(
+            places,
+            reclassify_hotels=not args.skip_hotels,
+            enrich_osm=args.enrich_osm,
+        )
         summary = summarize_plan(plan)
         print(json.dumps(summary, indent=2, ensure_ascii=False))
         logger.info(
-            "[Plan] delete=%d reclassify=%d keep=%d",
+            "[Plan] delete=%d rename=%d reclassify=%d keep=%d",
             summary["totals"]["delete"],
+            summary["totals"]["rename"],
             summary["totals"]["reclassify"],
             summary["totals"]["keep"],
         )
@@ -40,7 +45,11 @@ def cmd_plan(args: argparse.Namespace) -> int:
 def cmd_apply(args: argparse.Namespace) -> int:
     try:
         places = _load_places(args)
-        plan = build_clean_plan(places, reclassify_hotels=not args.skip_hotels)
+        plan = build_clean_plan(
+            places,
+            reclassify_hotels=not args.skip_hotels,
+            enrich_osm=args.enrich_osm,
+        )
         stats = apply_clean_plan(
             plan,
             database=args.database,
@@ -48,8 +57,9 @@ def cmd_apply(args: argparse.Namespace) -> int:
             dry_run=args.dry_run,
         )
         logger.info(
-            "[Apply] deleted=%d reclassified=%d kept=%d batches=%d",
+            "[Apply] deleted=%d renamed=%d reclassified=%d kept=%d batches=%d",
             stats["deleted"],
+            stats["renamed"],
             stats["reclassified"],
             stats["kept"],
             stats["batches"],
@@ -84,6 +94,14 @@ def build_parser() -> argparse.ArgumentParser:
         "--skip-hotels",
         action="store_true",
         help="Skip hotel reclassification to RESTAURANT",
+    )
+    common.add_argument(
+        "--enrich-osm",
+        action="store_true",
+        help=(
+            "Before deleting datagouv Cooling space placeholders without an address, "
+            "query OSM for a nearby named POI and rename when found"
+        ),
     )
 
     sub = parser.add_subparsers(dest="command", required=True)

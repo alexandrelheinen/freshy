@@ -68,6 +68,12 @@ def is_blank_address(address: str | None) -> bool:
     return address is None or not str(address).strip()
 
 
+def is_auto_generated_import_placeholder(name: str) -> bool:
+    """True for datagouv-style fallback titles such as Cooling space (...)."""
+    normalized = normalize_match_text(name)
+    return any(pattern.match(normalized) for pattern in JUNK_NAME_PATTERNS)
+
+
 def is_junk_name(name: str) -> bool:
     """True when the display name is a known placeholder or unknown-style label."""
     stripped = name.strip()
