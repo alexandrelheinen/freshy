@@ -23,8 +23,11 @@ class CategoryMapperTests(unittest.TestCase):
     def test_keeps_library_amenity(self) -> None:
         self.assertEqual(infer_category({"amenity": "library"}), "LIBRARY")
 
-    def test_hotel_still_defaults_to_public_space(self) -> None:
-        self.assertEqual(infer_category({"tourism": "hotel", "name": "Generic Stay"}), "PUBLIC_SPACE")
+    def test_maps_hotel_tourism_to_restaurant(self) -> None:
+        self.assertEqual(infer_category({"tourism": "hotel", "name": "Generic Stay"}), "RESTAURANT")
+
+    def test_maps_ibis_name_to_restaurant(self) -> None:
+        self.assertEqual(infer_category({"name": "Ibis Budget Clichy"}), "RESTAURANT")
 
 
 if __name__ == "__main__":
