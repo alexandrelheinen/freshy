@@ -44,6 +44,10 @@ def infer_category(tags: dict[str, Any]) -> str:
         "mall": "MALL",
         "shopping_centre": "MALL",
         "coworking_space": "COWORKING",
+        "supermarket": "MALL",
+        "convenience": "MALL",
+        "greengrocer": "MALL",
+        "department_store": "MALL",
     }
 
     for token in (amenity, tourism, shop, leisure):
@@ -51,14 +55,40 @@ def infer_category(tags: dict[str, Any]) -> str:
             return mapping[token]
 
     name = str(tags.get("name", "")).lower()
-    if "biblioth" in name:
+    brand = str(tags.get("brand", "")).lower()
+    combined = f"{name} {brand}".strip()
+    if "biblioth" in combined:
         return "LIBRARY"
-    if "musée" in name or "musee" in name:
+    if "musée" in combined or "musee" in combined:
         return "MUSEUM"
-    if "cinéma" in name or "cinema" in name:
+    if "cinéma" in combined or "cinema" in combined:
         return "PUBLIC_SPACE"
+    if _looks_like_supermarket(combined):
+        return "MALL"
 
     return "PUBLIC_SPACE"
+
+
+def _looks_like_supermarket(text: str) -> bool:
+    """Detect major French supermarket chains from OSM name or brand tags."""
+    brands = (
+        "carrefour",
+        "leclerc",
+        "auchan",
+        "intermarche",
+        "intermarché",
+        "monoprix",
+        "franprix",
+        "casino",
+        "lidl",
+        "aldi",
+        "cora",
+        "super u",
+        "hyper u",
+    )
+    keywords = ("supermarche", "supermarché", "hypermarche", "hypermarché", "supermarket")
+    normalized = text.casefold()
+    return any(token in normalized for token in brands + keywords)
 
 
 def slugify_name(name: str) -> str:
