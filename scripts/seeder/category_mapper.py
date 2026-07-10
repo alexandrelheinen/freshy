@@ -48,6 +48,10 @@ def infer_category(tags: dict[str, Any]) -> str:
         "convenience": "MALL",
         "greengrocer": "MALL",
         "department_store": "MALL",
+        "hotel": "RESTAURANT",
+        "motel": "RESTAURANT",
+        "hostel": "RESTAURANT",
+        "guest_house": "RESTAURANT",
     }
 
     for token in (amenity, tourism, shop, leisure):
@@ -65,8 +69,28 @@ def infer_category(tags: dict[str, Any]) -> str:
         return "PUBLIC_SPACE"
     if _looks_like_supermarket(combined):
         return "MALL"
+    if _looks_like_hotel(combined):
+        return "RESTAURANT"
 
     return "PUBLIC_SPACE"
+
+
+def _looks_like_hotel(text: str) -> bool:
+    """Detect hotels from OSM name or brand tags when tourism is missing."""
+    keywords = (
+        "hotel",
+        "hôtel",
+        "motel",
+        "auberge",
+        "hostel",
+        "ibis",
+        "novotel",
+        "mercure",
+        "campanile",
+        "kyriad",
+    )
+    normalized = text.casefold()
+    return any(token in normalized for token in keywords)
 
 
 def _looks_like_supermarket(text: str) -> bool:

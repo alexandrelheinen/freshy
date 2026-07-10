@@ -39,7 +39,7 @@ def _load_places(args: argparse.Namespace):
 def cmd_plan(args: argparse.Namespace) -> int:
     try:
         places = _load_places(args)
-        plan = build_clean_plan(places, delete_hotels=not args.keep_hotels)
+        plan = build_clean_plan(places, reclassify_hotels=not args.skip_hotels)
         summary = summarize_plan(plan)
         print(json.dumps(summary, indent=2, ensure_ascii=False))
         logger.info(
@@ -57,7 +57,7 @@ def cmd_plan(args: argparse.Namespace) -> int:
 def cmd_apply(args: argparse.Namespace) -> int:
     try:
         places = _load_places(args)
-        plan = build_clean_plan(places, delete_hotels=not args.keep_hotels)
+        plan = build_clean_plan(places, reclassify_hotels=not args.skip_hotels)
         stats = apply_clean_plan(
             plan,
             database=args.database,
@@ -82,7 +82,7 @@ def cmd_apply(args: argparse.Namespace) -> int:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="freshy-place-cleaner",
-        description="Clean junk places and fix supermarket classification in Cloudflare D1.",
+        description="Clean junk places and fix supermarket or hotel classification in Cloudflare D1.",
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable debug logging")
 
@@ -98,9 +98,9 @@ def build_parser() -> argparse.ArgumentParser:
         help="Target remote D1 (omit for local wrangler D1)",
     )
     common.add_argument(
-        "--keep-hotels",
+        "--skip-hotels",
         action="store_true",
-        help="Keep hotel rows instead of deleting them (no HOTEL category yet)",
+        help="Skip hotel reclassification to RESTAURANT",
     )
 
     sub = parser.add_subparsers(dest="command", required=True)

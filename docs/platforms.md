@@ -259,8 +259,9 @@ Expected: `"status":"ok"`, `"service":"freshy-api-worker"`, `"db":"ok"`, `"auth"
 | Apply migrations (remote) | `pnpm --filter @freshy/db migrate:remote`    |
 | Query data                | D1 console → **freshy-db** → SQL editor      |
 | Export / import           | `wrangler d1 export` / `wrangler d1 execute` |
+| Backup before maintenance | [d1-backup-and-maintenance.md](d1-backup-and-maintenance.md) |
 
-**Docs:** [database.md](database.md)
+**Docs:** [database.md](database.md), [d1-backup-and-maintenance.md](d1-backup-and-maintenance.md)
 
 ---
 

@@ -78,7 +78,7 @@ SUPERMARKET_NAME_KEYWORDS = (
     "hypermarket",
 )
 
-# Hotel brands and name cues. Freshy has no HOTEL category today; callers may delete or keep.
+# Hotel brands and name cues. Freshy has no HOTEL category; map to RESTAURANT.
 HOTEL_NAME_KEYWORDS = (
     "hotel",
     "hôtel",
@@ -105,6 +105,8 @@ HOTEL_NAME_KEYWORDS = (
     "hilton",
     "radisson",
 )
+
+HOTEL_TARGET_CATEGORY = "RESTAURANT"
 
 
 @dataclass(frozen=True)
@@ -200,7 +202,7 @@ def is_hotel_place(name: str, description: str | None = None) -> bool:
 def plan_place_cleanup(
     place: PlaceRow,
     *,
-    delete_hotels: bool = True,
+    reclassify_hotels: bool = True,
 ) -> CleanAction:
     """Return the cleanup action for a single place row."""
     if is_junk_unknown_place(place.name, place.address):
@@ -218,11 +220,16 @@ def plan_place_cleanup(
             new_category="MALL",
         )
 
-    if delete_hotels and is_hotel_place(place.name, place.description):
+    if (
+        reclassify_hotels
+        and is_hotel_place(place.name, place.description)
+        and place.category != HOTEL_TARGET_CATEGORY
+    ):
         return CleanAction(
             place=place,
-            action="delete",
-            reason="hotel with no HOTEL category in Freshy (remove until category exists)",
+            action="reclassify",
+            reason="hotel mapped to RESTAURANT (public dining areas, no HOTEL category)",
+            new_category=HOTEL_TARGET_CATEGORY,
         )
 
     return CleanAction(place=place, action="keep", reason="no cleanup rule matched")
@@ -231,10 +238,10 @@ def plan_place_cleanup(
 def build_clean_plan(
     places: list[PlaceRow],
     *,
-    delete_hotels: bool = True,
+    reclassify_hotels: bool = True,
 ) -> CleanPlan:
     actions = tuple(
-        plan_place_cleanup(place, delete_hotels=delete_hotels) for place in places
+        plan_place_cleanup(place, reclassify_hotels=reclassify_hotels) for place in places
     )
     return CleanPlan(actions=actions)
 

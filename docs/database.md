@@ -267,4 +267,12 @@ Deployed web app `/explore` shows places when `NEXT_PUBLIC_API_URL` points at th
 
 ---
 
+## Related docs
+
+- [D1 backup and maintenance](d1-backup-and-maintenance.md)
+- [Place classification](place-classification.md)
+- [Platforms | D1](platforms.md)
+
+---
+
 _Last updated: June 2026_

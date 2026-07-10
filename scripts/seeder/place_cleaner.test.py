@@ -91,15 +91,21 @@ class SupermarketClassificationTests(unittest.TestCase):
 
 
 class HotelCleanupTests(unittest.TestCase):
-    def test_deletes_hotel_by_default(self) -> None:
+    def test_reclassifies_hotel_to_restaurant_by_default(self) -> None:
         place = _place(name="Ibis Budget Clichy", category="PUBLIC_SPACE")
         action = plan_place_cleanup(place)
-        self.assertEqual(action.action, "delete")
+        self.assertEqual(action.action, "reclassify")
+        self.assertEqual(action.new_category, "RESTAURANT")
         self.assertIn("hotel", action.reason.casefold())
 
-    def test_keeps_hotel_when_delete_hotels_disabled(self) -> None:
+    def test_keeps_hotel_already_in_restaurant(self) -> None:
+        place = _place(name="Novotel Paris", category="RESTAURANT")
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "keep")
+
+    def test_skips_hotel_reclassify_when_disabled(self) -> None:
         place = _place(name="Novotel Paris", category="PUBLIC_SPACE")
-        action = plan_place_cleanup(place, delete_hotels=False)
+        action = plan_place_cleanup(place, reclassify_hotels=False)
         self.assertEqual(action.action, "keep")
 
     def test_detects_hotel_from_import_description(self) -> None:
