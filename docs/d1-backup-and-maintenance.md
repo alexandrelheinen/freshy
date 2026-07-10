@@ -160,12 +160,12 @@ python scripts/freshy_place_cleaner.py apply --database="freshy-db" --remote
 
 ## Notes
 
-| Topic | Detail |
-| ----- | ------ |
-| Retention | 7 days on Free, 30 days on Paid. Sufficient for Freshy ops. |
-| Cost | Time Travel history and restore incur no extra D1 charge. |
-| Scope | Restores the whole `freshy-db` database, not single tables. |
-| In-flight queries | Restore cancels active queries briefly. |
+| Topic              | Detail                                                                                                         |
+| ------------------ | -------------------------------------------------------------------------------------------------------------- |
+| Retention          | 7 days on Free, 30 days on Paid. Sufficient for Freshy ops.                                                    |
+| Cost               | Time Travel history and restore incur no extra D1 charge.                                                      |
+| Scope              | Restores the whole `freshy-db` database, not single tables.                                                    |
+| In-flight queries  | Restore cancels active queries briefly.                                                                        |
 | SQL export restore | Re-importing a full `.sql` file into an existing DB is harder than Time Travel. Prefer bookmarks for rollback. |
 
 ---

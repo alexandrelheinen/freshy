@@ -253,12 +253,12 @@ Expected: `"status":"ok"`, `"service":"freshy-api-worker"`, `"db":"ok"`, `"auth"
 
 ### What you do here
 
-| Task                      | How                                          |
-| ------------------------- | -------------------------------------------- |
-| Apply migrations (local)  | `pnpm --filter @freshy/db migrate:local`     |
-| Apply migrations (remote) | `pnpm --filter @freshy/db migrate:remote`    |
-| Query data                | D1 console → **freshy-db** → SQL editor      |
-| Export / import           | `wrangler d1 export` / `wrangler d1 execute` |
+| Task                      | How                                                          |
+| ------------------------- | ------------------------------------------------------------ |
+| Apply migrations (local)  | `pnpm --filter @freshy/db migrate:local`                     |
+| Apply migrations (remote) | `pnpm --filter @freshy/db migrate:remote`                    |
+| Query data                | D1 console → **freshy-db** → SQL editor                      |
+| Export / import           | `wrangler d1 export` / `wrangler d1 execute`                 |
 | Backup before maintenance | [d1-backup-and-maintenance.md](d1-backup-and-maintenance.md) |
 
 **Docs:** [database.md](database.md), [d1-backup-and-maintenance.md](d1-backup-and-maintenance.md)
@@ -334,11 +334,11 @@ Local: same variables in root `.env`.
 
 ## 8. Expo EAS | mobile WebView shell
 
-| Item          | Value                                                           |
-| ------------- | --------------------------------------------------------------- |
-| **App**       | `apps/mobile` — native shell loading `EXPO_PUBLIC_WEB_APP_URL`  |
-| **Dashboard** | https://expo.dev                                                |
-| **CI**        | `.github/workflows/release.yml` on GitHub **Release published** |
+| Item          | Value                                                                                                  |
+| ------------- | ------------------------------------------------------------------------------------------------------ |
+| **App**       | `apps/mobile` — native shell loading `EXPO_PUBLIC_WEB_APP_URL`                                         |
+| **Dashboard** | https://expo.dev                                                                                       |
+| **CI**        | `.github/workflows/release.yml` on GitHub **Release published**                                        |
 | **Outputs**   | Android `.apk` on GitHub Release (iOS `.ipa` and stores: [mobile-publishing.md](mobile-publishing.md)) |
 
 ### One-time setup
