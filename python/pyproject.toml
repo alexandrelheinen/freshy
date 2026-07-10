@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "freshy"
+version = "0.1.0"
+description = "Freshy data tooling: seed, map, and clean cooling-place data"
+authors = [{ name = "Alexandre Loeblein Heinen" }]
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = [
+    "requests>=2.31.0",
+    "tqdm>=4.66.0",
+    "pyproj>=3.6.0",
+]
+
+[project.urls]
+homepage = "https://freshy-25e.pages.dev/explore"
+repository = "https://github.com/alexandrelheinen/freshy"
+documentation = "https://alexandrelheinen.pages.dev/projects/freshy"
+
+[project.scripts]
+freshy-seeder = "freshy.seeder.cli:main"
+freshy-cleaner = "freshy.cleaner.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4",
+    "ruff>=0.14",
+]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+src = ["src"]

@@ -9,7 +9,7 @@ from typing import Any
 import requests
 from tqdm import tqdm
 
-from seeder.config import (
+from freshy.config import (
     FRANCE_REGIONS,
     OSM_QUERY_STRATEGIES,
     OVERPASS_INTER_QUERY_SLEEP_SECONDS,
@@ -19,8 +19,8 @@ from seeder.config import (
     OVERPASS_TIMEOUT_SECONDS,
     OVERPASS_URLS,
 )
-from seeder.models import StagedPlace
-from seeder.place_builder import build_from_osm
+from freshy.models import StagedPlace
+from freshy.seeder.builder import build_from_osm
 
 logger = logging.getLogger(__name__)
 

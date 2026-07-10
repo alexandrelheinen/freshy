@@ -1,12 +1,4 @@
-#!/usr/bin/env python3
-"""
-freshy-place-cleaner: remove junk imports and fix misclassified places in D1.
-
-Usage:
-  python scripts/freshy_place_cleaner.py plan --database="freshy-db"
-  python scripts/freshy_place_cleaner.py apply --database="freshy-db" --dry-run
-  python scripts/freshy_place_cleaner.py apply --database="freshy-db" --remote
-"""
+"""freshy-cleaner CLI: remove junk imports and fix misclassified places in D1."""
 
 from __future__ import annotations
 
@@ -14,22 +6,13 @@ import argparse
 import json
 import logging
 import sys
-from pathlib import Path
 
-_SCRIPTS_DIR = Path(__file__).resolve().parent
-if str(_SCRIPTS_DIR) not in sys.path:
-    sys.path.insert(0, str(_SCRIPTS_DIR))
+from freshy.cleaner.d1 import apply_clean_plan, fetch_all_places
+from freshy.cleaner.rules import build_clean_plan, summarize_plan
+from freshy.config import DEFAULT_D1_DATABASE
+from freshy.logging import setup_logging
 
-from seeder.config import DEFAULT_D1_DATABASE
-from seeder.log_setup import setup_logging
-from seeder.place_cleaner import (
-    apply_clean_plan,
-    build_clean_plan,
-    fetch_all_places,
-    summarize_plan,
-)
-
-logger = logging.getLogger("freshy_place_cleaner.cli")
+logger = logging.getLogger("freshy.cleaner.cli")
 
 
 def _load_places(args: argparse.Namespace):
@@ -81,7 +64,7 @@ def cmd_apply(args: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="freshy-place-cleaner",
+        prog="freshy-cleaner",
         description="Clean junk places and fix supermarket or hotel classification in Cloudflare D1.",
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable debug logging")
@@ -128,7 +111,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     setup_logging(verbose=args.verbose)
-    logger.info("freshy-place-cleaner starting (command=%s)", args.command)
+    logger.info("freshy-cleaner starting (command=%s)", args.command)
     return args.func(args)
 
 

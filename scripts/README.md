@@ -14,66 +14,9 @@
 | `mobile-build.sh`                   | EAS build for Android/iOS/all (`release` profile)            |
 | `mobile-download.sh`                | Download latest APK/IPA from EAS to `dist/mobile/`           |
 
-| Script (Python)           | Usage                                                        |
-| ------------------------- | ------------------------------------------------------------ |
-| `freshy_seeder.py`        | Scrape French cooling places (OSM, data.gouv) and sync to D1 |
-| `freshy_place_cleaner.py` | Remove junk imports and fix supermarket classification in D1 |
+## Python tooling
 
-## freshy-seeder (Python)
-
-Scrapes France-specific cooling-place data into local SQLite, then syncs to Cloudflare D1 via wrangler.
-
-```bash
-# One-time setup
-python3 -m venv scripts/.venv
-source scripts/.venv/bin/activate
-pip install -r scripts/requirements-seeder.txt
-
-# Step 1: scrape into freshy_local.db (repo root, gitignored)
-python scripts/freshy_seeder.py scrape --region="Île-de-France"
-
-# Step 2: sync to local D1 (wrangler from packages/api)
-python scripts/freshy_seeder.py sync --database="freshy-db"
-
-# Production remote sync (requires wrangler login or CLOUDFLARE_API_TOKEN)
-python scripts/freshy_seeder.py sync --database="freshy-db" --remote
-```
-
-Options: `--providers {all,osm,datagouv}`, `--dry-run`, `-v`. Library code lives in `scripts/seeder/`.
-
-`freshy_local.db` uses the same `Place` table shape as D1. Scraped rows get `status=IMPORTED` and `createdById` set to the provider id (`osm`, `datagouv`). Create matching dummy `User` rows on remote D1 before `--remote` sync.
-
-Remote sync uses `packages/api/node_modules/.bin/wrangler` directly (not `pnpm exec`). If remote sync fails, run `wrangler login` from `packages/api` or export `CLOUDFLARE_API_TOKEN`.
-
-If you have an older `places` staging table, re-run `scrape` after pulling this change; `initialize` drops the legacy table automatically.
-
-## freshy-place-cleaner (Python)
-
-Removes useless imported rows and fixes misclassified supermarkets and hotels in Cloudflare D1. Uses the same wrangler setup as `freshy_seeder.py`.
-
-**Before applying on production, read [docs/d1-backup-and-maintenance.md](../docs/d1-backup-and-maintenance.md).** Save a Time Travel bookmark so you can roll back within 7 days.
-
-**Rules:**
-
-1. **Delete** places whose English name is unknown-style (`Unknown`, `Unknown Facility`, `Unnamed`, and similar) and that have no address.
-2. **Reclassify** major French supermarket and grocery chains from `PUBLIC_SPACE` (or any non-`MALL` category) to `MALL`.
-3. **Reclassify** hotels to `RESTAURANT`. Freshy has no `HOTEL` category; hotel lobbies and dining areas fit Restaurants better than Public Spaces. Pass `--skip-hotels` to leave hotel rows unchanged.
-
-```bash
-# Preview actions against local D1
-python scripts/freshy_place_cleaner.py plan --database="freshy-db"
-
-# Dry run apply (no writes)
-python scripts/freshy_place_cleaner.py apply --database="freshy-db" --dry-run
-
-# Apply to local D1
-python scripts/freshy_place_cleaner.py apply --database="freshy-db"
-
-# Apply to production remote D1 (save a Time Travel bookmark first)
-python scripts/freshy_place_cleaner.py apply --database="freshy-db" --remote
-```
-
-Options: `--skip-hotels`, `--json`, `-v`. Logic lives in `scripts/seeder/place_cleaner.py`; import-time supermarket and hotel fixes also live in `scripts/seeder/category_mapper.py`.
+Python CLIs (`freshy-seeder`, `freshy-cleaner`) live in the [`python/`](../python/) package. See [python/README.md](../python/README.md) for setup and usage.
 
 ## CD on `main` (GitHub Actions)
 

@@ -1,8 +1,17 @@
-"""Configuration constants for freshy-seeder."""
+"""Configuration constants for Freshy Python tooling."""
 
 from __future__ import annotations
 
 from pathlib import Path
+
+
+def find_repo_root(start: Path | None = None) -> Path:
+    """Locate the Freshy monorepo root from any installed package path."""
+    for parent in (start or Path(__file__)).resolve().parents:
+        if (parent / "pnpm-workspace.yaml").is_file():
+            return parent
+    raise RuntimeError("Freshy monorepo root not found (expected pnpm-workspace.yaml)")
+
 
 # Overpass API
 OVERPASS_URLS = (
@@ -40,9 +49,7 @@ DEFAULT_D1_DATABASE = "freshy-db"
 SYNC_BATCH_SIZE = 50
 DUPLICATE_RADIUS_KM = 0.05
 
-# Monorepo layout: scripts/seeder/config.py -> repo root is parents[2]
-REPO_ROOT = Path(__file__).resolve().parents[2]
-SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+REPO_ROOT = find_repo_root()
 WRANGLER_CWD = REPO_ROOT / "packages" / "api"
 WRANGLER_BIN = WRANGLER_CWD / "node_modules" / ".bin" / "wrangler"
 

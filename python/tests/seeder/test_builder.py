@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import unittest
 
-from seeder.place_builder import (
+from freshy.seeder.builder import (
     DESCRIPTION_MAX_LENGTH,
     build_datagouv_import_description,
     build_osm_import_description,

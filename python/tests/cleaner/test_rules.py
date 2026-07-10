@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import unittest
 
-from seeder.place_cleaner import (
+from freshy.cleaner.rules import (
     CleanPlan,
     PlaceRow,
     build_clean_plan,

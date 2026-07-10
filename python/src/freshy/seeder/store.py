@@ -8,8 +8,8 @@ from pathlib import Path
 
 from tqdm import tqdm
 
-from seeder.config import LOCAL_PLACES_SCHEMA
-from seeder.models import PLACE_COLUMNS, StagedPlace
+from freshy.config import LOCAL_PLACES_SCHEMA
+from freshy.models import PLACE_COLUMNS, StagedPlace
 
 logger = logging.getLogger(__name__)
 

@@ -12,10 +12,10 @@ from urllib.parse import urlparse
 import requests
 from tqdm import tqdm
 
-from seeder.config import DATAGOUV_API_BASE, DATAGOUV_SEARCH_QUERIES
-from seeder.geo import extract_lat_lon_from_record
-from seeder.models import StagedPlace
-from seeder.place_builder import build_from_datagouv
+from freshy.config import DATAGOUV_API_BASE, DATAGOUV_SEARCH_QUERIES
+from freshy.geo import extract_lat_lon_from_record
+from freshy.models import StagedPlace
+from freshy.seeder.builder import build_from_datagouv
 
 logger = logging.getLogger(__name__)
 

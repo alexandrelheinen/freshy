@@ -1,11 +1,4 @@
-#!/usr/bin/env python3
-"""
-freshy-seeder: scrape French cooling-place data and sync to Cloudflare D1.
-
-Usage:
-  python scripts/freshy_seeder.py scrape --region="Île-de-France"
-  python scripts/freshy_seeder.py sync --database="freshy-db" [--remote]
-"""
+"""freshy-seeder CLI: scrape French cooling-place data and sync to Cloudflare D1."""
 
 from __future__ import annotations
 
@@ -17,17 +10,13 @@ from pathlib import Path
 
 import requests
 
-_SCRIPTS_DIR = Path(__file__).resolve().parent
-if str(_SCRIPTS_DIR) not in sys.path:
-    sys.path.insert(0, str(_SCRIPTS_DIR))
+from freshy.config import DEFAULT_D1_DATABASE, DEFAULT_DB_PATH, FRANCE_REGIONS
+from freshy.logging import setup_logging
+from freshy.seeder.providers import fetch_datagouv_places, fetch_osm_places
+from freshy.seeder.store import LocalStore
+from freshy.seeder.sync import sync_to_d1
 
-from seeder.config import DEFAULT_D1_DATABASE, DEFAULT_DB_PATH, FRANCE_REGIONS
-from seeder.log_setup import setup_logging
-from seeder.providers import fetch_datagouv_places, fetch_osm_places
-from seeder.sqlite_store import LocalStore
-from seeder.sync import sync_to_d1
-
-logger = logging.getLogger("freshy_seeder.cli")
+logger = logging.getLogger("freshy.seeder.cli")
 
 
 def _resolve_region(raw: str) -> str:

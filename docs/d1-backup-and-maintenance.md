@@ -8,8 +8,8 @@ Use this guide before any risky database work: cleaning scripts, bulk updates, m
 
 Run the backup steps below before:
 
-- `freshy_place_cleaner.py apply`
-- `freshy_seeder.py sync --remote`
+- `freshy-cleaner apply`
+- `freshy-seeder sync --remote`
 - `pnpm --filter @freshy/db migrate:remote`
 - Manual SQL in the D1 console or via `wrangler d1 execute`
 
@@ -75,13 +75,13 @@ For local wrangler D1, drop `--remote` and add `--local`.
 
 ## Step 3 | Preview changes
 
-Example for the place cleaner:
+Example for the place cleaner (install the package first: see [python/README.md](../python/README.md)):
 
 ```bash
 cd ../..
 
-python scripts/freshy_place_cleaner.py plan --database="freshy-db" --remote
-python scripts/freshy_place_cleaner.py apply --database="freshy-db" --remote --dry-run
+freshy-cleaner plan --database="freshy-db" --remote
+freshy-cleaner apply --database="freshy-db" --remote --dry-run
 ```
 
 Review the JSON output. Confirm deletes and reclassifications look correct.
@@ -91,7 +91,7 @@ Review the JSON output. Confirm deletes and reclassifications look correct.
 ## Step 4 | Apply changes
 
 ```bash
-python scripts/freshy_place_cleaner.py apply --database="freshy-db" --remote
+freshy-cleaner apply --database="freshy-db" --remote
 ```
 
 Spot-check a few rows in [Freshy Studio](studio.md) or with:
@@ -145,11 +145,11 @@ npx wrangler d1 export freshy-db --remote \
 cd ../..
 
 # 3. Preview
-python scripts/freshy_place_cleaner.py plan --database="freshy-db" --remote
-python scripts/freshy_place_cleaner.py apply --database="freshy-db" --remote --dry-run
+freshy-cleaner plan --database="freshy-db" --remote
+freshy-cleaner apply --database="freshy-db" --remote --dry-run
 
 # 4. Apply
-python scripts/freshy_place_cleaner.py apply --database="freshy-db" --remote
+freshy-cleaner apply --database="freshy-db" --remote
 
 # 5. Roll back only if needed
 # cd packages/api

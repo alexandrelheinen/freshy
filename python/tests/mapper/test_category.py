@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import unittest
 
-from seeder.category_mapper import infer_category
+from freshy.mapper.category import infer_category
 
 
 class CategoryMapperTests(unittest.TestCase):

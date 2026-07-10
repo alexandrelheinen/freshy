@@ -5,9 +5,9 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any
 
-from seeder.category_mapper import build_address, infer_category, slugify_name
-from seeder.config import FRANCE_REGIONS
-from seeder.models import StagedPlace
+from freshy.config import FRANCE_REGIONS
+from freshy.mapper.category import build_address, infer_category, slugify_name
+from freshy.models import StagedPlace
 
 IMPORT_STATUS = "IMPORTED"
 DEFAULT_FRESHNESS = "MODEST_AC"

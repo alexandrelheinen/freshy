@@ -1,4 +1,4 @@
-"""Central logging configuration for freshy-seeder."""
+"""Central logging configuration for Freshy Python CLIs."""
 
 from __future__ import annotations
 

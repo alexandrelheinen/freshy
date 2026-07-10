@@ -63,3 +63,4 @@ gcloud-key.json
 # Misc
 *.pem
 .vercel
+*.pyc
