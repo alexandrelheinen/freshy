@@ -14,9 +14,10 @@
 | `mobile-build.sh`                   | EAS build for Android/iOS/all (`release` profile)            |
 | `mobile-download.sh`                | Download latest APK/IPA from EAS to `dist/mobile/`           |
 
-| Script (Python)    | Usage                                                        |
-| ------------------ | ------------------------------------------------------------ |
-| `freshy_seeder.py` | Scrape French cooling places (OSM, data.gouv) and sync to D1 |
+| Script (Python)         | Usage                                                        |
+| ----------------------- | ------------------------------------------------------------ |
+| `freshy_seeder.py`      | Scrape French cooling places (OSM, data.gouv) and sync to D1 |
+| `freshy_place_cleaner.py` | Remove junk imports and fix supermarket classification in D1 |
 
 ## freshy-seeder (Python)
 
@@ -45,6 +46,32 @@ Options: `--providers {all,osm,datagouv}`, `--dry-run`, `-v`. Library code lives
 Remote sync uses `packages/api/node_modules/.bin/wrangler` directly (not `pnpm exec`). If remote sync fails, run `wrangler login` from `packages/api` or export `CLOUDFLARE_API_TOKEN`.
 
 If you have an older `places` staging table, re-run `scrape` after pulling this change; `initialize` drops the legacy table automatically.
+
+## freshy-place-cleaner (Python)
+
+Removes useless imported rows and fixes misclassified supermarkets in Cloudflare D1. Uses the same wrangler setup as `freshy_seeder.py`.
+
+**Rules:**
+
+1. **Delete** places whose English name is unknown-style (`Unknown`, `Unknown Facility`, `Unnamed`, and similar) and that have no address.
+2. **Reclassify** major French supermarket and grocery chains from `PUBLIC_SPACE` (or any non-`MALL` category) to `MALL`.
+3. **Delete hotels** by default. Freshy has no `HOTEL` category yet; hotel rows imported via `air_conditioning=yes` would otherwise stay mislabeled. Pass `--keep-hotels` to leave them untouched.
+
+```bash
+# Preview actions against local D1
+python scripts/freshy_place_cleaner.py plan --database="freshy-db"
+
+# Dry run apply (no writes)
+python scripts/freshy_place_cleaner.py apply --database="freshy-db" --dry-run
+
+# Apply to local D1
+python scripts/freshy_place_cleaner.py apply --database="freshy-db"
+
+# Apply to production remote D1
+python scripts/freshy_place_cleaner.py apply --database="freshy-db" --remote
+```
+
+Options: `--keep-hotels`, `--json`, `-v`. Logic lives in `scripts/seeder/place_cleaner.py`; import-time supermarket fixes also live in `scripts/seeder/category_mapper.py`.
 
 ## CD on `main` (GitHub Actions)
 
