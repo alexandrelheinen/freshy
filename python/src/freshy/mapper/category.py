@@ -8,6 +8,7 @@ from typing import Any
 
 from freshy.mapper.cinema import is_cinema_signal
 from freshy.mapper.restaurant_chain import is_restaurant_chain_signal
+from freshy.mapper.retail_store import RETAIL_SHOP_TAGS, is_retail_store_signal
 from freshy.mapper.supermarket import is_supermarket_signal, normalize_match_text
 
 PLACE_CATEGORIES = (
@@ -63,6 +64,9 @@ def infer_category(tags: dict[str, Any]) -> str:
         if token in mapping:
             return mapping[token]
 
+    if shop in RETAIL_SHOP_TAGS:
+        return "MALL"
+
     name = str(tags.get("name", "")).lower()
     brand = str(tags.get("brand", "")).lower()
     combined = f"{name} {brand}".strip()
@@ -74,6 +78,8 @@ def infer_category(tags: dict[str, Any]) -> str:
         return "MUSEUM"
     if is_restaurant_chain_signal(combined):
         return "RESTAURANT"
+    if is_retail_store_signal(combined):
+        return "MALL"
     if _looks_like_supermarket(combined):
         return "MALL"
     if _looks_like_hotel(combined):

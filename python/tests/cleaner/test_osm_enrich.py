@@ -5,8 +5,10 @@ from __future__ import annotations
 import unittest
 
 from freshy.cleaner.osm_enrich import (
+    element_to_category_match,
     element_to_poi_match,
     is_generic_osm_name,
+    select_best_category_match,
     select_best_poi_match,
 )
 
@@ -50,6 +52,22 @@ class OsmEnrichTests(unittest.TestCase):
         self.assertIsNone(
             element_to_poi_match(element, origin_lat=48.9042, origin_lon=2.3064)
         )
+
+    def test_selects_best_category_from_shop_tags(self) -> None:
+        elements = [
+            {
+                "type": "node",
+                "id": 10,
+                "lat": 48.90421,
+                "lon": 2.30641,
+                "tags": {"shop": "sports", "brand": "Decathlon"},
+            }
+        ]
+        match = select_best_category_match(elements, origin_lat=48.9042, origin_lon=2.3064)
+        self.assertIsNotNone(match)
+        assert match is not None
+        self.assertEqual(match.category, "MALL")
+        self.assertEqual(match.osm_id, 10)
 
 
 if __name__ == "__main__":

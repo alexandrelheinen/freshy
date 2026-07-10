@@ -38,6 +38,12 @@ class CategoryMapperTests(unittest.TestCase):
     def test_maps_pathe_cinema_name_to_museum(self) -> None:
         self.assertEqual(infer_category({"name": "Pathé République"}), "MUSEUM")
 
+    def test_maps_decathlon_name_to_mall(self) -> None:
+        self.assertEqual(infer_category({"name": "Decathlon Clichy"}), "MALL")
+
+    def test_maps_sports_shop_tag_to_mall(self) -> None:
+        self.assertEqual(infer_category({"shop": "sports"}), "MALL")
+
     def test_does_not_map_mediathèque_to_mall(self) -> None:
         self.assertEqual(infer_category({"name": "Médiathèque"}), "PUBLIC_SPACE")
 

@@ -10,9 +10,16 @@ from typing import Any, Literal
 from freshy.cleaner.duplicates import find_nearby_duplicate
 from freshy.cleaner.junk import is_auto_generated_import_placeholder, is_blank_address, place_delete_reason
 from freshy.cleaner.models import PlaceRow
-from freshy.cleaner.osm_enrich import OsmPoiMatch, lookup_nearby_poi
+from freshy.cleaner.osm_enrich import (
+    OsmCategoryMatch,
+    OsmPoiMatch,
+    fetch_nearby_osm_elements,
+    lookup_nearby_category,
+    lookup_nearby_poi,
+)
 from freshy.mapper.cinema import is_cinema_signal
 from freshy.mapper.restaurant_chain import is_restaurant_chain_signal
+from freshy.mapper.retail_store import is_retail_store_signal
 from freshy.mapper.category import slugify_name
 from freshy.mapper.supermarket import is_supermarket_signal, normalize_match_text
 from freshy.seeder.builder import unique_slug
@@ -58,6 +65,7 @@ _HOTEL_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
 )
 
 OsmLookup = Callable[[float, float], OsmPoiMatch | None]
+OsmCategoryLookup = Callable[[float, float], OsmCategoryMatch | None]
 
 
 @dataclass(frozen=True)
@@ -102,6 +110,10 @@ def is_cinema_place(name: str, description: str | None = None) -> bool:
 
 def is_restaurant_chain_place(name: str, description: str | None = None) -> bool:
     return is_restaurant_chain_signal(name, description)
+
+
+def is_retail_store_place(name: str, description: str | None = None) -> bool:
+    return is_retail_store_signal(name, description)
 
 
 def is_hotel_place(name: str, description: str | None = None) -> bool:
@@ -178,9 +190,11 @@ def plan_place_cleanup(
     *,
     reclassify_hotels: bool = True,
     enrich_osm: bool = False,
+    enrich_osm_categories: bool = False,
     all_places: list[PlaceRow] | None = None,
     reserved_slugs: set[str] | None = None,
     osm_lookup: OsmLookup | None = None,
+    osm_category_lookup: OsmCategoryLookup | None = None,
 ) -> CleanAction:
     """Return the cleanup action for a single place row."""
     delete_reason = place_delete_reason(
@@ -240,6 +254,14 @@ def plan_place_cleanup(
             new_category=RESTAURANT_CHAIN_TARGET_CATEGORY,
         )
 
+    if is_retail_store_place(place.name, place.description) and place.category != "MALL":
+        return CleanAction(
+            place=place,
+            action="reclassify",
+            reason="known retail or specialty store chain mapped to MALL",
+            new_category="MALL",
+        )
+
     if (
         reclassify_hotels
         and is_hotel_place(place.name, place.description)
@@ -252,6 +274,19 @@ def plan_place_cleanup(
             new_category=HOTEL_TARGET_CATEGORY,
         )
 
+    if enrich_osm_categories and osm_category_lookup is not None:
+        category_match = osm_category_lookup(place.latitude, place.longitude)
+        if category_match is not None and category_match.category != place.category:
+            return CleanAction(
+                place=place,
+                action="reclassify",
+                reason=(
+                    f"OSM tags at coordinates map to {category_match.category} "
+                    f"({category_match.osm_type}{category_match.osm_id})"
+                ),
+                new_category=category_match.category,
+            )
+
     return CleanAction(place=place, action="keep", reason="no cleanup rule matched")
 
 
@@ -260,17 +295,35 @@ def build_clean_plan(
     *,
     reclassify_hotels: bool = True,
     enrich_osm: bool = False,
+    enrich_osm_categories: bool = False,
     osm_lookup: OsmLookup | None = None,
+    osm_category_lookup: OsmCategoryLookup | None = None,
 ) -> CleanPlan:
     slug_registry = {place.slug for place in places}
-    lookup_cache: dict[str, OsmPoiMatch | None] = {}
-    lookup_fn = osm_lookup or lookup_nearby_poi
+    poi_cache: dict[str, OsmPoiMatch | None] = {}
+    category_cache: dict[str, OsmCategoryMatch | None] = {}
+    element_cache: dict[str, list[dict[str, Any]]] = {}
 
-    def cached_lookup(lat: float, lon: float) -> OsmPoiMatch | None:
+    poi_fn = osm_lookup or lookup_nearby_poi
+    category_fn = osm_category_lookup or lookup_nearby_category
+
+    def _elements_for(lat: float, lon: float) -> list:
         cache_key = f"{lat:.5f},{lon:.5f}"
-        if cache_key not in lookup_cache:
-            lookup_cache[cache_key] = lookup_fn(lat, lon)
-        return lookup_cache[cache_key]
+        if cache_key not in element_cache:
+            element_cache[cache_key] = fetch_nearby_osm_elements(lat, lon)
+        return element_cache[cache_key]
+
+    def cached_poi_lookup(lat: float, lon: float) -> OsmPoiMatch | None:
+        cache_key = f"{lat:.5f},{lon:.5f}"
+        if cache_key not in poi_cache:
+            poi_cache[cache_key] = poi_fn(lat, lon, elements=_elements_for(lat, lon))
+        return poi_cache[cache_key]
+
+    def cached_category_lookup(lat: float, lon: float) -> OsmCategoryMatch | None:
+        cache_key = f"{lat:.5f},{lon:.5f}"
+        if cache_key not in category_cache:
+            category_cache[cache_key] = category_fn(lat, lon, elements=_elements_for(lat, lon))
+        return category_cache[cache_key]
 
     actions: list[CleanAction] = []
     for place in places:
@@ -278,9 +331,11 @@ def build_clean_plan(
             place,
             reclassify_hotels=reclassify_hotels,
             enrich_osm=enrich_osm,
+            enrich_osm_categories=enrich_osm_categories,
             all_places=places if enrich_osm else None,
             reserved_slugs=slug_registry if enrich_osm else None,
-            osm_lookup=cached_lookup if enrich_osm else None,
+            osm_lookup=cached_poi_lookup if enrich_osm else None,
+            osm_category_lookup=cached_category_lookup if enrich_osm_categories else None,
         )
         if action.action == "rename" and action.new_slug:
             slug_registry.add(action.new_slug)

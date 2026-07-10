@@ -124,11 +124,13 @@ Places with a valid address are **kept** even when the name, coordinates, or pro
 
 **Rename (opt-in with `--enrich-osm`):** for datagouv `Cooling space (...)` placeholders without an address, the cleaner queries Overpass for a nearby named POI before deleting. If a nearby named place already exists in D1, the placeholder is deleted as a duplicate instead. When OSM returns a match, the row is renamed (and optionally gets address or category updates from OSM tags).
 
-**Reclassify to `MALL`:** whole-word match on major French grocery chains (Carrefour, E.Leclerc, Auchan, Intermarché, Monoprix, Franprix, Match, …) or explicit `shop: supermarket` / `shop: convenience` in the import description. Substrings like `ed` in *médiathèque* or `match` in *Matchplay* must **not** match.
+**Reclassify to `MALL`:** whole-word match on major French grocery chains (Carrefour, E.Leclerc, …) or retail chains (Decathlon, Truffaut, Apple Store, Fnac, Darty, IKEA, Leroy Merlin, Cultura, …), plus `shop=*` retail tags in import metadata.
 
 **Reclassify to `MUSEUM` (Arts and Culture):** cinemas (Pathé, Gaumont, UGC, MK2, CGR, …), `amenity=cinema` in import metadata, or names containing *cinéma* / *cinema*.
 
 **Reclassify to `RESTAURANT`:** known fast-food and restaurant chains (McDonald's, Burger King, KFC, Quick, Subway, …), `amenity=fast_food` in import metadata, and hotels (Freshy has no `HOTEL` category). Pass `--skip-hotels` to leave hotel rows unchanged.
+
+**Reclassify via OSM (opt-in with `--enrich-osm-categories`):** for each remaining row, query Overpass at the stored coordinates and reclassify when nearby OSM tags infer a different category. Shares the Overpass cache with `--enrich-osm`. Expect several minutes on ~2k places.
 
 ```bash
 # Preview actions against local D1
@@ -136,6 +138,9 @@ freshy-cleaner plan --database="freshy-db"
 
 # Preview with OSM rename-before-delete for datagouv placeholders
 freshy-cleaner plan --database="freshy-db" --enrich-osm
+
+# Preview with OSM tag-based category fixes (slow)
+freshy-cleaner plan --database="freshy-db" --enrich-osm-categories
 
 # Dry run apply (no writes)
 freshy-cleaner apply --database="freshy-db" --dry-run
@@ -147,7 +152,7 @@ freshy-cleaner apply --database="freshy-db"
 freshy-cleaner apply --database="freshy-db" --remote
 ```
 
-Options: `--skip-hotels`, `--enrich-osm`, `--json`, `-v`. Cleanup rules live in `freshy.cleaner`; import-time category mapping lives in `freshy.mapper`.
+Options: `--skip-hotels`, `--enrich-osm`, `--enrich-osm-categories`, `--json`, `-v`. Cleanup rules live in `freshy.cleaner`; import-time category mapping lives in `freshy.mapper`.
 
 ## Tests
 

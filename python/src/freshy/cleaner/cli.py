@@ -26,6 +26,7 @@ def cmd_plan(args: argparse.Namespace) -> int:
             places,
             reclassify_hotels=not args.skip_hotels,
             enrich_osm=args.enrich_osm,
+            enrich_osm_categories=args.enrich_osm_categories,
         )
         summary = summarize_plan(plan)
         print(json.dumps(summary, indent=2, ensure_ascii=False))
@@ -49,6 +50,7 @@ def cmd_apply(args: argparse.Namespace) -> int:
             places,
             reclassify_hotels=not args.skip_hotels,
             enrich_osm=args.enrich_osm,
+            enrich_osm_categories=args.enrich_osm_categories,
         )
         stats = apply_clean_plan(
             plan,
@@ -101,6 +103,15 @@ def build_parser() -> argparse.ArgumentParser:
         help=(
             "Before deleting datagouv Cooling space placeholders without an address, "
             "query OSM for a nearby named POI and rename when found"
+        ),
+    )
+
+    common.add_argument(
+        "--enrich-osm-categories",
+        action="store_true",
+        help=(
+            "Query OSM at each place coordinate and reclassify when nearby tags "
+            "infer a different Freshy category (slow; uses Overpass API)"
         ),
     )
 

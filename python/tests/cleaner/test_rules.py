@@ -5,7 +5,7 @@ from __future__ import annotations
 import unittest
 
 from freshy.cleaner.models import PlaceRow
-from freshy.cleaner.osm_enrich import OsmPoiMatch
+from freshy.cleaner.osm_enrich import OsmCategoryMatch, OsmPoiMatch
 from freshy.cleaner.rules import (
     CleanPlan,
     build_clean_plan,
@@ -308,6 +308,61 @@ class RestaurantChainCleanupTests(unittest.TestCase):
         action = plan_place_cleanup(place)
         self.assertEqual(action.action, "reclassify")
         self.assertEqual(action.new_category, "RESTAURANT")
+
+
+class RetailStoreCleanupTests(unittest.TestCase):
+    def test_reclassifies_decathlon_to_mall(self) -> None:
+        place = _place(name="Decathlon Clichy", category="PUBLIC_SPACE")
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "reclassify")
+        self.assertEqual(action.new_category, "MALL")
+        self.assertIn("retail", action.reason.casefold())
+
+    def test_reclassifies_truffaut_to_mall(self) -> None:
+        place = _place(name="Truffaut", category="PUBLIC_SPACE")
+        action = plan_place_cleanup(place)
+        self.assertEqual(action.action, "reclassify")
+        self.assertEqual(action.new_category, "MALL")
+
+
+class OsmCategoryEnrichTests(unittest.TestCase):
+    def test_reclassifies_from_osm_tags_at_coordinates(self) -> None:
+        place = _place(name="Cooling spot", category="PUBLIC_SPACE")
+
+        def fake_category_lookup(lat: float, lon: float) -> OsmCategoryMatch:
+            return OsmCategoryMatch(
+                category="LIBRARY",
+                osm_type="node",
+                osm_id=99,
+                distance_km=0.01,
+            )
+
+        action = plan_place_cleanup(
+            place,
+            enrich_osm_categories=True,
+            osm_category_lookup=fake_category_lookup,
+        )
+        self.assertEqual(action.action, "reclassify")
+        self.assertEqual(action.new_category, "LIBRARY")
+        self.assertIn("osm tags", action.reason.casefold())
+
+    def test_skips_osm_category_when_already_correct(self) -> None:
+        place = _place(name="Decathlon", category="MALL")
+
+        def fake_category_lookup(lat: float, lon: float) -> OsmCategoryMatch:
+            return OsmCategoryMatch(
+                category="MALL",
+                osm_type="node",
+                osm_id=1,
+                distance_km=0.0,
+            )
+
+        action = plan_place_cleanup(
+            place,
+            enrich_osm_categories=True,
+            osm_category_lookup=fake_category_lookup,
+        )
+        self.assertEqual(action.action, "keep")
 
 
 class HotelCleanupTests(unittest.TestCase):
