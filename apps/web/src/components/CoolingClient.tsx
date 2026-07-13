@@ -93,7 +93,13 @@ function CategoryCard({
           >
             <MaterialIcon name={icon} className="text-on-scrim" size={isDesktop ? 22 : 18} />
           </div>
-          <span className="block font-title-md text-title-md leading-tight">{label}</span>
+          <span
+            className={`block leading-tight ${
+              isDesktop ? 'font-title-md text-title-md' : 'font-body-lg text-body-lg font-semibold'
+            }`}
+          >
+            {label}
+          </span>
         </div>
         <div
           className={`absolute text-on-scrim ${

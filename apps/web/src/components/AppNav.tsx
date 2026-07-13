@@ -476,7 +476,7 @@ export function AppMobileHeader({
               className="min-w-0"
             />
           ) : title ? (
-            <h1 className="truncate font-headline-lg-mobile text-headline-lg-mobile tracking-tight text-primary">
+            <h1 className="truncate font-title-md text-title-md tracking-tight text-primary">
               {title}
             </h1>
           ) : null}
