@@ -20,6 +20,7 @@ import {
   type ResolvedThemeId,
   type ThemePreference,
 } from './theme-storage';
+import { CORNER_STYLE } from '@freshy/config/corner-style';
 
 type ThemeContextValue = {
   preference: ThemePreference;
@@ -31,6 +32,7 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 function applyResolvedTheme(themeId: ResolvedThemeId): void {
   document.documentElement.dataset.theme = themeId;
+  document.documentElement.dataset.corners = CORNER_STYLE;
   const themeColor = getThemeTokens(themeId).colors.primary;
   let meta = document.querySelector('meta[name="theme-color"]');
   if (!meta) {

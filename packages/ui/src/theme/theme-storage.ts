@@ -1,4 +1,5 @@
 import type { ThemeId } from '@freshy/theme/tokens';
+import { CORNER_STYLE } from '@freshy/config/corner-style';
 
 export type ThemePreference = ThemeId | 'system';
 export type ResolvedThemeId = ThemeId;
@@ -70,10 +71,10 @@ export function themePreferenceLabel(preference: ThemePreference): string {
   return 'System';
 }
 
-/** Inline script to set data-theme before first paint and avoid a flash. */
-export const THEME_BOOTSTRAP_SCRIPT = `(function(){try{var n=window.__FRESHY_NATIVE_COLOR_SCHEME__;var dark=n==='dark'||(n!=='light'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var p=localStorage.getItem('${THEME_STORAGE_KEY}');var theme=p==='dark'||(p!=='default'&&(!p||p==='system')&&dark)?'dark':'default';document.documentElement.dataset.theme=theme;}catch(e){}})();`;
+/** Inline script to set data-theme and data-corners before first paint and avoid a flash. */
+export const THEME_BOOTSTRAP_SCRIPT = `(function(){try{document.documentElement.dataset.corners='${CORNER_STYLE}';var n=window.__FRESHY_NATIVE_COLOR_SCHEME__;var dark=n==='dark'||(n!=='light'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var p=localStorage.getItem('${THEME_STORAGE_KEY}');var theme=p==='dark'||(p!=='default'&&(!p||p==='system')&&dark)?'dark':'default';document.documentElement.dataset.theme=theme;}catch(e){}})();`;
 
 export function buildNativeThemeBridgeScript(scheme: NativeColorScheme): string {
   const prefersDark = scheme === 'dark';
-  return `(function(){try{window.__FRESHY_NATIVE_COLOR_SCHEME__='${scheme}';window.dispatchEvent(new CustomEvent('${NATIVE_COLOR_SCHEME_EVENT}',{detail:'${scheme}'}));var dark=${prefersDark};var p=localStorage.getItem('${THEME_STORAGE_KEY}');var theme=p==='dark'||(p!=='default'&&(!p||p==='system')&&dark)?'dark':'default';document.documentElement.dataset.theme=theme;}catch(e){}})();true;`;
+  return `(function(){try{document.documentElement.dataset.corners='${CORNER_STYLE}';window.__FRESHY_NATIVE_COLOR_SCHEME__='${scheme}';window.dispatchEvent(new CustomEvent('${NATIVE_COLOR_SCHEME_EVENT}',{detail:'${scheme}'}));var dark=${prefersDark};var p=localStorage.getItem('${THEME_STORAGE_KEY}');var theme=p==='dark'||(p!=='default'&&(!p||p==='system')&&dark)?'dark':'default';document.documentElement.dataset.theme=theme;}catch(e){}})();true;`;
 }

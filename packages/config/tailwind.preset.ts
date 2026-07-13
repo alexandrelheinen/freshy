@@ -3,10 +3,13 @@ import { fontStack } from '@freshy/theme/fonts';
 import {
   COLOR_ROLES,
   SHADOW_ROLES,
+  RADIUS_ROLES,
   colorVarRef,
   shadowVarRef,
+  radiusVarRef,
   type ColorRole,
   type ShadowRole,
+  type RadiusRole,
 } from '@freshy/theme/roles';
 import { FRESHY_Z_INDEX } from './layering';
 
@@ -26,6 +29,10 @@ export const freshyShadows = Object.fromEntries(
 export const freshySpacing = defaultTheme.spacing;
 
 export const freshyTypography = defaultTheme.typography;
+
+export const freshyRadius = Object.fromEntries(
+  RADIUS_ROLES.map((role: RadiusRole) => [role, radiusVarRef(role)]),
+) as Record<RadiusRole, string>;
 
 const preset = {
   theme: {
@@ -100,12 +107,14 @@ const preset = {
         ],
       },
       borderRadius: {
-        sm: defaultTheme.radius.sm,
-        DEFAULT: defaultTheme.radius.default,
-        md: defaultTheme.radius.md,
-        lg: defaultTheme.radius.lg,
-        xl: defaultTheme.radius.xl,
-        full: defaultTheme.radius.full,
+        sm: freshyRadius.sm,
+        DEFAULT: freshyRadius.default,
+        md: freshyRadius.md,
+        lg: freshyRadius.lg,
+        xl: freshyRadius.xl,
+        '2xl': freshyRadius['2xl'],
+        '3xl': freshyRadius['3xl'],
+        full: freshyRadius.full,
       },
       spacing: freshySpacing,
       zIndex: FRESHY_Z_INDEX,

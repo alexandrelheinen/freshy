@@ -67,7 +67,7 @@ body {
   }
 
   .filter-chip-scroll::-webkit-scrollbar-thumb {
-    border-radius: 9999px;
+    border-radius: var(--radius-full);
     background: color-mix(in srgb, var(--color-outline-variant) 70%, transparent);
   }
 }
@@ -155,7 +155,7 @@ body {
 .status-bar-segment {
   height: 4px;
   width: 24px;
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
   background-color: var(--color-surface-container-highest);
 }
 
@@ -170,7 +170,69 @@ body {
   height: 20px;
   background: var(--color-primary);
   cursor: pointer;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   border: 2px solid var(--color-marker-border);
   box-shadow: var(--shadow-floating);
+}
+
+[data-corners='sharp'] :where(
+    .bg-primary,
+    .bg-secondary-container,
+    .bg-tertiary-container,
+    .bg-surface,
+    .bg-surface-container,
+    .bg-surface-container-high,
+    .bg-surface-container-low,
+    .bg-surface-container-lowest,
+    .bg-primary-container,
+    .bg-glass-surface
+  ):not(.border-0):not([class~='border-dashed']):not([class~='border']) {
+  border-width: 1px;
+  border-style: solid;
+}
+
+[data-corners='sharp'] .bg-primary:not(.border-0):not([class~='border']) {
+  border-color: color-mix(in srgb, var(--color-primary) 88%, black 12%);
+}
+
+[data-corners='sharp'] .bg-secondary-container:not(.border-0):not([class~='border']) {
+  border-color: color-mix(in srgb, var(--color-secondary-container) 88%, black 12%);
+}
+
+[data-corners='sharp'] .bg-tertiary-container:not(.border-0):not([class~='border']) {
+  border-color: color-mix(in srgb, var(--color-tertiary-container) 88%, black 12%);
+}
+
+[data-corners='sharp'] .bg-surface:not(.border-0):not([class~='border']) {
+  border-color: color-mix(in srgb, var(--color-surface) 88%, black 12%);
+}
+
+[data-corners='sharp'] .bg-surface-container:not(.border-0):not([class~='border']) {
+  border-color: color-mix(in srgb, var(--color-surface-container) 88%, black 12%);
+}
+
+[data-corners='sharp'] .bg-surface-container-high:not(.border-0):not([class~='border']) {
+  border-color: color-mix(in srgb, var(--color-surface-container-high) 88%, black 12%);
+}
+
+[data-corners='sharp'] .bg-surface-container-low:not(.border-0):not([class~='border']) {
+  border-color: color-mix(in srgb, var(--color-surface-container-low) 88%, black 12%);
+}
+
+[data-corners='sharp'] .bg-surface-container-lowest:not(.border-0):not([class~='border']) {
+  border-color: color-mix(in srgb, var(--color-surface-container-lowest) 88%, black 12%);
+}
+
+[data-corners='sharp'] .bg-primary-container:not(.border-0):not([class~='border']) {
+  border-color: color-mix(in srgb, var(--color-primary-container) 88%, black 12%);
+}
+
+[data-corners='sharp'] .bg-glass-surface:not(.border-0):not([class~='border']) {
+  border-color: color-mix(in srgb, var(--color-glass-surface) 88%, black 12%);
+}
+
+[data-corners='sharp'] :where(.glass, .glass-panel):not([class~='border']) {
+  border-width: 1px;
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--color-glass-surface) 88%, black 12%);
 }

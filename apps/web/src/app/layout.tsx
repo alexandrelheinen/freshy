@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { BRAND_TAGLINE, BRAND_TITLE, THEME_BOOTSTRAP_SCRIPT } from '@freshy/ui';
+import { CORNER_STYLE } from '@freshy/config/corner-style';
 import { buildGoogleFontsHref } from '@freshy/theme/fonts';
 import { getDefaultThemeTokens } from '@freshy/theme/tokens';
 import { FreshyClerkProvider } from '../components/FreshyClerkProvider';
@@ -25,7 +26,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning data-corners={CORNER_STYLE}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />

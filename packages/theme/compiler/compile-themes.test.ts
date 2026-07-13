@@ -68,4 +68,14 @@ describe('compile-themes', () => {
       validateTheme('broken', broken, theme.effects, theme.fonts);
     }, /missing color role: primary/);
   });
+
+  it('writes radius CSS variables and sharp overrides', () => {
+    const themesCss = fs.readFileSync(path.join(GENERATED_DIR, 'themes.css'), 'utf8');
+    assert.match(themesCss, /--radius-sm: 0\.25rem;/);
+    assert.match(themesCss, /--radius-xl: 1\.5rem;/);
+    assert.match(themesCss, /--radius-2xl: 1rem;/);
+    assert.match(themesCss, /--radius-3xl: 1\.5rem;/);
+    assert.match(themesCss, /\[data-corners='sharp'\]/);
+    assert.match(themesCss, /\[data-corners='sharp'\][\s\S]*--radius-full: 0;/);
+  });
 });
