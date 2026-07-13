@@ -6,7 +6,7 @@ Installable Python package for seeding, mapping, and cleaning cooling-place data
 | ---------------- | ---------------- | --------------------------------------------------------------------- |
 | `freshy-seeder`  | `freshy.seeder`  | Scrape French cooling places (OSM, data.gouv) and sync to D1          |
 | `freshy-cleaner` | `freshy.cleaner` | Remove junk imports and fix supermarket or hotel classification in D1 |
-| `freshy-images`  | `freshy.images`  | Find free venue image URLs and update D1                            |
+| `freshy-images`  | `freshy.images`  | Find free venue image URLs and update D1                              |
 
 ## Setup
 
@@ -105,17 +105,17 @@ Removes useless imported rows and fixes misclassified supermarkets and hotels in
 
 **Delete**:
 
-| Condition | Examples |
-| --------- | -------- |
-| Import without an address | `createdById` is `osm` or `datagouv` and address is null or blank (Studio shows this as **No address**) |
-| Placeholder address text | address stored as `No address`, `Sans adresse`, `Adresse inconnue`, `N/A`, … |
-| Name too short | fewer than 2 characters after trim (empty address only) |
-| Invalid coordinates | `(0, 0)`, out of WGS84 range, or non-finite values (empty address only) |
-| Import outside France | `createdById` is `osm` or `datagouv` and point is outside metropolitan France (empty address only) |
-| English unknown-style name | `Unknown`, `Unknown Facility`, … (empty address only) |
-| French placeholder name | `Inconnu`, `Sans nom`, … (empty address only) |
-| Auto-generated import title | `Cooling space (dataset title…)` from data.gouv fallback (empty address only) |
-| Empty or punctuation-only name | blank, `.`, `-` (empty address only) |
+| Condition                      | Examples                                                                                                |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| Import without an address      | `createdById` is `osm` or `datagouv` and address is null or blank (Studio shows this as **No address**) |
+| Placeholder address text       | address stored as `No address`, `Sans adresse`, `Adresse inconnue`, `N/A`, …                            |
+| Name too short                 | fewer than 2 characters after trim (empty address only)                                                 |
+| Invalid coordinates            | `(0, 0)`, out of WGS84 range, or non-finite values (empty address only)                                 |
+| Import outside France          | `createdById` is `osm` or `datagouv` and point is outside metropolitan France (empty address only)      |
+| English unknown-style name     | `Unknown`, `Unknown Facility`, … (empty address only)                                                   |
+| French placeholder name        | `Inconnu`, `Sans nom`, … (empty address only)                                                           |
+| Auto-generated import title    | `Cooling space (dataset title…)` from data.gouv fallback (empty address only)                           |
+| Empty or punctuation-only name | blank, `.`, `-` (empty address only)                                                                    |
 
 Studio renders `{place.address ?? 'No address'}`: a null address in D1 displays as **No address** in the UI but is not the literal string unless it was saved that way.
 
@@ -127,7 +127,7 @@ Places with a valid address are **kept** even when the name, coordinates, or pro
 
 **Reclassify to `MALL`:** whole-word match on major French grocery chains (Carrefour, E.Leclerc, …) or retail chains (Decathlon, Truffaut, Apple Store, Fnac, Darty, IKEA, Leroy Merlin, Cultura, …), plus `shop=*` retail tags in import metadata.
 
-**Reclassify to `MUSEUM` (Arts and Culture):** cinemas (Pathé, Gaumont, UGC, MK2, CGR, …), `amenity=cinema` in import metadata, or names containing *cinéma* / *cinema*.
+**Reclassify to `MUSEUM` (Arts and Culture):** cinemas (Pathé, Gaumont, UGC, MK2, CGR, …), `amenity=cinema` in import metadata, or names containing _cinéma_ / _cinema_.
 
 **Reclassify to `RESTAURANT`:** known fast-food and restaurant chains (McDonald's, Burger King, KFC, Quick, Subway, …), `amenity=fast_food` in import metadata, and hotels (Freshy has no `HOTEL` category). Pass `--skip-hotels` to leave hotel rows unchanged.
 
