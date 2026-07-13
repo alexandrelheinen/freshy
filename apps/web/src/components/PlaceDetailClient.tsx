@@ -17,10 +17,8 @@ import {
   type PlaceCategory,
 } from '@freshy/ui';
 import { AppTopNav } from './AppNav';
-import { PlaceActions } from './PlaceActions';
-
-const SavePlaceButton = dynamic(
-  () => import('./SavePlaceButton').then((m) => ({ default: m.SavePlaceButton })),
+const PlaceDetailActions = dynamic(
+  () => import('./PlaceDetailActions').then((m) => ({ default: m.PlaceDetailActions })),
   { ssr: false },
 );
 import {
@@ -138,18 +136,13 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
   return (
     <div className="min-h-screen pb-8" data-page="place-detail">
       <header className="safe-area-top fixed top-0 z-nav flex h-16 w-full items-center justify-between bg-surface/80 px-margin-mobile shadow-sm backdrop-blur-md md:relative md:hidden">
-        <div className="flex items-center gap-2">
-          <Link
-            href={ROUTES.explore}
-            className="rounded-full p-2 text-primary transition-colors hover:bg-primary/10 active:scale-95"
-            aria-label="Go back"
-          >
-            <MaterialIcon name="arrow_back" />
-          </Link>
-          <h1 className="font-headline-lg-mobile text-headline-lg-mobile tracking-tight text-primary">
-            Place Details
-          </h1>
-        </div>
+        <Link
+          href={ROUTES.explore}
+          className="rounded-full p-2 text-primary transition-colors hover:bg-primary/10 active:scale-95"
+          aria-label="Go back"
+        >
+          <MaterialIcon name="arrow_back" />
+        </Link>
         <button
           type="button"
           onClick={() => void handleShare()}
@@ -241,14 +234,12 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
               </p>
             ) : null}
 
-            <div className="space-y-3">
-              <PlaceActions
-                latitude={place.latitude}
-                longitude={place.longitude}
-                address={place.address}
-              />
-              <SavePlaceButton placeId={place.id} />
-            </div>
+            <PlaceDetailActions
+              placeId={place.id}
+              latitude={place.latitude}
+              longitude={place.longitude}
+              address={place.address}
+            />
           </section>
         </div>
 
