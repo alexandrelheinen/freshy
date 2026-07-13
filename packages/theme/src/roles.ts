@@ -87,3 +87,16 @@ export function shadowCssVar(role: ShadowRole): string {
 export function shadowVarRef(role: ShadowRole): string {
   return `var(--shadow-${role})`;
 }
+
+/** Radius scale keys emitted as CSS variables (--radius-*). */
+export const RADIUS_ROLES = ['sm', 'default', 'md', 'lg', 'xl', '2xl', '3xl', 'full'] as const;
+
+export type RadiusRole = (typeof RADIUS_ROLES)[number];
+
+export function radiusCssVar(role: RadiusRole): string {
+  return `--radius-${role}`;
+}
+
+export function radiusVarRef(role: RadiusRole): string {
+  return `var(--radius-${role})`;
+}

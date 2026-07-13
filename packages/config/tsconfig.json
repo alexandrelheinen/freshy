@@ -7,6 +7,6 @@
     "moduleResolution": "node",
     "noEmit": false
   },
-  "include": ["place-photos.ts", "place-tags.ts", "freshness-levels.ts"],
+  "include": ["place-photos.ts", "place-tags.ts", "freshness-levels.ts", "corner-style.ts"],
   "exclude": ["**/*.test.ts", "tailwind.preset.ts"]
 }

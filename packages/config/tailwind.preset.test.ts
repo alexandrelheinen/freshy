@@ -6,6 +6,7 @@ import preset, {
   freshyShadows,
   freshySpacing,
   freshyTypography,
+  freshyRadius,
 } from './tailwind.preset';
 import { FRESHY_Z_INDEX } from './layering';
 
@@ -33,6 +34,15 @@ describe('@freshy/config tailwind preset', () => {
   it('maps shadows to CSS variables', () => {
     assert.equal(freshyShadows.card, 'var(--shadow-card)');
     assert.equal(freshyShadows.nav, 'var(--shadow-nav)');
+  });
+
+  it('maps border radius to CSS variables', () => {
+    assert.equal(freshyRadius.sm, 'var(--radius-sm)');
+    assert.equal(freshyRadius.default, 'var(--radius-default)');
+    assert.equal(freshyRadius.xl, 'var(--radius-xl)');
+    assert.equal(freshyRadius['2xl'], 'var(--radius-2xl)');
+    assert.equal(freshyRadius.full, 'var(--radius-full)');
+    assert.equal(preset.theme.extend.borderRadius.lg, 'var(--radius-lg)');
   });
 
   it('defines a shared z-index scale for UI layering', () => {
