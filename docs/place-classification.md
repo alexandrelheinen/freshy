@@ -10,17 +10,17 @@ Freshy classifies every place with two independent systems: **tags** (what the s
 
 **UI labels and icons:** the web app reads display copy from `@freshy/ui` (`PLACE_CATEGORY_LABELS`, `PLACE_CATEGORY_ICONS`). Labels and icons can differ from the stored keyword when the product name is broader than the legacy enum.
 
-| Keyword (`Place.category`) | UI label         | UI icon          | Notes                                                                                                                |
-| -------------------------- | ---------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `CAFE`                     | Cafés & Bakeries | (theme)          |                                                                                                                      |
-| `RESTAURANT`               | Restaurants      | (theme)          |                                                                                                                      |
-| `BAR`                      | Bars             | (theme)          |                                                                                                                      |
-| `LIBRARY`                  | Libraries        | (theme)          |                                                                                                                      |
-| `MALL`                     | Malls & Shops    | (theme)          |                                                                                                                      |
+| Keyword (`Place.category`) | UI label         | UI icon          | Notes                                                                                                                         |
+| -------------------------- | ---------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `CAFE`                     | Cafés & Bakeries | (theme)          |                                                                                                                               |
+| `RESTAURANT`               | Restaurants      | (theme)          |                                                                                                                               |
+| `BAR`                      | Bars             | (theme)          |                                                                                                                               |
+| `LIBRARY`                  | Libraries        | (theme)          |                                                                                                                               |
+| `MALL`                     | Malls & Shops    | (theme)          |                                                                                                                               |
 | `MUSEUM`                   | Arts & Culture   | `theater_comedy` | Historical keyword. The category covers museums, galleries, theaters, cinemas, and similar cultural venues, not only museums. |
-| `COWORKING`                | Coworking        | (theme)          |                                                                                                                      |
-| `PUBLIC_SPACE`             | Public Spaces    | (theme)          |                                                                                                                      |
-| _(import heuristic)_       | Restaurants      | (theme)          | Hotels without a dedicated category are imported and cleaned as `RESTAURANT` (public dining areas).                  |
+| `COWORKING`                | Coworking        | (theme)          |                                                                                                                               |
+| `PUBLIC_SPACE`             | Public Spaces    | (theme)          |                                                                                                                               |
+| _(import heuristic)_       | Restaurants      | (theme)          | Hotels without a dedicated category are imported and cleaned as `RESTAURANT` (public dining areas).                           |
 
 When adding a category, update the Drizzle enum, API validation, seed mappers, and `@freshy/ui` labels. Change UI copy in `packages/ui/src/tokens.ts` only unless the stored keyword also changes.
 
