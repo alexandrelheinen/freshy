@@ -4,35 +4,35 @@ levels:
   - id: NONE
     level: 0
     label: No Cooling
-    shortLabel: None
+    shortLabel: No Cooling
     description: No air conditioning or mechanical cooling. Rare, for iconic spots that stay cool on their own.
     barSegments: 0
     tone: neutral
   - id: GOOD_VENTILATION
     level: 1
     label: Good Ventilation
-    shortLabel: Ventilated
+    shortLabel: Good Ventilation
     description: Natural airflow or light mechanical ventilation without strong air conditioning.
     barSegments: 1
     tone: blue
   - id: MODEST_AC
     level: 2
     label: Modest AC
-    shortLabel: Pleasant AC
+    shortLabel: Modest AC
     description: Pleasant, modest air conditioning that keeps the space comfortable.
     barSegments: 2
     tone: blue
   - id: VERY_COLD_AC
     level: 3
     label: Very Cold AC
-    shortLabel: Frigid
+    shortLabel: Very Cold AC
     description: Powerful air conditioning for maximum relief on hot days.
     barSegments: 3
     tone: blue
   - id: NATURALLY_FRESH
     level: 4
     label: Naturally Fresh
-    shortLabel: Natural
+    shortLabel: Naturally Fresh
     description: Naturally cool thanks to shade, water, or greenery. The pinnacle of quality of life.
     barSegments: 3
     tone: green

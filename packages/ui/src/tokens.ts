@@ -148,7 +148,7 @@ export const EXPLORE_MIN_FRESHNESS_CHIPS: Array<{
   level: FreshnessLevelId;
 }> = FRESHNESS_LEVELS.filter((level) => level.level > 0).map((level) => ({
   level: level.id,
-  label: level.shortLabel,
+  label: level.label,
 }));
 
 export const DEFAULT_PLACE_PHOTO_PATHS: Record<PlaceCategory, string> = {

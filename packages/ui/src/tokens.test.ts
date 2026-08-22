@@ -9,6 +9,9 @@ import {
   LOGO_FONT,
   DEFAULT_PLACE_PHOTO_PATHS,
   EXPLORE_FILTER_CHIPS,
+  EXPLORE_MIN_FRESHNESS_CHIPS,
+  FRESHNESS_LEVEL_LABELS,
+  FRESHNESS_LEVELS,
   getPlacePhotoUrl,
   placePhotoSrcAfterError,
   NAV_ICONS,
@@ -114,6 +117,15 @@ describe('@freshy/ui tokens', () => {
       assert.equal(PLACE_CATEGORY_CHIP_LABELS[category].length > 0, true);
       assert.ok(EXPLORE_FILTER_CHIPS.some((chip) => chip.category === category));
     }
+  });
+
+  it('uses one catalog freshness label on explore chips', () => {
+    assert.equal(EXPLORE_MIN_FRESHNESS_CHIPS.length, FRESHNESS_LEVELS.length - 1);
+    for (const chip of EXPLORE_MIN_FRESHNESS_CHIPS) {
+      assert.equal(chip.label, FRESHNESS_LEVEL_LABELS[chip.level]);
+    }
+    assert.equal(FRESHNESS_LEVEL_LABELS.MODEST_AC, 'Modest AC');
+    assert.equal(FRESHNESS_LEVEL_LABELS.GOOD_VENTILATION, 'Good Ventilation');
   });
 
   it('lists typography scale keys aligned with DESIGN.md', () => {
