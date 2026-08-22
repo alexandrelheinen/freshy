@@ -16,6 +16,7 @@ import {
   type PlaceCategory,
 } from '@freshy/ui';
 import { AppTopNav } from './AppNav';
+import { PlaceNotFound } from './PlaceNotFound';
 import { PlacePhoto } from './PlacePhoto';
 const PlaceDetailActions = dynamic(
   () => import('./PlaceDetailActions').then((m) => ({ default: m.PlaceDetailActions })),
@@ -107,20 +108,17 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
 
   if (!place) {
     return (
-      <div className="flex min-h-screen items-center justify-center pb-10" data-page="place-detail">
-        <div className="px-margin-mobile text-center">
-          <p className="text-on-surface-variant">{loadError ?? 'Place not found.'}</p>
-          {loadError ? (
-            <button
-              type="button"
-              onClick={() => window.location.reload()}
-              className="mt-4 rounded-xl bg-primary px-6 py-3 font-label-caps text-on-primary"
-            >
-              Retry
-            </button>
-          ) : null}
-        </div>
-      </div>
+      <PlaceNotFound message={loadError ?? undefined}>
+        {loadError ? (
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="mt-4 rounded-xl bg-primary px-6 py-3 font-label-caps text-on-primary"
+          >
+            Retry
+          </button>
+        ) : null}
+      </PlaceNotFound>
     );
   }
 
