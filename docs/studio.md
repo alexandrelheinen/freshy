@@ -331,7 +331,7 @@ Use `SKIP_SCREENSHOTS=1` to skip Playwright if needed.
 | `CLERK_SECRET_KEY` on API                  | Cloudflare Worker secrets             |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` on web | Cloudflare Pages                      |
 | Deploy API + web after merge               | GitHub → CI/CD                        |
-| Verify `/studio` as admin                  | `https://getfreshy.pages.dev/studio` |
+| Verify `/studio` as admin                  | `https://getfreshy.pages.dev/studio`  |
 | Verify non-admin gets 404                  | Second test account without metadata  |
 
 ---

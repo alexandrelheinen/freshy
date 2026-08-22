@@ -106,13 +106,13 @@ flowchart TB
 
 ## 2. Cloudflare Pages | web app
 
-| Item             | Value                                                              |
-| ---------------- | ------------------------------------------------------------------ |
-| **Dashboard**    | https://dash.cloudflare.com → **Workers & Pages** → **getfreshy**  |
-| **Live site**    | https://getfreshy.pages.dev/explore                                |
-| **Deploys from** | GitHub `main` (auto on push)                                       |
-| **Build root**   | Monorepo build from repo root (see project settings)               |
-| **Output**       | Static export (`out/`)                                             |
+| Item             | Value                                                             |
+| ---------------- | ----------------------------------------------------------------- |
+| **Dashboard**    | https://dash.cloudflare.com → **Workers & Pages** → **getfreshy** |
+| **Live site**    | https://getfreshy.pages.dev/explore                               |
+| **Deploys from** | GitHub `main` (auto on push)                                      |
+| **Build root**   | Monorepo build from repo root (see project settings)              |
+| **Output**       | Static export (`out/`)                                            |
 
 ### Environment variables (Pages)
 
@@ -159,11 +159,11 @@ Set under **Settings → Environment variables** (Production **and** Preview):
 
 Set under **Workers & Pages → freshy-api → Settings → Variables and Secrets**:
 
-| Secret                     | Purpose                                                                                     |
-| -------------------------- | ------------------------------------------------------------------------------------------- |
-| `CLERK_SECRET_KEY`         | Verify Clerk JWT on API                                                                     |
+| Secret                     | Purpose                                                                                    |
+| -------------------------- | ------------------------------------------------------------------------------------------ |
+| `CLERK_SECRET_KEY`         | Verify Clerk JWT on API                                                                    |
 | `CLERK_AUTHORIZED_PARTIES` | Comma-separated frontend origins, e.g. `https://getfreshy.pages.dev,http://localhost:3000` |
-| `MAPBOX_ACCESS_TOKEN`      | Server-side geocoding on place submit                                                       |
+| `MAPBOX_ACCESS_TOKEN`      | Server-side geocoding on place submit                                                      |
 
 ### Deploy commands
 
