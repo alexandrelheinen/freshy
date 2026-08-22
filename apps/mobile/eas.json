@@ -16,7 +16,7 @@
     "release": {
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_WEB_APP_URL": "https://freshy-25e.pages.dev"
+        "EXPO_PUBLIC_WEB_APP_URL": "https://getfreshy.pages.dev"
       },
       "android": {
         "buildType": "apk"
@@ -28,7 +28,7 @@
     "production": {
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_WEB_APP_URL": "https://freshy-25e.pages.dev"
+        "EXPO_PUBLIC_WEB_APP_URL": "https://getfreshy.pages.dev"
       },
       "android": { "buildType": "app-bundle" },
       "ios": { "resourceClass": "m-medium" }

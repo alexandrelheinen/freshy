@@ -17,7 +17,7 @@ The pnpm `overrides` warning and the eas-cli upgrade notice are harmless. You ca
 
 | Thing              | What it is                                                         |
 | ------------------ | ------------------------------------------------------------------ |
-| **Web app**        | Live at https://freshy-25e.pages.dev                               |
+| **Web app**        | Live at https://getfreshy.pages.dev/explore                        |
 | **Mobile app**     | Native shell that loads that site in a WebView                     |
 | **EAS**            | Expo cloud builds: signed **APK** (Android) and **IPA** (iOS)      |
 | **EXPO_TOKEN**     | API key so your machine and GitHub can talk to EAS                 |
@@ -35,7 +35,7 @@ In the **repository root** (copy from `.env.example` if needed), add:
 
 ```env
 EAS_PROJECT_ID=ff3b74f8-863b-41cd-a83a-1c9f37a1dd42
-EXPO_PUBLIC_WEB_APP_URL=https://freshy-25e.pages.dev
+EXPO_PUBLIC_WEB_APP_URL=https://getfreshy.pages.dev
 ```
 
 You can use `apps/mobile/.env` instead, or both. Do **not** commit `.env`.
@@ -191,11 +191,11 @@ For iOS on the same tag, Play Store, TestFlight, and App Store paths, see [mobil
 
 ## Step 8 | Clerk (sign-in inside the app)
 
-The app loads `https://freshy-25e.pages.dev`, so Clerk behaves like the website.
+The app loads `https://getfreshy.pages.dev`, so Clerk behaves like the website.
 
 In https://dashboard.clerk.com → your Freshy app:
 
-- **Authorized parties** must include `https://freshy-25e.pages.dev`
+- **Authorized parties** must include `https://getfreshy.pages.dev`
 
 You usually do not need a separate mobile origin for this WebView setup.
 
@@ -235,7 +235,7 @@ You usually do not need a separate mobile origin for this WebView setup.
 | GitHub workflow fails on env                                           | Add both `EXPO_TOKEN` and `EAS_PROJECT_ID` secrets                                           |
 | iOS build fails                                                        | Apple Developer account + `eas device:create` + rebuild                                      |
 | App blank / white screen                                               | Open `EXPO_PUBLIC_WEB_APP_URL` in the phone browser                                          |
-| Sign-in fails in app                                                   | Clerk authorized parties include `freshy-25e.pages.dev`                                      |
+| Sign-in fails in app                                                   | Clerk authorized parties include `getfreshy.pages.dev`                                       |
 
 ---
 

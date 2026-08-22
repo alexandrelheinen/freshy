@@ -40,7 +40,7 @@ jobs:
 
       - name: Capture production screenshots
         env:
-          WEB_URL: https://freshy-25e.pages.dev
+          WEB_URL: https://getfreshy.pages.dev
           SCREENSHOT_MAX_ATTEMPTS: 30
           SCREENSHOT_SLEEP_SECONDS: 20
         run: bash scripts/capture-production-screenshots.sh

@@ -11,7 +11,7 @@ Freshy uses **Cloudflare** for hosting, CDN, object storage, API (Workers), and 
 
 | Resource      | Name            | Config                                                           |
 | ------------- | --------------- | ---------------------------------------------------------------- |
-| Pages project | `freshy-25e`    | Git integration                                                  |
+| Pages project | `getfreshy`     | Git integration                                                  |
 | Worker        | `freshy-api`    | [`packages/api/wrangler.toml`](../../packages/api/wrangler.toml) |
 | D1 database   | `freshy-db`     | Binding `FRESHY_DB`                                              |
 | R2 bucket     | `freshy-assets` | Binding `FRESHY_ASSETS`                                          |

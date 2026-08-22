@@ -4,7 +4,7 @@
 
 An August 2026 review found **no live secrets** in the tree or in obvious git history. Clerk, Mapbox, Cloudflare, R2, and Expo tokens live in GitHub Actions secrets and local `.env` files, which are gitignored. Making the repository private again would not unsay clones or search indexes. Rewriting git history is not needed unless a real credential is committed later.
 
-Production resource names (`freshy-25e`, `freshy-api`, D1 and R2 ids) stay in the repo. Deploy config and CI need them. They are identifiers, not passwords.
+Production resource names (`getfreshy`, `freshy-api`, D1 and R2 ids) stay in the repo. Deploy config and CI need them. They are identifiers, not passwords.
 
 ---
 
@@ -13,7 +13,7 @@ Production resource names (`freshy-25e`, `freshy-api`, D1 and R2 ids) stay in th
 Do these in the GitHub UI. They are not source files, so they do not need a history rewrite.
 
 - [ ] Change the repository **Description** away from a private nickname. It is still `Lulu's app` in GitHub settings. Use a product line such as `Mobile-first cooling map` or `Find air-conditioned refuges in hot cities`.
-- [ ] Confirm **About → Website** points at the public app (`https://freshy-25e.pages.dev` or the later custom domain), not a private note.
+- [ ] Confirm **About → Website** points at the public app (`https://getfreshy.pages.dev/explore` or the later custom domain), not a private note.
 - [ ] Enable **Secret scanning** and **Push protection**: Settings → Code security → Secret scanning. Reject pushes that look like API keys.
 - [ ] Leave **Issues** off, or turn them on only when you want public bug reports. Do not paste restore bookmarks, Clerk user ids, or real emails into issues or PR comments.
 

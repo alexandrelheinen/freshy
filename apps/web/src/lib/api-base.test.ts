@@ -20,7 +20,7 @@ describe('getApiBase', () => {
 
     Object.defineProperty(globalThis, 'window', {
       configurable: true,
-      value: { location: { hostname: 'freshy-25e.pages.dev' } },
+      value: { location: { hostname: 'getfreshy.pages.dev' } },
     });
 
     assert.equal(getApiBase(), PRODUCTION_API_URL);

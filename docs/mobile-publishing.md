@@ -1,6 +1,6 @@
 # Freshy mobile | app publishing guide
 
-Reference for building and shipping Freshy on **Android** and **iOS**. The mobile app is a native **WebView shell** (`apps/mobile`) that loads the production web app (`https://freshy-25e.pages.dev` by default). You do not maintain a separate mobile UI; store builds wrap the same site users see in the browser.
+Reference for building and shipping Freshy on **Android** and **iOS**. The mobile app is a native **WebView shell** (`apps/mobile`) that loads the production web app (`https://getfreshy.pages.dev` by default). You do not maintain a separate mobile UI; store builds wrap the same site users see in the browser.
 
 **First-time EAS setup:** [mobile-setup.md](mobile-setup.md).  
 **Platform checklist and env vars:** [platforms.md](platforms.md#8-expo-eas--mobile-webview-shell).
@@ -65,7 +65,7 @@ Root `.env` (see `.env.example`):
 ```env
 EXPO_TOKEN=...
 EAS_PROJECT_ID=ff3b74f8-863b-41cd-a83a-1c9f37a1dd42
-EXPO_PUBLIC_WEB_APP_URL=https://freshy-25e.pages.dev
+EXPO_PUBLIC_WEB_APP_URL=https://getfreshy.pages.dev
 ```
 
 ### 2. GitHub secrets (CI and releases)
@@ -106,7 +106,7 @@ pnpm mobile:build:ios
 
 The shell loads the production site. In Clerk Dashboard → your Freshy app:
 
-- **Authorized parties** must include `https://freshy-25e.pages.dev`.
+- **Authorized parties** must include `https://getfreshy.pages.dev`.
 
 **Sign in with Google:** Google blocks OAuth inside embedded WebViews. Freshy intercepts Google OAuth URLs and opens the **system browser** (Chrome Custom Tabs on Android, Safari sheet on iOS) via `expo-web-browser`, then returns to the WebView. Implementation: `apps/mobile/src/oauth-external-browser.ts` and `use-external-oauth-navigation.ts`. Rebuild the native app after auth-related changes.
 

@@ -7,7 +7,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PLATFORM="${1:-all}"
 PROFILE="${2:-release}"
 
-export EXPO_PUBLIC_WEB_APP_URL="${EXPO_PUBLIC_WEB_APP_URL:-https://freshy-25e.pages.dev}"
+export EXPO_PUBLIC_WEB_APP_URL="${EXPO_PUBLIC_WEB_APP_URL:-https://getfreshy.pages.dev}"
 DEFAULT_EAS_PROJECT_ID="ff3b74f8-863b-41cd-a83a-1c9f37a1dd42"
 MOBILE_DIR="${ROOT_DIR}/apps/mobile"
 
