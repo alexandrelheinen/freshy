@@ -4,6 +4,7 @@ import { PILOT_CITY } from '@freshy/config/pilot-city';
 import {
   categoryPlacesQuerySchema,
   listCategoryPlacesPage,
+  listPlaces,
   explorePlaceStatuses,
   parseStoredTags,
   placesQuerySchema,
@@ -50,10 +51,38 @@ describe('categoryPlacesQuerySchema', () => {
 });
 
 describe('explorePlaceStatuses', () => {
-  it('returns every place unless verifiedOnly is enabled', () => {
+  it('excludes DRAFT from the public list and keeps IMPORTED and PUBLISHED', () => {
     const base = placesQuerySchema.parse({ lat: 48.9, lng: 2.3 });
-    assert.equal(explorePlaceStatuses(base), null);
-    assert.deepEqual(explorePlaceStatuses({ ...base, verifiedOnly: true }), ['PUBLISHED']);
+    const publicStatuses = explorePlaceStatuses(base);
+    assert.ok(publicStatuses);
+    assert.deepEqual([...publicStatuses].sort(), ['IMPORTED', 'PUBLISHED']);
+    assert.equal(publicStatuses.includes('DRAFT'), false);
+  });
+
+  it('returns only PUBLISHED when verifiedOnly is enabled', () => {
+    const base = placesQuerySchema.parse({ lat: 48.9, lng: 2.3, verifiedOnly: true });
+    assert.deepEqual(explorePlaceStatuses(base), ['PUBLISHED']);
+  });
+});
+
+describe('listPlaces', () => {
+  it('applies a status filter on the public list so DRAFT rows are not queried', async () => {
+    let whereArg: unknown = 'unset';
+    const db = {
+      select: () => ({
+        from: () => ({
+          where: (arg: unknown) => {
+            whereArg = arg;
+            return { orderBy: async () => [] };
+          },
+        }),
+      }),
+    } as unknown as Parameters<typeof listPlaces>[0];
+
+    await listPlaces(db, placesQuerySchema.parse({ lat: 48.9, lng: 2.3 }));
+
+    assert.notEqual(whereArg, 'unset');
+    assert.notEqual(whereArg, undefined);
   });
 });
 
