@@ -31,6 +31,7 @@ import {
 } from '../lib/api';
 
 import { getApiBase } from '../lib/api-base';
+import { placePageTitle } from '../lib/place-page-title';
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
 
 function userInitials(name: string): string {
@@ -70,6 +71,15 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
     })();
   }, [slug]);
 
+  useEffect(() => {
+    if (!place) return;
+    const previousTitle = document.title;
+    document.title = placePageTitle(place.name);
+    return () => {
+      document.title = previousTitle;
+    };
+  }, [place]);
+
   const tags = useMemo(() => (place ? filterValidPlaceTags(place.tags ?? []) : []), [place]);
 
   const mapPreview = place
@@ -81,7 +91,7 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
     const url = typeof window !== 'undefined' ? window.location.href : ROUTES.place(place.slug);
     try {
       if (navigator.share) {
-        await navigator.share({ title: place.name, url });
+        await navigator.share({ title: placePageTitle(place.name), url });
         setShareMessage('Shared.');
         return;
       }
