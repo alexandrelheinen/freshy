@@ -173,6 +173,7 @@ Full guide: [local-development.md](local-development.md).
 - [Cloudflare D1](https://developers.cloudflare.com/d1/)
 - [Cloudflare R2](https://developers.cloudflare.com/r2/)
 - [Cloudflare Pages](https://developers.cloudflare.com/pages/)
+- [Change the public site URL](change-site-url.md)
 - [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/)
 - [Hono on Workers](https://hono.dev/docs/getting-started/cloudflare-workers)
 

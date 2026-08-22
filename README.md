@@ -7,11 +7,12 @@
 
 **Freshy** is a mobile-first cooling map: find air-conditioned refuges in hot cities.
 
-| Surface                | URL                                             |
-| ---------------------- | ----------------------------------------------- |
-| **Live app**           | https://freshy-25e.pages.dev/explore            |
-| **Live API**           | https://freshy-api.alexandrelheinen.workers.dev |
-| **Platform checklist** | [docs/platforms.md](docs/platforms.md)          |
+| Surface                 | URL                                                |
+| ----------------------- | -------------------------------------------------- |
+| **Live app**            | https://freshy-25e.pages.dev/explore               |
+| **Live API**            | https://freshy-api.alexandrelheinen.workers.dev    |
+| **Platform checklist**  | [docs/platforms.md](docs/platforms.md)             |
+| **Change the site URL** | [docs/change-site-url.md](docs/change-site-url.md) |
 
 ---
 

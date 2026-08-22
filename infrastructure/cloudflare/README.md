@@ -124,6 +124,8 @@ Dashboard → bucket → **Settings** → **CORS policy**.
 
 Preview deployments are created automatically for each pull request.
 
+To replace `freshy-25e.pages.dev` with a nicer `*.pages.dev` host or a custom domain, follow [docs/change-site-url.md](../../docs/change-site-url.md). Do not delete the API Worker to change the website URL.
+
 ---
 
 ## 6. Cloudflare Worker (API)

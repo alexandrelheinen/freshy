@@ -106,13 +106,14 @@ flowchart TB
 
 ## 2. Cloudflare Pages | web app
 
-| Item             | Value                                                              |
-| ---------------- | ------------------------------------------------------------------ |
-| **Dashboard**    | https://dash.cloudflare.com → **Workers & Pages** → **freshy-25e** |
-| **Live site**    | https://freshy-25e.pages.dev                                       |
-| **Deploys from** | GitHub `main` (auto on push)                                       |
-| **Build root**   | Monorepo build from repo root (see project settings)               |
-| **Output**       | Static export (`out/`)                                             |
+| Item                | Value                                                                               |
+| ------------------- | ----------------------------------------------------------------------------------- |
+| **Dashboard**       | https://dash.cloudflare.com → **Workers & Pages** → **freshy-25e**                  |
+| **Live site**       | https://freshy-25e.pages.dev                                                        |
+| **Change this URL** | [change-site-url.md](change-site-url.md) (recreate Pages; do not delete the Worker) |
+| **Deploys from**    | GitHub `main` (auto on push)                                                        |
+| **Build root**      | Monorepo build from repo root (see project settings)                                |
+| **Output**          | Static export (`out/`)                                                              |
 
 ### Environment variables (Pages)
 
@@ -452,12 +453,13 @@ sequenceDiagram
 
 ## Related docs
 
-| Doc                                          | Contents                         |
-| -------------------------------------------- | -------------------------------- |
-| [local-development.md](local-development.md) | Local setup with wrangler dev    |
-| [database.md](database.md)                   | Schema, migrations, Drizzle      |
-| [infrastructure.md](infrastructure.md)       | Cloudflare services and bindings |
-| [architecture.md](architecture.md)           | Monorepo layout, data flow       |
-| [.env.example](../.env.example)              | All env var names                |
+| Doc                                          | Contents                            |
+| -------------------------------------------- | ----------------------------------- |
+| [local-development.md](local-development.md) | Local setup with wrangler dev       |
+| [database.md](database.md)                   | Schema, migrations, Drizzle         |
+| [infrastructure.md](infrastructure.md)       | Cloudflare services and bindings    |
+| [change-site-url.md](change-site-url.md)     | Rename the public `*.pages.dev` URL |
+| [architecture.md](architecture.md)           | Monorepo layout, data flow          |
+| [.env.example](../.env.example)              | All env var names                   |
 
 _Last updated: June 2026_

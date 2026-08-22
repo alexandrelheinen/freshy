@@ -13,6 +13,7 @@ Thank you for contributing to **Freshy**, the mobile-first cooling map. This doc
 | [docs/architecture.md](docs/architecture.md)                                             | Monorepo layout and data flow                      |
 | [docs/studio.md](docs/studio.md)                                                         | Admin Studio: Clerk role, moderation API           |
 | [docs/infrastructure.md](docs/infrastructure.md)                                         | Cloudflare services and bindings                   |
+| [docs/change-site-url.md](docs/change-site-url.md)                                       | Rename the public Pages URL (`*.pages.dev`)        |
 | [docs/git-rules.md](docs/git-rules.md)                                                   | Branching, commits, PR checklist                   |
 | [docs/stitch/freshy/DESIGN.md](docs/stitch/freshy/DESIGN.md)                             | Design tokens and UI reference                     |
 
