@@ -97,12 +97,12 @@ export interface PlaceListItem extends Omit<Place, 'tags' | 'createdById'> {
   distanceKm?: number;
 }
 
-/** Explore map statuses. Null means every place (verified + pending/imported). */
+/** Public map statuses. DRAFT is never listed; verifiedOnly keeps PUBLISHED only. */
 export function explorePlaceStatuses(
   query: Pick<PlacesQuery, 'verifiedOnly'>,
-): Array<Place['status']> | null {
+): Array<Place['status']> {
   if (query.verifiedOnly) return ['PUBLISHED'];
-  return null;
+  return ['PUBLISHED', 'IMPORTED'];
 }
 
 function matchesMinFreshnessLevel(
