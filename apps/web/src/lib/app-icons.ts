@@ -12,4 +12,4 @@ export const APP_METADATA_ICONS = {
     { url: APP_ICON_PATHS.iconPng, type: 'image/png', sizes: '32x32' },
   ],
   apple: [{ url: APP_ICON_PATHS.appleTouchIcon, sizes: '180x180', type: 'image/png' }],
-} as const;
+};
