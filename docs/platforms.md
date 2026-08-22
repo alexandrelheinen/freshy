@@ -7,7 +7,7 @@
 
 | Layer          | Provider          | Live URL                                        |
 | -------------- | ----------------- | ----------------------------------------------- |
-| Web app        | Cloudflare Pages  | https://freshy-25e.pages.dev                    |
+| Web app        | Cloudflare Pages  | https://getfreshy.pages.dev/explore             |
 | API            | Cloudflare Worker | https://freshy-api.alexandrelheinen.workers.dev |
 | Database       | Cloudflare D1     | `freshy-db` (no public URL)                     |
 | Object storage | Cloudflare R2     | `freshy-assets`                                 |
@@ -21,7 +21,7 @@
 
 | Resource type     | Dashboard name  | Binding / URL                                   | Config file                                                               |
 | ----------------- | --------------- | ----------------------------------------------- | ------------------------------------------------------------------------- |
-| **Pages project** | `freshy-25e`    | https://freshy-25e.pages.dev                    | Git integration                                                           |
+| **Pages project** | `getfreshy`     | https://getfreshy.pages.dev                     | Git integration                                                           |
 | **Worker**        | `freshy-api`    | https://freshy-api.alexandrelheinen.workers.dev | [`packages/api/wrangler.toml`](../packages/api/wrangler.toml)             |
 | **D1 database**   | `freshy-db`     | `FRESHY_DB`                                     | `wrangler.toml` + [`packages/db/migrations/`](../packages/db/migrations/) |
 | **R2 bucket**     | `freshy-assets` | `FRESHY_ASSETS`                                 | `wrangler.toml`                                                           |
@@ -37,7 +37,7 @@ flowchart TB
     end
 
     subgraph cf [Cloudflare production]
-        Pages["Pages<br/>freshy-25e"]
+        Pages["Pages<br/>getfreshy"]
         Worker["Worker<br/>freshy-api"]
         D1[(D1<br/>freshy-db)]
         R2[(R2<br/>freshy-assets)]
@@ -108,8 +108,8 @@ flowchart TB
 
 | Item             | Value                                                              |
 | ---------------- | ------------------------------------------------------------------ |
-| **Dashboard**    | https://dash.cloudflare.com → **Workers & Pages** → **freshy-25e** |
-| **Live site**    | https://freshy-25e.pages.dev                                       |
+| **Dashboard**    | https://dash.cloudflare.com → **Workers & Pages** → **getfreshy**  |
+| **Live site**    | https://getfreshy.pages.dev/explore                                |
 | **Deploys from** | GitHub `main` (auto on push)                                       |
 | **Build root**   | Monorepo build from repo root (see project settings)               |
 | **Output**       | Static export (`out/`)                                             |
@@ -162,7 +162,7 @@ Set under **Workers & Pages → freshy-api → Settings → Variables and Secret
 | Secret                     | Purpose                                                                                     |
 | -------------------------- | ------------------------------------------------------------------------------------------- |
 | `CLERK_SECRET_KEY`         | Verify Clerk JWT on API                                                                     |
-| `CLERK_AUTHORIZED_PARTIES` | Comma-separated frontend origins, e.g. `https://freshy-25e.pages.dev,http://localhost:3000` |
+| `CLERK_AUTHORIZED_PARTIES` | Comma-separated frontend origins, e.g. `https://getfreshy.pages.dev,http://localhost:3000` |
 | `MAPBOX_ACCESS_TOKEN`      | Server-side geocoding on place submit                                                       |
 
 ### Deploy commands
@@ -226,7 +226,7 @@ Dashboard path for secrets: **Workers & Pages → freshy-api → Settings → Va
 `CLERK_AUTHORIZED_PARTIES` value example:
 
 ```text
-https://freshy-25e.pages.dev,http://localhost:3000
+https://getfreshy.pages.dev,http://localhost:3000
 ```
 
 **Note:** `GET /` returns 404 by design. Use `/health` or `/places` instead. After deploy, `/` redirects to `/health`.
@@ -306,7 +306,7 @@ Expected: `"status":"ok"`, `"service":"freshy-api-worker"`, `"db":"ok"`, `"auth"
 ### Verify auth
 
 1. `GET /health` → `"auth":"configured"`
-2. https://freshy-25e.pages.dev/profile → Sign in works
+2. https://getfreshy.pages.dev/profile → Sign in works
 3. Save a place → appears on profile
 
 ### Studio admin
@@ -382,7 +382,7 @@ Apple Developer Program membership is required for iOS builds.
 Optional override for staging:
 
 ```bash
-EXPO_PUBLIC_WEB_APP_URL=https://freshy-25e.pages.dev pnpm mobile:build:android
+EXPO_PUBLIC_WEB_APP_URL=https://getfreshy.pages.dev pnpm mobile:build:android
 ```
 
 ### Release automation
@@ -427,7 +427,7 @@ sequenceDiagram
 - [ ] **Cloudflare D1**: `freshy-db` created, migrations applied
 - [ ] **Cloudflare Worker**: `freshy-api` deployed with D1 + R2 bindings
 - [ ] **Worker secrets**: `CLERK_SECRET_KEY`, `CLERK_AUTHORIZED_PARTIES`, `MAPBOX_ACCESS_TOKEN`
-- [ ] **Cloudflare Pages**: `freshy-25e`, API URL + Mapbox + Clerk publishable key + R2 public URL
+- [ ] **Cloudflare Pages**: `getfreshy`, API URL + Mapbox + Clerk publishable key + R2 public URL
 - [ ] **Clerk**: Freshy app, keys copied to Worker + Pages
 - [ ] **Mapbox**: public token on Pages
 - [ ] **GitHub secrets**: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
@@ -441,7 +441,7 @@ sequenceDiagram
 
 | Platform             | URL                                             |
 | -------------------- | ----------------------------------------------- |
-| Live web app         | https://freshy-25e.pages.dev                    |
+| Live web app         | https://getfreshy.pages.dev/explore             |
 | Live API             | https://freshy-api.alexandrelheinen.workers.dev |
 | GitHub repo          | https://github.com/alexandrelheinen/freshy      |
 | Cloudflare dashboard | https://dash.cloudflare.com                     |

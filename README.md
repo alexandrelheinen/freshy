@@ -1,15 +1,23 @@
 # Freshy
 
-[![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/alexandrelheinen/freshy/actions/workflows/ci.yml)
-[![Web | Cloudflare Pages](https://img.shields.io/website?url=https%3A%2F%2Ffreshy-25e.pages.dev%2Fexplore&label=Web%20%7C%20Pages&logo=cloudflare&logoColor=white&color=F38020)](https://freshy-25e.pages.dev/explore)
+[![CI](https://github.com/alexandrelheinen/freshy/actions/workflows/ci.yml/badge.svg)](https://github.com/alexandrelheinen/freshy/actions/workflows/ci.yml)
+[![Production smoke test](https://github.com/alexandrelheinen/freshy/actions/workflows/smoke-production.yml/badge.svg)](https://github.com/alexandrelheinen/freshy/actions/workflows/smoke-production.yml)
+[![Production screenshots](https://github.com/alexandrelheinen/freshy/actions/workflows/production-screenshots.yml/badge.svg)](https://github.com/alexandrelheinen/freshy/actions/workflows/production-screenshots.yml)
+[![Release | Mobile builds](https://github.com/alexandrelheinen/freshy/actions/workflows/release.yml/badge.svg)](https://github.com/alexandrelheinen/freshy/actions/workflows/release.yml)
+[![Deploy database migrations](https://github.com/alexandrelheinen/freshy/actions/workflows/migrate-database.yml/badge.svg)](https://github.com/alexandrelheinen/freshy/actions/workflows/migrate-database.yml)
+[![Sync place defaults to R2](https://github.com/alexandrelheinen/freshy/actions/workflows/sync-place-defaults.yml/badge.svg)](https://github.com/alexandrelheinen/freshy/actions/workflows/sync-place-defaults.yml)
+[![Web | Pages](https://img.shields.io/website?url=https%3A%2F%2Fgetfreshy.pages.dev%2Fexplore&label=Web%20%7C%20Pages&logo=cloudflare&logoColor=white&color=F38020)](https://getfreshy.pages.dev/explore)
 [![API | Cloudflare Worker](https://img.shields.io/website?url=https%3A%2F%2Ffreshy-api.alexandrelheinen.workers.dev%2Fhealth&label=API%20%7C%20Worker&logo=cloudflare&color=F38020)](https://freshy-api.alexandrelheinen.workers.dev/health)
 [![Database | D1](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ffreshy-api.alexandrelheinen.workers.dev%2Fhealth&query=%24.db&label=D1&color=00E599&logo=cloudflare)](https://dash.cloudflare.com/?to=/:account/workers/d1)
+
+**Use the map:** https://getfreshy.pages.dev/explore  
+**Android app (v0.4.0):** [Download APK](https://github.com/alexandrelheinen/freshy/releases/download/v0.4.0/freshy-v0.4.0-android.apk)
 
 **Freshy** is a mobile-first cooling map: find air-conditioned refuges in hot cities.
 
 | Surface                | URL                                             |
 | ---------------------- | ----------------------------------------------- |
-| **Live app**           | https://freshy-25e.pages.dev/explore            |
+| **Live app**           | https://getfreshy.pages.dev/explore             |
 | **Live API**           | https://freshy-api.alexandrelheinen.workers.dev |
 | **Platform checklist** | [docs/platforms.md](docs/platforms.md)          |
 
@@ -21,7 +29,7 @@ Freshy runs on **Cloudflare** for web, API, database, and object storage. **Cler
 
 | Layer        | Provider          | Resource name   | Notes                       |
 | ------------ | ----------------- | --------------- | --------------------------- |
-| **Web**      | Cloudflare Pages  | `freshy-25e`    | Next.js static export       |
+| **Web**      | Cloudflare Pages  | `getfreshy`     | Next.js static export       |
 | **API**      | Cloudflare Worker | `freshy-api`    | Hono on Workers             |
 | **Database** | Cloudflare D1     | `freshy-db`     | SQLite, binding `FRESHY_DB` |
 | **Storage**  | Cloudflare R2     | `freshy-assets` | Binding `FRESHY_ASSETS`     |
@@ -37,7 +45,7 @@ External services are limited to auth (Clerk), maps (Mapbox), and mobile builds 
 
 ```mermaid
 flowchart TB
-    User[User browser / PWA] --> Pages[Cloudflare Pages<br/>freshy-25e]
+    User[User browser / PWA] --> Pages[Cloudflare Pages<br/>getfreshy]
     Pages -->|NEXT_PUBLIC_API_URL| Worker[Cloudflare Worker<br/>freshy-api]
     Pages --> Mapbox[Mapbox tiles]
     Pages --> ClerkUI[Clerk sign-in UI]

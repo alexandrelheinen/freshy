@@ -41,7 +41,7 @@ Match existing code in the file and package you touch. See [docs/quality-standar
 
 | Layer | Today |
 | ----- | ----- |
-| Web | Cloudflare Pages (`freshy-25e.pages.dev`) |
+| Web | Cloudflare Pages (`getfreshy.pages.dev`) |
 | API | Cloudflare Worker (`freshy-api`) |
 | DB | Cloudflare D1 (`freshy-db`) |
 | Storage | Cloudflare R2 (`freshy-assets`) |

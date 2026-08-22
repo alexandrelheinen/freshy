@@ -2,7 +2,7 @@
 # Wait for production web, then capture mobile screenshots with Playwright.
 set -euo pipefail
 
-WEB_URL="${WEB_URL:-https://freshy-25e.pages.dev}"
+WEB_URL="${WEB_URL:-https://getfreshy.pages.dev}"
 SCREENSHOTS_DIR="${SCREENSHOTS_DIR:-screenshots}"
 MAX_ATTEMPTS="${SCREENSHOT_MAX_ATTEMPTS:-30}"
 SLEEP_SECONDS="${SCREENSHOT_SLEEP_SECONDS:-20}"

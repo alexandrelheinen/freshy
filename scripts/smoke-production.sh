@@ -3,7 +3,7 @@
 set -euo pipefail
 
 API_URL="${API_URL:-https://freshy-api.alexandrelheinen.workers.dev}"
-WEB_URL="${WEB_URL:-https://freshy-25e.pages.dev}"
+WEB_URL="${WEB_URL:-https://getfreshy.pages.dev}"
 R2_PUBLIC_URL="${R2_PUBLIC_URL:-}"
 MAX_ATTEMPTS="${SMOKE_MAX_ATTEMPTS:-30}"
 SLEEP_SECONDS="${SMOKE_SLEEP_SECONDS:-20}"

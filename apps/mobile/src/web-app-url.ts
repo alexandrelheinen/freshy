@@ -1,4 +1,4 @@
-const DEFAULT_WEB_APP_URL = 'https://freshy-25e.pages.dev';
+const DEFAULT_WEB_APP_URL = 'https://getfreshy.pages.dev';
 
 export function resolveWebAppUrl(fromExtra: string | undefined | null): string {
   if (typeof fromExtra === 'string' && fromExtra.trim()) {

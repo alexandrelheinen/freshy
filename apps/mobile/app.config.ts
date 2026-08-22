@@ -6,7 +6,7 @@ const { readAppVersion } = require('./read-app-version.cjs') as {
   readAppVersion: () => string;
 };
 
-const DEFAULT_WEB_APP_URL = 'https://freshy-25e.pages.dev';
+const DEFAULT_WEB_APP_URL = 'https://getfreshy.pages.dev';
 const DEFAULT_EAS_PROJECT_ID = 'ff3b74f8-863b-41cd-a83a-1c9f37a1dd42';
 const PLACEHOLDER_EAS_PROJECT_ID = 'REPLACE_WITH_EAS_PROJECT_ID';
 

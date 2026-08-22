@@ -11,7 +11,7 @@ Freshy production runs on **Cloudflare** for web (Pages), API (Workers), databas
 
 | Service  | Provider          | Resource name   | URL                                             |
 | -------- | ----------------- | --------------- | ----------------------------------------------- |
-| Web      | Cloudflare Pages  | `freshy-25e`    | https://freshy-25e.pages.dev                    |
+| Web      | Cloudflare Pages  | `getfreshy`     | https://getfreshy.pages.dev/explore             |
 | API      | Cloudflare Worker | `freshy-api`    | https://freshy-api.alexandrelheinen.workers.dev |
 | Database | Cloudflare D1     | `freshy-db`     | Binding `FRESHY_DB`                             |
 | Storage  | Cloudflare R2     | `freshy-assets` | Binding `FRESHY_ASSETS`                         |
@@ -20,7 +20,7 @@ Freshy production runs on **Cloudflare** for web (Pages), API (Workers), databas
 
 ```mermaid
 flowchart LR
-    Pages[Cloudflare Pages<br/>freshy-25e] -->|HTTPS| Worker[Cloudflare Worker<br/>freshy-api]
+    Pages[Cloudflare Pages<br/>getfreshy] -->|HTTPS| Worker[Cloudflare Worker<br/>freshy-api]
     Worker --> D1[(D1 freshy-db)]
     Worker --> R2[(R2 freshy-assets)]
     Pages --> Mapbox[Mapbox]
@@ -85,7 +85,7 @@ flowchart TB
     end
 
     subgraph cf [Cloudflare]
-        Pages[Pages freshy-25e]
+        Pages[Pages getfreshy]
         Worker[Worker freshy-api]
         D1[(D1 freshy-db)]
         R2[(R2 freshy-assets)]

@@ -137,7 +137,7 @@ Local development mirrors production bindings:
 | Worker `freshy-api` | `wrangler dev`                                   |
 | D1 `freshy-db`      | Local D1 SQLite                                  |
 | R2 `freshy-assets`  | Wrangler R2 emulation                            |
-| Pages `freshy-25e`  | Next.js dev or `pnpm --filter @freshy/web build` |
+| Pages `getfreshy`   | Next.js dev or `pnpm --filter @freshy/web build` |
 
 Deploy steps: [platforms.md](platforms.md).
 
@@ -145,7 +145,7 @@ Deploy steps: [platforms.md](platforms.md).
 
 ## Mobile shell (optional)
 
-The native apps in `apps/mobile` are a **WebView wrapper** around the deployed web app (default: `https://freshy-25e.pages.dev`). No separate mobile UI to maintain.
+The native apps in `apps/mobile` are a **WebView wrapper** around the deployed web app (default: `https://getfreshy.pages.dev`). No separate mobile UI to maintain.
 
 **Preview in Expo Go or a simulator:**
 

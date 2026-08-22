@@ -25,7 +25,7 @@ describe('isGoogleOAuthUrl', () => {
   });
 
   it('ignores the Freshy web app and other origins', () => {
-    assert.equal(isGoogleOAuthUrl('https://freshy-25e.pages.dev/profile'), false);
+    assert.equal(isGoogleOAuthUrl('https://getfreshy.pages.dev/profile'), false);
     assert.equal(isGoogleOAuthUrl('https://clerk.example.com/v1/oauth'), false);
     assert.equal(isGoogleOAuthUrl('not-a-url'), false);
   });
@@ -34,12 +34,12 @@ describe('isGoogleOAuthUrl', () => {
 describe('buildAuthSessionReturnUrl', () => {
   it('normalizes the web app URL into a trailing-slash prefix', () => {
     assert.equal(
-      buildAuthSessionReturnUrl('https://freshy-25e.pages.dev'),
-      'https://freshy-25e.pages.dev/',
+      buildAuthSessionReturnUrl('https://getfreshy.pages.dev'),
+      'https://getfreshy.pages.dev/',
     );
     assert.equal(
-      buildAuthSessionReturnUrl('https://freshy-25e.pages.dev/'),
-      'https://freshy-25e.pages.dev/',
+      buildAuthSessionReturnUrl('https://getfreshy.pages.dev/'),
+      'https://getfreshy.pages.dev/',
     );
   });
 });
@@ -47,8 +47,8 @@ describe('buildAuthSessionReturnUrl', () => {
 describe('buildWebViewNavigateScript', () => {
   it('replaces the current WebView location with the OAuth callback URL', () => {
     assert.equal(
-      buildWebViewNavigateScript('https://freshy-25e.pages.dev/profile?__clerk_status=complete'),
-      'window.location.replace("https://freshy-25e.pages.dev/profile?__clerk_status=complete"); true;',
+      buildWebViewNavigateScript('https://getfreshy.pages.dev/profile?__clerk_status=complete'),
+      'window.location.replace("https://getfreshy.pages.dev/profile?__clerk_status=complete"); true;',
     );
   });
 });
