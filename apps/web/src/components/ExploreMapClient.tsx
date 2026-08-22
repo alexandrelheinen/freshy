@@ -30,7 +30,7 @@ import {
   fetchPlacesClient,
   isPlaceVerified,
 } from '../lib/api';
-import { formatPlaceDistanceFromUser, distanceKmFromUser } from '../lib/place-distance';
+import { formatPlaceDistanceFromUser } from '../lib/place-distance';
 import type { UserCoords } from '../lib/location-context';
 import { mapStyleUrl, type MapStyleId } from '../lib/map-styles';
 import { cappedSearchRadiusKm } from '../lib/map-zoom';
@@ -44,7 +44,7 @@ import { minFreshnessScore } from '../lib/min-freshness-filter-storage';
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import { SearchRadiusControl } from './SearchRadiusControl';
 import { PlaceMapMarker, UserLocationMarker, VerifiedBadge, freshnessLabel } from './map-markers';
-import { nearbyPlacesForList } from '../lib/explore-nearby-places';
+import { exploreSearchOrigin, nearbyPlacesForList } from '../lib/explore-nearby-places';
 import { PlacePhoto } from './PlacePhoto';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
@@ -218,20 +218,18 @@ function ExplorePreviewCard({
 
 function NearbyListItem({
   place,
-  userLocation,
   isSelected,
   onSelect,
   itemRef,
 }: {
   place: PlaceDto;
-  userLocation: UserCoords | null;
   isSelected: boolean;
   onSelect: () => void;
   itemRef?: RefObject<HTMLButtonElement | null>;
 }) {
   const freshness = freshnessBarState(place.aggregatedFreshnessLevel);
   const verified = isPlaceVerified(place);
-  const distanceKm = distanceKmFromUser(place, userLocation);
+  const distanceKm = place.distanceKm;
 
   return (
     <button
@@ -351,9 +349,11 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
     return places.find((p) => p.slug === selectedSlug) ?? null;
   }, [places, selectedSlug]);
 
+  const searchOrigin = useMemo(() => exploreSearchOrigin(searchAnchor), [searchAnchor]);
+
   const nearbyPlaces = useMemo(
-    () => nearbyPlacesForList(places, selectedSlug, 5),
-    [places, selectedSlug],
+    () => nearbyPlacesForList(places, selectedSlug, 5, searchOrigin),
+    [places, selectedSlug, searchOrigin],
   );
 
   useEffect(() => {
@@ -411,9 +411,10 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
         longitude: anchor.longitude,
         radiusKm,
       });
+      const origin = exploreSearchOrigin(anchor);
       void loadPlaces({
-        lat: anchor.latitude,
-        lng: anchor.longitude,
+        lat: origin.lat,
+        lng: origin.lng,
         zoom: anchor.zoom,
         category: activeCategory,
         verifiedOnly,
@@ -430,12 +431,34 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
   }, [searchPulse]);
 
   const skipFilterReload = useRef(true);
+  const appliedUserOrigin = useRef(false);
+
+  const searchAtUserLocation = useCallback(
+    (coords: UserCoords) => {
+      const zoom = zoomForSearchRadius(coords.lat);
+      const anchor = { latitude: coords.lat, longitude: coords.lng, zoom };
+      setViewState(anchor);
+      runSearch(anchor);
+    },
+    [runSearch, zoomForSearchRadius],
+  );
 
   useEffect(() => {
+    if (userLocation) {
+      appliedUserOrigin.current = true;
+      searchAtUserLocation(userLocation);
+      return;
+    }
     runSearch(searchAnchor);
-    // Initial load for the stored or pilot map center.
+    // Initial load: granted GPS becomes the fetch, sort, and label origin.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!userLocation || appliedUserOrigin.current) return;
+    appliedUserOrigin.current = true;
+    searchAtUserLocation(userLocation);
+  }, [searchAtUserLocation, userLocation]);
 
   useEffect(() => {
     if (skipFilterReload.current) {
@@ -443,14 +466,21 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
       return;
     }
     void loadPlaces({
-      lat: searchAnchor.latitude,
-      lng: searchAnchor.longitude,
+      lat: searchOrigin.lat,
+      lng: searchOrigin.lng,
       zoom: searchAnchor.zoom,
       category: activeCategory,
       verifiedOnly,
       minFreshnessLevel: minFreshnessScoreValue,
     });
-  }, [activeCategory, loadPlaces, searchAnchor, verifiedOnly, minFreshnessScoreValue]);
+  }, [
+    activeCategory,
+    loadPlaces,
+    searchAnchor,
+    searchOrigin,
+    verifiedOnly,
+    minFreshnessScoreValue,
+  ]);
 
   const decreaseSearchRadius = () =>
     setViewState((v) => {
@@ -467,10 +497,7 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
   const researchHere = () => runSearch(viewState);
   const recenter = () => {
     if (userLocation) {
-      const zoom = zoomForSearchRadius(userLocation.lat);
-      const anchor = { latitude: userLocation.lat, longitude: userLocation.lng, zoom };
-      setViewState(anchor);
-      runSearch(anchor);
+      searchAtUserLocation(userLocation);
     } else {
       requestLocation();
     }
@@ -758,7 +785,6 @@ export function ExploreMapClient({ initialPlaces }: { initialPlaces: PlaceDto[] 
                   <NearbyListItem
                     key={place.id}
                     place={place}
-                    userLocation={userLocation}
                     isSelected={place.slug === selectedSlug}
                     onSelect={() => setSelectedSlug(place.slug)}
                     itemRef={selectedListItemRef}
