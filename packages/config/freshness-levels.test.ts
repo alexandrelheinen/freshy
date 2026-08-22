@@ -7,10 +7,12 @@ import { parse } from 'yaml';
 import {
   FRESHNESS_LEVELS,
   FRESHNESS_LEVEL_LABELS,
+  FRESHNESS_LEVEL_SHORT_LABELS,
   freshnessBarSegments,
   freshnessLevelScore,
   freshnessTone,
   type FreshnessLevelConfig,
+  type FreshnessLevelId,
 } from './freshness-levels';
 
 function loadFreshnessLevelsFromYaml(): FreshnessLevelConfig {
@@ -44,5 +46,22 @@ describe('freshness-levels', () => {
     assert.equal(freshnessLevelScore('VERY_COLD_AC'), 3);
     assert.equal(freshnessLevelScore(null), null);
     assert.equal(FRESHNESS_LEVEL_LABELS.NATURALLY_FRESH, 'Naturally Fresh');
+  });
+
+  it('exposes one user-facing label per freshness enum', () => {
+    const expected: Record<FreshnessLevelId, string> = {
+      NONE: 'No Cooling',
+      GOOD_VENTILATION: 'Good Ventilation',
+      MODEST_AC: 'Modest AC',
+      VERY_COLD_AC: 'Very Cold AC',
+      NATURALLY_FRESH: 'Naturally Fresh',
+    };
+
+    for (const level of FRESHNESS_LEVELS) {
+      assert.equal(level.label, expected[level.id]);
+      assert.equal(level.shortLabel, expected[level.id]);
+      assert.equal(FRESHNESS_LEVEL_LABELS[level.id], expected[level.id]);
+      assert.equal(FRESHNESS_LEVEL_SHORT_LABELS[level.id], expected[level.id]);
+    }
   });
 });

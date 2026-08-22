@@ -457,7 +457,7 @@ export function AddPlaceClient() {
                     freshnessLevel === option.id ? 'text-primary' : 'text-on-surface-variant'
                   }`}
                 >
-                  {option.shortLabel}
+                  {option.label}
                 </span>
               </button>
             ))}

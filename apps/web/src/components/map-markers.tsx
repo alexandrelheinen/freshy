@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  FRESHNESS_LEVEL_SHORT_LABELS,
+  FRESHNESS_LEVEL_LABELS,
   MaterialIcon,
   PLACE_CATEGORY_ICONS,
   freshnessBarSegments,
@@ -75,7 +75,7 @@ export function categoryIcon(category: string): MaterialIconName {
 export function freshnessLabel(strength: PlaceDto['aggregatedFreshnessLevel']): string {
   const id = freshnessId(strength);
   if (!id) return 'UNKNOWN';
-  return FRESHNESS_LEVEL_SHORT_LABELS[id].toUpperCase();
+  return FRESHNESS_LEVEL_LABELS[id].toUpperCase();
 }
 
 export function VerifiedBadge({
