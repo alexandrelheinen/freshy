@@ -25,20 +25,17 @@ describe('studio-contributors', () => {
   it('resolves contributors from a prebuilt map using trimmed ids', () => {
     const map = new Map<string, StudioContributor>([
       [
-        'cmqzvtuqr0000fe1yr9igjpxf',
+        'user_fixture_01',
         {
-          id: 'cmqzvtuqr0000fe1yr9igjpxf',
-          email: 'alex@example.com',
-          displayName: 'Alexandre Loeblein Heinen',
-          username: 'alex',
+          id: 'user_fixture_01',
+          email: 'ada@example.com',
+          displayName: 'Ada Example',
+          username: 'ada',
         },
       ],
     ]);
 
-    assert.equal(
-      contributorForCreatedById(' cmqzvtuqr0000fe1yr9igjpxf ', map)?.displayName,
-      'Alexandre Loeblein Heinen',
-    );
+    assert.equal(contributorForCreatedById(' user_fixture_01 ', map)?.displayName, 'Ada Example');
     assert.equal(contributorForCreatedById('osm', map)?.displayName, 'OpenStreetMap Import');
   });
 

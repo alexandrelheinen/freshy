@@ -452,12 +452,13 @@ sequenceDiagram
 
 ## Related docs
 
-| Doc                                          | Contents                         |
-| -------------------------------------------- | -------------------------------- |
-| [local-development.md](local-development.md) | Local setup with wrangler dev    |
-| [database.md](database.md)                   | Schema, migrations, Drizzle      |
-| [infrastructure.md](infrastructure.md)       | Cloudflare services and bindings |
-| [architecture.md](architecture.md)           | Monorepo layout, data flow       |
-| [.env.example](../.env.example)              | All env var names                |
+| Doc                                              | Contents                                           |
+| ------------------------------------------------ | -------------------------------------------------- |
+| [local-development.md](local-development.md)     | Local setup with wrangler dev                      |
+| [database.md](database.md)                       | Schema, migrations, Drizzle                        |
+| [infrastructure.md](infrastructure.md)           | Cloudflare services and bindings                   |
+| [public-repo-hygiene.md](public-repo-hygiene.md) | Public-repo checklist (secrets, personal examples) |
+| [architecture.md](architecture.md)               | Monorepo layout, data flow                         |
+| [.env.example](../.env.example)                  | All env var names                                  |
 
 _Last updated: June 2026_
