@@ -46,7 +46,7 @@ This command always targets **remote** production D1 (no `--remote` flag).
 2. Copy the bookmark from the output, for example:
 
 ```text
-00000085-0000024c-00004c6d-8e61117bf38d7adb71b934ebbf891683
+00000000-00000000-00000000-exampleonlynotaproductionbookmark
 ```
 
 3. Store it in your notes or ticket. Optionally note the Unix timestamp as a backup reference:

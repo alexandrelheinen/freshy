@@ -114,6 +114,7 @@ Full layout: [docs/architecture.md](docs/architecture.md).
 | [docs/studio.md](docs/studio.md)                             | Admin Studio: Clerk role, moderation API                |
 | [docs/place-classification.md](docs/place-classification.md) | Tags and freshness level catalogs                       |
 | [docs/quality-standards.md](docs/quality-standards.md)       | Per-language quality rules                              |
+| [docs/public-repo-hygiene.md](docs/public-repo-hygiene.md)   | Public-repo checklist after opening the GitHub repo     |
 | [CONTRIBUTING.md](CONTRIBUTING.md)                           | TDD, PR rules, validation                               |
 
 ---
