@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from 'react';
 import { PlaceDetailClient } from './PlaceDetailClient';
+import { PlaceNotFound } from './PlaceNotFound';
 
 function subscribe(onStoreChange: () => void): () => void {
   window.addEventListener('popstate', onStoreChange);
@@ -21,11 +22,7 @@ export function PlaceDetailFromPathClient() {
   const slug = useSyncExternalStore(subscribe, readSlugFromPath, () => '');
 
   if (!slug) {
-    return (
-      <div className="flex min-h-screen items-center justify-center pb-10" data-page="place-detail">
-        <p className="text-on-surface-variant">Place not found.</p>
-      </div>
-    );
+    return <PlaceNotFound />;
   }
 
   return <PlaceDetailClient slug={slug} />;
