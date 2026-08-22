@@ -17,6 +17,7 @@ import {
 import { DESKTOP_NAV_ITEMS, MOBILE_MENU_NAV_ITEMS } from '../lib/nav-config';
 import { isStudioAdmin } from '../lib/studio-api';
 import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
+import { verifiedOnlyToggleCopy } from '../lib/verified-only-toggle';
 
 export type NavActiveId = 'explore' | 'cooling' | 'profile' | 'studio';
 
@@ -179,6 +180,7 @@ function VerifiedOnlyToggle({
   variant?: 'header' | 'menu';
 }) {
   const { verifiedOnly, setVerifiedOnly } = useVerifiedOnlyFilter();
+  const { pressed, ariaLabel, stateLabel } = verifiedOnlyToggleCopy(verifiedOnly);
 
   if (variant === 'menu') {
     return (
@@ -188,10 +190,8 @@ function VerifiedOnlyToggle({
           setVerifiedOnly(!verifiedOnly);
           onToggle?.();
         }}
-        aria-pressed={verifiedOnly}
-        aria-label={
-          verifiedOnly ? 'Showing verified places only' : 'Show all places including unverified'
-        }
+        aria-pressed={pressed}
+        aria-label={ariaLabel}
         className="flex w-full items-center gap-3 rounded-lg px-2 py-3 text-left font-label-caps text-on-surface-variant transition-colors hover:bg-surface-container hover:text-primary"
       >
         <MaterialIcon name="verified" filled={verifiedOnly} size={22} className="shrink-0" />
@@ -203,7 +203,7 @@ function VerifiedOnlyToggle({
               : 'bg-surface-container-high text-on-surface-variant'
           }`}
         >
-          {verifiedOnly ? 'On' : 'Off'}
+          {stateLabel}
         </span>
       </button>
     );
@@ -216,10 +216,8 @@ function VerifiedOnlyToggle({
         setVerifiedOnly(!verifiedOnly);
         onToggle?.();
       }}
-      aria-pressed={verifiedOnly}
-      aria-label={
-        verifiedOnly ? 'Showing verified places only' : 'Show all places including unverified'
-      }
+      aria-pressed={pressed}
+      aria-label={ariaLabel}
       className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
         verifiedOnly
           ? 'bg-primary-container text-primary'
