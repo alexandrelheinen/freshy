@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" role="img" aria-label="Freshy">
+  <!-- Material ac_unit snowflake in theme primary (#005f9d), matching the header logo. -->
+  <path
+    fill="#005f9d"
+    d="M456-240h50v-97l76 76 35-36-111-111v-47h46l111 112 36-35-76-77h97v-50h-97l76-76-36-35-111 111h-46v-46l111-111-35-36-76 76v-97h-50v97l-77-76-35 36 112 111v46h-47L298-616l-36 35 76 76h-97v50h97l-76 77 36 35 111-112h47v47L344-297l35 36 77-76v97Z"
+  />
+</svg>

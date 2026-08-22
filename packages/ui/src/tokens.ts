@@ -6,6 +6,7 @@ import { getDefaultThemeTokens } from '@freshy/theme/tokens';
 import {
   defaultPlacePhotoLocalPath,
   resolvePlacePhotoUrl,
+  placePhotoSrcAfterError as resolvePlacePhotoSrcAfterError,
   type PlacePhotoVariant,
   type PlacePhotoCategory,
 } from '@freshy/config/place-photos';
@@ -171,6 +172,21 @@ export function getPlacePhotoUrl(
   const publicAssetBaseUrl = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? '';
   return resolvePlacePhotoUrl(
     photoUrl,
+    category as PlacePhotoCategory,
+    publicAssetBaseUrl || undefined,
+    variant,
+  );
+}
+
+/** Default (R2 or bundled) photo to show after a venue image fails to load. */
+export function placePhotoSrcAfterError(
+  failedSrc: string,
+  category: PlaceCategory,
+  variant: PlacePhotoVariant = 'full',
+): string | null {
+  const publicAssetBaseUrl = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? '';
+  return resolvePlacePhotoSrcAfterError(
+    failedSrc,
     category as PlacePhotoCategory,
     publicAssetBaseUrl || undefined,
     variant,

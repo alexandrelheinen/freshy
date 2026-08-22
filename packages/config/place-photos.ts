@@ -74,3 +74,15 @@ export function resolvePlacePhotoUrl(
   }
   return defaultPlacePhotoPathForVariant(category, variant);
 }
+
+/** After a remote (or other) photo fails to load, use the category default once. */
+export function placePhotoSrcAfterError(
+  failedSrc: string,
+  category: PlacePhotoCategory,
+  publicAssetBaseUrl?: string,
+  variant: PlacePhotoVariant = 'full',
+): string | null {
+  const fallback = resolvePlacePhotoUrl(null, category, publicAssetBaseUrl, variant);
+  if (failedSrc === fallback) return null;
+  return fallback;
+}

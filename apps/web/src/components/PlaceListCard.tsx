@@ -6,7 +6,6 @@ import {
   PLACE_TAG_LABELS,
   MaterialIcon,
   ROUTES,
-  getPlacePhotoUrl,
   filterValidPlaceTags,
   type PlaceCategory,
 } from '@freshy/ui';
@@ -16,6 +15,7 @@ import { formatPlaceDistanceFromUser } from '../lib/place-distance';
 import { useUserLocation } from '../lib/use-user-location';
 import { freshnessLabel } from './map-markers';
 import { FreshnessBar } from '@freshy/ui';
+import { PlacePhoto } from './PlacePhoto';
 
 export function PlaceListCard({
   place,
@@ -39,8 +39,9 @@ export function PlaceListCard({
     <Link href={ROUTES.place(place.slug)} className="group block">
       <article className="overflow-hidden rounded-xl border border-outline-variant/10 bg-surface-container-lowest shadow-card">
         <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-primary-container/40 to-secondary-container/30">
-          <img
-            src={getPlacePhotoUrl(place.photoUrl, place.category as PlaceCategory)}
+          <PlacePhoto
+            photoUrl={place.photoUrl}
+            category={place.category as PlaceCategory}
             alt=""
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />

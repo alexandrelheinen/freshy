@@ -11,12 +11,12 @@ import {
   GlassCard,
   MaterialIcon,
   ROUTES,
-  getPlacePhotoUrl,
   filterValidPlaceTags,
   type MaterialIconName,
   type PlaceCategory,
 } from '@freshy/ui';
 import { AppTopNav } from './AppNav';
+import { PlacePhoto } from './PlacePhoto';
 const PlaceDetailActions = dynamic(
   () => import('./PlaceDetailActions').then((m) => ({ default: m.PlaceDetailActions })),
   { ssr: false },
@@ -174,8 +174,9 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
           ) : null}
         </div>
         <section className="relative h-64 w-full overflow-hidden bg-gradient-to-br from-primary-container to-secondary-container md:h-72 md:rounded-2xl">
-          <img
-            src={getPlacePhotoUrl(place.photoUrl, place.category as PlaceCategory)}
+          <PlacePhoto
+            photoUrl={place.photoUrl}
+            category={place.category as PlaceCategory}
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />
