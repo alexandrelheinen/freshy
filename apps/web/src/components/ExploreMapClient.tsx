@@ -11,7 +11,6 @@ import {
   GlassCard,
   MAP_SEARCH,
   MaterialIcon,
-  getPlacePhotoUrl,
   PLACE_CATEGORY_ICONS,
   PLACE_CATEGORY_LABELS,
   PLACE_TAG_LABELS,
@@ -46,6 +45,7 @@ import { AppMobileHeader, AppTopNav } from './AppNav';
 import { SearchRadiusControl } from './SearchRadiusControl';
 import { PlaceMapMarker, UserLocationMarker, VerifiedBadge, freshnessLabel } from './map-markers';
 import { nearbyPlacesForList } from '../lib/explore-nearby-places';
+import { PlacePhoto } from './PlacePhoto';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
 
@@ -101,8 +101,9 @@ function ExplorePreviewCard({
     return (
       <div className="glass-panel pointer-events-auto overflow-hidden rounded-2xl border border-glass-border shadow-2xl">
         <div className="relative h-48 overflow-hidden bg-gradient-to-br from-primary-container/40 to-secondary-container/30">
-          <img
-            src={getPlacePhotoUrl(place.photoUrl, place.category as PlaceCategory)}
+          <PlacePhoto
+            photoUrl={place.photoUrl}
+            category={place.category as PlaceCategory}
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />
@@ -170,8 +171,9 @@ function ExplorePreviewCard({
     <Link href={ROUTES.place(place.slug)}>
       <GlassCard className="flex items-center gap-4 rounded-2xl border border-glass-border p-4 shadow-2xl transition hover:shadow-md">
         <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-primary-container/50 to-secondary-container/40">
-          <img
-            src={getPlacePhotoUrl(place.photoUrl, place.category as PlaceCategory)}
+          <PlacePhoto
+            photoUrl={place.photoUrl}
+            category={place.category as PlaceCategory}
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />
@@ -244,8 +246,9 @@ function NearbyListItem({
     >
       <div className="flex gap-3">
         <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-primary-container/40 to-secondary-container/30">
-          <img
-            src={getPlacePhotoUrl(place.photoUrl, place.category as PlaceCategory)}
+          <PlacePhoto
+            photoUrl={place.photoUrl}
+            category={place.category as PlaceCategory}
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />

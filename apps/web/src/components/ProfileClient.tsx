@@ -10,11 +10,11 @@ import {
   MaterialIcon,
   PLACE_CATEGORY_ICONS,
   ROUTES,
-  getPlacePhotoUrl,
   type MaterialIconName,
   type PlaceCategory,
 } from '@freshy/ui';
 import { AppMobileHeader, AppTopNav } from './AppNav';
+import { PlacePhoto } from './PlacePhoto';
 import { type PlaceDto } from '../lib/api';
 import { formatRelativeTime } from '../lib/api';
 import {
@@ -38,8 +38,9 @@ function SavedPlaceCard({ place }: { place: PlaceDto }) {
     <Link href={ROUTES.place(place.slug)} className="shrink-0 active:scale-95">
       <GlassCard className="w-64 overflow-hidden transition-transform">
         <div className="relative h-32">
-          <img
-            src={getPlacePhotoUrl(place.photoUrl, place.category as PlaceCategory)}
+          <PlacePhoto
+            photoUrl={place.photoUrl}
+            category={place.category as PlaceCategory}
             alt=""
             className="h-full w-full object-cover"
           />

@@ -10,6 +10,7 @@ import {
   DEFAULT_PLACE_PHOTO_PATHS,
   EXPLORE_FILTER_CHIPS,
   getPlacePhotoUrl,
+  placePhotoSrcAfterError,
   NAV_ICONS,
   PILOT_CITY,
   PLACE_CATEGORY_CHIP_LABELS,
@@ -52,6 +53,28 @@ describe('@freshy/ui tokens', () => {
     assert.equal(
       getPlacePhotoUrl(null, 'MUSEUM'),
       'https://assets.freshy.app/places/defaults/default-museum.png',
+    );
+    if (saved) process.env.NEXT_PUBLIC_R2_PUBLIC_URL = saved;
+    else delete process.env.NEXT_PUBLIC_R2_PUBLIC_URL;
+  });
+
+  it('falls back to the default photo after a remote image error', () => {
+    assert.equal(
+      placePhotoSrcAfterError('https://cdn.eat-list.fr/broken.jpg', 'RESTAURANT'),
+      '/place-defaults/default-restaurant.png',
+    );
+    assert.equal(
+      placePhotoSrcAfterError('/place-defaults/default-restaurant.png', 'RESTAURANT'),
+      null,
+    );
+  });
+
+  it('falls back to the R2 default when NEXT_PUBLIC_R2_PUBLIC_URL is set', () => {
+    const saved = process.env.NEXT_PUBLIC_R2_PUBLIC_URL;
+    process.env.NEXT_PUBLIC_R2_PUBLIC_URL = 'https://pub-e2a3816cb1244efeb75186f5725a97f7.r2.dev';
+    assert.equal(
+      placePhotoSrcAfterError('https://cdn.eat-list.fr/broken.jpg', 'CAFE'),
+      'https://pub-e2a3816cb1244efeb75186f5725a97f7.r2.dev/places/defaults/default-cafe.png',
     );
     if (saved) process.env.NEXT_PUBLIC_R2_PUBLIC_URL = saved;
     else delete process.env.NEXT_PUBLIC_R2_PUBLIC_URL;

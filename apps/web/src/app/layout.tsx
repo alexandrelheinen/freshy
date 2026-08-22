@@ -1,20 +1,18 @@
 import type { Metadata, Viewport } from 'next';
-import { BRAND_TAGLINE, BRAND_TITLE, THEME_BOOTSTRAP_SCRIPT } from '@freshy/ui';
+import { THEME_BOOTSTRAP_SCRIPT } from '@freshy/ui';
 import { CORNER_STYLE } from '@freshy/config/corner-style';
 import { buildGoogleFontsHref } from '@freshy/theme/fonts';
 import { getDefaultThemeTokens } from '@freshy/theme/tokens';
 import { FreshyClerkProvider } from '../components/FreshyClerkProvider';
 import { FreshyLocationProvider } from '../components/FreshyLocationProvider';
 import { FreshyThemeProvider } from '../components/FreshyThemeProvider';
+import { appMetadata } from '../lib/app-metadata';
 import './globals.css';
 
 const defaultTheme = getDefaultThemeTokens();
 const googleFontsHref = buildGoogleFontsHref(defaultTheme.fonts);
 
-export const metadata: Metadata = {
-  title: BRAND_TITLE,
-  description: BRAND_TAGLINE,
-};
+export const metadata: Metadata = appMetadata;
 
 export const viewport: Viewport = {
   width: 'device-width',
