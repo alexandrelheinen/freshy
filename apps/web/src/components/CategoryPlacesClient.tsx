@@ -13,6 +13,7 @@ import {
   fetchCategoryPlacesPage,
   type CategoryPlacesPageDto,
 } from '../lib/api';
+import { categoryPlacesEmptyMessage } from '../lib/category-places-messages';
 import { locationStatusMessage } from '../lib/location-messages';
 import { useUserLocation } from '../lib/use-user-location';
 import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
@@ -103,7 +104,7 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
       loading={loading}
       loadError={loadError}
       navActive="cooling"
-      emptyMessage={`No ${title.toLowerCase()} in the database yet.`}
+      emptyMessage={categoryPlacesEmptyMessage(title, verifiedOnly)}
       pagination={
         category
           ? {
