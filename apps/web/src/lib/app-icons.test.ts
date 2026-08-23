@@ -30,6 +30,16 @@ describe('@freshy/web app icons', () => {
     assert.match(svg, new RegExp(primary.replace('#', '#?')));
   });
 
+  it('uses the official nest_farsight_cool brand mark, not a cropped snowflake', () => {
+    const svg = readFileSync(join(publicDir, 'favicon.svg'), 'utf8');
+    const brandIcon = getDefaultThemeTokens().icons.brand;
+    assert.equal(brandIcon, 'nest_farsight_cool');
+    assert.match(svg, /nest_farsight_cool/);
+    assert.match(svg, /q-82 0-155/);
+    assert.doesNotMatch(svg, /ac_unit/);
+    assert.match(svg, /viewBox="0 -960 960 960"/);
+  });
+
   it('wires icon link targets in Next.js metadata', () => {
     const iconUrls = APP_METADATA_ICONS.icon.map((icon) => icon.url);
     assert.deepEqual(iconUrls, [
