@@ -1,11 +1,7 @@
 # Freshy
 
 [![CI](https://github.com/alexandrelheinen/freshy/actions/workflows/ci.yml/badge.svg)](https://github.com/alexandrelheinen/freshy/actions/workflows/ci.yml)
-[![Production smoke test](https://github.com/alexandrelheinen/freshy/actions/workflows/smoke-production.yml/badge.svg)](https://github.com/alexandrelheinen/freshy/actions/workflows/smoke-production.yml)
-[![Production screenshots](https://github.com/alexandrelheinen/freshy/actions/workflows/production-screenshots.yml/badge.svg)](https://github.com/alexandrelheinen/freshy/actions/workflows/production-screenshots.yml)
 [![Release | Mobile builds](https://github.com/alexandrelheinen/freshy/actions/workflows/release.yml/badge.svg)](https://github.com/alexandrelheinen/freshy/actions/workflows/release.yml)
-[![Deploy database migrations](https://github.com/alexandrelheinen/freshy/actions/workflows/migrate-database.yml/badge.svg)](https://github.com/alexandrelheinen/freshy/actions/workflows/migrate-database.yml)
-[![Sync place defaults to R2](https://github.com/alexandrelheinen/freshy/actions/workflows/sync-place-defaults.yml/badge.svg)](https://github.com/alexandrelheinen/freshy/actions/workflows/sync-place-defaults.yml)
 [![Web | Pages](https://img.shields.io/website?url=https%3A%2F%2Fgetfreshy.pages.dev%2Fexplore&label=Web%20%7C%20Pages&logo=cloudflare&logoColor=white&color=F38020)](https://getfreshy.pages.dev/explore)
 [![API | Cloudflare Worker](https://img.shields.io/website?url=https%3A%2F%2Ffreshy-api.alexandrelheinen.workers.dev%2Fhealth&label=API%20%7C%20Worker&logo=cloudflare&color=F38020)](https://freshy-api.alexandrelheinen.workers.dev/health)
 [![Database | D1](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ffreshy-api.alexandrelheinen.workers.dev%2Fhealth&query=%24.db&label=D1&color=00E599&logo=cloudflare)](https://dash.cloudflare.com/?to=/:account/workers/d1)
