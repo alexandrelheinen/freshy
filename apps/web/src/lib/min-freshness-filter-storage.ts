@@ -6,22 +6,40 @@ export const MIN_FRESHNESS_CHANGE_EVENT = 'freshy-min-freshness-change';
 
 export type MinFreshnessFilter = FreshnessLevelId | null;
 
+/** First visit and missing storage: Modest AC or colder. */
+export const DEFAULT_MIN_FRESHNESS_FILTER: FreshnessLevelId = 'MODEST_AC';
+
+function localStorageRef(): Storage | null {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    return window.localStorage;
+  }
+  if (typeof globalThis.localStorage !== 'undefined') {
+    return globalThis.localStorage;
+  }
+  return null;
+}
+
 export function readMinFreshnessFilter(): MinFreshnessFilter {
-  if (typeof window === 'undefined') return null;
+  const storage = localStorageRef();
+  if (!storage) return DEFAULT_MIN_FRESHNESS_FILTER;
   try {
-    const raw = window.localStorage.getItem(MIN_FRESHNESS_STORAGE_KEY);
-    if (!raw || raw === 'any') return null;
+    const raw = storage.getItem(MIN_FRESHNESS_STORAGE_KEY);
+    if (raw === null) return DEFAULT_MIN_FRESHNESS_FILTER;
+    if (raw === 'any') return null;
     return raw as FreshnessLevelId;
   } catch {
-    return null;
+    return DEFAULT_MIN_FRESHNESS_FILTER;
   }
 }
 
 export function writeMinFreshnessFilter(value: MinFreshnessFilter): void {
-  if (typeof window === 'undefined') return;
+  const storage = localStorageRef();
+  if (!storage) return;
   try {
-    window.localStorage.setItem(MIN_FRESHNESS_STORAGE_KEY, value ?? 'any');
-    window.dispatchEvent(new CustomEvent(MIN_FRESHNESS_CHANGE_EVENT, { detail: value }));
+    storage.setItem(MIN_FRESHNESS_STORAGE_KEY, value ?? 'any');
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent(MIN_FRESHNESS_CHANGE_EVENT, { detail: value }));
+    }
   } catch {
     // Ignore quota or privacy mode errors.
   }
