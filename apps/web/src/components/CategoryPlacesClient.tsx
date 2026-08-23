@@ -16,6 +16,8 @@ import {
 import { categoryPlacesEmptyMessage } from '../lib/category-places-messages';
 import { locationStatusMessage } from '../lib/location-messages';
 import { useUserLocation } from '../lib/use-user-location';
+import { minFreshnessScore } from '../lib/min-freshness-filter-storage';
+import { useMinFreshnessFilter } from '../lib/use-min-freshness-filter';
 import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
 
 function parseCategory(raw: string): PlaceCategory | null {
@@ -39,6 +41,8 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
     requestLocation,
   } = useUserLocation();
   const { verifiedOnly } = useVerifiedOnlyFilter();
+  const { minFreshnessLevel } = useMinFreshnessFilter();
+  const minFreshnessScoreValue = minFreshnessScore(minFreshnessLevel);
   const [page, setPage] = useState(1);
   const [placesPage, setPlacesPage] = useState<CategoryPlacesPageDto | null>(null);
   const [loading, setLoading] = useState(true);
@@ -46,7 +50,14 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
 
   useEffect(() => {
     setPage(1);
-  }, [category, searchCenter.lat, searchCenter.lng, searchRadiusKm, verifiedOnly]);
+  }, [
+    category,
+    searchCenter.lat,
+    searchCenter.lng,
+    searchRadiusKm,
+    verifiedOnly,
+    minFreshnessScoreValue,
+  ]);
 
   useEffect(() => {
     if (!category) {
@@ -67,6 +78,7 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
         page,
         limit: CATEGORY_PLACES_PAGE_SIZE,
         verifiedOnly,
+        minFreshnessLevel: minFreshnessScoreValue,
       });
       if (cancelled) return;
       if (!data) {
@@ -81,7 +93,15 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
     return () => {
       cancelled = true;
     };
-  }, [category, page, searchCenter.lat, searchCenter.lng, searchRadiusKm, verifiedOnly]);
+  }, [
+    category,
+    page,
+    searchCenter.lat,
+    searchCenter.lng,
+    searchRadiusKm,
+    verifiedOnly,
+    minFreshnessScoreValue,
+  ]);
 
   const statusMessage =
     denied || locationError
