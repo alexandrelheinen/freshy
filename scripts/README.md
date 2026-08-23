@@ -1,18 +1,19 @@
 # Scripts
 
-| Script (Shell)                      | Usage                                                        |
-| ----------------------------------- | ------------------------------------------------------------ |
-| `migrate-deploy.sh`                 | Production D1 migrate (CI, manual deploy)                    |
-| `validation.sh`                     | Full CI pipeline locally; run before every PR                |
-| `build.sh`                          | Compile all packages                                         |
-| `post-pr-screenshots.sh`            | Upload PR screenshots to R2 and build PR comment markdown    |
-| `upload-place-defaults.ts`          | Upload bundled default place photos and low-res thumbs to R2 |
-| `capture-production-screenshots.sh` | Wait for live web, capture Playwright screenshots            |
-| `upload-production-screenshots.sh`  | Upload production screenshots to R2 (`ci/main/latest/`)      |
-| `smoke-production.sh`               | Post-deploy checks against live Worker and Pages             |
-| `smoke-api-start.sh`                | Build API and verify Worker `/health` locally                |
-| `mobile-build.sh`                   | EAS build for Android/iOS/all (`release` profile)            |
-| `mobile-download.sh`                | Download latest APK/IPA from EAS to `dist/mobile/`           |
+| Script (Shell)                      | Usage                                                         |
+| ----------------------------------- | ------------------------------------------------------------- |
+| `migrate-deploy.sh`                 | Production D1 migrate (CI, manual deploy)                     |
+| `validation.sh`                     | Full CI pipeline locally; run before every PR                 |
+| `build.sh`                          | Compile all packages                                          |
+| `post-pr-screenshots.sh`            | Upload PR screenshots to R2 and build PR comment markdown     |
+| `upload-place-defaults.ts`          | Upload bundled default place photos and low-res thumbs to R2  |
+| `generate-app-icons.mjs`            | Rasterize `favicon.svg` (`nest_farsight_cool`) to PNG and ICO |
+| `capture-production-screenshots.sh` | Wait for live web, capture Playwright screenshots             |
+| `upload-production-screenshots.sh`  | Upload production screenshots to R2 (`ci/main/latest/`)       |
+| `smoke-production.sh`               | Post-deploy checks against live Worker and Pages              |
+| `smoke-api-start.sh`                | Build API and verify Worker `/health` locally                 |
+| `mobile-build.sh`                   | EAS build for Android/iOS/all (`release` profile)             |
+| `mobile-download.sh`                | Download latest APK/IPA from EAS to `dist/mobile/`            |
 
 ## Python tooling
 

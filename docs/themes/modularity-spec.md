@@ -250,6 +250,8 @@ amenity:
 
 `packages/ui/src/tokens.ts` keeps **labels and domain types** (`PlaceCategory`, `AMENITY_LABELS`). Glyph strings move to `@freshy/theme` generated exports. Components use `useThemeIcons()` or static imports from `@freshy/theme/tokens`.
 
+**Brand mark:** `icons.brand` is Material Symbol `nest_farsight_cool` (snowflake inside a circle). That same official glyph is the web favicon (`apps/web/public/favicon.svg`) and the header lockup (`BRAND_ICON`). Do not substitute the plain `ac_unit` snowflake for the logo or favicon. `ac_unit` stays valid only as a cooling-strength indicator in place UI.
+
 ---
 
 ## 5. Build pipeline
