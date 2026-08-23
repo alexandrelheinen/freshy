@@ -135,11 +135,11 @@ The anonymous **secret** is the contributor's `User.id` (UUID). Admins can look 
 
 User-submitted climate reviews for a place.
 
-| Column               | Type      | Notes                           |
-| -------------------- | --------- | ------------------------------- |
-| `userId` / `placeId` | `TEXT`    | Foreign keys, cascade on delete |
-| `acStrength`         | `INTEGER` | 1–3 scale at API layer          |
-| `comment`            | `TEXT`    | Optional text                   |
+| Column               | Type      | Notes                                        |
+| -------------------- | --------- | -------------------------------------------- |
+| `userId` / `placeId` | `TEXT`    | Foreign keys, cascade on delete; unique pair |
+| `acStrength`         | `INTEGER` | 1-5 coolness rating at the API layer         |
+| `comment`            | `TEXT`    | Optional text                                |
 
 ### `SavedPlace`
 
@@ -201,9 +201,11 @@ Pilot config: [`packages/config/pilot-city.ts`](../packages/config/pilot-city.ts
 
 D1 migrations live in [`packages/db/migrations/`](../packages/db/migrations/). Applied via wrangler:
 
-| Migration       | Description                                |
-| --------------- | ------------------------------------------ |
-| `0001_init.sql` | Creates four tables, indexes, foreign keys |
+| Migration                             | Description                                |
+| ------------------------------------- | ------------------------------------------ |
+| `0001_init.sql`                       | Creates four tables, indexes, foreign keys |
+| `0002_seed_import_provider_users.sql` | Import provider user rows for Studio joins |
+| `0003_review_user_place_unique.sql`   | Unique one review per user and place       |
 
 ### Commands
 
@@ -233,10 +235,12 @@ D1 has no PostGIS. Freshy uses **Haversine distance in application code** ([`pac
 | `GET /health`                          | Probes D1 with a lightweight query     |
 | `GET /places`                          | Place list + radius filter in app code |
 | `GET /places/meta/categories`          | Category aggregation                   |
-| `GET /places/:slug`                    | Place detail + reviews with user       |
+| `GET /places/:slug`                    | Place detail + first page of reviews   |
+| `GET /places/:slug/reviews`            | Paginated place reviews (5 per page)   |
 | `GET /users/me`                        | Profile with review and saved counts   |
 | `GET /users/me/saved`                  | Saved places for current user          |
-| `GET /users/me/reviews`                | Reviews authored by current user       |
+| `GET /users/me/reviews`                | Paginated reviews by the current user  |
+| `POST /users/me/reviews`               | Create or update the user's review     |
 | `POST /users/me/places`                | Create user-submitted place            |
 | `POST/DELETE /users/me/saved/:placeId` | Bookmark toggle                        |
 

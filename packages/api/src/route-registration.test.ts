@@ -34,6 +34,30 @@ describe('route registration', () => {
     assert.notEqual(res.status, 404);
   });
 
+  it('registers GET /places/:slug/reviews', async () => {
+    const res = await app.request('/places/test-cafe/reviews');
+    assert.notEqual(res.status, 404);
+  });
+
+  it('registers POST /users/me/reviews', async () => {
+    const res = await app.request('/users/me/reviews', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{}',
+    });
+    assert.notEqual(res.status, 404);
+  });
+
+  it('registers GET /studio/reviews', async () => {
+    const res = await app.request('/studio/reviews');
+    assert.notEqual(res.status, 404);
+  });
+
+  it('registers DELETE /studio/reviews/:reviewId', async () => {
+    const res = await app.request('/studio/reviews/rev_test', { method: 'DELETE' });
+    assert.notEqual(res.status, 404);
+  });
+
   it('registers POST /users/me/places', async () => {
     const res = await app.request('/users/me/places', {
       method: 'POST',

@@ -89,7 +89,11 @@ export const reviews = sqliteTable(
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`),
   },
-  (t) => [index('Review_placeId_idx').on(t.placeId), index('Review_userId_idx').on(t.userId)],
+  (t) => [
+    index('Review_placeId_idx').on(t.placeId),
+    index('Review_userId_idx').on(t.userId),
+    uniqueIndex('Review_userId_placeId_key').on(t.userId, t.placeId),
+  ],
 );
 
 export const savedPlaces = sqliteTable(

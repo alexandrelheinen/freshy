@@ -247,6 +247,60 @@ export async function approveStudioPlace(
   return res.ok;
 }
 
+export interface StudioReviewDto {
+  id: string;
+  comment: string | null;
+  acStrength: number;
+  createdAt: string;
+  user: {
+    id: string;
+    displayName: string;
+    username: string;
+    avatarUrl: string | null;
+  };
+  place: {
+    id: string;
+    slug: string;
+    name: string;
+  };
+}
+
+export interface StudioReviewsPageDto {
+  items: StudioReviewDto[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export async function fetchStudioReviews(
+  getToken: () => Promise<string | null>,
+  params?: { q?: string; page?: number; limit?: number },
+): Promise<StudioReviewsPageDto | null> {
+  const search = new URLSearchParams();
+  if (params?.q) search.set('q', params.q);
+  if (params?.page != null) search.set('page', String(params.page));
+  if (params?.limit != null) search.set('limit', String(params.limit));
+  const query = search.toString();
+  const res = await studioFetch(`/studio/reviews${query ? `?${query}` : ''}`, getToken);
+  if (res.status === 404 || !res.ok) return null;
+  try {
+    const json = (await res.json()) as { data?: StudioReviewsPageDto };
+    return json.data ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function deleteStudioReview(
+  getToken: () => Promise<string | null>,
+  reviewId: string,
+): Promise<boolean> {
+  const res = await studioFetch(`/studio/reviews/${encodeURIComponent(reviewId)}`, getToken, {
+    method: 'DELETE',
+  });
+  return res.ok;
+}
+
 export async function deleteStudioPlace(
   getToken: () => Promise<string | null>,
   placeId: string,

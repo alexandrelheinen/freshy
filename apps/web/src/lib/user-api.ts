@@ -1,5 +1,6 @@
 import type { PlaceDto } from './api';
 import { getApiBase } from './api-base';
+import { REVIEW_PAGE_SIZE, buildReviewsSearchParams, type ReviewPageDto } from './reviews';
 
 export interface UserProfileDto {
   id: string;
@@ -176,11 +177,56 @@ export interface UserReviewDto {
 
 export async function fetchMyReviews(
   getToken: () => Promise<string | null>,
-): Promise<UserReviewDto[]> {
-  const res = await authFetch('/users/me/reviews', getToken);
-  if (!res?.ok) return [];
-  const json = (await res.json()) as { data: UserReviewDto[] };
-  return json.data;
+  options?: { page?: number; limit?: number; placeId?: string },
+): Promise<ReviewPageDto<UserReviewDto>> {
+  const empty: ReviewPageDto<UserReviewDto> = {
+    items: [],
+    total: 0,
+    page: options?.page ?? 1,
+    limit: options?.limit ?? REVIEW_PAGE_SIZE,
+  };
+  const search = buildReviewsSearchParams({
+    page: options?.page,
+    limit: options?.limit,
+    placeId: options?.placeId,
+  });
+  const res = await authFetch(`/users/me/reviews?${search.toString()}`, getToken);
+  if (!res?.ok) return empty;
+  const json = (await res.json()) as { data: ReviewPageDto<UserReviewDto> | UserReviewDto[] };
+  if (Array.isArray(json.data)) {
+    return {
+      items: json.data,
+      total: json.data.length,
+      page: 1,
+      limit: json.data.length || REVIEW_PAGE_SIZE,
+    };
+  }
+  return json.data ?? empty;
+}
+
+export async function upsertMyReview(
+  getToken: () => Promise<string | null>,
+  payload: { placeId: string; acStrength: number; comment?: string | null },
+): Promise<{ ok: true; review: UserReviewDto } | { ok: false; error: string }> {
+  const res = await authFetch('/users/me/reviews', getToken, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res) {
+    return { ok: false, error: 'Sign in to write a review.' };
+  }
+  if (!res.ok) {
+    if (res.status === 401) {
+      return { ok: false, error: 'Your session expired. Sign in again and retry.' };
+    }
+    if (res.status === 404) {
+      return { ok: false, error: 'This place could not be found.' };
+    }
+    return { ok: false, error: 'Could not save your review. Try again.' };
+  }
+  const json = (await res.json()) as { data: UserReviewDto };
+  return { ok: true, review: json.data };
 }
 
 export interface CreatePlacePayload {

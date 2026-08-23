@@ -137,17 +137,18 @@ Duplicate scans are **on demand** only (not on every Studio load). Use **Check f
 
 Implemented in `apps/web/src/components/StudioClient.tsx`, loaded client-only via `StudioPageShell` (static export + Clerk).
 
-| Area           | Behavior                                                                            |
-| -------------- | ----------------------------------------------------------------------------------- |
-| Sidebar        | Filters: **Places** (all), **Pending Validation**, **Conflicts (Merge)**            |
-| Stats cards    | Total verified, pending count, active conflicts (after scan), freshness             |
-| Duplicate scan | **Check for duplicates** runs `GET /studio/duplicates` on demand                    |
-| Table          | Name, location, coolness bar, status badge, **Added by**, row actions               |
-| Filters        | Search, category chips, DB status chips, freshness chips (same patterns as Explore) |
-| **Validate**   | Publishes a pending place (`DRAFT` → `PUBLISHED`)                                   |
-| **Edit**       | Modal to change name, address, category, freshness level, status, description       |
-| **Merge**      | Merges a duplicate into the older nearby place (see API below)                      |
-| **Delete**     | Permanently removes a place (with browser confirm dialog)                           |
+| Area           | Behavior                                                                              |
+| -------------- | ------------------------------------------------------------------------------------- |
+| Sidebar        | Filters: **Places** (all), **Pending Validation**, **Conflicts (Merge)**, **Reviews** |
+| Stats cards    | Total verified, pending count, active conflicts (after scan), freshness               |
+| Duplicate scan | **Check for duplicates** runs `GET /studio/duplicates` on demand                      |
+| Table          | Name, location, coolness bar, status badge, **Added by**, row actions                 |
+| Filters        | Search, category chips, DB status chips, freshness chips (same patterns as Explore)   |
+| **Validate**   | Publishes a pending place (`DRAFT` → `PUBLISHED`)                                     |
+| **Edit**       | Modal to change name, address, category, freshness level, status, description         |
+| **Merge**      | Merges a duplicate into the older nearby place (see API below)                        |
+| **Delete**     | Permanently removes a place (with browser confirm dialog)                             |
+| **Reviews**    | Paginated review list with search; delete offensive or mistaken reviews               |
 
 Access guard: `StudioPageClient` checks `user.publicMetadata.role === 'admin'` via `isStudioAdmin()` in `apps/web/src/lib/studio-api.ts`. Non-admins render `StudioNotFound`.
 
@@ -172,6 +173,8 @@ Middleware: `requireAdmin` in `packages/api/src/auth.ts`.
 | `POST`   | `/studio/places/:placeId/approve`          | Set `status` to `PUBLISHED`                     |
 | `DELETE` | `/studio/places/:placeId`                  | Delete place and cascaded reviews/saves         |
 | `POST`   | `/studio/places/merge`                     | Merge source into target                        |
+| `GET`    | `/studio/reviews`                          | Paginated review moderation list                |
+| `DELETE` | `/studio/reviews/:reviewId`                | Delete a review                                 |
 
 Public place responses omit `createdById`. Contributor email is returned only on `/studio/*` routes.
 
@@ -186,6 +189,14 @@ Public place responses omit `createdById`. Contributor email is returned only on
 | `freshnessLevel` | Freshness level id (`VERY_COLD_AC`, …)             | —       |
 | `page`           | Page number                                        | `1`     |
 | `limit`          | Page size (max 100)                                | `25`    |
+
+### `GET /studio/reviews` query parameters
+
+| Param   | Description                                       | Default |
+| ------- | ------------------------------------------------- | ------- |
+| `q`     | Search comment, reviewer name, username, or place | —       |
+| `page`  | Page number                                       | `1`     |
+| `limit` | Page size (max 100)                               | `25`    |
 
 ### `GET /studio/duplicates` query parameters
 
