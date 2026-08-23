@@ -3,17 +3,12 @@
 import { useAuth, useClerk, SignInButton } from '@clerk/clerk-react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import {
-  FRESHNESS_LEVEL_LABELS,
-  FreshnessBar,
-  GlassCard,
-  MaterialIcon,
-  ROUTES,
-  type PlaceCategory,
-} from '@freshy/ui';
+import { FreshnessBar, GlassCard, MaterialIcon, ROUTES } from '@freshy/ui';
 import { AppMobileHeader, AppTopNav } from './AppNav';
-import { PlacePhoto } from './PlacePhoto';
+import { PlaceListCard } from './PlaceListCard';
+import { PlaceListPaginationBar } from './PlaceListClient';
 import { type PlaceDto } from '../lib/api';
+import { PLACE_LIST_GRID_CLASS, paginatePlaceList } from '../lib/place-list-layout';
 import { formatRelativeTime } from '../lib/api';
 import {
   deleteMyAccount,
@@ -32,40 +27,6 @@ import {
 import { ReviewPaginationBar } from './ReviewPaginationBar';
 
 type ProfileTab = 'saved' | 'reviews';
-
-function SavedPlaceCard({ place }: { place: PlaceDto }) {
-  return (
-    <Link href={ROUTES.place(place.slug)} className="shrink-0 active:scale-95">
-      <GlassCard className="w-64 overflow-hidden transition-transform">
-        <div className="relative h-32">
-          <PlacePhoto
-            photoUrl={place.photoUrl}
-            category={place.category as PlaceCategory}
-            alt=""
-            className="h-full w-full object-cover"
-          />
-          {place.aggregatedFreshnessLevel ? (
-            <div className="absolute right-2 top-2 flex items-center gap-1 rounded-lg bg-surface/90 px-2 py-1 shadow-sm backdrop-blur-md">
-              <MaterialIcon name="ac_unit" filled size={14} className="text-primary" />
-              <span className="font-label-caps text-primary">
-                {FRESHNESS_LEVEL_LABELS[place.aggregatedFreshnessLevel]}
-              </span>
-            </div>
-          ) : null}
-        </div>
-        <div className="p-4">
-          <p className="truncate font-title-md text-on-surface">{place.name}</p>
-          {place.address ? (
-            <p className="mt-1 flex items-center gap-1 font-body-sm text-on-surface-variant">
-              <MaterialIcon name="location_on" size={16} />
-              <span className="truncate">{place.address}</span>
-            </p>
-          ) : null}
-        </div>
-      </GlassCard>
-    </Link>
-  );
-}
 
 function ReviewRow({ review }: { review: UserReviewDto }) {
   return (
@@ -239,10 +200,12 @@ function ProfileWithClerk() {
   const [reviewTotal, setReviewTotal] = useState(0);
   const [reviewPage, setReviewPage] = useState(1);
   const [activeTab, setActiveTab] = useState<ProfileTab>('saved');
+  const [savedPage, setSavedPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const submittedPlaceSlug = useSubmittedPlaceSlug();
+  const savedPageView = paginatePlaceList(savedPlaces, savedPage);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -271,6 +234,7 @@ function ProfileWithClerk() {
       setProfile(profileResult.profile);
       setLoadError(profileResult.error);
       setSavedPlaces(saved);
+      setSavedPage(1);
       setReviews(myReviews.items);
       setReviewTotal(myReviews.total);
       setReviewPage(myReviews.page);
@@ -370,11 +334,14 @@ function ProfileWithClerk() {
                     No saved places yet. Explore the map and tap Save on a place you like.
                   </GlassCard>
                 ) : (
-                  <div className="hide-scrollbar flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible lg:grid-cols-3">
-                    {savedPlaces.map((place) => (
-                      <SavedPlaceCard key={place.id} place={place} />
-                    ))}
-                  </div>
+                  <>
+                    <div className={PLACE_LIST_GRID_CLASS}>
+                      {savedPageView.items.map((place) => (
+                        <PlaceListCard key={place.id} place={place} />
+                      ))}
+                    </div>
+                    <PlaceListPaginationBar {...savedPageView} onPageChange={setSavedPage} />
+                  </>
                 )}
               </section>
             ) : (

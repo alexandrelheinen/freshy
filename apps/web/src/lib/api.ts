@@ -3,6 +3,7 @@ import { MAP_SEARCH } from '@freshy/config/map-search';
 import { mergePendingMapPlaces } from './pending-map-place';
 import { freshnessLevelScore, type FreshnessLevelId } from '@freshy/config/freshness-levels';
 import { REVIEW_PAGE_SIZE, buildReviewsSearchParams, type ReviewPageDto } from './reviews';
+import { PLACE_LIST_PAGE_SIZE } from './place-list-layout';
 
 export interface PlaceDto {
   id: string;
@@ -168,7 +169,7 @@ export interface PlaceDetailDto extends PlaceDto {
   reviewAverage?: number | null;
 }
 
-export const CATEGORY_PLACES_PAGE_SIZE = 5;
+export const CATEGORY_PLACES_PAGE_SIZE = PLACE_LIST_PAGE_SIZE;
 
 export interface CategoryPlacesPageDto {
   items: PlaceDto[];

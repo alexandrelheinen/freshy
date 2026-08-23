@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { AppMobileHeader, AppTopNav } from './AppNav';
 import { PlaceListCard } from './PlaceListCard';
 import type { PlaceDto } from '../lib/api';
+import { PLACE_LIST_GRID_CLASS } from '../lib/place-list-layout';
 
 export interface PlaceListPagination {
   page: number;
@@ -11,6 +12,39 @@ export interface PlaceListPagination {
   total: number;
   pageSize: number;
   onPageChange: (page: number) => void;
+}
+
+export function PlaceListPaginationBar({
+  page,
+  totalPages,
+  total,
+  onPageChange,
+}: PlaceListPagination) {
+  if (totalPages <= 1) return null;
+
+  return (
+    <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-outline-variant/20 pt-4">
+      <button
+        type="button"
+        disabled={page <= 1}
+        onClick={() => onPageChange(Math.max(1, page - 1))}
+        className="rounded-lg px-3 py-1 text-body-sm text-secondary disabled:opacity-40"
+      >
+        Previous
+      </button>
+      <span className="text-body-sm text-secondary">
+        Page {page} of {totalPages} ({total} places)
+      </span>
+      <button
+        type="button"
+        disabled={page >= totalPages}
+        onClick={() => onPageChange(page + 1)}
+        className="rounded-lg px-3 py-1 text-body-sm text-secondary disabled:opacity-40"
+      >
+        Next
+      </button>
+    </div>
+  );
 }
 
 export function PlaceListClient({
@@ -97,12 +131,12 @@ export function PlaceListClient({
           <p className="py-16 text-center text-on-surface-variant">{emptyMessage}</p>
         ) : (
           <>
-            <section className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-6 lg:grid-cols-2">
+            <section className={PLACE_LIST_GRID_CLASS}>
               {places.map((place, index) => (
                 <div
                   key={place.id}
                   className="animate-in fade-in slide-in-from-bottom-4"
-                  style={{ animationDelay: `${index * 80}ms`, animationFillMode: 'both' }}
+                  style={{ animationDelay: `${index * 40}ms`, animationFillMode: 'both' }}
                 >
                   <PlaceListCard
                     place={place}
@@ -120,29 +154,7 @@ export function PlaceListClient({
               ))}
             </section>
 
-            {pagination && pagination.totalPages > 1 ? (
-              <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-outline-variant/20 pt-4">
-                <button
-                  type="button"
-                  disabled={pagination.page <= 1}
-                  onClick={() => pagination.onPageChange(Math.max(1, pagination.page - 1))}
-                  className="rounded-lg px-3 py-1 text-body-sm text-secondary disabled:opacity-40"
-                >
-                  Previous
-                </button>
-                <span className="text-body-sm text-secondary">
-                  Page {pagination.page} of {pagination.totalPages} ({pagination.total} places)
-                </span>
-                <button
-                  type="button"
-                  disabled={pagination.page >= pagination.totalPages}
-                  onClick={() => pagination.onPageChange(pagination.page + 1)}
-                  className="rounded-lg px-3 py-1 text-body-sm text-secondary disabled:opacity-40"
-                >
-                  Next
-                </button>
-              </div>
-            ) : null}
+            {pagination ? <PlaceListPaginationBar {...pagination} /> : null}
           </>
         )}
       </main>

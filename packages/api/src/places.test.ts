@@ -38,14 +38,14 @@ describe('placesQuerySchema', () => {
 });
 
 describe('categoryPlacesQuerySchema', () => {
-  it('defaults category list pagination to five places per page', () => {
+  it('defaults category list pagination to fifteen places per page', () => {
     const parsed = categoryPlacesQuerySchema.parse({
       lat: 48.9,
       lng: 2.3,
       category: 'MUSEUM',
     });
     assert.equal(parsed.page, 1);
-    assert.equal(parsed.limit, 5);
+    assert.equal(parsed.limit, 15);
     assert.equal(parsed.radius, PILOT_CITY.defaultRadiusKm);
   });
 });
