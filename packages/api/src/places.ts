@@ -36,7 +36,7 @@ export const placesQuerySchema = z.object({
 
 export type PlacesQuery = z.infer<typeof placesQuerySchema>;
 
-export const CATEGORY_PLACES_PAGE_SIZE = 5;
+export const CATEGORY_PLACES_PAGE_SIZE = 15;
 
 export const categoryPlacesQuerySchema = z.object({
   lat: z.coerce.number().min(-90).max(90),

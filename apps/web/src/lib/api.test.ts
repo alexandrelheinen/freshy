@@ -161,8 +161,8 @@ describe('@freshy/web api helpers', () => {
     );
   });
 
-  it('uses five places per page for category list defaults', () => {
-    assert.equal(CATEGORY_PLACES_PAGE_SIZE, 5);
+  it('uses fifteen places per page for category list defaults', () => {
+    assert.equal(CATEGORY_PLACES_PAGE_SIZE, 15);
   });
 
   it('paginates category places by distance for fallback list views', () => {
