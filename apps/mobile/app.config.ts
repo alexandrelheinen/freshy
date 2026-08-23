@@ -1,12 +1,15 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config';
 
-// Expo evaluates app.config with Node require(); keep version logic in CJS.
+// Expo evaluates app.config with Node require(); keep shared logic in CJS.
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { readAppVersion } = require('./read-app-version.cjs') as {
   readAppVersion: () => string;
 };
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { resolveWebAppUrl } = require('./resolve-web-app-url.cjs') as {
+  resolveWebAppUrl: (...candidates: Array<string | undefined | null>) => string;
+};
 
-const DEFAULT_WEB_APP_URL = 'https://getfreshy.pages.dev';
 const DEFAULT_EAS_PROJECT_ID = 'ff3b74f8-863b-41cd-a83a-1c9f37a1dd42';
 const PLACEHOLDER_EAS_PROJECT_ID = 'REPLACE_WITH_EAS_PROJECT_ID';
 
@@ -55,7 +58,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       typedRoutes: true,
     },
     extra: {
-      webAppUrl: process.env.EXPO_PUBLIC_WEB_APP_URL ?? DEFAULT_WEB_APP_URL,
+      webAppUrl: resolveWebAppUrl(process.env.EXPO_PUBLIC_WEB_APP_URL),
       eas: { projectId: easProjectId },
     },
   };
