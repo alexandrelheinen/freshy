@@ -8,9 +8,7 @@ import {
   FreshnessBar,
   GlassCard,
   MaterialIcon,
-  PLACE_CATEGORY_ICONS,
   ROUTES,
-  type MaterialIconName,
   type PlaceCategory,
 } from '@freshy/ui';
 import { AppMobileHeader, AppTopNav } from './AppNav';
@@ -25,13 +23,15 @@ import {
   type UserProfileDto,
   type UserReviewDto,
 } from '../lib/user-api';
+import {
+  REVIEW_PAGE_SIZE,
+  reviewCoolnessLabel,
+  reviewCoolnessSegments,
+  reviewPageCount,
+} from '../lib/reviews';
+import { ReviewPaginationBar } from './ReviewPaginationBar';
 
 type ProfileTab = 'saved' | 'reviews';
-
-function categoryIcon(category: string): MaterialIconName {
-  const icon = PLACE_CATEGORY_ICONS[category as PlaceCategory];
-  return (icon ?? 'place') as MaterialIconName;
-}
 
 function SavedPlaceCard({ place }: { place: PlaceDto }) {
   return (
@@ -68,39 +68,26 @@ function SavedPlaceCard({ place }: { place: PlaceDto }) {
 }
 
 function ReviewRow({ review }: { review: UserReviewDto }) {
-  const level = Math.min(
-    3,
-    Math.max(1, review.acStrength >= 4 ? 3 : review.acStrength >= 3 ? 2 : 1),
-  );
-  const label =
-    review.acStrength >= 4 ? 'Frigid' : review.acStrength >= 3 ? 'Comfortable' : 'Cooled';
-
   return (
     <Link href={ROUTES.place(review.place.slug)}>
-      <GlassCard className="flex items-center gap-4 p-4 transition-transform hover:translate-x-1">
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-secondary-container">
-          <MaterialIcon
-            name={categoryIcon(review.place.category)}
-            className="text-on-secondary-container"
-          />
+      <GlassCard className="p-4 transition-transform hover:translate-x-1">
+        <div className="flex items-start justify-between gap-2">
+          <p className="truncate font-title-md text-on-surface">{review.place.name}</p>
+          <span className="shrink-0 font-body-sm text-outline">
+            {formatRelativeTime(review.createdAt)}
+          </span>
         </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-between gap-2">
-            <p className="truncate font-title-md text-on-surface">{review.place.name}</p>
-            <span className="shrink-0 font-body-sm text-outline">
-              {formatRelativeTime(review.createdAt)}
-            </span>
-          </div>
-          <div className="mt-1 flex items-center gap-2">
-            <FreshnessBar segments={level} tone="blue" />
-            <span className="font-label-caps text-secondary">{label}</span>
-          </div>
-          {review.comment ? (
-            <p className="mt-1 truncate font-body-sm italic text-on-surface-variant">
-              &quot;{review.comment}&quot;
-            </p>
-          ) : null}
+        <div className="mt-1 flex items-center gap-2">
+          <FreshnessBar segments={reviewCoolnessSegments(review.acStrength)} tone="blue" />
+          <span className="font-label-caps text-secondary">
+            {reviewCoolnessLabel(review.acStrength)}
+          </span>
         </div>
+        {review.comment ? (
+          <p className="mt-1 truncate font-body-sm italic text-on-surface-variant">
+            &quot;{review.comment}&quot;
+          </p>
+        ) : null}
       </GlassCard>
     </Link>
   );
@@ -249,6 +236,8 @@ function ProfileWithClerk() {
   const [profile, setProfile] = useState<UserProfileDto | null>(null);
   const [savedPlaces, setSavedPlaces] = useState<PlaceDto[]>([]);
   const [reviews, setReviews] = useState<UserReviewDto[]>([]);
+  const [reviewTotal, setReviewTotal] = useState(0);
+  const [reviewPage, setReviewPage] = useState(1);
   const [activeTab, setActiveTab] = useState<ProfileTab>('saved');
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -261,6 +250,8 @@ function ProfileWithClerk() {
       setProfile(null);
       setSavedPlaces([]);
       setReviews([]);
+      setReviewTotal(0);
+      setReviewPage(1);
       setLoadError(null);
       setLoading(false);
       return;
@@ -274,13 +265,15 @@ function ProfileWithClerk() {
       const [profileResult, saved, myReviews] = await Promise.all([
         fetchMyProfile(() => getTokenRef.current()),
         fetchMySavedPlaces(() => getTokenRef.current()),
-        fetchMyReviews(() => getTokenRef.current()),
+        fetchMyReviews(() => getTokenRef.current(), { page: 1, limit: REVIEW_PAGE_SIZE }),
       ]);
       if (cancelled) return;
       setProfile(profileResult.profile);
       setLoadError(profileResult.error);
       setSavedPlaces(saved);
-      setReviews(myReviews);
+      setReviews(myReviews.items);
+      setReviewTotal(myReviews.total);
+      setReviewPage(myReviews.page);
       setLoading(false);
     })();
 
@@ -388,11 +381,28 @@ function ProfileWithClerk() {
               <section className="space-y-4">
                 {reviews.length === 0 ? (
                   <GlassCard className="p-4 text-on-surface-variant">
-                    No reviews yet. Climate review submission is coming soon.
+                    No reviews yet. Open a place and write a climate review.
                   </GlassCard>
                 ) : (
                   reviews.map((review) => <ReviewRow key={review.id} review={review} />)
                 )}
+                <ReviewPaginationBar
+                  page={reviewPage}
+                  totalPages={reviewPageCount(reviewTotal, REVIEW_PAGE_SIZE)}
+                  total={reviewTotal}
+                  onPageChange={(nextPage) => {
+                    setReviewPage(nextPage);
+                    void (async () => {
+                      const next = await fetchMyReviews(() => getTokenRef.current(), {
+                        page: nextPage,
+                        limit: REVIEW_PAGE_SIZE,
+                      });
+                      setReviews(next.items);
+                      setReviewTotal(next.total);
+                      setReviewPage(next.page);
+                    })();
+                  }}
+                />
               </section>
             )}
 

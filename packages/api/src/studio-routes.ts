@@ -29,6 +29,7 @@ import {
   studioUsersLookupSchema,
   studioUsersQuerySchema,
 } from './studio-users';
+import { deleteStudioReview, listStudioReviews, studioReviewsQuerySchema } from './reviews';
 
 export function registerStudioRoutes(app: Hono<AppEnv>): void {
   app.get('/studio/stats', requireAdmin, async (c) => {
@@ -254,6 +255,37 @@ export function registerStudioRoutes(app: Hono<AppEnv>): void {
         return c.json({ error: 'Not found' }, 404);
       }
       await deleteStudioPlace(c.get('db'), existingRows[0].id);
+      return c.json({ data: { deleted: true } });
+    } catch {
+      return c.json({ error: 'Database unavailable' }, 503);
+    }
+  });
+
+  app.get('/studio/reviews', requireAdmin, async (c) => {
+    const parsed = studioReviewsQuerySchema.safeParse({
+      q: c.req.query('q'),
+      page: c.req.query('page'),
+      limit: c.req.query('limit'),
+    });
+    if (!parsed.success) {
+      return c.json({ error: 'Invalid query', details: parsed.error.flatten() }, 400);
+    }
+    try {
+      const data = await listStudioReviews(c.get('db'), parsed.data);
+      return c.json({ data });
+    } catch {
+      return c.json({ error: 'Database unavailable' }, 503);
+    }
+  });
+
+  app.delete('/studio/reviews/:reviewId', requireAdmin, async (c) => {
+    const reviewId = requireParam(c, 'reviewId');
+    if (reviewId instanceof Response) return reviewId;
+    try {
+      const deleted = await deleteStudioReview(c.get('db'), reviewId);
+      if (!deleted) {
+        return c.json({ error: 'Not found' }, 404);
+      }
       return c.json({ data: { deleted: true } });
     } catch {
       return c.json({ error: 'Database unavailable' }, 503);

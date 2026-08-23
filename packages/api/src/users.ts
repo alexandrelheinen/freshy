@@ -189,19 +189,6 @@ export async function unsavePlace(db: Db, userId: string, placeId: string): Prom
     );
 }
 
-export interface UserReviewItem {
-  id: string;
-  comment: string | null;
-  acStrength: number;
-  createdAt: string;
-  place: {
-    id: string;
-    slug: string;
-    name: string;
-    category: string;
-  };
-}
-
 /** Remove a Freshy user and their Clerk account. Reviews and saved places cascade in D1. */
 export async function deleteUserAccount(
   db: Db,
@@ -212,36 +199,4 @@ export async function deleteUserAccount(
   await db.delete(usersTable).where(eq(usersTable.id, userId));
   const clerk = buildClerkClient(secretKey);
   await clerk.users.deleteUser(clerkUserId);
-}
-
-export async function listUserReviews(db: Db, userId: string): Promise<UserReviewItem[]> {
-  const rows = await db
-    .select({
-      id: reviewsTable.id,
-      comment: reviewsTable.comment,
-      acStrength: reviewsTable.acStrength,
-      createdAt: reviewsTable.createdAt,
-      placeId: placesTable.id,
-      placeSlug: placesTable.slug,
-      placeName: placesTable.name,
-      placeCategory: placesTable.category,
-    })
-    .from(reviewsTable)
-    .innerJoin(placesTable, eq(reviewsTable.placeId, placesTable.id))
-    .where(eq(reviewsTable.userId, userId))
-    .orderBy(desc(reviewsTable.createdAt))
-    .limit(10);
-
-  return rows.map((row) => ({
-    id: row.id,
-    comment: row.comment,
-    acStrength: row.acStrength,
-    createdAt: row.createdAt,
-    place: {
-      id: row.placeId,
-      slug: row.placeSlug,
-      name: row.placeName,
-      category: row.placeCategory,
-    },
-  }));
 }

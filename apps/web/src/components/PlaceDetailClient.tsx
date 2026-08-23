@@ -22,25 +22,15 @@ const PlaceDetailActions = dynamic(
   () => import('./PlaceDetailActions').then((m) => ({ default: m.PlaceDetailActions })),
   { ssr: false },
 );
-import {
-  directionsUrl,
-  formatRelativeTime,
-  freshnessBarState,
-  staticMapUrl,
-  type PlaceDetailDto,
-} from '../lib/api';
+const PlaceReviewsSection = dynamic(
+  () => import('./PlaceReviewsSection').then((m) => ({ default: m.PlaceReviewsSection })),
+  { ssr: false },
+);
+import { directionsUrl, freshnessBarState, staticMapUrl, type PlaceDetailDto } from '../lib/api';
 
 import { getApiBase } from '../lib/api-base';
 import { placePageTitle } from '../lib/place-page-title';
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
-
-function userInitials(name: string): string {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? '')
-    .join('');
-}
 
 export function PlaceDetailClient({ slug }: { slug: string }) {
   const [place, setPlace] = useState<PlaceDetailDto | null>(null);
@@ -133,13 +123,6 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
   }
 
   const freshness = freshnessBarState(place.aggregatedFreshnessLevel);
-  const reviewScore =
-    place.reviews.length > 0
-      ? (
-          place.reviews.reduce((sum, r) => sum + Math.min(5, Math.max(1, r.acStrength)), 0) /
-          place.reviews.length
-        ).toFixed(1)
-      : null;
 
   return (
     <div className="min-h-screen pb-8" data-page="place-detail">
@@ -252,48 +235,19 @@ export function PlaceDetailClient({ slug }: { slug: string }) {
           </section>
         </div>
 
-        <section className="mt-8 px-margin-mobile md:px-10">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="font-headline-lg-mobile text-headline-lg-mobile text-on-surface md:font-headline-lg md:text-headline-lg">
-              Climate Reviews
-            </h3>
-            {reviewScore ? (
-              <span className="flex items-center gap-1 font-title-md text-primary">
-                <MaterialIcon name="star" filled size={20} />
-                {reviewScore}
-              </span>
-            ) : null}
-          </div>
-          {place.reviews.length === 0 ? (
-            <GlassCard className="p-4 text-on-surface-variant">No reviews yet.</GlassCard>
-          ) : (
-            <div className="space-y-4">
-              {place.reviews.map((review) => (
-                <div
-                  key={review.id}
-                  className="rounded-xl border border-outline-variant/30 bg-surface-container-low p-4"
-                >
-                  <div className="mb-2 flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-fixed font-bold text-on-primary-fixed">
-                      {userInitials(review.user.displayName)}
-                    </div>
-                    <div>
-                      <h4 className="font-title-md leading-none text-on-surface">
-                        {review.user.displayName}
-                      </h4>
-                      <span className="font-body-sm text-outline">
-                        {formatRelativeTime(review.createdAt)}
-                      </span>
-                    </div>
-                  </div>
-                  <p className="font-body-lg italic text-on-surface-variant">
-                    &quot;{review.comment ?? 'No comment.'}&quot;
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
+        <PlaceReviewsSection
+          placeId={place.id}
+          slug={place.slug}
+          initialReviews={place.reviews}
+          initialTotal={place.reviewTotal ?? place.reviews.length}
+          reviewAverage={
+            place.reviewAverage ??
+            (place.reviews.length > 0
+              ? place.reviews.reduce((sum, review) => sum + review.acStrength, 0) /
+                place.reviews.length
+              : null)
+          }
+        />
 
         <section className="mt-10 px-margin-mobile pb-8 md:px-10">
           <h3 className="mb-4 font-headline-lg-mobile text-headline-lg-mobile text-on-surface md:font-headline-lg md:text-headline-lg">

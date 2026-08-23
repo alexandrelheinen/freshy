@@ -50,6 +50,40 @@ describe('fetchMyContributorSecret response', () => {
   });
 });
 
+describe('fetchMyReviews', () => {
+  it('reads a paginated review page from the API', async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = async () =>
+      new Response(
+        JSON.stringify({
+          data: {
+            items: [
+              {
+                id: 'rev_1',
+                comment: 'Cold enough',
+                acStrength: 4,
+                createdAt: '2026-08-01T12:00:00.000Z',
+                place: { id: 'p1', slug: 'cool-cafe', name: 'Cool Cafe', category: 'CAFE' },
+              },
+            ],
+            total: 6,
+            page: 2,
+            limit: 5,
+          },
+        }),
+        { status: 200 },
+      );
+
+    const { fetchMyReviews } = await import('./user-api');
+    const page = await fetchMyReviews(async () => 'token', { page: 2 });
+    assert.equal(page.total, 6);
+    assert.equal(page.page, 2);
+    assert.equal(page.items[0]?.place.name, 'Cool Cafe');
+
+    globalThis.fetch = originalFetch;
+  });
+});
+
 describe('anonymousPlaceErrorMessage', () => {
   it('returns a clear message when the contributions route is missing', () => {
     assert.match(anonymousPlaceErrorMessage(404, {}), /unavailable/i);

@@ -9,7 +9,6 @@ import {
   contributorSecretForUser,
   isPlaceSaved,
   listSavedPlaces,
-  listUserReviews,
   savePlace,
   deleteUserAccount,
   syncUserFromClerk,
@@ -20,6 +19,14 @@ import { serializePlaceForApi } from './places';
 import { resolvePlaceCoordinates } from './place-submission';
 import { handleCreatePlace } from './place-create-handler';
 import { photoFromFormData, requireParam } from './route-utils';
+import {
+  getUserReviewForPlace,
+  listUserReviews,
+  reviewsQuerySchema,
+  ReviewPlaceNotFoundError,
+  upsertReviewSchema,
+  upsertUserReview,
+} from './reviews';
 
 function formValue(formData: FormData, key: string): string | undefined {
   const value = formData.get(key);
@@ -83,10 +90,58 @@ export function registerUserRoutes(app: Hono<AppEnv>): void {
   app.get('/users/me/reviews', requireAuth, async (c) => {
     const user = await withDbUser(c);
     if (user instanceof Response) return user;
+    const parsed = reviewsQuerySchema.safeParse({
+      page: c.req.query('page'),
+      limit: c.req.query('limit'),
+    });
+    if (!parsed.success) {
+      return c.json({ error: 'Invalid query', details: parsed.error.flatten() }, 400);
+    }
+    const placeId = c.req.query('placeId')?.trim();
     try {
-      const data = await listUserReviews(c.get('db'), user.id);
+      if (placeId) {
+        const review = await getUserReviewForPlace(c.get('db'), user.id, placeId);
+        return c.json({
+          data: {
+            items: review ? [review] : [],
+            total: review ? 1 : 0,
+            page: 1,
+            limit: 1,
+          },
+        });
+      }
+      const data = await listUserReviews(c.get('db'), user.id, parsed.data);
       return c.json({ data });
     } catch {
+      return c.json({ error: 'Database unavailable' }, 503);
+    }
+  });
+
+  app.post('/users/me/reviews', requireAuth, async (c) => {
+    const user = await withDbUser(c);
+    if (user instanceof Response) return user;
+    let body: unknown;
+    try {
+      body = await c.req.json();
+    } catch {
+      return c.json({ error: 'Invalid body' }, 400);
+    }
+    const parsed = upsertReviewSchema.safeParse(body);
+    if (!parsed.success) {
+      return c.json({ error: 'Invalid body', details: parsed.error.flatten() }, 400);
+    }
+    try {
+      const { review, created } = await upsertUserReview(
+        c.get('db'),
+        user.id,
+        parsed.data.placeId,
+        { acStrength: parsed.data.acStrength, comment: parsed.data.comment },
+      );
+      return c.json({ data: review }, created ? 201 : 200);
+    } catch (error) {
+      if (error instanceof ReviewPlaceNotFoundError) {
+        return c.json({ error: 'Place not found' }, 404);
+      }
       return c.json({ error: 'Database unavailable' }, 503);
     }
   });

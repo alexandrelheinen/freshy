@@ -2,6 +2,7 @@ import { getApiBase } from './api-base';
 import { MAP_SEARCH } from '@freshy/config/map-search';
 import { mergePendingMapPlaces } from './pending-map-place';
 import { freshnessLevelScore, type FreshnessLevelId } from '@freshy/config/freshness-levels';
+import { REVIEW_PAGE_SIZE, buildReviewsSearchParams, type ReviewPageDto } from './reviews';
 
 export interface PlaceDto {
   id: string;
@@ -145,14 +146,26 @@ export interface CategoryMeta {
   featured: PlaceDto | null;
 }
 
+export interface PlaceReviewUserDto {
+  displayName: string;
+  username: string;
+  avatarUrl: string | null;
+}
+
+export interface PlaceReviewDto {
+  id: string;
+  comment: string | null;
+  acStrength: number;
+  createdAt: string;
+  user: PlaceReviewUserDto;
+}
+
 export interface PlaceDetailDto extends PlaceDto {
-  reviews: Array<{
-    id: string;
-    comment: string | null;
-    acStrength: number;
-    createdAt: string;
-    user: { displayName: string; username: string };
-  }>;
+  reviews: PlaceReviewDto[];
+  reviewTotal?: number;
+  reviewPage?: number;
+  reviewLimit?: number;
+  reviewAverage?: number | null;
 }
 
 export const CATEGORY_PLACES_PAGE_SIZE = 5;
@@ -311,4 +324,25 @@ export function directionsUrl(options: {
   const destination =
     trimmed && trimmed.length > 0 ? encodeURIComponent(trimmed) : `${latitude},${longitude}`;
   return `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+}
+
+export async function fetchPlaceReviews(
+  slug: string,
+  page: number = 1,
+  limit: number = REVIEW_PAGE_SIZE,
+): Promise<ReviewPageDto<PlaceReviewDto> | null> {
+  const search = buildReviewsSearchParams({ page, limit });
+  try {
+    const res = await fetch(
+      `${getApiBase()}/places/${encodeURIComponent(slug)}/reviews?${search}`,
+      {
+        cache: 'no-store',
+      },
+    );
+    if (!res.ok) return null;
+    const json = (await res.json()) as { data: ReviewPageDto<PlaceReviewDto> };
+    return json.data ?? null;
+  } catch {
+    return null;
+  }
 }

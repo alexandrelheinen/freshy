@@ -16,6 +16,7 @@ import {
   categoryPlacesQuerySchema,
   placesQuerySchema,
 } from './places';
+import { listPlaceReviewsBySlug, reviewsQuerySchema } from './reviews';
 import { registerUserRoutes } from './user-routes';
 import { registerContributionRoutes } from './contribution-routes';
 import { registerStudioRoutes } from './studio-routes';
@@ -127,13 +128,43 @@ export function createApp(): Hono<AppEnv> {
     }
   });
 
+  app.get('/places/:slug/reviews', async (c) => {
+    const slug = c.req.param('slug');
+    if (RESERVED_PLACE_PATHS.has(slug)) {
+      return c.json({ error: 'Not found' }, 404);
+    }
+    const parsed = reviewsQuerySchema.safeParse({
+      page: c.req.query('page'),
+      limit: c.req.query('limit'),
+    });
+    if (!parsed.success) {
+      return c.json({ error: 'Invalid query', details: parsed.error.flatten() }, 400);
+    }
+    try {
+      const data = await listPlaceReviewsBySlug(c.get('db'), slug, parsed.data);
+      if (!data) {
+        return c.json({ error: 'Place not found' }, 404);
+      }
+      return c.json({ data });
+    } catch {
+      return c.json({ error: 'Database unavailable' }, 503);
+    }
+  });
+
   app.get('/places/:slug', async (c) => {
     const slug = c.req.param('slug');
     if (RESERVED_PLACE_PATHS.has(slug)) {
       return c.json({ error: 'Not found' }, 404);
     }
+    const parsed = reviewsQuerySchema.safeParse({
+      page: c.req.query('reviewPage'),
+      limit: c.req.query('reviewLimit'),
+    });
+    if (!parsed.success) {
+      return c.json({ error: 'Invalid query', details: parsed.error.flatten() }, 400);
+    }
     try {
-      const place = await getPlaceBySlugWithReviews(c.get('db'), slug);
+      const place = await getPlaceBySlugWithReviews(c.get('db'), slug, parsed.data);
       if (!place) {
         return c.json({ error: 'Place not found' }, 404);
       }
