@@ -8,6 +8,7 @@ import {
 } from '@freshy/ui';
 import { useEffect, useState } from 'react';
 import { PlaceListClient } from './PlaceListClient';
+import { PlaceSearchField } from './PlaceSearchField';
 import {
   CATEGORY_PLACES_PAGE_SIZE,
   fetchCategoryPlacesPage,
@@ -18,6 +19,7 @@ import { locationStatusMessage } from '../lib/location-messages';
 import { useUserLocation } from '../lib/use-user-location';
 import { minFreshnessScore } from '../lib/min-freshness-filter-storage';
 import { useMinFreshnessFilter } from '../lib/use-min-freshness-filter';
+import { CATEGORY_PLACE_SEARCH_COPY } from '../lib/place-search-copy';
 import { useVerifiedOnlyFilter } from '../lib/use-verified-only-filter';
 
 function parseCategory(raw: string): PlaceCategory | null {
@@ -44,19 +46,27 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
   const { minFreshnessLevel } = useMinFreshnessFilter();
   const minFreshnessScoreValue = minFreshnessScore(minFreshnessLevel);
   const [page, setPage] = useState(1);
+  const [searchInput, setSearchInput] = useState('');
+  const [appliedQuery, setAppliedQuery] = useState('');
   const [placesPage, setPlacesPage] = useState<CategoryPlacesPageDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     setPage(1);
+    setSearchInput('');
+    setAppliedQuery('');
+  }, [category]);
+
+  useEffect(() => {
+    setPage(1);
   }, [
-    category,
     searchCenter.lat,
     searchCenter.lng,
     searchRadiusKm,
     verifiedOnly,
     minFreshnessScoreValue,
+    appliedQuery,
   ]);
 
   useEffect(() => {
@@ -79,6 +89,7 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
         limit: CATEGORY_PLACES_PAGE_SIZE,
         verifiedOnly,
         minFreshnessLevel: minFreshnessScoreValue,
+        q: appliedQuery,
       });
       if (cancelled) return;
       if (!data) {
@@ -101,6 +112,7 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
     searchRadiusKm,
     verifiedOnly,
     minFreshnessScoreValue,
+    appliedQuery,
   ]);
 
   const statusMessage =
@@ -124,7 +136,20 @@ export function CategoryPlacesClient({ categorySlug }: { categorySlug: string })
       loading={loading}
       loadError={loadError}
       navActive="cooling"
-      emptyMessage={categoryPlacesEmptyMessage(title, verifiedOnly)}
+      emptyMessage={categoryPlacesEmptyMessage(title, verifiedOnly, appliedQuery)}
+      toolbar={
+        <PlaceSearchField
+          value={searchInput}
+          onChange={setSearchInput}
+          onSubmit={() => setAppliedQuery(searchInput.trim())}
+          onClear={() => {
+            setSearchInput('');
+            setAppliedQuery('');
+          }}
+          placeholder={CATEGORY_PLACE_SEARCH_COPY.placeholder}
+          ariaLabel={CATEGORY_PLACE_SEARCH_COPY.ariaLabel}
+        />
+      }
       pagination={
         category
           ? {

@@ -58,6 +58,7 @@ export function PlaceListClient({
   emptyMessage = 'No places found.',
   listNotice,
   pagination,
+  toolbar,
   loading: loadingOverride,
   loadError,
   statusBanner,
@@ -72,6 +73,7 @@ export function PlaceListClient({
   emptyMessage?: string;
   listNotice?: string | null;
   pagination?: PlaceListPagination;
+  toolbar?: ReactNode;
   loading?: boolean;
   loadError?: string | null;
   statusBanner?: ReactNode;
@@ -115,6 +117,7 @@ export function PlaceListClient({
               <p className="mt-1 font-body-lg text-on-surface-variant">{subtitle}</p>
             ) : null}
           </div>
+          {toolbar ? <div className="mb-4">{toolbar}</div> : null}
         </section>
 
         {listNotice ? (

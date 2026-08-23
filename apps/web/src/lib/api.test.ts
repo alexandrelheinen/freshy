@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   CATEGORY_PLACES_PAGE_SIZE,
   buildCategoryPlacesPageFromList,
+  buildCategoryPlacesSearchParams,
   buildPlacesSearchParams,
   directionsUrl,
   filterPlacesByMinFreshnessLevel,
@@ -163,6 +164,17 @@ describe('@freshy/web api helpers', () => {
 
   it('uses fifteen places per page for category list defaults', () => {
     assert.equal(CATEGORY_PLACES_PAGE_SIZE, 15);
+  });
+
+  it('includes a trimmed name query on category list requests', () => {
+    const search = buildCategoryPlacesSearchParams({
+      lat: 48.9,
+      lng: 2.3,
+      radius: 5,
+      category: 'CAFE',
+      q: '  monceau  ',
+    });
+    assert.equal(search.get('q'), 'monceau');
   });
 
   it('paginates category places by distance for fallback list views', () => {
