@@ -40,4 +40,11 @@ describe('categoryPlacesEmptyMessage', () => {
     assert.match(message, /verified/i);
     assert.doesNotMatch(message, /database/i);
   });
+
+  it('names the search query when a category name filter has no matches', () => {
+    assert.equal(
+      categoryPlacesEmptyMessage('Cafes', true, '  monceau  '),
+      'No cafes match "monceau".',
+    );
+  });
 });

@@ -11,7 +11,9 @@ import {
   type PlaceCategory,
 } from '@freshy/ui';
 import { freshnessBarState } from '../lib/api';
+import { STUDIO_PLACE_SEARCH_COPY } from '../lib/place-search-copy';
 import { FilterChipScrollRow } from './FilterChipScrollRow';
+import { PlaceSearchField } from './PlaceSearchField';
 import type { StudioPlaceStatusFilter } from '../lib/studio-api';
 
 const STUDIO_STATUS_FILTERS: Array<{
@@ -60,32 +62,14 @@ export function StudioPlaceFilters({
   return (
     <section className="space-y-3 border-b border-outline-variant/10 bg-surface-container-low/40 px-4 py-4 md:px-8">
       <div className="flex flex-wrap items-center gap-3">
-        <form
-          className="flex min-w-[220px] flex-1 items-center gap-2 rounded-full border border-outline-variant/20 bg-surface-container px-4 py-2 md:max-w-md"
-          onSubmit={(event) => {
-            event.preventDefault();
-            onApplySearch();
-          }}
-        >
-          <MaterialIcon name="search" size={18} className="shrink-0 text-secondary" />
-          <input
-            value={values.search}
-            onChange={(event) => onSearchChange(event.target.value)}
-            className="min-w-0 flex-1 border-none bg-transparent p-0 text-body-sm text-on-surface focus:ring-0"
-            placeholder="Search name, address, slug, or ID…"
-            aria-label="Search places"
-          />
-          {values.search ? (
-            <button
-              type="button"
-              onClick={onClearSearch}
-              className="rounded-full p-1 text-secondary hover:bg-surface-container-high hover:text-on-surface"
-              aria-label="Clear search"
-            >
-              <MaterialIcon name="close" size={16} />
-            </button>
-          ) : null}
-        </form>
+        <PlaceSearchField
+          value={values.search}
+          onChange={onSearchChange}
+          onSubmit={onApplySearch}
+          onClear={onClearSearch}
+          placeholder={STUDIO_PLACE_SEARCH_COPY.placeholder}
+          ariaLabel={STUDIO_PLACE_SEARCH_COPY.ariaLabel}
+        />
         {hasActiveFilters ? (
           <button
             type="button"

@@ -191,9 +191,9 @@ export interface CategoryPlacesFetchParams {
   minFreshnessLevel?: number;
 }
 
-export async function fetchCategoryPlacesPage(
+export function buildCategoryPlacesSearchParams(
   params: CategoryPlacesFetchParams,
-): Promise<CategoryPlacesPageDto | null> {
+): URLSearchParams {
   const page = params.page ?? 1;
   const limit = params.limit ?? CATEGORY_PLACES_PAGE_SIZE;
   const search = new URLSearchParams();
@@ -202,11 +202,20 @@ export async function fetchCategoryPlacesPage(
   search.set('category', params.category);
   search.set('page', String(page));
   search.set('limit', String(limit));
-  if (params.q) search.set('q', params.q);
+  if (params.q?.trim()) search.set('q', params.q.trim());
   if (params.verifiedOnly) search.set('verifiedOnly', 'true');
   if (params.minFreshnessLevel != null) {
     search.set('minFreshnessLevel', String(params.minFreshnessLevel));
   }
+  return search;
+}
+
+export async function fetchCategoryPlacesPage(
+  params: CategoryPlacesFetchParams,
+): Promise<CategoryPlacesPageDto | null> {
+  const page = params.page ?? 1;
+  const limit = params.limit ?? CATEGORY_PLACES_PAGE_SIZE;
+  const search = buildCategoryPlacesSearchParams(params);
 
   const res = await fetch(`${getApiBase()}/places/category-list?${search.toString()}`, {
     cache: 'no-store',
