@@ -19,17 +19,17 @@ describe('readAppVersion', () => {
   });
 
   it('strips a leading v from release env vars', () => {
-    process.env.FRESHY_RELEASE_VERSION = 'v0.3.2';
-    assert.equal(readAppVersion(), '0.3.2');
+    process.env.FRESHY_RELEASE_VERSION = 'v0.4.1';
+    assert.equal(readAppVersion(), '0.4.1');
   });
 
   it('accepts release tags without a v prefix', () => {
-    process.env.FRESHY_RELEASE_VERSION = '0.3.2';
-    assert.equal(readAppVersion(), '0.3.2');
+    process.env.FRESHY_RELEASE_VERSION = '0.4.1';
+    assert.equal(readAppVersion(), '0.4.1');
   });
 
   it('falls back to package.json when no release env var is set', () => {
     delete process.env.FRESHY_RELEASE_VERSION;
-    assert.equal(readAppVersion(), '0.3.2');
+    assert.equal(readAppVersion(), '0.4.1');
   });
 });

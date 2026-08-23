@@ -235,6 +235,7 @@ You usually do not need a separate mobile origin for this WebView setup.
 | GitHub workflow fails on env                                           | Add both `EXPO_TOKEN` and `EAS_PROJECT_ID` secrets                                           |
 | iOS build fails                                                        | Apple Developer account + `eas device:create` + rebuild                                      |
 | App blank / white screen                                               | Open `EXPO_PUBLIC_WEB_APP_URL` in the phone browser                                          |
+| `Error loading page` / Domain undefined                                | Install 0.4.1+. The 0.4.0 APK still loads the retired `freshy-25e.pages.dev` host            |
 | Sign-in fails in app                                                   | Clerk authorized parties include `getfreshy.pages.dev`                                       |
 
 ---
