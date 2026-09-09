@@ -9,3 +9,6 @@ docs/stitch/**/*.html
 scripts/.venv/
 apps/mobile/.expo/
 apps/mobile/expo-env.d.ts
+
+# Vendored submodule: formatted by its own repo, not this one
+.guidelines/
