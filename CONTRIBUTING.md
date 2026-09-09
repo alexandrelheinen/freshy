@@ -4,19 +4,19 @@ Thank you for contributing to **Freshy**, the mobile-first cooling map. This doc
 
 ## Before you start
 
-| Resource                                                                                 | Purpose                                            |
-| ---------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| [.guidelines/](.guidelines/)                                                              | Shared TDD, git workflow, naming, language style   |
+| Resource                                                                                 | Purpose                                                   |
+| ---------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| [.guidelines/](.guidelines/)                                                             | Shared TDD, git workflow, naming, language style          |
 | [.cursor/rules/contributing-and-writing.mdc](.cursor/rules/contributing-and-writing.mdc) | Cursor agent: thin bridge to this file and `.guidelines/` |
-| [docs/local-development.md](docs/local-development.md)                                   | **Start here**: local setup with wrangler dev      |
-| [docs/platforms.md](docs/platforms.md)                                                   | Production platforms, resource names, env vars     |
-| [docs/quality-standards.md](docs/quality-standards.md)                                   | Quality rules per language                         |
-| [docs/architecture.md](docs/architecture.md)                                             | Monorepo layout and data flow                      |
-| [docs/studio.md](docs/studio.md)                                                         | Admin Studio: Clerk role, moderation API           |
-| [docs/infrastructure.md](docs/infrastructure.md)                                         | Cloudflare services and bindings                   |
-| [docs/public-repo-hygiene.md](docs/public-repo-hygiene.md)                               | Public-repo checklist (secrets, personal examples) |
-| [docs/git-rules.md](docs/git-rules.md)                                                   | Freshy-specific branching and release notes        |
-| [docs/stitch/freshy/DESIGN.md](docs/stitch/freshy/DESIGN.md)                             | Design tokens and UI reference                     |
+| [docs/local-development.md](docs/local-development.md)                                   | **Start here**: local setup with wrangler dev             |
+| [docs/platforms.md](docs/platforms.md)                                                   | Production platforms, resource names, env vars            |
+| [docs/quality-standards.md](docs/quality-standards.md)                                   | Quality rules per language                                |
+| [docs/architecture.md](docs/architecture.md)                                             | Monorepo layout and data flow                             |
+| [docs/studio.md](docs/studio.md)                                                         | Admin Studio: Clerk role, moderation API                  |
+| [docs/infrastructure.md](docs/infrastructure.md)                                         | Cloudflare services and bindings                          |
+| [docs/public-repo-hygiene.md](docs/public-repo-hygiene.md)                               | Public-repo checklist (secrets, personal examples)        |
+| [docs/git-rules.md](docs/git-rules.md)                                                   | Freshy-specific branching and release notes               |
+| [docs/stitch/freshy/DESIGN.md](docs/stitch/freshy/DESIGN.md)                             | Design tokens and UI reference                            |
 
 ## Core principles
 
