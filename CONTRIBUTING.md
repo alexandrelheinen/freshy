@@ -1,12 +1,13 @@
 # Contributing to Freshy
 
-Thank you for contributing to **Freshy**, the mobile-first cooling map. This document is the single entry point for how we build, test, and ship code in this repository.
+Thank you for contributing to **Freshy**, the mobile-first cooling map. This document covers Freshy's own policy and tooling. Generic engineering practice (TDD, git workflow, commit format, review, naming, language style) lives in the shared [.guidelines/](.guidelines/) submodule — see [AGENTS.md](AGENTS.md) for the index. This document does not repeat that content; it only covers what is specific to this repo.
 
 ## Before you start
 
 | Resource                                                                                 | Purpose                                            |
 | ---------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| [.cursor/rules/contributing-and-writing.mdc](.cursor/rules/contributing-and-writing.mdc) | Cursor agent: writing, naming, TDD, idiomatic code |
+| [.guidelines/](.guidelines/)                                                              | Shared TDD, git workflow, naming, language style   |
+| [.cursor/rules/contributing-and-writing.mdc](.cursor/rules/contributing-and-writing.mdc) | Cursor agent: thin bridge to this file and `.guidelines/` |
 | [docs/local-development.md](docs/local-development.md)                                   | **Start here**: local setup with wrangler dev      |
 | [docs/platforms.md](docs/platforms.md)                                                   | Production platforms, resource names, env vars     |
 | [docs/quality-standards.md](docs/quality-standards.md)                                   | Quality rules per language                         |
@@ -14,18 +15,16 @@ Thank you for contributing to **Freshy**, the mobile-first cooling map. This doc
 | [docs/studio.md](docs/studio.md)                                                         | Admin Studio: Clerk role, moderation API           |
 | [docs/infrastructure.md](docs/infrastructure.md)                                         | Cloudflare services and bindings                   |
 | [docs/public-repo-hygiene.md](docs/public-repo-hygiene.md)                               | Public-repo checklist (secrets, personal examples) |
-| [docs/git-rules.md](docs/git-rules.md)                                                   | Branching, commits, PR checklist                   |
+| [docs/git-rules.md](docs/git-rules.md)                                                   | Freshy-specific branching and release notes        |
 | [docs/stitch/freshy/DESIGN.md](docs/stitch/freshy/DESIGN.md)                             | Design tokens and UI reference                     |
 
 ## Core principles
 
-1. **Test-driven development (TDD) is the default.** Write a failing test, make it pass, refactor. Do not land behavior without a test that proves it.
+1. **Test-driven development (TDD) is the default**, per [.guidelines/workflow/tdd.md](.guidelines/workflow/tdd.md). Do not land behavior without a test that proves it.
 2. **Validate before opening a PR.** Run `bash scripts/validation.sh` (or targeted commands) before pushing.
-3. **One logical change per commit.** Small, reviewable diffs.
-4. **Match existing conventions.** Read surrounding code before editing; reuse packages and patterns already in the monorepo.
-5. **English everywhere in the repo.** All documentation and source code must be in English. See [Language](#language) below.
-6. **No em dashes in names or titles.** Use pipes, hyphens, or commas instead. See [Naming](#naming) below.
-7. **A task is done only when its PR is mergeable.** Green CI is not enough. The branch must rebase cleanly onto `main` with no conflicts.
+3. **English everywhere in the repo.** All documentation and source code must be in English. See [Language](#language) below.
+4. **No em dashes in names or titles.** Use pipes, hyphens, or commas instead. See [Naming](#naming) below.
+5. **A task is done only when its PR is mergeable.** Green CI is not enough. The branch must rebase cleanly onto `main` with no conflicts.
 
 ## Language
 
@@ -71,18 +70,14 @@ Freshy is a **pnpm + Turborepo** monorepo. See [docs/quality-standards.md](docs/
 
 ## Development cycle
 
-Every change should follow this sequence:
+Every change follows the shared branch → red → green → refactor → validate →
+commit → PR → review loop described in
+[.guidelines/workflow/tdd.md](.guidelines/workflow/tdd.md) and
+[.guidelines/workflow/integration.md](.guidelines/workflow/integration.md).
 
-```
-1. Branch          → feat/<name> or cursor/<feature>-5a14
-2. Red             → Write failing test(s) for the behavior
-3. Green           → Implement minimal code to pass tests
-4. Refactor        → Clean up; keep tests green
-5. Validate        → bash scripts/validation.sh (or targeted pnpm commands)
-6. Commit          → Focused message, imperative mood, English
-7. Pull request    → CI must pass; screenshots on UI changes
-8. Review & merge  → Squash or merge per team preference
-```
+**Branch naming:** cloud agents must prefix branches `cursor/<feature>-<hash>`
+(e.g. `cursor/dark-mode-5a14`); humans use `feat/<name>` or `fix/<name>`. See
+[Branch naming](#branch-naming) below for the full table.
 
 ### Quick validation commands
 
@@ -118,16 +113,19 @@ Environment flags for `validation.sh`:
 - **Linting** — ESLint flat config from `@freshy/config` (root `eslint.config.mjs`)
 - **Unused vars** — prefix with `_` if intentionally unused
 - **React** — no `react-in-jsx-scope`; hooks rules enforced
+- **Auth on web** — use `@clerk/clerk-react`, not `@clerk/nextjs`: `apps/web` is a static export and cannot use Next.js middleware-based Clerk
 - **Imports** — prefer workspace packages (`@freshy/ui`, `@freshy/db`, etc.)
 
 ## Pull request requirements
 
+Generic PR hygiene (tests cover changed behavior, no secrets in the diff,
+docs updated when behavior changes) is covered in
+[.guidelines/workflow/review.md](.guidelines/workflow/review.md) and the
+[PR template](.guidelines/templates/pr.md). Freshy-specific additions:
+
 - [ ] `bash scripts/validation.sh` passes locally (or document why a step was skipped)
-- [ ] Tests cover new/changed behavior (TDD)
-- [ ] No secrets in the diff (`.env`, service account keys)
 - [ ] `.env.example` updated if new environment variables are introduced
 - [ ] D1 migrations included if the schema changed
-- [ ] Docs updated when workflow or architecture changes
 - [ ] **PR is mergeable into `main`** (no conflicts; rebases cleanly if required)
 
 **Definition of done:** A branch or agent task is **not complete** until the pull request shows as mergeable on GitHub. Resolve conflicts with `git fetch origin && git rebase origin/main`, fix files, run validation, then `git push --force-with-lease`.

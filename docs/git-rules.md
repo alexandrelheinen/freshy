@@ -2,7 +2,10 @@
 
 > Full contributor guide: [CONTRIBUTING.md](../CONTRIBUTING.md)  
 > Local setup: [local-development.md](local-development.md)  
-> Quality standards: [quality-standards.md](quality-standards.md)
+> Quality standards: [quality-standards.md](quality-standards.md)  
+> Shared branching, commit, and review rules: [.guidelines/workflow/branching.md](../.guidelines/workflow/branching.md), [commits.md](../.guidelines/workflow/commits.md), [review.md](../.guidelines/workflow/review.md)
+
+This file covers only what's specific to Freshy: the branch-prefix table, release process, and file layout. General rules (never force-push to `main`, PRs required and must pass CI, atomic commits, imperative English commit messages) live in `.guidelines/` linked above. Freshy's stricter mergeability bar is in [CONTRIBUTING.md's Definition of done](../CONTRIBUTING.md#pull-request-requirements).
 
 ## Branching
 
@@ -13,19 +16,11 @@
 | `feat/<name>`           | Human feature branches                                      |
 | `fix/<name>`            | Bug fixes                                                   |
 
-### Rules
-
-1. **Never force-push to `main`.**
-2. All changes to `main` go through a **pull request**.
-3. PRs must pass CI (lint, typecheck, tests, build, page screenshots).
-4. PRs must be **mergeable** into `main` (no conflicts; rebase cleanly when required).
-5. Keep commits focused — one logical change per commit.
-6. Write commit messages in English, imperative mood (`Add`, `Fix`, `Update`).
-
 ## What not to commit
 
-- `.env` files and secrets (`*.json` service account keys)
-- `node_modules/`, build artifacts (`.next/`, `dist/`)
+See [.guidelines/workflow/commits.md](../.guidelines/workflow/commits.md) for
+the general rule (no secrets, no build output). Freshy-specific additions:
+
 - Local database volumes
 - IDE-specific files (except shared `.vscode/settings.json`)
 
@@ -47,14 +42,9 @@ docs/              → platforms, architecture, stitch designs
 
 ## Pull request checklist
 
-- [ ] `bash scripts/validation.sh` passes locally
-- [ ] No secrets in diff
-- [ ] Screenshots appear in PR comment (CI)
-- [ ] Database migrations included if schema changed
-- [ ] `.env.example` updated if new env vars added
-- [ ] **PR is mergeable into `main`** (rebase onto latest `main` if needed)
-
-**Done means mergeable:** Do not treat a task as finished until GitHub reports the PR as mergeable, or you have rebased onto current `main` and pushed without conflicts.
+See [CONTRIBUTING.md's Pull request requirements](../CONTRIBUTING.md#pull-request-requirements)
+for the full checklist. One CI behavior worth knowing here: screenshots for UI
+changes are posted to the PR automatically, not something you attach by hand.
 
 ## Releases
 
@@ -65,7 +55,4 @@ docs/              → platforms, architecture, stitch designs
 
 ## Code style
 
-- TypeScript strict mode
-- Prettier for formatting (`pnpm format`)
-- ESLint flat config from `@freshy/config`
-- English for all documentation and source code; locale translations via i18n when adopted
+See [CONTRIBUTING.md's Code style section](../CONTRIBUTING.md#code-style-all-typescript).
